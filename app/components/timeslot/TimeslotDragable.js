@@ -46,11 +46,18 @@ export class TimeslotDragable extends Component {
         }
         return (
             <div style={containerStyle}>
-                <p style={Object.assign({top: '5px'}, styles.time)}>{this.props.start}</p>
-                <p style={Object.assign({bottom: '5px'}, styles.time)}>{this.props.end}</p>
+                <p style={Object.assign({top: '5px'}, styles.time)}>{parseTimeStamp(this.props.start)}</p>
+                <p style={Object.assign({bottom: '5px'}, styles.time)}>{parseTimeStamp(this.props.end)}</p>
                 {topDragBall}
                 {bottomDragBall}
             </div>
         );
     }
+}
+
+function parseTimeStamp(minutes) {
+    var hours = parseInt(minutes / 60);
+    var minutesOver = minutes % 60;
+    if (minutesOver < 10) minutesOver = "0" + minutesOver;
+    return hours + ":" + minutesOver;
 }

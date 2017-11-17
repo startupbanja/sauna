@@ -17,16 +17,27 @@ export class TimeslotDragBall extends Component {
         Object.assign(styles.dragBall, {height: splitHeight * 0.2});
         this.handleDrag = this.handleDrag.bind(this);
         this.handleDragStart = this.handleDragStart.bind(this);
+        this.handleTouchMove = this.handleTouchMove.bind(this);
+        this.handleTouchStart = this.handleTouchStart.bind(this);
         this.state = {origY: 0}
     }
 
     handleDragStart(event) {
-        this.setState({origY: event.screenY});
+        this.setState({origY: event.clientY});
     }
     handleDrag(event) {
-        if (event.screenY === 0) return;
-        this.props.onChange(event.screenY - this.state.origY);
-        this.setState({origY: event.screenY});
+        if (event.clientY === 0) return;
+        this.props.onChange(event.clientY - this.state.origY);
+        this.setState({origY: event.clientY});
+    }
+
+    handleTouchStart(event) {
+        this.setState({origY: event.targetTouches.item(0).clientY});
+    }
+    handleTouchMove(event) {
+        if (event.targetTouches.item(0).clientY === 0) return;
+        this.props.onChange(parseInt(event.targetTouches.item(0).clientY - this.state.origY));
+        this.setState({origY: event.targetTouches.item(0).clientY});
     }
 
     render() {
@@ -37,7 +48,10 @@ export class TimeslotDragBall extends Component {
             <div draggable="true" 
                     onDrag={this.handleDrag} 
                     onDragStart={this.handleDragStart}
-                    onDragEnd={this.props.onManipulationEnd} 
+                    onDragEnd={this.props.onManipulationEnd}
+                    onTouchStart={this.handleTouchStart}
+                    onTouchMove={this.handleTouchMove} 
+                    onTouchEnd={this.props.onManipulationEnd}
                     style={Object.assign(position, styles.dragBall)}>
             </div>
         );    
