@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {splitHeight} from './TimeslotDrag';
 import {TimeslotDragBall} from './TimeslotDragBall';
+import {parseTimeStamp} from './Timeslot';
 
 const styles = {
     time: {
@@ -36,7 +37,7 @@ export class TimeslotDragable extends Component {
             top: this.props.startingSplit * splitHeight,
             width: '100%'
         };
-        if (this.props.type === "unavailable") containerStyle.background = "gray";
+        if (this.props.type === "break") containerStyle.background = "gray";
         else containerStyle.background = "orange";
         var topDragBall = null
         var bottomDragBall = null
@@ -53,11 +54,4 @@ export class TimeslotDragable extends Component {
             </div>
         );
     }
-}
-
-function parseTimeStamp(minutes) {
-    var hours = parseInt(minutes / 60);
-    var minutesOver = minutes % 60;
-    if (minutesOver < 10) minutesOver = "0" + minutesOver;
-    return hours + ":" + minutesOver;
 }

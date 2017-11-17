@@ -26,10 +26,10 @@ export class Timeslot extends React.Component {
             }
         };
         if (type === 'start') {
-            newAvailable.available.start = Math.min(Math.max(this.state.available.start + change * split, parseTimestamp(startTime)), this.state.available.end);
+            newAvailable.available.start = Math.min(Math.max(this.state.available.start + change * split, parseMinutes(startTime)), this.state.available.end);
         }
         if (type === 'end') {
-             newAvailable.available.end = Math.max(Math.min(this.state.available.end + change * split, parseTimestamp(endTime)), this.state.available.start);
+             newAvailable.available.end = Math.max(Math.min(this.state.available.end + change * split, parseMinutes(endTime)), this.state.available.start);
         }
         this.setState(newAvailable);
     }
@@ -45,21 +45,30 @@ export class Timeslot extends React.Component {
 
     render() {
         return (
-            <div>
-                <TimeslotDrag   start={parseTimestamp(startTime)}
-                                end={parseTimestamp(endTime)}
+            <div style={{width: '300px'}}>
+                <TimeslotDrag   start={parseMinutes(startTime)}
+                                end={parseMinutes(endTime)}
                                 available={this.state.available}
                                 split={split}
                                 onAvailabilityChange={this.handleAvailabilityChange}
                                 onManipulationEnd={this.handleManipulationEnd} />
-                <TimeslotInput start={parseTimestamp(startTime)} end={parseTimestamp(endTime)} split={split} />
+                <TimeslotInput  start={parseMinutes(startTime)} 
+                                end={parseMinutes(endTime)} 
+                                available={this.state.available}
+                                split={split} />
             </div>
         );
     }
 }
 
-function parseTimestamp(timeString) {
+export function parseMinutes(timeString) {
     if (!timeString.match(/^[0-2]?\d:[0-5]\d$/)) return 0;
     var pieces = timeString.split(":");
     return parseInt(pieces[0]) * 60 + parseInt(pieces[1]);
+}
+export function parseTimeStamp(minutes) {
+    var hours = parseInt(minutes / 60);
+    var minutesOver = minutes % 60;
+    if (minutesOver < 10) minutesOver = "0" + minutesOver;
+    return hours + ":" + minutesOver;
 }
