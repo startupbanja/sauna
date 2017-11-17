@@ -1,25 +1,15 @@
 import React, { Component } from 'react';
 import {splitHeight} from './TimeslotDrag';
+import {TimeslotDragBall} from './TimeslotDragBall';
 
 const styles = {
     time: {
         position: 'absolute',
         right: '5px',
         margin: '0px'
-    },
-    dragBall: {
-        borderRadius: '100%',
-        background: 'black',
-        position: 'absolute',
-        left: '50%',
     }
 };
 export class TimeslotDragable extends Component {
-    constructor(props) {
-        super(props);
-        Object.assign(styles.dragBall, {width: splitHeight * 0.2});
-        Object.assign(styles.dragBall, {height: splitHeight * 0.2});
-    }
     
     render() {
         const containerStyle = {
@@ -34,8 +24,8 @@ export class TimeslotDragable extends Component {
         var topDragBall = null
         var bottomDragBall = null
         if (this.props.dragable === 'true') {
-            topDragBall = <div style={Object.assign({bottom: -splitHeight * 0.1}, styles.dragBall)}></div>
-            bottomDragBall = <div style={Object.assign({top: -splitHeight * 0.1}, styles.dragBall)}></div>
+            topDragBall = <TimeslotDragBall position="top" />
+            bottomDragBall = <TimeslotDragBall position="bottom" />;
         }
         return (
             <div style={containerStyle}>
