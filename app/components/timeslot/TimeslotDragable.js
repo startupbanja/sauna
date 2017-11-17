@@ -10,7 +10,24 @@ const styles = {
     }
 };
 export class TimeslotDragable extends Component {
+    constructor(props) {
+        super(props);
+        this.handleEndChange = this.handleEndChange.bind(this);
+        this.handleStartChange = this.handleStartChange.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+    }
     
+    handleStartChange(change) {
+        //check if changed enough
+        this.handleChange("start", change);
+    }
+    handleEndChange(change) {
+        this.handleChange("end", change);
+    }
+    handleChange(type, change) {
+        this.props.onChange(type, change / this.props.split);
+    }
+
     render() {
         const containerStyle = {
             background: 'orange',
@@ -24,8 +41,8 @@ export class TimeslotDragable extends Component {
         var topDragBall = null
         var bottomDragBall = null
         if (this.props.dragable === 'true') {
-            topDragBall = <TimeslotDragBall position="top" />
-            bottomDragBall = <TimeslotDragBall position="bottom" />;
+            topDragBall = <TimeslotDragBall position="top" onChange={this.handleStartChange} />
+            bottomDragBall = <TimeslotDragBall position="bottom" onChange={this.handleEndChange} />;
         }
         return (
             <div style={containerStyle}>

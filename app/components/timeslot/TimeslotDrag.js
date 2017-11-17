@@ -12,7 +12,11 @@ export class TimeslotDrag extends Component {
         return (
             <div style={containerStyle}> 
                 <TimeslotDragable start={this.props.start} end={this.props.end} split={this.props.split} startingSplit="0" type="unavailable" dragable="false" />
-                <TimeslotDragable start={this.props.start + 60} end={this.props.end - 60} split={this.props.split} startingSplit="1" type="available" dragable="true" />
+                <TimeslotDragable   start={this.props.available.start} 
+                                    end={this.props.available.end} split={this.props.split} 
+                                    startingSplit={(this.props.available.start - this.props.start) / this.props.split} 
+                                    onChange={this.props.onAvailabilityChange}
+                                    type="available" dragable="true" />
             </div>
         );
     }
