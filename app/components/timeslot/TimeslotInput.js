@@ -5,7 +5,11 @@ export class TimeslotInput extends Component {
     render() {
         return (
             <div>
-                <TimeslotInputSet start={this.props.available.start} end={this.props.available.end} type="available" />
+                <TimeslotInputSet   start={this.props.available.start} 
+                                    end={this.props.available.end} 
+                                    type="available"
+                                    onChange={this.props.onAvailabilityChange}
+                                    onManipulationEnd={this.props.onManipulationEnd} />
             </div>
         );
     }

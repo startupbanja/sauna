@@ -26,10 +26,10 @@ export class Timeslot extends React.Component {
             }
         };
         if (type === 'start') {
-            newAvailable.available.start = Math.min(Math.max(this.state.available.start + change * split, parseMinutes(startTime)), this.state.available.end);
+            newAvailable.available.start = Math.min(Math.max(this.state.available.start + change, parseMinutes(startTime)), this.state.available.end);
         }
         if (type === 'end') {
-             newAvailable.available.end = Math.max(Math.min(this.state.available.end + change * split, parseMinutes(endTime)), this.state.available.start);
+             newAvailable.available.end = Math.max(Math.min(this.state.available.end + change, parseMinutes(endTime)), this.state.available.start);
         }
         this.setState(newAvailable);
     }
@@ -55,14 +55,16 @@ export class Timeslot extends React.Component {
                 <TimeslotInput  start={parseMinutes(startTime)} 
                                 end={parseMinutes(endTime)} 
                                 available={this.state.available}
-                                split={split} />
+                                split={split}
+                                onAvailabilityChange={this.handleAvailabilityChange}
+                                onManipulationEnd={this.handleManipulationEnd} />
             </div>
         );
     }
 }
 
 export function parseMinutes(timeString) {
-    if (!timeString.match(/^[0-2]?\d:[0-5]\d$/)) return 0;
+    if (!timeString.match(/^[0-2]?\d:[0-5]\d$/)) return false;
     var pieces = timeString.split(":");
     return parseInt(pieces[0]) * 60 + parseInt(pieces[1]);
 }

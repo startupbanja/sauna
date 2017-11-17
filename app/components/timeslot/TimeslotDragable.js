@@ -15,18 +15,14 @@ export class TimeslotDragable extends Component {
         super(props);
         this.handleEndChange = this.handleEndChange.bind(this);
         this.handleStartChange = this.handleStartChange.bind(this);
-        this.handleChange = this.handleChange.bind(this);
     }
     
     handleStartChange(change) {
         //check if changed enough
-        this.handleChange("start", change);
+        this.props.onChange("start", change);
     }
     handleEndChange(change) {
-        this.handleChange("end", change);
-    }
-    handleChange(type, change) {
-        this.props.onChange(type, change / this.props.split);
+        this.props.onChange("end", change);
     }
 
     render() {

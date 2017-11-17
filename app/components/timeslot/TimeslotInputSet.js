@@ -1,11 +1,7 @@
 import React, { Component } from 'react';
-import {parseTimeStamp} from './Timeslot';
+import { TimeslotInputElement } from './TimeslotInputElement';
 
 const styles = {
-    input: {
-        position: 'absolute',
-        right: 0,
-    },
     container: {
         position: 'relative',
         margin: '5px'
@@ -13,6 +9,19 @@ const styles = {
 };
 
 export class TimeslotInputSet extends Component {
+    constructor(props) {
+        super(props);
+        this.handleStartChange = this.handleStartChange.bind(this);
+        this.handleEndChange = this.handleEndChange.bind(this);
+    }
+
+    handleStartChange(change) {
+        this.props.onChange("start", change);
+    }
+    handleEndChange(change) {
+        this.props.onChange("end", change);
+    }
+    
     render() {
         var breakText = "";
         if (this.props.type === 'break') breakText = " of break";
@@ -20,11 +29,15 @@ export class TimeslotInputSet extends Component {
             <div>
                 <div style={styles.container}>
                     <label>{"Start" + breakText}</label>
-                    <input style={styles.input} value={parseTimeStamp(this.props.start)} type="text" />
+                    <TimeslotInputElement   time={this.props.start} 
+                                            onChange={this.handleStartChange} 
+                                            onManipulationEnd={this.props.onManipulationEnd} />
                 </div>
                 <div style={styles.container}>
                     <label>{"End" + breakText}</label>
-                    <input style={styles.input} value={parseTimeStamp(this.props.end)} type="text" />
+                    <TimeslotInputElement   time={this.props.end} 
+                                            onChange={this.handleEndChange} 
+                                            onManipulationEnd={this.props.onManipulationEnd}/>
                 </div>
             </div>
         );
