@@ -15,6 +15,7 @@ export class Timeslot extends React.Component {
             }
         };
         this.handleAvailabilityChange = this.handleAvailabilityChange.bind(this);
+        this.handleManipulationEnd = this.handleManipulationEnd.bind(this);
     }
 
     handleAvailabilityChange(type, change) {
@@ -28,6 +29,15 @@ export class Timeslot extends React.Component {
         if (type === 'end') newAvailable.available.end = this.state.available.end + change * split
         this.setState(newAvailable);
     }
+    handleManipulationEnd() {
+        var newAvailable = {
+            available: {
+                start: Math.round(this.state.available.start / split) * split,
+                end: Math.round(this.state.available.end / split) * split
+            }
+        };
+        this.setState(newAvailable);
+    }
 
     render() {
         return (
@@ -36,7 +46,8 @@ export class Timeslot extends React.Component {
                                 end={parseTimestamp(endTime)}
                                 available={this.state.available}
                                 split={split}
-                                onAvailabilityChange={this.handleAvailabilityChange} />
+                                onAvailabilityChange={this.handleAvailabilityChange}
+                                onManipulationEnd={this.handleManipulationEnd} />
                 <TimeslotInput start={parseTimestamp(startTime)} end={parseTimestamp(endTime)} split={split} />
             </div>
         );

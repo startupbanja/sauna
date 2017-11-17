@@ -41,8 +41,8 @@ export class TimeslotDragable extends Component {
         var topDragBall = null
         var bottomDragBall = null
         if (this.props.dragable === 'true') {
-            topDragBall = <TimeslotDragBall position="top" onChange={this.handleStartChange} />
-            bottomDragBall = <TimeslotDragBall position="bottom" onChange={this.handleEndChange} />;
+            topDragBall = <TimeslotDragBall position="top" onChange={this.handleStartChange} onManipulationEnd={this.props.onManipulationEnd} />
+            bottomDragBall = <TimeslotDragBall position="bottom" onChange={this.handleEndChange} onManipulationEnd={this.props.onManipulationEnd} />;
         }
         return (
             <div style={containerStyle}>
