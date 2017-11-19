@@ -16,7 +16,7 @@ export class App extends React.Component {
     }
 
     changeToMenu() {
-        this.setState({content: <MainView logoff={this.changeToLogin}/>});
+        this.setState({content: <MainView logoff={this.changeToLogin} />});
     }
 
     changeToLogin() {

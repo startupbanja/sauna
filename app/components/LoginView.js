@@ -1,6 +1,6 @@
 import React from "react";
 import LoginHandler from "./LoginHandler.js";
-import Button from "./Button.js";
+import LoginForm from "./LoginForm.js";
 
 //This view contains all the login-related things and is shown as the default view
 export default class LoginView extends React.Component {
@@ -26,10 +26,8 @@ export default class LoginView extends React.Component {
 
     render() {
         //logoViewHandler
-        //salasana/tekstikenttä
         return (
-            //TODO add some textbox and put together with Button in a separate form wrapper
-            <Button onClick={this.handleInput} text={"Log In"} />
+            <LoginForm onSubmit={this.handleInput} />
         );
 
     }
