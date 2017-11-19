@@ -1,12 +1,21 @@
 import React from "react";
+import Button from "./Button.js";
 
 export default class Menu extends React.Component {
 
     render() {
         return (
-            <h1>This is Menu!</h1>
+            <div>
+            <Button
+            onClick={() => {this.props.onChange("Timetable");}}
+            text={"Timetable"} />
+            <Button
+            onClick={() => {this.props.onChange("Other Stuff");}}
+            text={"Other stuff"} />
+            <Button
+            onClick={this.props.logoff}
+            text={"Log Off"} />
+            </div>
         );
     }
 }
-
-// module.exports = Menu;
