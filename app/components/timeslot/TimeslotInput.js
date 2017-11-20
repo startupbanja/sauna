@@ -8,8 +8,7 @@ export class TimeslotInput extends Component {
                 <TimeslotInputSet   start={this.props.available.start} 
                                     end={this.props.available.end} 
                                     type="available"
-                                    onChange={this.props.onAvailabilityChange}
-                                    onManipulationEnd={this.props.onManipulationEnd} />
+                                    onChange={this.props.onChange} />
             </div>
         );
     }

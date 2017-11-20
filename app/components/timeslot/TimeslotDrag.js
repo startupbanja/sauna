@@ -15,8 +15,7 @@ export class TimeslotDrag extends Component {
                 <TimeslotDragable   start={this.props.available.start} 
                                     end={this.props.available.end} split={this.props.split} 
                                     startingSplit={(this.props.available.start - this.props.start) / this.props.split} 
-                                    onChange={this.props.onAvailabilityChange}
-                                    onManipulationEnd={this.props.onManipulationEnd}
+                                    onChange={this.props.onChange}
                                     type="available" dragable="true" />
             </div>
         );

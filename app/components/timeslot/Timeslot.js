@@ -14,11 +14,10 @@ export class Timeslot extends React.Component {
                 end: 960
             }
         };
-        this.handleAvailabilityChange = this.handleAvailabilityChange.bind(this);
-        this.handleManipulationEnd = this.handleManipulationEnd.bind(this);
+        this.handleChange = this.handleChange.bind(this);
     }
 
-    handleAvailabilityChange(type, change) {
+    handleChange(type, change) {
         var correction = Math.sign(change) * (split - Math.abs(change) % split);
         change = Math.round(change / split);
         var newAvailable = {
@@ -35,15 +34,6 @@ export class Timeslot extends React.Component {
         }
         this.setState(newAvailable);
     }
-    handleManipulationEnd() {
-        var newAvailable = {
-            available: {
-                start: Math.round(this.state.available.start / split) * split,
-                end: Math.round(this.state.available.end / split) * split
-            }
-        };
-        this.setState(newAvailable);
-    }
 
     render() {
         return (
@@ -52,14 +42,12 @@ export class Timeslot extends React.Component {
                                 end={parseMinutes(endTime)}
                                 available={this.state.available}
                                 split={split}
-                                onAvailabilityChange={this.handleAvailabilityChange}
-                                onManipulationEnd={this.handleManipulationEnd} />
+                                onChange={this.handleChange} />
                 <TimeslotInput  start={parseMinutes(startTime)} 
                                 end={parseMinutes(endTime)} 
                                 available={this.state.available}
                                 split={split}
-                                onAvailabilityChange={this.handleAvailabilityChange}
-                                onManipulationEnd={this.handleManipulationEnd} />
+                                onChange={this.handleChange} />
             </div>
         );
     }

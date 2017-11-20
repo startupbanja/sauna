@@ -23,7 +23,6 @@ export class TimeslotInputElement extends Component {
         this.setState({editedValue: ""});
         if (parseMinutes(event.target.value) !== false) {
             this.props.onChange(parseMinutes(event.target.value) - this.props.time);
-            //this.props.onManipulationEnd();
         }
     }
     
