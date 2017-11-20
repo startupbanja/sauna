@@ -13,9 +13,11 @@ export class Timeslot extends React.Component {
             available: {
                 start: 600,
                 end: 960
-            }
+            },
+            breaks: []
         };
         this.handleChange = this.handleChange.bind(this);
+        this.handleBreakAddition = this.handleBreakAddition.bind(this);
     }
 
     handleChange(type, change) {
@@ -35,6 +37,23 @@ export class Timeslot extends React.Component {
         }
         this.setState(newAvailable);
     }
+    handleBreakAddition() {
+        for (var i = parseMinutes(startTime); i < parseMinutes(endTime); i+=split) {
+            var notSuited = false;
+            for (var j = 0; j < this.state.breaks.length && !notSuited; j++) {
+                if (this.state.breaks[j].start <= i && this.state.breaks[j].end > i) notSuited = true;
+            }
+            if (!notSuited) {
+                var newBreaks = this.state.breaks;
+                newBreaks.push({start: i, end: i + split});
+                this.setState({breaks: newBreaks});
+                return;
+            }
+        }
+        var newBreaks = this.state.breaks;
+        newBreaks.push({start: parseMinutes(startTime), end: parseMinutes(startTime) + split});
+        this.setState({breaks: newBreaks});
+    }
 
     render() {
         return (
@@ -42,14 +61,13 @@ export class Timeslot extends React.Component {
                 <TimeslotDrag   start={parseMinutes(startTime)}
                                 end={parseMinutes(endTime)}
                                 available={this.state.available}
+                                breaks={this.state.breaks}
                                 split={split}
                                 onChange={this.handleChange} />
-                <TimeslotInput  start={parseMinutes(startTime)} 
-                                end={parseMinutes(endTime)} 
-                                available={this.state.available}
-                                split={split}
-                                onChange={this.handleChange} />
-                <TimeslotAddBreakButton />
+                <TimeslotInput  available={this.state.available}
+                                breaks={this.state.breaks}
+                                onChange={this.handleChange}
+                                onAddBreackClick={this.handleBreakAddition} />
             </div>
         );
     }

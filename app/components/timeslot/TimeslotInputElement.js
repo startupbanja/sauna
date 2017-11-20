@@ -20,7 +20,6 @@ export class TimeslotInputElement extends Component {
 
     handleChange(event) {
         this.setState({editedValue: event.target.value});
-        console.log("change");
     }
     handleBlur(event) {
         this.endEditing(event);

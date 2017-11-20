@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 export class TimeslotAddBreakButton extends Component {
     render() {
         return (
-            <div style={{display:"table"}}>
+            <div style={{display:"table"}} onClick={this.props.onClick}>
                 <div>
                 <svg width="40" height="40">
                     <circle cx="20" cy="20" r="16" stroke="black" strokeWidth="3" fill="transparent" />
