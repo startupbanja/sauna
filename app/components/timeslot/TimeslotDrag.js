@@ -10,7 +10,7 @@ export class TimeslotDrag extends Component {
             height: (this.props.end - this.props.start) / this.props.split * splitHeight
         };
         return (
-            <div style={containerStyle}> 
+            <div className="dragContainer" style={containerStyle}> 
                 <TimeslotDragable start={this.props.start} end={this.props.end} split={this.props.split} startingSplit="0" type="break" dragable="false" />
                 <TimeslotDragable   start={this.props.available.start} 
                                     end={this.props.available.end} split={this.props.split} 

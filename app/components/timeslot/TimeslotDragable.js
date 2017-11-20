@@ -42,7 +42,7 @@ export class TimeslotDragable extends Component {
             bottomDragBall = <TimeslotDragBall position="bottom" onChange={this.handleEndChange} onManipulationEnd={this.props.onManipulationEnd} />;
         }
         return (
-            <div style={containerStyle}>
+            <div className="dragableContainer" style={containerStyle}>
                 <p style={Object.assign({top: '5px'}, styles.time)}>{parseTimeStamp(this.props.start)}</p>
                 <p style={Object.assign({bottom: '5px'}, styles.time)}>{parseTimeStamp(this.props.end)}</p>
                 {topDragBall}

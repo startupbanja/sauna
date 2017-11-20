@@ -19,6 +19,8 @@ export class Timeslot extends React.Component {
     }
 
     handleAvailabilityChange(type, change) {
+        var correction = Math.sign(change) * (split - Math.abs(change) % split);
+        change = Math.round(change / split);
         var newAvailable = {
             available: {
                 start: this.state.available.start,
@@ -26,10 +28,10 @@ export class Timeslot extends React.Component {
             }
         };
         if (type === 'start') {
-            newAvailable.available.start = Math.min(Math.max(this.state.available.start + change, parseMinutes(startTime)), this.state.available.end);
+            newAvailable.available.start = Math.min(Math.max(this.state.available.start + change * split, parseMinutes(startTime)), this.state.available.end);
         }
         if (type === 'end') {
-             newAvailable.available.end = Math.max(Math.min(this.state.available.end + change, parseMinutes(endTime)), this.state.available.start);
+             newAvailable.available.end = Math.max(Math.min(this.state.available.end + change * split, parseMinutes(endTime)), this.state.available.start);
         }
         this.setState(newAvailable);
     }
