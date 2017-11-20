@@ -1,6 +1,7 @@
 import React from 'react';
 import {TimeslotDrag} from './TimeslotDrag';
 import {TimeslotInput} from './TimeslotInput';
+import { TimeslotAddBreakButton } from './TimeslotAddBreakButton';
 
 const startTime = "10:00";
 const endTime = "16:00";
@@ -48,6 +49,7 @@ export class Timeslot extends React.Component {
                                 available={this.state.available}
                                 split={split}
                                 onChange={this.handleChange} />
+                <TimeslotAddBreakButton />
             </div>
         );
     }
