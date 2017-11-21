@@ -2,7 +2,7 @@ import React from "react";
 import Menu from "./Menu.js";
 
 
-//This is the class that shows the whoel page content after login
+//This is the class that shows the whole page content after login
 //Currently shows a menubar at the top and content below it
 export default class MainView extends React.Component {
 
@@ -12,7 +12,7 @@ export default class MainView extends React.Component {
         this.state = {
             "current" : <h1>Timetable</h1>,
             contentMap: {
-                "timetable" : <h1>Timetable</h1>,
+                "timetable" : <div><h1>Timetable</h1><Image src="imgs/userSchedule.png"/></div>,
                 "otherstuff": <h1>Other stuff</h1>
             },
 
