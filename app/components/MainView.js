@@ -10,20 +10,30 @@ export default class MainView extends React.Component {
         super(props);
         this.changeContent = this.changeContent.bind(this);
         this.state = {
-            content:  <h1>Timetable</h1>//Just placeholder for an actual react component
+            "current" : <h1>Timetable</h1>,
+            contentMap: {
+                "timetable" : <h1>Timetable</h1>,
+                "otherstuff": <h1>Other stuff</h1>
+            },
+
+            labels: {
+                "timetable" : "Timetable",
+                "otherstuff": "Other Stuff"
+            }
         }
+        var landingPage = "timetable";
     }
 
 
-    changeContent(newContent) {
-        const view = <h1>{newContent}</h1>
-        this.setState({content: view})
+    changeContent(key) {
+        const view = this.state.contentMap[key];
+        this.setState({current: view});
     }
 
     render() {
         return (
             <div>
-            <Menu onChange={this.changeContent} logoff={this.props.logoff}/>
+            <Menu onChange={this.changeContent} logoff={this.props.logoff} content={this.state.labels} />
             {this.state.content}
             </div>
         );
