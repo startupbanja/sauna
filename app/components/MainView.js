@@ -1,5 +1,6 @@
 import React from "react";
 import Menu from "./Menu.js";
+import Image from "./Image.js";
 
 
 //This is the class that shows the whole page content after login
@@ -10,15 +11,20 @@ export default class MainView extends React.Component {
         super(props);
         this.changeContent = this.changeContent.bind(this);
         this.state = {
-            current : <h1>Welcome, {this.props.user}</h1>,
-            contentMap : {
-                "timetable" : <h1>Timetable</h1>,
-                "otherstuff": <h1>Other stuff</h1>
+            "current" : <div><h1>Welcome, {this.props.user}</h1><Image src="../app/imgs/firstScreen1.png"/></div>,
+            contentMap: {
+                "mainPage" : <div><h1>Home</h1><Image src="../app/imgs/firstScreen1.png"/></div>,
+                "timetable" : <div><h1>Timetable</h1><Image src="../app/imgs/userSchedule1.png"/></div>,
+                "userProfile" : <div><h1>User Profile</h1><Image src="../app/imgs/userProfile1.png"/></div>,
+                "feedback" : <div><h1>Feedback Forms</h1><Image src="../app/imgs/feedback2.png"/></div>,
+                "coaches" : <div><h1>Coach Information</h1><Image src="../app/imgs/coaches1.png"/></div>,
             },
-
-            labels : {
+            labels: {
+                "mainPage" : "Home",
                 "timetable" : "Timetable",
-                "otherstuff": "Other Stuff"
+                "userProfile" : "User Profile",
+                "feedback" : "Feedback",
+                "coaches" : "Coaches"
             }
         }
     }
