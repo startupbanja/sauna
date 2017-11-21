@@ -15,25 +15,20 @@ export class TimeslotInputElement extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleBlur = this.handleBlur.bind(this);
         this.handleKeypress = this.handleKeypress.bind(this);
-        this.endEditing = this.endEditing.bind(this);
     }
 
     handleChange(event) {
         this.setState({editedValue: event.target.value});
     }
     handleBlur(event) {
-        this.endEditing(event);
+        this.setState({editedValue: ""});
+        if (parseMinutes(event.target.value) !== false) {
+            this.props.onChange(parseMinutes(event.target.value) - this.props.time);
+        }
     }
     handleKeypress(event) {
         if (event.key == 'Enter') {
-            this.endEditing(event);
-        }
-    }
-    endEditing(event) {
-        this.setState({editedValue: ""});
-        event.target.blur();
-        if (parseMinutes(event.target.value) !== false) {
-            this.props.onChange(parseMinutes(event.target.value) - this.props.time);
+            event.target.blur();
         }
     }
     

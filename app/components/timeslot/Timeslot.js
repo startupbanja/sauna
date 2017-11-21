@@ -20,25 +20,33 @@ export class Timeslot extends React.Component {
         this.handleBreakAddition = this.handleBreakAddition.bind(this);
     }
 
-    handleChange(type, change) {
-        var correction = Math.sign(change) * (split - Math.abs(change) % split);
+    handleChange(type, to, change, index = 0) {
+        var correction = Math.sign(change) * ((split - Math.abs(change)) % split);
         change = Math.round(change / split);
-        var newAvailable = {
-            available: {
-                start: this.state.available.start,
-                end: this.state.available.end
-            }
-        };
-        if (type === 'start') {
-            newAvailable.available.start = Math.min(Math.max(this.state.available.start + change * split, parseMinutes(startTime)), this.state.available.end);
+        let newStart;
+        if (type === "break") newStart = this.state.breaks[index].start;
+        else newStart = this.state.available.start;
+        let newEnd;
+        if (type === "break") newEnd = this.state.breaks[index].end;
+        else newEnd = this.state.available.end;
+        if (to === 'start') {
+            newStart = Math.min(Math.max(newStart + change * split, parseMinutes(startTime)), newEnd);
         }
-        if (type === 'end') {
-             newAvailable.available.end = Math.max(Math.min(this.state.available.end + change * split, parseMinutes(endTime)), this.state.available.start);
+        else if (to === 'end') {
+            newEnd = Math.max(Math.min(newEnd + change * split, parseMinutes(endTime)), newStart);
         }
-        this.setState(newAvailable);
+        let newObj;
+        if (type === "break") {
+            newObj = this.state.breaks;
+            newObj[index] = {start: newStart, end: newEnd};
+            newObj = {breaks: newObj};
+        } else {
+            newObj = {available: {start: newStart, end: newEnd}};
+        }
+        this.setState(newObj);
     }
     handleBreakAddition() {
-        for (var i = parseMinutes(startTime); i < parseMinutes(endTime); i+=split) {
+        for (var i = this.state.available.start + split; i < this.state.available.end; i+=split) {
             var notSuited = false;
             for (var j = 0; j < this.state.breaks.length && !notSuited; j++) {
                 if (this.state.breaks[j].start <= i && this.state.breaks[j].end > i) notSuited = true;
@@ -51,7 +59,7 @@ export class Timeslot extends React.Component {
             }
         }
         var newBreaks = this.state.breaks;
-        newBreaks.push({start: parseMinutes(startTime), end: parseMinutes(startTime) + split});
+        newBreaks.push({start: this.state.available.start, end: this.state.available.start + split});
         this.setState({breaks: newBreaks});
     }
 
