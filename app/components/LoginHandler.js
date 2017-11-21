@@ -1,4 +1,9 @@
 
 export default function handle(input) {
-    return true;
+
+    if (input.name === "admin") {
+        return "admin";
+    } else {
+        return "user";
+    }
 }

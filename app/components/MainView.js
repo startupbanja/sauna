@@ -10,7 +10,7 @@ export default class MainView extends React.Component {
         super(props);
         this.changeContent = this.changeContent.bind(this);
         this.state = {
-            "current" : <h1>Timetable</h1>,
+            "current" : <h1>Welcome, {this.props.user}</h1>,
             contentMap: {
                 "timetable" : <h1>Timetable</h1>,
                 "otherstuff": <h1>Other stuff</h1>

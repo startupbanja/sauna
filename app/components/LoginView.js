@@ -15,9 +15,11 @@ export default class LoginView extends React.Component {
 
 
     handleInput(input) {
+        var name = input["name"];
+        var pwd = input["pwd"];
         var authResult = this.state.handle(input);
-        if (authResult) {
-            this.props.login();
+        if (authResult ) {
+            this.props.login(authResult);
         } else {
             //handleError
         }

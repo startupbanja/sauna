@@ -5,8 +5,9 @@ export default class Menu extends React.Component {
 
     render() {
         var list = [];
-        for (var name in this.props.content) {
-            list.push(<li key={name}><Button onClick={() => {this.props.onChange(name);}}
+        for (let name in this.props.content) {
+            list.push(<li key={name}><Button onClick={() => {
+                this.props.onChange(name);}}
             text={this.props.content[name]} /></li>)
         }
         return (
