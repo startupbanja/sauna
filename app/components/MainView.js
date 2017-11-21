@@ -34,7 +34,7 @@ export default class MainView extends React.Component {
         return (
             <div>
             <Menu onChange={this.changeContent} logoff={this.props.logoff} content={this.state.labels} />
-            {this.state.content}
+            {this.state.current}
             </div>
         );
     }
