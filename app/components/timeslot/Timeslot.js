@@ -3,16 +3,13 @@ import {TimeslotDrag} from './TimeslotDrag';
 import {TimeslotInput} from './TimeslotInput';
 import { TimeslotAddBreakButton } from './TimeslotAddBreakButton';
 
-const startTime = "10:00";
-const endTime = "16:00";
-const split = 60;
 export class Timeslot extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             available: {
-                start: 600,
-                end: 960
+                start: parseMinutes(this.props.start),
+                end: parseMinutes(this.props.end)
             },
             breaks: []
         };
@@ -21,8 +18,8 @@ export class Timeslot extends React.Component {
     }
 
     handleChange(type, to, change, index = 0) {
-        var correction = Math.sign(change) * ((split - Math.abs(change)) % split);
-        change = Math.round(change / split);
+        var correction = Math.sign(change) * ((this.props.split - Math.abs(change)) % this.props.split);
+        change = Math.round(change * 0.9 / this.props.split);
         let newStart;
         if (type === "break") newStart = this.state.breaks[index].start;
         else newStart = this.state.available.start;
@@ -30,10 +27,10 @@ export class Timeslot extends React.Component {
         if (type === "break") newEnd = this.state.breaks[index].end;
         else newEnd = this.state.available.end;
         if (to === 'start') {
-            newStart = Math.min(Math.max(newStart + change * split, parseMinutes(startTime)), newEnd);
+            newStart = Math.min(Math.max(newStart + change * this.props.split, parseMinutes(this.props.start)), newEnd);
         }
         else if (to === 'end') {
-            newEnd = Math.max(Math.min(newEnd + change * split, parseMinutes(endTime)), newStart);
+            newEnd = Math.max(Math.min(newEnd + change * this.props.split, parseMinutes(this.props.end)), newStart);
         }
         let newObj;
         if (type === "break") {
@@ -46,31 +43,31 @@ export class Timeslot extends React.Component {
         this.setState(newObj);
     }
     handleBreakAddition() {
-        for (var i = this.state.available.start + split; i < this.state.available.end; i+=split) {
+        for (var i = this.state.available.start + this.props.split; i < this.state.available.end; i+=this.props.split) {
             var notSuited = false;
             for (var j = 0; j < this.state.breaks.length && !notSuited; j++) {
                 if (this.state.breaks[j].start <= i && this.state.breaks[j].end > i) notSuited = true;
             }
             if (!notSuited) {
                 var newBreaks = this.state.breaks;
-                newBreaks.push({start: i, end: i + split});
+                newBreaks.push({start: i, end: i + this.props.split});
                 this.setState({breaks: newBreaks});
                 return;
             }
         }
         var newBreaks = this.state.breaks;
-        newBreaks.push({start: this.state.available.start, end: this.state.available.start + split});
+        newBreaks.push({start: this.state.available.start, end: this.state.available.start + this.props.split});
         this.setState({breaks: newBreaks});
     }
 
     render() {
         return (
             <div style={{width: '300px'}}>
-                <TimeslotDrag   start={parseMinutes(startTime)}
-                                end={parseMinutes(endTime)}
+                <TimeslotDrag   start={parseMinutes(this.props.start)}
+                                end={parseMinutes(this.props.end)}
                                 available={this.state.available}
                                 breaks={this.state.breaks}
-                                split={split}
+                                split={this.props.split}
                                 onChange={this.handleChange} />
                 <TimeslotInput  available={this.state.available}
                                 breaks={this.state.breaks}
@@ -82,11 +79,12 @@ export class Timeslot extends React.Component {
 }
 
 export function parseMinutes(timeString) {
-    if (!timeString.match(/^[0-2]?\d:[0-5]\d$/)) return false;
+    if (!timeString.match(/^([0-1]?\d|2[0-3]):[0-5]\d$/)) return false;
     var pieces = timeString.split(":");
     return parseInt(pieces[0]) * 60 + parseInt(pieces[1]);
 }
 export function parseTimeStamp(minutes) {
+    if (minutes < 0 || minutes >= 1440) return false;
     var hours = parseInt(minutes / 60);
     var minutesOver = minutes % 60;
     if (minutesOver < 10) minutesOver = "0" + minutesOver;

@@ -11,10 +11,10 @@ export class TimeslotDrag extends Component {
     }
     
     handleAvailableChange(to, change) {
-        this.props.onChange("available", to, change);
+        this.props.onChange("available", to, change / splitHeight * this.props.split);
     }
     handleBreakChange(to, change, index) {
-        this.props.onChange("break", to, change, index);
+        this.props.onChange("break", to, change / splitHeight * this.props.split, index);
     }
 
     render() {
