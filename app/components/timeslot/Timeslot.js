@@ -1,7 +1,6 @@
 import React from 'react';
 import {TimeslotDrag} from './TimeslotDrag';
 import {TimeslotInput} from './TimeslotInput';
-import { TimeslotAddBreakButton } from './TimeslotAddBreakButton';
 
 export class Timeslot extends React.Component {
     constructor(props) {
@@ -18,8 +17,7 @@ export class Timeslot extends React.Component {
     }
 
     handleChange(type, to, change, index = 0) {
-        var correction = Math.sign(change) * ((this.props.split - Math.abs(change)) % this.props.split);
-        change = Math.round(change * 0.9 / this.props.split);
+        change = Math.round(change / this.props.split);
         let newStart;
         if (type === "break") newStart = this.state.breaks[index].start;
         else newStart = this.state.available.start;
@@ -46,7 +44,7 @@ export class Timeslot extends React.Component {
         for (var i = this.state.available.start + this.props.split; i < this.state.available.end; i+=this.props.split) {
             var notSuited = false;
             for (var j = 0; j < this.state.breaks.length && !notSuited; j++) {
-                if (this.state.breaks[j].start <= i && this.state.breaks[j].end > i) notSuited = true;
+                if (this.state.breaks[j].start <= i && this.state.breaks[j].end >= i) notSuited = true;
             }
             if (!notSuited) {
                 var newBreaks = this.state.breaks;

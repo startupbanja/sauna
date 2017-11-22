@@ -23,7 +23,6 @@ export class TimeslotDragBall extends Component {
         if (event.clientY === 0) return;
         var origY = event.target.parentElement.offsetTop + (event.target.offsetTop + styles.dragBall.height / 2);
         var dragY = event.clientY - event.target.closest(".dragContainer").getBoundingClientRect().top;
-        console.log(origY + " - " + dragY);
         this.props.onChange(dragY - origY);
     }
 
