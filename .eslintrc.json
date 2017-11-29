@@ -11,5 +11,9 @@
   "extends": ["airbnb", "plugin:react/recommended"],
   "rules": {
     "react/prefer-stateless-function": "warn"
+  },
+  "env": {
+    "browser": true,
+    "node": true
   }
 }
