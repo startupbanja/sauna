@@ -7,7 +7,7 @@ export default class UserProfile extends React.Component {
       userName: "Tuukka"
     };
     this.getHeader = this.getHeader.bind(this)
-  }
+  };
 
   getHeader() {
     return (
