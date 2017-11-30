@@ -1,7 +1,7 @@
 {
   "name": "sauna",
   "version": "1.0.0",
-  "description": "1. Kloonatkaa sauna repository\r 2. Asentakaa npm omalle koneelle\r 3. Menkää kloonaamaanne kansioon\r 4. Suorittakaa seuraavat:\r     - npm i -S {react,react-dom}\r     - npm i -D babel-{core,loader} babel-preset-react\r     - npm i -D webpack webpack-dev-server html-webpack-plugin\r 5. Suorittakaa: \"npm run start\"\r 6. Selaimella http://localhost:8080",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "build": "webpack",
@@ -19,15 +19,10 @@
   },
   "homepage": "https://github.com/teemukaaria/sauna#readme",
   "dependencies": {
-<<<<<<< HEAD
-    "react": "^16.1.1",
-    "react-dom": "^16.1.1"
-=======
     "bootstrap": "^3.3.7",
     "prop-types": "^15.6.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0"
->>>>>>> 6f3766f5d492e8b6c0aacfb35ece291af4a47d01
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -40,6 +35,6 @@
     "eslint-plugin-react": "^7.5.1",
     "html-webpack-plugin": "^2.30.1",
     "webpack": "^3.8.1",
-    "webpack-dev-server": "^2.9.5"
+    "webpack-dev-server": "^2.9.4"
   }
 }
