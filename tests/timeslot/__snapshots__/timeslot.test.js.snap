@@ -1,856 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Timeslot adds breaks correctly 1`] = `
+exports[`Timeslot handles change correctly 1`] = `
 ShallowWrapper {
   "length": 1,
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <Timeslot
     end="12:00"
-    split={30}
-    start="8:00"
-  />,
-  Symbol(enzyme.__renderer__): Object {
-    "batchedUpdates": [Function],
-    "getNode": [Function],
-    "render": [Function],
-    "simulateEvent": [Function],
-    "unmount": [Function],
-  },
-  Symbol(enzyme.__node__): Object {
-    "instance": null,
-    "key": undefined,
-    "nodeType": "host",
-    "props": Object {
-      "children": Array [
-        <TimeslotDrag
-          available={
-            Object {
-              "end": 720,
-              "start": 480,
-            }
-          }
-          breaks={
-            Array [
-              Object {
-                "end": 540,
-                "start": 510,
-              },
-            ]
-          }
-          end={720}
-          onChange={[Function]}
-          split={30}
-          start={480}
-        />,
-        <TimeslotInput
-          available={
-            Object {
-              "end": 720,
-              "start": 480,
-            }
-          }
-          breaks={
-            Array [
-              Object {
-                "end": 540,
-                "start": 510,
-              },
-            ]
-          }
-          onAddBreackClick={[Function]}
-          onChange={[Function]}
-        />,
-      ],
-      "style": Object {
-        "width": "300px",
-      },
-    },
-    "ref": null,
-    "rendered": Array [
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "class",
-        "props": Object {
-          "available": Object {
-            "end": 720,
-            "start": 480,
-          },
-          "breaks": Array [
-            Object {
-              "end": 540,
-              "start": 510,
-            },
-          ],
-          "end": 720,
-          "onChange": [Function],
-          "split": 30,
-          "start": 480,
-        },
-        "ref": null,
-        "rendered": null,
-        "type": [Function],
-      },
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "class",
-        "props": Object {
-          "available": Object {
-            "end": 720,
-            "start": 480,
-          },
-          "breaks": Array [
-            Object {
-              "end": 540,
-              "start": 510,
-            },
-          ],
-          "onAddBreackClick": [Function],
-          "onChange": [Function],
-        },
-        "ref": null,
-        "rendered": null,
-        "type": [Function],
-      },
-    ],
-    "type": "div",
-  },
-  Symbol(enzyme.__nodes__): Array [
-    Object {
-      "instance": null,
-      "key": undefined,
-      "nodeType": "host",
-      "props": Object {
-        "children": Array [
-          <TimeslotDrag
-            available={
-              Object {
-                "end": 720,
-                "start": 480,
-              }
-            }
-            breaks={
-              Array [
-                Object {
-                  "end": 540,
-                  "start": 510,
-                },
-              ]
-            }
-            end={720}
-            onChange={[Function]}
-            split={30}
-            start={480}
-          />,
-          <TimeslotInput
-            available={
-              Object {
-                "end": 720,
-                "start": 480,
-              }
-            }
-            breaks={
-              Array [
-                Object {
-                  "end": 540,
-                  "start": 510,
-                },
-              ]
-            }
-            onAddBreackClick={[Function]}
-            onChange={[Function]}
-          />,
-        ],
-        "style": Object {
-          "width": "300px",
-        },
-      },
-      "ref": null,
-      "rendered": Array [
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "class",
-          "props": Object {
-            "available": Object {
-              "end": 720,
-              "start": 480,
-            },
-            "breaks": Array [
-              Object {
-                "end": 540,
-                "start": 510,
-              },
-            ],
-            "end": 720,
-            "onChange": [Function],
-            "split": 30,
-            "start": 480,
-          },
-          "ref": null,
-          "rendered": null,
-          "type": [Function],
-        },
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "class",
-          "props": Object {
-            "available": Object {
-              "end": 720,
-              "start": 480,
-            },
-            "breaks": Array [
-              Object {
-                "end": 540,
-                "start": 510,
-              },
-            ],
-            "onAddBreackClick": [Function],
-            "onChange": [Function],
-          },
-          "ref": null,
-          "rendered": null,
-          "type": [Function],
-        },
-      ],
-      "type": "div",
-    },
-  ],
-  Symbol(enzyme.__options__): Object {
-    "adapter": ReactSixteenAdapter {
-      "options": Object {
-        "enableComponentDidUpdateOnSetState": true,
-      },
-    },
-  },
-}
-`;
-
-exports[`Timeslot adds breaks correctly 2`] = `
-ShallowWrapper {
-  "length": 1,
-  Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <Timeslot
-    end="12:00"
-    split={30}
-    start="8:00"
-  />,
-  Symbol(enzyme.__renderer__): Object {
-    "batchedUpdates": [Function],
-    "getNode": [Function],
-    "render": [Function],
-    "simulateEvent": [Function],
-    "unmount": [Function],
-  },
-  Symbol(enzyme.__node__): Object {
-    "instance": null,
-    "key": undefined,
-    "nodeType": "host",
-    "props": Object {
-      "children": Array [
-        <TimeslotDrag
-          available={
-            Object {
-              "end": 720,
-              "start": 480,
-            }
-          }
-          breaks={
-            Array [
-              Object {
-                "end": 540,
-                "start": 510,
-              },
-              Object {
-                "end": 600,
-                "start": 570,
-              },
-            ]
-          }
-          end={720}
-          onChange={[Function]}
-          split={30}
-          start={480}
-        />,
-        <TimeslotInput
-          available={
-            Object {
-              "end": 720,
-              "start": 480,
-            }
-          }
-          breaks={
-            Array [
-              Object {
-                "end": 540,
-                "start": 510,
-              },
-              Object {
-                "end": 600,
-                "start": 570,
-              },
-            ]
-          }
-          onAddBreackClick={[Function]}
-          onChange={[Function]}
-        />,
-      ],
-      "style": Object {
-        "width": "300px",
-      },
-    },
-    "ref": null,
-    "rendered": Array [
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "class",
-        "props": Object {
-          "available": Object {
-            "end": 720,
-            "start": 480,
-          },
-          "breaks": Array [
-            Object {
-              "end": 540,
-              "start": 510,
-            },
-            Object {
-              "end": 600,
-              "start": 570,
-            },
-          ],
-          "end": 720,
-          "onChange": [Function],
-          "split": 30,
-          "start": 480,
-        },
-        "ref": null,
-        "rendered": null,
-        "type": [Function],
-      },
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "class",
-        "props": Object {
-          "available": Object {
-            "end": 720,
-            "start": 480,
-          },
-          "breaks": Array [
-            Object {
-              "end": 540,
-              "start": 510,
-            },
-            Object {
-              "end": 600,
-              "start": 570,
-            },
-          ],
-          "onAddBreackClick": [Function],
-          "onChange": [Function],
-        },
-        "ref": null,
-        "rendered": null,
-        "type": [Function],
-      },
-    ],
-    "type": "div",
-  },
-  Symbol(enzyme.__nodes__): Array [
-    Object {
-      "instance": null,
-      "key": undefined,
-      "nodeType": "host",
-      "props": Object {
-        "children": Array [
-          <TimeslotDrag
-            available={
-              Object {
-                "end": 720,
-                "start": 480,
-              }
-            }
-            breaks={
-              Array [
-                Object {
-                  "end": 540,
-                  "start": 510,
-                },
-                Object {
-                  "end": 600,
-                  "start": 570,
-                },
-              ]
-            }
-            end={720}
-            onChange={[Function]}
-            split={30}
-            start={480}
-          />,
-          <TimeslotInput
-            available={
-              Object {
-                "end": 720,
-                "start": 480,
-              }
-            }
-            breaks={
-              Array [
-                Object {
-                  "end": 540,
-                  "start": 510,
-                },
-                Object {
-                  "end": 600,
-                  "start": 570,
-                },
-              ]
-            }
-            onAddBreackClick={[Function]}
-            onChange={[Function]}
-          />,
-        ],
-        "style": Object {
-          "width": "300px",
-        },
-      },
-      "ref": null,
-      "rendered": Array [
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "class",
-          "props": Object {
-            "available": Object {
-              "end": 720,
-              "start": 480,
-            },
-            "breaks": Array [
-              Object {
-                "end": 540,
-                "start": 510,
-              },
-              Object {
-                "end": 600,
-                "start": 570,
-              },
-            ],
-            "end": 720,
-            "onChange": [Function],
-            "split": 30,
-            "start": 480,
-          },
-          "ref": null,
-          "rendered": null,
-          "type": [Function],
-        },
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "class",
-          "props": Object {
-            "available": Object {
-              "end": 720,
-              "start": 480,
-            },
-            "breaks": Array [
-              Object {
-                "end": 540,
-                "start": 510,
-              },
-              Object {
-                "end": 600,
-                "start": 570,
-              },
-            ],
-            "onAddBreackClick": [Function],
-            "onChange": [Function],
-          },
-          "ref": null,
-          "rendered": null,
-          "type": [Function],
-        },
-      ],
-      "type": "div",
-    },
-  ],
-  Symbol(enzyme.__options__): Object {
-    "adapter": ReactSixteenAdapter {
-      "options": Object {
-        "enableComponentDidUpdateOnSetState": true,
-      },
-    },
-  },
-}
-`;
-
-exports[`Timeslot adds breaks correctly 3`] = `
-ShallowWrapper {
-  "length": 1,
-  Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <Timeslot
-    end="12:00"
-    split={30}
-    start="8:00"
-  />,
-  Symbol(enzyme.__renderer__): Object {
-    "batchedUpdates": [Function],
-    "getNode": [Function],
-    "render": [Function],
-    "simulateEvent": [Function],
-    "unmount": [Function],
-  },
-  Symbol(enzyme.__node__): Object {
-    "instance": null,
-    "key": undefined,
-    "nodeType": "host",
-    "props": Object {
-      "children": Array [
-        <TimeslotDrag
-          available={
-            Object {
-              "end": 720,
-              "start": 480,
-            }
-          }
-          breaks={
-            Array [
-              Object {
-                "end": 540,
-                "start": 510,
-              },
-              Object {
-                "end": 600,
-                "start": 570,
-              },
-              Object {
-                "end": 660,
-                "start": 630,
-              },
-              Object {
-                "end": 720,
-                "start": 690,
-              },
-              Object {
-                "end": 510,
-                "start": 480,
-              },
-            ]
-          }
-          end={720}
-          onChange={[Function]}
-          split={30}
-          start={480}
-        />,
-        <TimeslotInput
-          available={
-            Object {
-              "end": 720,
-              "start": 480,
-            }
-          }
-          breaks={
-            Array [
-              Object {
-                "end": 540,
-                "start": 510,
-              },
-              Object {
-                "end": 600,
-                "start": 570,
-              },
-              Object {
-                "end": 660,
-                "start": 630,
-              },
-              Object {
-                "end": 720,
-                "start": 690,
-              },
-              Object {
-                "end": 510,
-                "start": 480,
-              },
-            ]
-          }
-          onAddBreackClick={[Function]}
-          onChange={[Function]}
-        />,
-      ],
-      "style": Object {
-        "width": "300px",
-      },
-    },
-    "ref": null,
-    "rendered": Array [
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "class",
-        "props": Object {
-          "available": Object {
-            "end": 720,
-            "start": 480,
-          },
-          "breaks": Array [
-            Object {
-              "end": 540,
-              "start": 510,
-            },
-            Object {
-              "end": 600,
-              "start": 570,
-            },
-            Object {
-              "end": 660,
-              "start": 630,
-            },
-            Object {
-              "end": 720,
-              "start": 690,
-            },
-            Object {
-              "end": 510,
-              "start": 480,
-            },
-          ],
-          "end": 720,
-          "onChange": [Function],
-          "split": 30,
-          "start": 480,
-        },
-        "ref": null,
-        "rendered": null,
-        "type": [Function],
-      },
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "class",
-        "props": Object {
-          "available": Object {
-            "end": 720,
-            "start": 480,
-          },
-          "breaks": Array [
-            Object {
-              "end": 540,
-              "start": 510,
-            },
-            Object {
-              "end": 600,
-              "start": 570,
-            },
-            Object {
-              "end": 660,
-              "start": 630,
-            },
-            Object {
-              "end": 720,
-              "start": 690,
-            },
-            Object {
-              "end": 510,
-              "start": 480,
-            },
-          ],
-          "onAddBreackClick": [Function],
-          "onChange": [Function],
-        },
-        "ref": null,
-        "rendered": null,
-        "type": [Function],
-      },
-    ],
-    "type": "div",
-  },
-  Symbol(enzyme.__nodes__): Array [
-    Object {
-      "instance": null,
-      "key": undefined,
-      "nodeType": "host",
-      "props": Object {
-        "children": Array [
-          <TimeslotDrag
-            available={
-              Object {
-                "end": 720,
-                "start": 480,
-              }
-            }
-            breaks={
-              Array [
-                Object {
-                  "end": 540,
-                  "start": 510,
-                },
-                Object {
-                  "end": 600,
-                  "start": 570,
-                },
-                Object {
-                  "end": 660,
-                  "start": 630,
-                },
-                Object {
-                  "end": 720,
-                  "start": 690,
-                },
-                Object {
-                  "end": 510,
-                  "start": 480,
-                },
-              ]
-            }
-            end={720}
-            onChange={[Function]}
-            split={30}
-            start={480}
-          />,
-          <TimeslotInput
-            available={
-              Object {
-                "end": 720,
-                "start": 480,
-              }
-            }
-            breaks={
-              Array [
-                Object {
-                  "end": 540,
-                  "start": 510,
-                },
-                Object {
-                  "end": 600,
-                  "start": 570,
-                },
-                Object {
-                  "end": 660,
-                  "start": 630,
-                },
-                Object {
-                  "end": 720,
-                  "start": 690,
-                },
-                Object {
-                  "end": 510,
-                  "start": 480,
-                },
-              ]
-            }
-            onAddBreackClick={[Function]}
-            onChange={[Function]}
-          />,
-        ],
-        "style": Object {
-          "width": "300px",
-        },
-      },
-      "ref": null,
-      "rendered": Array [
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "class",
-          "props": Object {
-            "available": Object {
-              "end": 720,
-              "start": 480,
-            },
-            "breaks": Array [
-              Object {
-                "end": 540,
-                "start": 510,
-              },
-              Object {
-                "end": 600,
-                "start": 570,
-              },
-              Object {
-                "end": 660,
-                "start": 630,
-              },
-              Object {
-                "end": 720,
-                "start": 690,
-              },
-              Object {
-                "end": 510,
-                "start": 480,
-              },
-            ],
-            "end": 720,
-            "onChange": [Function],
-            "split": 30,
-            "start": 480,
-          },
-          "ref": null,
-          "rendered": null,
-          "type": [Function],
-        },
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "class",
-          "props": Object {
-            "available": Object {
-              "end": 720,
-              "start": 480,
-            },
-            "breaks": Array [
-              Object {
-                "end": 540,
-                "start": 510,
-              },
-              Object {
-                "end": 600,
-                "start": 570,
-              },
-              Object {
-                "end": 660,
-                "start": 630,
-              },
-              Object {
-                "end": 720,
-                "start": 690,
-              },
-              Object {
-                "end": 510,
-                "start": 480,
-              },
-            ],
-            "onAddBreackClick": [Function],
-            "onChange": [Function],
-          },
-          "ref": null,
-          "rendered": null,
-          "type": [Function],
-        },
-      ],
-      "type": "div",
-    },
-  ],
-  Symbol(enzyme.__options__): Object {
-    "adapter": ReactSixteenAdapter {
-      "options": Object {
-        "enableComponentDidUpdateOnSetState": true,
-      },
-    },
-  },
-}
-`;
-
-exports[`Timeslot handles change correctly handles availability change 1`] = `
-ShallowWrapper {
-  "length": 1,
-  Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <Timeslot
-    end="12:00"
-    split={20}
     start="10:00"
   />,
   Symbol(enzyme.__renderer__): Object {
@@ -869,25 +24,21 @@ ShallowWrapper {
         <TimeslotDrag
           available={
             Object {
-              "end": 720,
+              "end": 600,
               "start": 600,
             }
           }
-          breaks={Array []}
           end={720}
           onChange={[Function]}
-          split={20}
           start={600}
         />,
         <TimeslotInput
           available={
             Object {
-              "end": 720,
+              "end": 600,
               "start": 600,
             }
           }
-          breaks={Array []}
-          onAddBreackClick={[Function]}
           onChange={[Function]}
         />,
       ],
@@ -903,13 +54,11 @@ ShallowWrapper {
         "nodeType": "class",
         "props": Object {
           "available": Object {
-            "end": 720,
+            "end": 600,
             "start": 600,
           },
-          "breaks": Array [],
           "end": 720,
           "onChange": [Function],
-          "split": 20,
           "start": 600,
         },
         "ref": null,
@@ -922,11 +71,9 @@ ShallowWrapper {
         "nodeType": "class",
         "props": Object {
           "available": Object {
-            "end": 720,
+            "end": 600,
             "start": 600,
           },
-          "breaks": Array [],
-          "onAddBreackClick": [Function],
           "onChange": [Function],
         },
         "ref": null,
@@ -946,25 +93,21 @@ ShallowWrapper {
           <TimeslotDrag
             available={
               Object {
-                "end": 720,
+                "end": 600,
                 "start": 600,
               }
             }
-            breaks={Array []}
             end={720}
             onChange={[Function]}
-            split={20}
             start={600}
           />,
           <TimeslotInput
             available={
               Object {
-                "end": 720,
+                "end": 600,
                 "start": 600,
               }
             }
-            breaks={Array []}
-            onAddBreackClick={[Function]}
             onChange={[Function]}
           />,
         ],
@@ -980,13 +123,11 @@ ShallowWrapper {
           "nodeType": "class",
           "props": Object {
             "available": Object {
-              "end": 720,
+              "end": 600,
               "start": 600,
             },
-            "breaks": Array [],
             "end": 720,
             "onChange": [Function],
-            "split": 20,
             "start": 600,
           },
           "ref": null,
@@ -999,11 +140,9 @@ ShallowWrapper {
           "nodeType": "class",
           "props": Object {
             "available": Object {
-              "end": 720,
+              "end": 600,
               "start": 600,
             },
-            "breaks": Array [],
-            "onAddBreackClick": [Function],
             "onChange": [Function],
           },
           "ref": null,
@@ -1024,13 +163,12 @@ ShallowWrapper {
 }
 `;
 
-exports[`Timeslot handles change correctly handles availability change 2`] = `
+exports[`Timeslot handles change correctly 2`] = `
 ShallowWrapper {
   "length": 1,
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <Timeslot
     end="12:00"
-    split={20}
     start="10:00"
   />,
   Symbol(enzyme.__renderer__): Object {
@@ -1049,25 +187,21 @@ ShallowWrapper {
         <TimeslotDrag
           available={
             Object {
-              "end": 720,
+              "end": 600,
               "start": 600,
             }
           }
-          breaks={Array []}
           end={720}
           onChange={[Function]}
-          split={20}
           start={600}
         />,
         <TimeslotInput
           available={
             Object {
-              "end": 720,
+              "end": 600,
               "start": 600,
             }
           }
-          breaks={Array []}
-          onAddBreackClick={[Function]}
           onChange={[Function]}
         />,
       ],
@@ -1083,13 +217,11 @@ ShallowWrapper {
         "nodeType": "class",
         "props": Object {
           "available": Object {
-            "end": 720,
+            "end": 600,
             "start": 600,
           },
-          "breaks": Array [],
           "end": 720,
           "onChange": [Function],
-          "split": 20,
           "start": 600,
         },
         "ref": null,
@@ -1102,11 +234,9 @@ ShallowWrapper {
         "nodeType": "class",
         "props": Object {
           "available": Object {
-            "end": 720,
+            "end": 600,
             "start": 600,
           },
-          "breaks": Array [],
-          "onAddBreackClick": [Function],
           "onChange": [Function],
         },
         "ref": null,
@@ -1126,25 +256,21 @@ ShallowWrapper {
           <TimeslotDrag
             available={
               Object {
-                "end": 720,
+                "end": 600,
                 "start": 600,
               }
             }
-            breaks={Array []}
             end={720}
             onChange={[Function]}
-            split={20}
             start={600}
           />,
           <TimeslotInput
             available={
               Object {
-                "end": 720,
+                "end": 600,
                 "start": 600,
               }
             }
-            breaks={Array []}
-            onAddBreackClick={[Function]}
             onChange={[Function]}
           />,
         ],
@@ -1160,13 +286,11 @@ ShallowWrapper {
           "nodeType": "class",
           "props": Object {
             "available": Object {
-              "end": 720,
+              "end": 600,
               "start": 600,
             },
-            "breaks": Array [],
             "end": 720,
             "onChange": [Function],
-            "split": 20,
             "start": 600,
           },
           "ref": null,
@@ -1179,531 +303,9 @@ ShallowWrapper {
           "nodeType": "class",
           "props": Object {
             "available": Object {
-              "end": 720,
+              "end": 600,
               "start": 600,
             },
-            "breaks": Array [],
-            "onAddBreackClick": [Function],
-            "onChange": [Function],
-          },
-          "ref": null,
-          "rendered": null,
-          "type": [Function],
-        },
-      ],
-      "type": "div",
-    },
-  ],
-  Symbol(enzyme.__options__): Object {
-    "adapter": ReactSixteenAdapter {
-      "options": Object {
-        "enableComponentDidUpdateOnSetState": true,
-      },
-    },
-  },
-}
-`;
-
-exports[`Timeslot handles change correctly handles break change 1`] = `
-ShallowWrapper {
-  "length": 1,
-  Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <Timeslot
-    end="12:00"
-    split={20}
-    start="10:00"
-  />,
-  Symbol(enzyme.__renderer__): Object {
-    "batchedUpdates": [Function],
-    "getNode": [Function],
-    "render": [Function],
-    "simulateEvent": [Function],
-    "unmount": [Function],
-  },
-  Symbol(enzyme.__node__): Object {
-    "instance": null,
-    "key": undefined,
-    "nodeType": "host",
-    "props": Object {
-      "children": Array [
-        <TimeslotDrag
-          available={
-            Object {
-              "end": 720,
-              "start": 600,
-            }
-          }
-          breaks={
-            Array [
-              Object {
-                "end": 660,
-                "start": 600,
-              },
-              Object {
-                "end": 700,
-                "start": 680,
-              },
-            ]
-          }
-          end={720}
-          onChange={[Function]}
-          split={20}
-          start={600}
-        />,
-        <TimeslotInput
-          available={
-            Object {
-              "end": 720,
-              "start": 600,
-            }
-          }
-          breaks={
-            Array [
-              Object {
-                "end": 660,
-                "start": 600,
-              },
-              Object {
-                "end": 700,
-                "start": 680,
-              },
-            ]
-          }
-          onAddBreackClick={[Function]}
-          onChange={[Function]}
-        />,
-      ],
-      "style": Object {
-        "width": "300px",
-      },
-    },
-    "ref": null,
-    "rendered": Array [
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "class",
-        "props": Object {
-          "available": Object {
-            "end": 720,
-            "start": 600,
-          },
-          "breaks": Array [
-            Object {
-              "end": 660,
-              "start": 600,
-            },
-            Object {
-              "end": 700,
-              "start": 680,
-            },
-          ],
-          "end": 720,
-          "onChange": [Function],
-          "split": 20,
-          "start": 600,
-        },
-        "ref": null,
-        "rendered": null,
-        "type": [Function],
-      },
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "class",
-        "props": Object {
-          "available": Object {
-            "end": 720,
-            "start": 600,
-          },
-          "breaks": Array [
-            Object {
-              "end": 660,
-              "start": 600,
-            },
-            Object {
-              "end": 700,
-              "start": 680,
-            },
-          ],
-          "onAddBreackClick": [Function],
-          "onChange": [Function],
-        },
-        "ref": null,
-        "rendered": null,
-        "type": [Function],
-      },
-    ],
-    "type": "div",
-  },
-  Symbol(enzyme.__nodes__): Array [
-    Object {
-      "instance": null,
-      "key": undefined,
-      "nodeType": "host",
-      "props": Object {
-        "children": Array [
-          <TimeslotDrag
-            available={
-              Object {
-                "end": 720,
-                "start": 600,
-              }
-            }
-            breaks={
-              Array [
-                Object {
-                  "end": 660,
-                  "start": 600,
-                },
-                Object {
-                  "end": 700,
-                  "start": 680,
-                },
-              ]
-            }
-            end={720}
-            onChange={[Function]}
-            split={20}
-            start={600}
-          />,
-          <TimeslotInput
-            available={
-              Object {
-                "end": 720,
-                "start": 600,
-              }
-            }
-            breaks={
-              Array [
-                Object {
-                  "end": 660,
-                  "start": 600,
-                },
-                Object {
-                  "end": 700,
-                  "start": 680,
-                },
-              ]
-            }
-            onAddBreackClick={[Function]}
-            onChange={[Function]}
-          />,
-        ],
-        "style": Object {
-          "width": "300px",
-        },
-      },
-      "ref": null,
-      "rendered": Array [
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "class",
-          "props": Object {
-            "available": Object {
-              "end": 720,
-              "start": 600,
-            },
-            "breaks": Array [
-              Object {
-                "end": 660,
-                "start": 600,
-              },
-              Object {
-                "end": 700,
-                "start": 680,
-              },
-            ],
-            "end": 720,
-            "onChange": [Function],
-            "split": 20,
-            "start": 600,
-          },
-          "ref": null,
-          "rendered": null,
-          "type": [Function],
-        },
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "class",
-          "props": Object {
-            "available": Object {
-              "end": 720,
-              "start": 600,
-            },
-            "breaks": Array [
-              Object {
-                "end": 660,
-                "start": 600,
-              },
-              Object {
-                "end": 700,
-                "start": 680,
-              },
-            ],
-            "onAddBreackClick": [Function],
-            "onChange": [Function],
-          },
-          "ref": null,
-          "rendered": null,
-          "type": [Function],
-        },
-      ],
-      "type": "div",
-    },
-  ],
-  Symbol(enzyme.__options__): Object {
-    "adapter": ReactSixteenAdapter {
-      "options": Object {
-        "enableComponentDidUpdateOnSetState": true,
-      },
-    },
-  },
-}
-`;
-
-exports[`Timeslot handles change correctly handles break change 2`] = `
-ShallowWrapper {
-  "length": 1,
-  Symbol(enzyme.__root__): [Circular],
-  Symbol(enzyme.__unrendered__): <Timeslot
-    end="12:00"
-    split={20}
-    start="10:00"
-  />,
-  Symbol(enzyme.__renderer__): Object {
-    "batchedUpdates": [Function],
-    "getNode": [Function],
-    "render": [Function],
-    "simulateEvent": [Function],
-    "unmount": [Function],
-  },
-  Symbol(enzyme.__node__): Object {
-    "instance": null,
-    "key": undefined,
-    "nodeType": "host",
-    "props": Object {
-      "children": Array [
-        <TimeslotDrag
-          available={
-            Object {
-              "end": 720,
-              "start": 600,
-            }
-          }
-          breaks={
-            Array [
-              Object {
-                "end": 660,
-                "start": 600,
-              },
-              Object {
-                "end": 680,
-                "start": 680,
-              },
-            ]
-          }
-          end={720}
-          onChange={[Function]}
-          split={20}
-          start={600}
-        />,
-        <TimeslotInput
-          available={
-            Object {
-              "end": 720,
-              "start": 600,
-            }
-          }
-          breaks={
-            Array [
-              Object {
-                "end": 660,
-                "start": 600,
-              },
-              Object {
-                "end": 680,
-                "start": 680,
-              },
-            ]
-          }
-          onAddBreackClick={[Function]}
-          onChange={[Function]}
-        />,
-      ],
-      "style": Object {
-        "width": "300px",
-      },
-    },
-    "ref": null,
-    "rendered": Array [
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "class",
-        "props": Object {
-          "available": Object {
-            "end": 720,
-            "start": 600,
-          },
-          "breaks": Array [
-            Object {
-              "end": 660,
-              "start": 600,
-            },
-            Object {
-              "end": 680,
-              "start": 680,
-            },
-          ],
-          "end": 720,
-          "onChange": [Function],
-          "split": 20,
-          "start": 600,
-        },
-        "ref": null,
-        "rendered": null,
-        "type": [Function],
-      },
-      Object {
-        "instance": null,
-        "key": undefined,
-        "nodeType": "class",
-        "props": Object {
-          "available": Object {
-            "end": 720,
-            "start": 600,
-          },
-          "breaks": Array [
-            Object {
-              "end": 660,
-              "start": 600,
-            },
-            Object {
-              "end": 680,
-              "start": 680,
-            },
-          ],
-          "onAddBreackClick": [Function],
-          "onChange": [Function],
-        },
-        "ref": null,
-        "rendered": null,
-        "type": [Function],
-      },
-    ],
-    "type": "div",
-  },
-  Symbol(enzyme.__nodes__): Array [
-    Object {
-      "instance": null,
-      "key": undefined,
-      "nodeType": "host",
-      "props": Object {
-        "children": Array [
-          <TimeslotDrag
-            available={
-              Object {
-                "end": 720,
-                "start": 600,
-              }
-            }
-            breaks={
-              Array [
-                Object {
-                  "end": 660,
-                  "start": 600,
-                },
-                Object {
-                  "end": 680,
-                  "start": 680,
-                },
-              ]
-            }
-            end={720}
-            onChange={[Function]}
-            split={20}
-            start={600}
-          />,
-          <TimeslotInput
-            available={
-              Object {
-                "end": 720,
-                "start": 600,
-              }
-            }
-            breaks={
-              Array [
-                Object {
-                  "end": 660,
-                  "start": 600,
-                },
-                Object {
-                  "end": 680,
-                  "start": 680,
-                },
-              ]
-            }
-            onAddBreackClick={[Function]}
-            onChange={[Function]}
-          />,
-        ],
-        "style": Object {
-          "width": "300px",
-        },
-      },
-      "ref": null,
-      "rendered": Array [
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "class",
-          "props": Object {
-            "available": Object {
-              "end": 720,
-              "start": 600,
-            },
-            "breaks": Array [
-              Object {
-                "end": 660,
-                "start": 600,
-              },
-              Object {
-                "end": 680,
-                "start": 680,
-              },
-            ],
-            "end": 720,
-            "onChange": [Function],
-            "split": 20,
-            "start": 600,
-          },
-          "ref": null,
-          "rendered": null,
-          "type": [Function],
-        },
-        Object {
-          "instance": null,
-          "key": undefined,
-          "nodeType": "class",
-          "props": Object {
-            "available": Object {
-              "end": 720,
-              "start": 600,
-            },
-            "breaks": Array [
-              Object {
-                "end": 660,
-                "start": 600,
-              },
-              Object {
-                "end": 680,
-                "start": 680,
-              },
-            ],
-            "onAddBreackClick": [Function],
             "onChange": [Function],
           },
           "ref": null,
@@ -1736,7 +338,7 @@ exports[`Timeslot initializes correctly 1`] = `
     className="dragContainer"
     style={
       Object {
-        "height": 300,
+        "height": 400,
         "position": "relative",
       }
     }
@@ -1746,9 +348,9 @@ exports[`Timeslot initializes correctly 1`] = `
       style={
         Object {
           "background": "gray",
-          "height": 300,
+          "height": 400,
           "position": "absolute",
-          "top": 0,
+          "top": "0",
           "width": "100%",
         }
       }
@@ -1783,7 +385,7 @@ exports[`Timeslot initializes correctly 1`] = `
       style={
         Object {
           "background": "orange",
-          "height": 300,
+          "height": 0,
           "position": "absolute",
           "top": 0,
           "width": "100%",
@@ -1812,7 +414,7 @@ exports[`Timeslot initializes correctly 1`] = `
           }
         }
       >
-        12:00
+        8:00
       </p>
       <div
         draggable="true"
@@ -1822,11 +424,11 @@ exports[`Timeslot initializes correctly 1`] = `
           Object {
             "background": "black",
             "borderRadius": "100%",
-            "height": 10,
+            "height": 12,
             "left": "50%",
             "position": "absolute",
-            "top": -5,
-            "width": 10,
+            "top": -6,
+            "width": 12,
           }
         }
       />
@@ -1838,11 +440,11 @@ exports[`Timeslot initializes correctly 1`] = `
           Object {
             "background": "black",
             "borderRadius": "100%",
-            "bottom": -5,
-            "height": 10,
+            "bottom": -6,
+            "height": 12,
             "left": "50%",
             "position": "absolute",
-            "width": 10,
+            "width": 12,
           }
         }
       />
@@ -1897,59 +499,9 @@ exports[`Timeslot initializes correctly 1`] = `
             }
           }
           type="text"
-          value="12:00"
+          value="8:00"
         />
       </div>
-    </div>
-    <div
-      onClick={[Function]}
-      style={
-        Object {
-          "display": "table",
-        }
-      }
-    >
-      <div>
-        <svg
-          height="40"
-          width="40"
-        >
-          <circle
-            cx="20"
-            cy="20"
-            fill="transparent"
-            r="16"
-            stroke="black"
-            strokeWidth="3"
-          />
-          <line
-            stroke="black"
-            strokeWidth="4"
-            x1="20"
-            x2="20"
-            y1="10"
-            y2="30"
-          />
-          <line
-            stroke="black"
-            strokeWidth="4"
-            x1="10"
-            x2="30"
-            y1="20"
-            y2="20"
-          />
-        </svg>
-      </div>
-      <p
-        style={
-          Object {
-            "display": "table-cell",
-            "verticalAlign": "middle",
-          }
-        }
-      >
-        Add a break
-      </p>
     </div>
   </div>
 </div>
@@ -1967,7 +519,7 @@ exports[`Timeslot initializes correctly 2`] = `
     className="dragContainer"
     style={
       Object {
-        "height": 1250,
+        "height": 400,
         "position": "relative",
       }
     }
@@ -1977,9 +529,9 @@ exports[`Timeslot initializes correctly 2`] = `
       style={
         Object {
           "background": "gray",
-          "height": 1250,
+          "height": 400,
           "position": "absolute",
-          "top": 0,
+          "top": "0",
           "width": "100%",
         }
       }
@@ -2014,7 +566,7 @@ exports[`Timeslot initializes correctly 2`] = `
       style={
         Object {
           "background": "orange",
-          "height": 1250,
+          "height": 0,
           "position": "absolute",
           "top": 0,
           "width": "100%",
@@ -2043,7 +595,7 @@ exports[`Timeslot initializes correctly 2`] = `
           }
         }
       >
-        20:40
+        12:20
       </p>
       <div
         draggable="true"
@@ -2053,11 +605,11 @@ exports[`Timeslot initializes correctly 2`] = `
           Object {
             "background": "black",
             "borderRadius": "100%",
-            "height": 10,
+            "height": 12,
             "left": "50%",
             "position": "absolute",
-            "top": -5,
-            "width": 10,
+            "top": -6,
+            "width": 12,
           }
         }
       />
@@ -2069,11 +621,11 @@ exports[`Timeslot initializes correctly 2`] = `
           Object {
             "background": "black",
             "borderRadius": "100%",
-            "bottom": -5,
-            "height": 10,
+            "bottom": -6,
+            "height": 12,
             "left": "50%",
             "position": "absolute",
-            "width": 10,
+            "width": 12,
           }
         }
       />
@@ -2128,59 +680,9 @@ exports[`Timeslot initializes correctly 2`] = `
             }
           }
           type="text"
-          value="20:40"
+          value="12:20"
         />
       </div>
-    </div>
-    <div
-      onClick={[Function]}
-      style={
-        Object {
-          "display": "table",
-        }
-      }
-    >
-      <div>
-        <svg
-          height="40"
-          width="40"
-        >
-          <circle
-            cx="20"
-            cy="20"
-            fill="transparent"
-            r="16"
-            stroke="black"
-            strokeWidth="3"
-          />
-          <line
-            stroke="black"
-            strokeWidth="4"
-            x1="20"
-            x2="20"
-            y1="10"
-            y2="30"
-          />
-          <line
-            stroke="black"
-            strokeWidth="4"
-            x1="10"
-            x2="30"
-            y1="20"
-            y2="20"
-          />
-        </svg>
-      </div>
-      <p
-        style={
-          Object {
-            "display": "table-cell",
-            "verticalAlign": "middle",
-          }
-        }
-      >
-        Add a break
-      </p>
     </div>
   </div>
 </div>

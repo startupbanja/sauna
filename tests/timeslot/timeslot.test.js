@@ -29,65 +29,30 @@ test('parseTimeStamp works correctly', () => {
 });
 
 test('Timeslot initializes correctly', () => {
-    var timeslot = renderer.create(<Timeslot start="8:00" end="12:00" split={40} />);
+    var timeslot = renderer.create(<Timeslot start="8:00" end="12:00" />);
     let tree = timeslot.toJSON();
     expect(tree).toMatchSnapshot();
-    timeslot = renderer.create(<Timeslot start="12:20" end="20:40" split={20} />);
+    timeslot = renderer.create(<Timeslot start="12:20" end="20:40"/>);
     tree = timeslot.toJSON();
     expect(tree).toMatchSnapshot();
 });
 
-test('Timeslot adds breaks correctly', () => {
-    const timeslot = shallow(<Timeslot start="8:00" end="12:00" split={30} />);
-    timeslot.instance().handleBreakAddition();
-    expect(timeslot.state().breaks).toEqual([{start: 510, end: 540}]);
+test('Timeslot handles change correctly', () => {
+    const timeslot = shallow(<Timeslot start="10:00" end="12:00" />);
+    timeslot.instance().handleChange('start', -30);
+    expect(timeslot.state().available).toEqual({start: 600, end: 600});
+    timeslot.instance().handleChange('end', 130);
+    expect(timeslot.state().available).toEqual({start: 600, end: 720});
+    timeslot.instance().handleChange('start', 10);
+    expect(timeslot.state().available).toEqual({start: 610, end: 720});
+    timeslot.instance().handleChange("end", 20);
+    expect(timeslot.state().available).toEqual({start: 610, end: 720});
+    timeslot.instance().handleChange("end", -35);
+    expect(timeslot.state().available).toEqual({start: 610, end: 685});
     expect(timeslot).toMatchSnapshot();
-    timeslot.instance().handleBreakAddition();
-    expect(timeslot.state().breaks).toEqual([{start: 510, end: 540}, {start: 570, end: 600}]);
+    timeslot.instance().handleChange("end", 26);
+    expect(timeslot.state().available).toEqual({start: 610, end: 711});
+    timeslot.instance().handleChange("start", 130);
+    expect(timeslot.state().available).toEqual({start: 711, end: 711});
     expect(timeslot).toMatchSnapshot();
-    timeslot.instance().handleBreakAddition();
-    timeslot.instance().handleBreakAddition();
-    timeslot.instance().handleBreakAddition();
-    expect(timeslot.state().breaks).toEqual([{start: 510, end: 540}, {start: 570, end: 600}, {start: 630, end: 660}, {start: 690, end: 720}, {start: 480, end: 510}]);
-    expect(timeslot).toMatchSnapshot();
-});
-
-describe('Timeslot handles change correctly', () => {
-    test("handles availability change", () => {
-        const timeslot = shallow(<Timeslot start="10:00" end="12:00" split={20} />);
-        timeslot.instance().handleChange("available", 'start', -30);
-        expect(timeslot.state().available).toEqual({start: 600, end: 720});
-        timeslot.instance().handleChange("available", 'start', 10);
-        expect(timeslot.state().available).toEqual({start: 620, end: 720});
-        timeslot.instance().handleChange("available", 'start', 9);
-        expect(timeslot.state().available).toEqual({start: 620, end: 720});
-        timeslot.instance().handleChange("available", "end", 20);
-        expect(timeslot.state().available).toEqual({start: 620, end: 720});
-        timeslot.instance().handleChange("available", "end", -35);
-        expect(timeslot.state().available).toEqual({start: 620, end: 680});
-        expect(timeslot).toMatchSnapshot();
-        timeslot.instance().handleChange("available", "end", 26);
-        expect(timeslot.state().available).toEqual({start: 620, end: 700});
-        timeslot.instance().handleChange("available", "start", 100);
-        expect(timeslot.state().available).toEqual({start: 700, end: 700});
-        expect(timeslot).toMatchSnapshot();
-    });
-    test("handles break change", () => {
-        const timeslot = shallow(<Timeslot start="10:00" end="12:00" split={20} />);
-        timeslot.setState({breaks: [{start: 620, end: 640}, {start: 680, end: 700}]});
-        timeslot.instance().handleChange("break", "start", -11, 0);
-        expect(timeslot.state().breaks).toEqual([{start: 600, end: 640}, {start: 680, end: 700}]);
-        timeslot.instance().handleChange("break", "start", -11, 0);
-        expect(timeslot.state().breaks).toEqual([{start: 600, end: 640}, {start: 680, end: 700}]);
-        timeslot.instance().handleChange("break", "end", -10, 0);
-        expect(timeslot.state().breaks).toEqual([{start: 600, end: 640}, {start: 680, end: 700}]);
-        timeslot.instance().handleChange("break", "end", 27, 0);
-        expect(timeslot.state().breaks).toEqual([{start: 600, end: 660}, {start: 680, end: 700}]);
-        expect(timeslot).toMatchSnapshot();
-        timeslot.instance().handleChange("break", "end", 40, 1);
-        expect(timeslot.state().breaks).toEqual([{start: 600, end: 660}, {start: 680, end: 720}]);
-        timeslot.instance().handleChange("break", "end", -60, 1);
-        expect(timeslot.state().breaks).toEqual([{start: 600, end: 660}, {start: 680, end: 680}]);
-        expect(timeslot).toMatchSnapshot();
-    });
 });
