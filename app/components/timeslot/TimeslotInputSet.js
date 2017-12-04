@@ -31,7 +31,7 @@ export class TimeslotInputSet extends Component {
                                             onChange={this.handleStartChange}  />
                 </div>
                 <div style={styles.container}>
-                    <label>End"</label>
+                    <label>End</label>
                     <TimeslotInputElement   time={this.props.end} 
                                             onChange={this.handleEndChange} />
                 </div>
