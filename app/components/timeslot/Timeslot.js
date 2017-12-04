@@ -8,7 +8,7 @@ export class Timeslot extends React.Component {
         this.state = {
             available: {
                 start: parseMinutes(this.props.start),
-                end: parseMinutes(this.props.end)
+                end: parseMinutes(this.props.start)
             }
         };
         this.handleChange = this.handleChange.bind(this);
