@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {splitHeight} from './TimeslotDrag';
+import {totalHeight} from './TimeslotDrag';
 
 const styles = {
     dragBall: {
@@ -13,8 +13,8 @@ const styles = {
 export class TimeslotDragBall extends Component {
     constructor(props) {
         super(props);
-        Object.assign(styles.dragBall, {width: splitHeight * 0.2});
-        Object.assign(styles.dragBall, {height: splitHeight * 0.2});
+        Object.assign(styles.dragBall, {width: totalHeight * 0.03});
+        Object.assign(styles.dragBall, {height: totalHeight * 0.03});
         this.handleDrag = this.handleDrag.bind(this);
         this.handleTouchMove = this.handleTouchMove.bind(this);
     }
@@ -35,8 +35,8 @@ export class TimeslotDragBall extends Component {
 
     render() {
         var position = {};
-        if (this.props.position == "bottom") position = {bottom: -splitHeight * 0.1};
-        else if (this.props.position == "top") position = {top: -splitHeight * 0.1};
+        if (this.props.position == "bottom") position = {bottom: -totalHeight * 0.015};
+        else if (this.props.position == "top") position = {top: -totalHeight * 0.015};
         return (
             <div draggable="true" 
                     onDrag={this.handleDrag}

@@ -15,14 +15,13 @@ export class Timeslot extends React.Component {
     }
 
     handleChange(to, change) {
-        change = Math.round(change / this.props.split);
         var newStart = this.state.available.start;
         var newEnd = this.state.available.end;
         if (to === 'start') {
-            newStart = Math.min(Math.max(newStart + change * this.props.split, parseMinutes(this.props.start)), newEnd);
+            newStart = Math.round(Math.min(Math.max(newStart + change, parseMinutes(this.props.start)), newEnd));
         }
         else if (to === 'end') {
-            newEnd = Math.max(Math.min(newEnd + change * this.props.split, parseMinutes(this.props.end)), newStart);
+            newEnd = Math.round(Math.max(Math.min(newEnd + change, parseMinutes(this.props.end)), newStart));
         }
         var newObj = {available: {start: newStart, end: newEnd}};
         this.setState(newObj);
@@ -34,7 +33,6 @@ export class Timeslot extends React.Component {
                 <TimeslotDrag   start={parseMinutes(this.props.start)}
                                 end={parseMinutes(this.props.end)}
                                 available={this.state.available}
-                                split={this.props.split}
                                 onChange={this.handleChange} />
                 <TimeslotInput  available={this.state.available}
                                 onChange={this.handleChange} />

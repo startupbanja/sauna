@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { TimeslotDragable } from "./TimeslotDragable";
 
-export const splitHeight = 50;
+export const totalHeight = 400;
 
 export class TimeslotDrag extends Component {
     constructor(props) {
@@ -10,21 +10,21 @@ export class TimeslotDrag extends Component {
     }
     
     handleAvailableChange(to, change) {
-        this.props.onChange(to, change / splitHeight * this.props.split);
+        this.props.onChange(to, change / totalHeight * (this.props.end - this.props.start));
     }
 
     render() {
         const containerStyle = {
             position: 'relative',
-            height: (this.props.end - this.props.start) / this.props.split * splitHeight
+            height: totalHeight
         };
         return (
             <div className="dragContainer" style={containerStyle}> 
-                <TimeslotDragable start={this.props.start} end={this.props.end} split={this.props.split} startingSplit="0" type="break" dragable="false" />
+                <TimeslotDragable start={this.props.start} end={this.props.end} split={this.props.split} starting="0" ending={totalHeight} type="break" dragable="false" />
                 <TimeslotDragable   start={this.props.available.start} 
                                     end={this.props.available.end} 
-                                    split={this.props.split} 
-                                    startingSplit={(this.props.available.start - this.props.start) / this.props.split} 
+                                    starting={(this.props.available.start - this.props.start) * totalHeight / (this.props.end - this.props.start)} 
+                                    ending={(this.props.available.end - this.props.start) * totalHeight / (this.props.end - this.props.start)}
                                     onChange={this.handleAvailableChange}
                                     type="available" dragable="true" />
             </div>

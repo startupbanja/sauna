@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import {splitHeight} from './TimeslotDrag';
 import {TimeslotDragBall} from './TimeslotDragBall';
 import {parseTimeStamp} from './Timeslot';
 
@@ -28,8 +27,8 @@ export class TimeslotDragable extends Component {
         const containerStyle = {
             background: 'orange',
             position: 'absolute',
-            height: (this.props.end - this.props.start) / this.props.split * splitHeight,
-            top: this.props.startingSplit * splitHeight,
+            height: this.props.ending - this.props.starting,
+            top: this.props.starting,
             width: '100%'
         };
         if (this.props.type === "break") containerStyle.background = "gray";
