@@ -9,53 +9,23 @@ export class Timeslot extends React.Component {
             available: {
                 start: parseMinutes(this.props.start),
                 end: parseMinutes(this.props.end)
-            },
-            breaks: []
+            }
         };
         this.handleChange = this.handleChange.bind(this);
-        this.handleBreakAddition = this.handleBreakAddition.bind(this);
     }
 
-    handleChange(type, to, change, index = 0) {
+    handleChange(to, change) {
         change = Math.round(change / this.props.split);
-        let newStart;
-        if (type === "break") newStart = this.state.breaks[index].start;
-        else newStart = this.state.available.start;
-        let newEnd;
-        if (type === "break") newEnd = this.state.breaks[index].end;
-        else newEnd = this.state.available.end;
+        var newStart = this.state.available.start;
+        var newEnd = this.state.available.end;
         if (to === 'start') {
             newStart = Math.min(Math.max(newStart + change * this.props.split, parseMinutes(this.props.start)), newEnd);
         }
         else if (to === 'end') {
             newEnd = Math.max(Math.min(newEnd + change * this.props.split, parseMinutes(this.props.end)), newStart);
         }
-        let newObj;
-        if (type === "break") {
-            newObj = this.state.breaks;
-            newObj[index] = {start: newStart, end: newEnd};
-            newObj = {breaks: newObj};
-        } else {
-            newObj = {available: {start: newStart, end: newEnd}};
-        }
+        var newObj = {available: {start: newStart, end: newEnd}};
         this.setState(newObj);
-    }
-    handleBreakAddition() {
-        for (var i = this.state.available.start + this.props.split; i < this.state.available.end; i+=this.props.split) {
-            var notSuited = false;
-            for (var j = 0; j < this.state.breaks.length && !notSuited; j++) {
-                if (this.state.breaks[j].start <= i && this.state.breaks[j].end >= i) notSuited = true;
-            }
-            if (!notSuited) {
-                var newBreaks = this.state.breaks;
-                newBreaks.push({start: i, end: i + this.props.split});
-                this.setState({breaks: newBreaks});
-                return;
-            }
-        }
-        var newBreaks = this.state.breaks;
-        newBreaks.push({start: this.state.available.start, end: this.state.available.start + this.props.split});
-        this.setState({breaks: newBreaks});
     }
 
     render() {
@@ -64,13 +34,10 @@ export class Timeslot extends React.Component {
                 <TimeslotDrag   start={parseMinutes(this.props.start)}
                                 end={parseMinutes(this.props.end)}
                                 available={this.state.available}
-                                breaks={this.state.breaks}
                                 split={this.props.split}
                                 onChange={this.handleChange} />
                 <TimeslotInput  available={this.state.available}
-                                breaks={this.state.breaks}
-                                onChange={this.handleChange}
-                                onAddBreackClick={this.handleBreakAddition} />
+                                onChange={this.handleChange} />
             </div>
         );
     }

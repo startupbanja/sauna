@@ -23,17 +23,15 @@ export class TimeslotInputSet extends Component {
     }
     
     render() {
-        var breakText = "";
-        if (this.props.type === 'break') breakText = " of break";
         return (
             <div>
                 <div style={styles.container}>
-                    <label>{"Start" + breakText}</label>
+                    <label>Start</label>
                     <TimeslotInputElement   time={this.props.start} 
                                             onChange={this.handleStartChange}  />
                 </div>
                 <div style={styles.container}>
-                    <label>{"End" + breakText}</label>
+                    <label>End"</label>
                     <TimeslotInputElement   time={this.props.end} 
                                             onChange={this.handleEndChange} />
                 </div>
