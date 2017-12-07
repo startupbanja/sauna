@@ -1,23 +1,37 @@
 /* DATABASE CONNECTION */
 
-var sqlite = require('sqlite3').verbose();
-var db = new sqlite.Database(':memory:', test(err));
+const sqlite = require('sqlite3').verbose();
+const fs = require('fs');
 
-
-
-function test(err) {
-    if (err) {
-        return console.error(err.message);
-    }
-    console.log('Connected to the in-memory SQlite database.');
-}
-
-function test2(err) {
+const db = new sqlite.Database(':memory:', (err) => {
   if (err) {
     return console.error(err.message);
   }
-  console.log('Close the database connection.');
+  console.log('Connected to the in-memory SQlite database.');
+  return null;
+});
+
+function closeDatabase() {
+  db.close((err) => {
+    if (err) {
+      return console.error(err.message);
+    }
+    console.log('Database connection closed.');
+    return null;
+  });
 }
 
-/* CLOSE THE CONNECTION */
-db.close(test2(err));
+fs.readFile('./db_creation.sql', 'utf8', (err, data) => {
+  if (err) {
+    return console.log(err);
+  }
+  db.run(data, null, (err2) => {
+    if (err) {
+      return console.error(err2.message);
+    }
+    console.log('Data loaded');
+    closeDatabase();
+    return null;
+  });
+  return null;
+});
