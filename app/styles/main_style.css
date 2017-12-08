@@ -1,3 +1,14 @@
-button {
-  background-color: red;
+/*.menubar {
+  color: red;
+}
+.menubutton {
+  background-color: Black;
+  border: none;
+  text-align: center;
+  display: inline-block;
+}*/
+
+.menuListItem {
+  list-style-type: none;
+
 }
