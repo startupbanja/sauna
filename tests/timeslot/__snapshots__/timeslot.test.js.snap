@@ -1,0 +1,689 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Timeslot handles change correctly 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <Timeslot
+    end="12:00"
+    start="10:00"
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": Array [
+        <TimeslotDrag
+          available={
+            Object {
+              "end": 600,
+              "start": 600,
+            }
+          }
+          end={720}
+          onChange={[Function]}
+          start={600}
+        />,
+        <TimeslotInput
+          available={
+            Object {
+              "end": 600,
+              "start": 600,
+            }
+          }
+          onChange={[Function]}
+        />,
+      ],
+      "style": Object {
+        "width": "300px",
+      },
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "available": Object {
+            "end": 600,
+            "start": 600,
+          },
+          "end": 720,
+          "onChange": [Function],
+          "start": 600,
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "available": Object {
+            "end": 600,
+            "start": 600,
+          },
+          "onChange": [Function],
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+    ],
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <TimeslotDrag
+            available={
+              Object {
+                "end": 600,
+                "start": 600,
+              }
+            }
+            end={720}
+            onChange={[Function]}
+            start={600}
+          />,
+          <TimeslotInput
+            available={
+              Object {
+                "end": 600,
+                "start": 600,
+              }
+            }
+            onChange={[Function]}
+          />,
+        ],
+        "style": Object {
+          "width": "300px",
+        },
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "available": Object {
+              "end": 600,
+              "start": 600,
+            },
+            "end": 720,
+            "onChange": [Function],
+            "start": 600,
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "available": Object {
+              "end": 600,
+              "start": 600,
+            },
+            "onChange": [Function],
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+      ],
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`Timeslot handles change correctly 2`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <Timeslot
+    end="12:00"
+    start="10:00"
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": Array [
+        <TimeslotDrag
+          available={
+            Object {
+              "end": 600,
+              "start": 600,
+            }
+          }
+          end={720}
+          onChange={[Function]}
+          start={600}
+        />,
+        <TimeslotInput
+          available={
+            Object {
+              "end": 600,
+              "start": 600,
+            }
+          }
+          onChange={[Function]}
+        />,
+      ],
+      "style": Object {
+        "width": "300px",
+      },
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "available": Object {
+            "end": 600,
+            "start": 600,
+          },
+          "end": 720,
+          "onChange": [Function],
+          "start": 600,
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "available": Object {
+            "end": 600,
+            "start": 600,
+          },
+          "onChange": [Function],
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+    ],
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <TimeslotDrag
+            available={
+              Object {
+                "end": 600,
+                "start": 600,
+              }
+            }
+            end={720}
+            onChange={[Function]}
+            start={600}
+          />,
+          <TimeslotInput
+            available={
+              Object {
+                "end": 600,
+                "start": 600,
+              }
+            }
+            onChange={[Function]}
+          />,
+        ],
+        "style": Object {
+          "width": "300px",
+        },
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "available": Object {
+              "end": 600,
+              "start": 600,
+            },
+            "end": 720,
+            "onChange": [Function],
+            "start": 600,
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "available": Object {
+              "end": 600,
+              "start": 600,
+            },
+            "onChange": [Function],
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+      ],
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`Timeslot initializes correctly 1`] = `
+<div
+  style={
+    Object {
+      "width": "300px",
+    }
+  }
+>
+  <div
+    className="dragContainer"
+    style={
+      Object {
+        "height": 400,
+        "position": "relative",
+      }
+    }
+  >
+    <div
+      className="dragableContainer"
+      style={
+        Object {
+          "background": "gray",
+          "height": 400,
+          "position": "absolute",
+          "top": "0",
+          "width": "100%",
+        }
+      }
+    >
+      <p
+        style={
+          Object {
+            "margin": "0px",
+            "position": "absolute",
+            "right": "5px",
+            "top": "5px",
+          }
+        }
+      >
+        8:00
+      </p>
+      <p
+        style={
+          Object {
+            "bottom": "5px",
+            "margin": "0px",
+            "position": "absolute",
+            "right": "5px",
+          }
+        }
+      >
+        12:00
+      </p>
+    </div>
+    <div
+      className="dragableContainer"
+      style={
+        Object {
+          "background": "orange",
+          "height": 0,
+          "position": "absolute",
+          "top": 0,
+          "width": "100%",
+        }
+      }
+    >
+      <p
+        style={
+          Object {
+            "margin": "0px",
+            "position": "absolute",
+            "right": "5px",
+            "top": "5px",
+          }
+        }
+      >
+        8:00
+      </p>
+      <p
+        style={
+          Object {
+            "bottom": "5px",
+            "margin": "0px",
+            "position": "absolute",
+            "right": "5px",
+          }
+        }
+      >
+        8:00
+      </p>
+      <div
+        draggable="true"
+        onDrag={[Function]}
+        onTouchMove={[Function]}
+        style={
+          Object {
+            "background": "black",
+            "borderRadius": "100%",
+            "height": 12,
+            "left": "50%",
+            "position": "absolute",
+            "top": -6,
+            "width": 12,
+          }
+        }
+      />
+      <div
+        draggable="true"
+        onDrag={[Function]}
+        onTouchMove={[Function]}
+        style={
+          Object {
+            "background": "black",
+            "borderRadius": "100%",
+            "bottom": -6,
+            "height": 12,
+            "left": "50%",
+            "position": "absolute",
+            "width": 12,
+          }
+        }
+      />
+    </div>
+  </div>
+  <div>
+    <div>
+      <div
+        style={
+          Object {
+            "margin": "5px",
+            "position": "relative",
+          }
+        }
+      >
+        <label>
+          Start
+        </label>
+        <input
+          onBlur={[Function]}
+          onChange={[Function]}
+          onKeyPress={[Function]}
+          style={
+            Object {
+              "position": "absolute",
+              "right": 0,
+            }
+          }
+          type="text"
+          value="8:00"
+        />
+      </div>
+      <div
+        style={
+          Object {
+            "margin": "5px",
+            "position": "relative",
+          }
+        }
+      >
+        <label>
+          End
+        </label>
+        <input
+          onBlur={[Function]}
+          onChange={[Function]}
+          onKeyPress={[Function]}
+          style={
+            Object {
+              "position": "absolute",
+              "right": 0,
+            }
+          }
+          type="text"
+          value="8:00"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Timeslot initializes correctly 2`] = `
+<div
+  style={
+    Object {
+      "width": "300px",
+    }
+  }
+>
+  <div
+    className="dragContainer"
+    style={
+      Object {
+        "height": 400,
+        "position": "relative",
+      }
+    }
+  >
+    <div
+      className="dragableContainer"
+      style={
+        Object {
+          "background": "gray",
+          "height": 400,
+          "position": "absolute",
+          "top": "0",
+          "width": "100%",
+        }
+      }
+    >
+      <p
+        style={
+          Object {
+            "margin": "0px",
+            "position": "absolute",
+            "right": "5px",
+            "top": "5px",
+          }
+        }
+      >
+        12:20
+      </p>
+      <p
+        style={
+          Object {
+            "bottom": "5px",
+            "margin": "0px",
+            "position": "absolute",
+            "right": "5px",
+          }
+        }
+      >
+        20:40
+      </p>
+    </div>
+    <div
+      className="dragableContainer"
+      style={
+        Object {
+          "background": "orange",
+          "height": 0,
+          "position": "absolute",
+          "top": 0,
+          "width": "100%",
+        }
+      }
+    >
+      <p
+        style={
+          Object {
+            "margin": "0px",
+            "position": "absolute",
+            "right": "5px",
+            "top": "5px",
+          }
+        }
+      >
+        12:20
+      </p>
+      <p
+        style={
+          Object {
+            "bottom": "5px",
+            "margin": "0px",
+            "position": "absolute",
+            "right": "5px",
+          }
+        }
+      >
+        12:20
+      </p>
+      <div
+        draggable="true"
+        onDrag={[Function]}
+        onTouchMove={[Function]}
+        style={
+          Object {
+            "background": "black",
+            "borderRadius": "100%",
+            "height": 12,
+            "left": "50%",
+            "position": "absolute",
+            "top": -6,
+            "width": 12,
+          }
+        }
+      />
+      <div
+        draggable="true"
+        onDrag={[Function]}
+        onTouchMove={[Function]}
+        style={
+          Object {
+            "background": "black",
+            "borderRadius": "100%",
+            "bottom": -6,
+            "height": 12,
+            "left": "50%",
+            "position": "absolute",
+            "width": 12,
+          }
+        }
+      />
+    </div>
+  </div>
+  <div>
+    <div>
+      <div
+        style={
+          Object {
+            "margin": "5px",
+            "position": "relative",
+          }
+        }
+      >
+        <label>
+          Start
+        </label>
+        <input
+          onBlur={[Function]}
+          onChange={[Function]}
+          onKeyPress={[Function]}
+          style={
+            Object {
+              "position": "absolute",
+              "right": 0,
+            }
+          }
+          type="text"
+          value="12:20"
+        />
+      </div>
+      <div
+        style={
+          Object {
+            "margin": "5px",
+            "position": "relative",
+          }
+        }
+      >
+        <label>
+          End
+        </label>
+        <input
+          onBlur={[Function]}
+          onChange={[Function]}
+          onKeyPress={[Function]}
+          style={
+            Object {
+              "position": "absolute",
+              "right": 0,
+            }
+          }
+          type="text"
+          value="12:20"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
