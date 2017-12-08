@@ -350,7 +350,7 @@ exports[`Timeslot initializes correctly 1`] = `
           "background": "gray",
           "height": 400,
           "position": "absolute",
-          "top": "0",
+          "top": 0,
           "width": "100%",
         }
       }
@@ -531,7 +531,7 @@ exports[`Timeslot initializes correctly 2`] = `
           "background": "gray",
           "height": 400,
           "position": "absolute",
-          "top": "0",
+          "top": 0,
           "width": "100%",
         }
       }
