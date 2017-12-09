@@ -16,12 +16,14 @@ export default class Menu extends React.Component {
         </a>
       </li>
     ));
+    /* TODO: nav className=navbar-fixed-top tähän myöhemmin, ei
+    toimi placeholder kuvien kanssa */
     return (
-      <nav className="navbar navbar-toggleable-md navbar-inverse bg-inverse fixed-top menubar">
-        <div className="ads">
+      <nav className="navbar navbar-inverse menubar">
+        <div className="container-fluid">
           <div className="navbar-header">
             <button
-              className="navbar-toggle collapsed"
+              className="navbar-toggle collapsed pull-left"
               type="button"
               data-toggle="collapse"
               data-target="#navbarMenu"
@@ -37,15 +39,19 @@ export default class Menu extends React.Component {
             <a className="navbar-brand" href="#">Sauna</a>
           </div>
           <div className="navbar-collapse collapse" id="navbarMenu">
-            <ul className="navbar-nav mr-auto">
+            <ul className="nav navbar-nav">
               {list}
-              <a
-                className="menubutton nav-button"
-                href="#"
-                onClick={this.props.logoff}
-              >
+            </ul>
+            <ul className="nav navbar-nav navbar-right">
+              <li className="nav-item menuListItem">
+                <a
+                  className="nav-link"
+                  href="#"
+                  onClick={this.props.logoff}
+                >
                 Log Off
-              </a>
+                </a>
+              </li>
             </ul>
           </div>
         </div>
