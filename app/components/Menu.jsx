@@ -1,6 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from 'react';
 import PropTypes from 'prop-types';
+import $ from 'jquery';
 // import Button from './Button';
 
 export default class Menu extends React.Component {
@@ -10,7 +11,10 @@ export default class Menu extends React.Component {
         <a
           className="nav-link"
           href="#"
-          onClick={() => { this.props.onChange(name); }}
+          onClick={() => {
+            $('#navbarMenu').collapse('toggle');
+            this.props.onChange(name);
+          }}
         >
           {this.props.content[name]}
         </a>
@@ -27,7 +31,7 @@ export default class Menu extends React.Component {
               type="button"
               data-toggle="collapse"
               data-target="#navbarMenu"
-              aria-controls="navbarMenu"
+              aria-controls="#navbarMenu"
               aria-expanded="false"
               aria-label="Toggle navigation"
             >

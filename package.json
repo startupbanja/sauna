@@ -20,6 +20,7 @@
   "homepage": "https://github.com/teemukaaria/sauna#readme",
   "dependencies": {
     "bootstrap": "^3.3.7",
+    "jquery": "^3.2.1",
     "prop-types": "^15.6.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0"

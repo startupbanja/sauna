@@ -1,5 +1,7 @@
+/* eslint-disable */
 import React from 'react';
 import ReactDOM from 'react-dom';
+import bootstrap from 'bootstrap';
 import App from './components/App';
-// eslint-disable-next-line
 ReactDOM.render(<App />, document.getElementById('app'));
+/* eslint-enable */
