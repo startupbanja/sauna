@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import ScheduleItem from './ScheduleItem';
 
 const data = {
@@ -60,7 +60,7 @@ class ComingUpCarousel extends Component {
         className={className}
       />);
       indicators.push(indicator);
-      if (i > data.schedule.length - 3) continue;
+      if (i > data.schedule.length - 3) continue; // eslint-disable-line
       const scheduleItemContainers = [];
       for (let j = 0; j < 3; j += 1) {
         const scheduleItemData = data.schedule[i + j];

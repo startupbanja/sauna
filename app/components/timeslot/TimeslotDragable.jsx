@@ -10,7 +10,7 @@ const styles = {
     margin: '0px',
   },
 };
-export class TimeslotDragable extends Component {
+export default class TimeslotDragable extends Component {
   constructor(props) {
     super(props);
     this.handleEndChange = this.handleEndChange.bind(this);
@@ -52,7 +52,7 @@ export class TimeslotDragable extends Component {
 }
 
 TimeslotDragable.propTypes = {
-  onChange: PropTypes.func,
+  onChange: PropTypes.func, // eslint-disable-line
   ending: PropTypes.number.isRequired,
   starting: PropTypes.number.isRequired,
   dragable: PropTypes.bool.isRequired,

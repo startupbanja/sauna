@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { TimeslotInputElement } from './TimeslotInputElement';
-
+/* eslint jsx-a11y/label-has-for: "warn"
+*/
 const styles = {
   container: {
     position: 'relative',
@@ -9,7 +10,7 @@ const styles = {
   },
 };
 
-export class TimeslotInputSet extends Component {
+export default class TimeslotInputSet extends Component {
   constructor(props) {
     super(props);
     this.handleStartChange = this.handleStartChange.bind(this);

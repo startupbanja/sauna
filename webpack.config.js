@@ -1,3 +1,5 @@
+/* eslint-disable */
+var webpack = require('webpack');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const HTMLWebpackPluginConfig = new HTMLWebpackPlugin({
     template: __dirname + '/app/index.html',
@@ -23,5 +25,12 @@ module.exports = {
     resolve: {
         extensions: ['.js', '.jsx']
     },
-    plugins: [HTMLWebpackPluginConfig]
+    plugins: [
+      HTMLWebpackPluginConfig,
+      new webpack.ProvidePlugin({
+        $: 'jquery',
+        jQuery: 'jquery'
+      })
+    ]
 };
+/* eslint-enable */

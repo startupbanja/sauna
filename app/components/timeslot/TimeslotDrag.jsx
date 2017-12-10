@@ -40,7 +40,7 @@ export class TimeslotDrag extends Component {
           ending={ending}
           onChange={this.handleAvailableChange}
           type="available"
-          dragable={true}
+          dragable
         />
       </div>
     );

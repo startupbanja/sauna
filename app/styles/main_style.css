@@ -1,5 +1,10 @@
-button {
-  background-color: red;
+/*.menuListItem {
+  list-style-type: none;
+  font-size: larger;
+
+}*/
+#mainContainer {
+  padding-top: 50px;
 }
 
 body {

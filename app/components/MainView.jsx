@@ -36,7 +36,9 @@ export default class MainView extends React.Component {
           logoff={this.props.logoff}
           content={this.state.labels}
         />
-        {this.state.current}
+        <div id="mainContainer">
+          {this.state.current}
+        </div>
       </div>
     );
   }

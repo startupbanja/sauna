@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 import BlockHeader from './BlockHeader';
 import ComingUpCarousel from './ComingUpCarousel';
 

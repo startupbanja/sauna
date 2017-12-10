@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { TimeslotInputSet } from './TimeslotInputSet';
 
-export class TimeslotInput extends Component {
+export default class TimeslotInput extends Component {
   render() {
     return (
       <div>
