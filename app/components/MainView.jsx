@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Menu from './Menu';
-import Image from './Image';
 import pageContent from './pageContent';
+import LandingPage from './LandingPage';
 
 
 // This is the class that shows the whole page content after login
@@ -15,7 +15,7 @@ export default class MainView extends React.Component {
       current: (
         <div>
           <h1>Welcome, {this.props.user}</h1>
-          <Image src="../app/imgs/firstScreen1.png" />
+          <LandingPage />
         </div>),
       contentMap: pageContent.content,
       labels: pageContent.labels,
@@ -36,7 +36,9 @@ export default class MainView extends React.Component {
           logoff={this.props.logoff}
           content={this.state.labels}
         />
-        {this.state.current}
+        <div id="mainContainer">
+          {this.state.current}
+        </div>
       </div>
     );
   }

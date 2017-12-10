@@ -1,7 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Button from './Button';
-import TextField from './TextField';
 
 
 export default class LoginForm extends React.Component {
@@ -31,23 +29,38 @@ export default class LoginForm extends React.Component {
 
   render() {
     return (
-      <div>
-        <TextField
-          label="Username"
-          type="text"
-          onChange={this.usernameChanged}
-          value={this.state.nameInput}
-        />
-        <br />
-        <TextField
-          label="Password"
-          type="password"
-          onChange={this.pwdChanged}
-          value={this.state.pwdInput}
-        />
-        <br />
-        <Button onClick={this.handleSubmit} text="Log In" />
+      <div className="container">
+
+        <form className="form-signin">
+          <img
+            src="../app/imgs/Startupsaunatext_white.svg"
+            alt="Startup Sauna"
+          />
+          <input
+            className="form-control"
+            onChange={this.usernameChanged}
+            placeholder="Username"
+            required=""
+            type="email"
+          />
+          <input
+            className="form-control"
+            onChange={this.pwdChanged}
+            placeholder="Password"
+            required=""
+            type="password"
+          />
+          <button
+            className="btn btn-lg btn-primary btn-block"
+            onClick={this.handleSubmit}
+            type="submit"
+          >
+            Sign in
+          </button>
+        </form>
+
       </div>
+
     );
   }
 }
