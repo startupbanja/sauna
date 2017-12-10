@@ -1,9 +1,10 @@
 import React from 'react';
 import Image from './Image';
+import LandingPage from './LandingPage';
 
 
 const content = {
-  mainPage: <div><h1>Home</h1><Image src="../app/imgs/firstScreen1.png" /></div>,
+  mainPage: <div><h1>Home</h1><LandingPage /></div>,
   timetable: <div><h1>Timetable</h1><Image src="../app/imgs/userSchedule1.png" /></div>,
   userProfile: <div><h1>User Profile</h1><Image src="../app/imgs/userProfile1.png" /></div>,
   feedback: <div><h1>Feedback Forms</h1><Image src="../app/imgs/feedback2.png" /></div>,

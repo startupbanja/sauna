@@ -6,3 +6,8 @@
 #mainContainer {
   padding-top: 50px;
 }
+
+body {
+  background: black;
+  color: lightgray;
+}
