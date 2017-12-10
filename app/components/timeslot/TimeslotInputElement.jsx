@@ -15,7 +15,7 @@ function handleKeypress(event) {
   }
 }
 
-export class TimeslotInputElement extends Component {
+export default class TimeslotInputElement extends Component {
   constructor(props) {
     super(props);
     this.state = { editedValue: '' };

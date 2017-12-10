@@ -11,7 +11,7 @@ const styles = {
   },
 };
 
-export class TimeslotDragBall extends Component {
+export default class TimeslotDragBall extends Component {
   constructor(props) {
     super(props);
     Object.assign(styles.dragBall, { width: totalHeight * 0.03 });
