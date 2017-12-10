@@ -23,7 +23,7 @@ export default class Menu extends React.Component {
     /* TODO: nav className=navbar-fixed-top tähän myöhemmin, ei
     toimi placeholder kuvien kanssa */
     return (
-      <nav className="navbar navbar-inverse menubar">
+      <nav className="navbar navbar-inverse menubar navbar-fixed-top">
         <div className="container-fluid">
           <div className="navbar-header">
             <button
