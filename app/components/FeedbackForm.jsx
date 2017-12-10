@@ -16,15 +16,20 @@ export default class FeedbackForm extends React.Component {
   }
 
   handleChange(index, value) {
-    this.setState((oldState) => {
-      const newChoices = oldState.choices.slice(0);
-      newChoices[index] = value;
-      return { choices: newChoices };
-    });
+    // this.setState((oldState) => {
+    //   const newChoices = oldState.choices.slice(0);
+    //   newChoices[index] = value;
+    //   return { choices: newChoices };
+    // });
+    this.props.handleChange(index, value);
   }
 
   handleSubmit() {
     this.props.onSubmit(this.props.info.name, this.state.choices);
+  }
+
+  resetChoices() {
+    this.props.handleReset();
   }
 
 
@@ -65,4 +70,7 @@ FeedbackForm.propTypes = {
     question: PropTypes.string,
     options: PropTypes.arrayOf(PropTypes.number),
   })).isRequired,
+  handleReset: PropTypes.func.isRequired,
+  handleChange: PropTypes.func.isRequired,
+  // activeChoices: PropTypes.arrayOf(PropTypes.number).isRequired,
 };

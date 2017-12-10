@@ -5,7 +5,7 @@ jsx-a11y/label-has-for: "warn",
 jsx-a11y/click-events-have-key-events: "warn",
 jsx-a11y/no-noninteractive-element-to-interactive-role: "warn"
 */
-
+// TODO make the activeness of buttons change here, not based on bootstrap jquery stuff
 export default class RadioInput extends React.Component {
   render() {
     const choices = this.props.options.map(option =>

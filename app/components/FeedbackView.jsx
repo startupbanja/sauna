@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import $ from 'jquery';
 import FeedbackForm from './FeedbackForm';
 import Button from './Button';
 
@@ -15,8 +16,11 @@ export default class FeedbackView extends React.Component {
     this.state = {
       data: newData,
       index: 0,
+      choices: [],
     };
     this.changeForm = this.changeForm.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.resetChoices = this.resetChoices.bind(this);
   }
 
   getData() { //eslint-disable-line
@@ -30,16 +34,33 @@ export default class FeedbackView extends React.Component {
       image_src: '../app/imgs/coach_placeholder.png',
       description: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore.',
     },
+    {
+      name: 'Coach Three',
+      image_src: '../app/imgs/coach_placeholder.png',
+      description: 'asdasdasd',
+    },
     ];
   }
 
-  submitForm(id, data) { // eslint-disable-line
-    console.log(id + " " + JSON.stringify(data)); // eslint-disable-line
-    this.changeForm(1);
+  submitForm(id) { // eslint-disable-line
+    console.log(id + " " + JSON.stringify(this.state.choices)); // eslint-disable-line
+    this.changeForm(this.state.index + 1);
   }
 
-  changeForm(i) {
-    const newI = this.state.index + i;
+  handleChange(index, value) {
+    this.setState((oldState) => {
+      const newChoices = oldState.choices.slice(0);
+      newChoices[index] = value;
+      return { choices: newChoices };
+    });
+  }
+  resetChoices() {
+    this.setState({ choices: [] });
+    $('.radiobutton').removeClass('active');
+  }
+
+  changeForm(newI) {
+    this.resetChoices();
     if (newI < 0 || newI > this.state.data.length - 1) return false;
     this.setState({
       index: newI,
@@ -54,23 +75,25 @@ export default class FeedbackView extends React.Component {
           info={this.state.data[this.state.index]}
           onSubmit={this.submitForm}
           questions={this.props.questions}
+          handleChange={this.handleChange}
+          handleReset={this.resetChoices}
         />
         <div className="row">
           <div className="col-xs-5">
             <Button
               className="btn"
               text="prev"
-              onClick={() => { this.changeForm(-1); }}
+              onClick={() => { this.changeForm(this.state.index - 1); }}
             />
           </div>
           <div className="col-xs-4" >
-            <p>{`${this.state.index + 1} / ${this.props.questions.length}`}</p>
+            <p>{`${this.state.index + 1} / ${this.state.data.length}`}</p>
           </div>
           <div className="col-xs-3">
             <Button
               className="btn"
               text="next"
-              onClick={() => { this.changeForm(1); }}
+              onClick={() => { this.changeForm(this.state.index + 1); }}
             />
           </div>
 

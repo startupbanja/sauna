@@ -8,3 +8,7 @@
 .radiobutton.active {
   background-color: #E45336;
 }
+
+.cardImage {
+  max-height: 30vh;
+}
