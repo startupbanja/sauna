@@ -6,7 +6,7 @@ const styles = {
     position: 'absolute',
     display: 'inline',
     height: '4px',
-    background: 'black',
+    background: 'lightgray',
     width: '100%',
     top: '3px',
   },
@@ -14,7 +14,7 @@ const styles = {
     display: 'inline',
     height: '10px',
     width: '10px',
-    background: 'black',
+    background: 'lightgray',
     borderRadius: '100%',
   },
   border: {
@@ -29,7 +29,7 @@ const styles = {
   },
 };
 
-export class BlockHeader extends Component {
+class BlockHeader extends Component {
   render() {
     return (
       <div style={{ display: 'flex', alignItems: 'center' }} >
@@ -52,3 +52,5 @@ export class BlockHeader extends Component {
 BlockHeader.propTypes = {
   text: PropTypes.string.isRequired,
 };
+
+export default BlockHeader;

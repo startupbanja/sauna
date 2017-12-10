@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { ScheduleItem } from './ScheduleItem';
+import ScheduleItem from './ScheduleItem';
 
 const data = {
   schedule: [
@@ -9,7 +9,7 @@ const data = {
         start: new Date(2017, 11, 8, 14, 0),
         end: new Date(2017, 11, 8, 14, 20),
       },
-      coach: 'Coach 1',
+      coach: 'Ilkka Paananen',
       table: 'table 6',
     },
     {
@@ -45,7 +45,7 @@ const data = {
   ],
 };
 
-export class ComingUpCarousel extends Component {
+class ComingUpCarousel extends Component {
   render() {
     const indicators = [];
     const items = [];
@@ -86,7 +86,7 @@ export class ComingUpCarousel extends Component {
     }
 
     return (
-      <div className="carousel slide multi-item-carousel" id="theComingUpCarousel" style={{ background: 'blue' }}>
+      <div className="carousel slide multi-item-carousel" id="theComingUpCarousel">
         <link rel="stylesheet" type="text/css" href="app/styles/carousel_style.css" />
         <ol className="carousel-indicators">
           {indicators}
@@ -108,3 +108,5 @@ export class ComingUpCarousel extends Component {
 ComingUpCarousel.propTypes = {
 
 };
+
+export default ComingUpCarousel;

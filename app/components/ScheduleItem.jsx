@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-export class ScheduleItem extends Component {
+class ScheduleItem extends Component {
   render() {
     let coachText = 'break';
     if (this.props.type === 'meeting') coachText = this.props.coach;
     const startTime = this.props.time.start.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
     const endTime = this.props.time.end.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
     return (
-      <div style={{ background: 'red', height: 200 }}>
+      <div className="text-center schedule-item-container">
         <p>{coachText}</p>
         <p>{`${startTime} - ${endTime}`}</p>
         <p>{this.props.table}</p>
@@ -30,3 +30,5 @@ ScheduleItem.defaultProps = {
   coach: '',
   table: '',
 };
+
+export default ScheduleItem;

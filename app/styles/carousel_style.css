@@ -21,6 +21,54 @@
     transform: none !important;
   }
 }
-.multi-item-carousel .carouse-control.left, .multi-item-carousel .carouse-control.right {
+.multi-item-carousel .carousel-control.left, .multi-item-carousel .carousel-control.right {
   background-image: none;
+}
+
+.multi-item-carousel .carousel-indicators .active, .multi-item-carousel .carousel-indicators .active + li, .multi-item-carousel .carousel-indicators .active + li + li {
+  background-color: orange;
+  width: 12px;
+  height: 12px;
+  margin: 0px 1px;
+}
+
+.multi-item-carousel .carousel-indicators li {
+  background-color: darkgray;
+  border: black 0px solid;
+}
+
+.multi-item-carousel .carousel-indicators {
+  bottom: -40px;
+}
+
+.multi-item-carousel {
+  background: darkgray;
+  margin-bottom: 30px;
+  border-radius: 10px;
+}
+
+.multi-item-carousel .carousel-inner .schedule-item-container p {
+  font-size: 1.6em;
+  color: white;
+}
+
+.multi-item-carousel .carousel-inner .item > div {
+  padding: 0px;
+  margin: 5px 0px;
+}
+
+.multi-item-carousel .carousel-inner .item > div:nth-child(-n + 2)  {
+  border-right: white 4px solid;
+  padding-right: -2px;
+  margin-right: -2px;
+}
+.multi-item-carousel .carousel-inner .item > div:nth-child(n + 2)  {
+  border-left: white 4px solid;
+  padding-left: -2px;
+  margin-left: -2px;
+}
+
+.multi-item-carousel .carousel-inner .schedule-item-container p:first-of-type {
+  font-size: 2em;
+  color: orange;
 }
