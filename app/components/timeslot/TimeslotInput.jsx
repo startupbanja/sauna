@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { TimeslotInputSet } from './TimeslotInputSet';
+import TimeslotInputSet from './TimeslotInputSet';
 
-export default class TimeslotInput extends Component {
+class TimeslotInput extends Component {
   render() {
     return (
       <div>
@@ -24,3 +24,5 @@ TimeslotInput.propTypes = {
   }).isRequired,
   onChange: PropTypes.func.isRequired,
 };
+
+export default TimeslotInput;

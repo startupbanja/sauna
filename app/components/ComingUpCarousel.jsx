@@ -17,7 +17,7 @@ const data = {
         start: new Date(2017, 11, 8, 14, 20),
         end: new Date(2017, 11, 8, 14, 40),
       },
-      coach: 'Coach 2',
+      coach: 'Juha Ruohonen',
       table: 'table 5',
     },
     {
@@ -25,7 +25,7 @@ const data = {
         start: new Date(2017, 11, 8, 14, 40),
         end: new Date(2017, 11, 8, 15, 0),
       },
-      coach: 'Coach 3',
+      coach: 'Timo Ahopelto',
       table: 'table 5',
     },
     {
@@ -39,7 +39,7 @@ const data = {
         start: new Date(2017, 11, 8, 15, 20),
         end: new Date(2017, 11, 8, 15, 40),
       },
-      coach: 'Coach 4',
+      coach: 'Moaffak Ahmed',
       table: 'table 2',
     },
   ],

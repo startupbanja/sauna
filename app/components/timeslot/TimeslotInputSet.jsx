@@ -1,16 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { TimeslotInputElement } from './TimeslotInputElement';
+import TimeslotInputElement from './TimeslotInputElement';
 /* eslint jsx-a11y/label-has-for: "warn"
 */
-const styles = {
-  container: {
-    position: 'relative',
-    margin: '5px',
-  },
-};
 
-export default class TimeslotInputSet extends Component {
+class TimeslotInputSet extends Component {
   constructor(props) {
     super(props);
     this.handleStartChange = this.handleStartChange.bind(this);
@@ -26,22 +20,17 @@ export default class TimeslotInputSet extends Component {
 
   render() {
     return (
-      <div>
-        <div style={styles.container}>
-          <label>Start</label>
-          <TimeslotInputElement
-            id="start"
-            time={this.props.start}
-            onChange={this.handleStartChange}
-          />
-        </div>
-        <div style={styles.container}>
-          <label>End</label>
-          <TimeslotInputElement
-            time={this.props.end}
-            onChange={this.handleEndChange}
-          />
-        </div>
+      <div className="timeslot-input">
+        <TimeslotInputElement
+          id="start"
+          time={this.props.start}
+          onChange={this.handleStartChange}
+        />
+        <p>-</p>
+        <TimeslotInputElement
+          time={this.props.end}
+          onChange={this.handleEndChange}
+        />
       </div>
     );
   }
@@ -52,3 +41,5 @@ TimeslotInputSet.propTypes = {
   start: PropTypes.number.isRequired,
   end: PropTypes.number.isRequired,
 };
+
+export default TimeslotInputSet;
