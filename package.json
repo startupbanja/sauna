@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack",
     "start": "npm run eslint && webpack-dev-server",
-    "eslint": "./node_modules/eslint/bin/eslint.js --ext .jsx --ext .js app/",
+    "eslint": "node_modules/eslint/bin/eslint.js --ext .jsx --ext .js app/",
     "test": "jest"
   },
   "repository": {
