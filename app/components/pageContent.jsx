@@ -2,6 +2,7 @@ import React from 'react';
 import Image from './Image';
 import FeedbackView from './FeedbackView';
 import LandingPage from './LandingPage';
+import Timeslot from './timeslot/Timeslot';
 
 const feedbackQuestions = [
   {
@@ -22,6 +23,7 @@ const content = {
   userProfile: <div><h1>User Profile</h1><Image src="../app/imgs/userProfile1.png" /></div>,
   feedback: <div><FeedbackView questions={feedbackQuestions} /></div>,
   coaches: <div><h1>Coach Information</h1><Image src="../app/imgs/coaches1.png" /></div>,
+  timeslot: <div><Timeslot start="8:00" end="14:00" date={new Date(2017, 11, 24)} /></div>,
 };
 
 const labels = {
@@ -30,6 +32,7 @@ const labels = {
   userProfile: 'User Profile',
   feedback: 'Feedback',
   coaches: 'Coaches',
+  timeslot: 'Timeslot',
 };
 
 export default { content, labels };

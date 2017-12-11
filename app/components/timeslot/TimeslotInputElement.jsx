@@ -2,20 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { parseTimeStamp, parseMinutes } from './Timeslot';
 
-const styles = {
-  input: {
-    position: 'absolute',
-    right: 0,
-  },
-};
-
 function handleKeypress(event) {
   if (event.key === 'Enter') {
     event.target.blur();
   }
 }
 
-export default class TimeslotInputElement extends Component {
+class TimeslotInputElement extends Component {
   constructor(props) {
     super(props);
     this.state = { editedValue: '' };
@@ -41,7 +34,6 @@ export default class TimeslotInputElement extends Component {
         onKeyPress={handleKeypress}
         onChange={this.handleChange}
         onBlur={this.handleBlur}
-        style={styles.input}
         value={value}
         type="text"
       />
@@ -53,3 +45,5 @@ TimeslotInputElement.propTypes = {
   onChange: PropTypes.func.isRequired,
   time: PropTypes.number.isRequired,
 };
+
+export default TimeslotInputElement;

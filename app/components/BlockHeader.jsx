@@ -6,7 +6,7 @@ const styles = {
     position: 'absolute',
     display: 'inline',
     height: '4px',
-    background: 'lightgray',
+    background: '#A3A3A3',
     width: '100%',
     top: '3px',
   },
@@ -14,7 +14,7 @@ const styles = {
     display: 'inline',
     height: '10px',
     width: '10px',
-    background: 'lightgray',
+    background: '#A3A3A3',
     borderRadius: '100%',
   },
   border: {
