@@ -10,7 +10,7 @@ class ScheduleItem extends Component {
     return (
       <div className="text-center schedule-item-container">
         <p>{coachText}</p>
-        <p>{`${startTime} - ${endTime}`}</p>
+        <p>{`${startTime}`}<br />-<br />{`${endTime}`}</p>
         <p>{this.props.table}</p>
       </div>
     );

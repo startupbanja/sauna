@@ -1,16 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { TimeslotDragBall } from './TimeslotDragBall';
+import TimeslotDragBall from './TimeslotDragBall';
 import { parseTimeStamp } from './Timeslot';
 
-const styles = {
-  time: {
-    position: 'absolute',
-    right: '5px',
-    margin: '0px',
-  },
-};
-export default class TimeslotDragable extends Component {
+class TimeslotDragable extends Component {
   constructor(props) {
     super(props);
     this.handleEndChange = this.handleEndChange.bind(this);
@@ -26,14 +19,11 @@ export default class TimeslotDragable extends Component {
 
   render() {
     const containerStyle = {
-      background: 'orange',
-      position: 'absolute',
       height: this.props.ending - this.props.starting,
       top: this.props.starting,
-      width: '100%',
     };
-    if (this.props.dragable !== true) containerStyle.background = 'gray';
-    else containerStyle.background = 'orange';
+    let classes = 'dragableContainer';
+    if (this.props.dragable !== true) classes += ' unavailable';
     let topDragBall = null;
     let bottomDragBall = null;
     if (this.props.dragable === true) {
@@ -41,9 +31,9 @@ export default class TimeslotDragable extends Component {
       bottomDragBall = <TimeslotDragBall position="bottom" onChange={this.handleEndChange} />;
     }
     return (
-      <div className="dragableContainer" style={containerStyle}>
-        <p style={Object.assign({ top: '5px' }, styles.time)}>{parseTimeStamp(this.props.start)}</p>
-        <p style={Object.assign({ bottom: '5px' }, styles.time)}>{parseTimeStamp(this.props.end)}</p>
+      <div className={classes} style={containerStyle}>
+        <p style={{ top: '5px' }}>{parseTimeStamp(this.props.start)}</p>
+        <p style={{ bottom: '5px' }}>{parseTimeStamp(this.props.end)}</p>
         {topDragBall}
         {bottomDragBall}
       </div>
@@ -59,3 +49,5 @@ TimeslotDragable.propTypes = {
   start: PropTypes.number.isRequired,
   end: PropTypes.number.isRequired,
 };
+
+export default TimeslotDragable;
