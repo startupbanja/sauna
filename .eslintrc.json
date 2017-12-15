@@ -10,8 +10,9 @@
   },
   "extends": ["airbnb", "plugin:react/recommended"],
   "rules": {
-    "react/prefer-stateless-function": "warn",
-    "linebreak-style": "off"
+    "react/prefer-stateless-function": "off",
+    "linebreak-style": "off",
+    "no-unused-vars": "warn"
   },
   "env": {
     "browser": true,

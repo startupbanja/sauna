@@ -2,6 +2,7 @@ import React from 'react';
 import Image from './Image';
 import FeedbackView from './FeedbackView';
 import LandingPage from './LandingPage';
+import StartupList from './StartupList';
 
 const feedbackQuestions = [
   {
@@ -22,6 +23,7 @@ const content = {
   userProfile: <div><h1>User Profile</h1><Image src="../app/imgs/userProfile1.png" /></div>,
   feedback: <div><FeedbackView questions={feedbackQuestions} /></div>,
   coaches: <div><h1>Coach Information</h1><Image src="../app/imgs/coaches1.png" /></div>,
+  startups: <div><StartupList /></div>,
 };
 
 const labels = {
@@ -30,6 +32,7 @@ const labels = {
   userProfile: 'User Profile',
   feedback: 'Feedback',
   coaches: 'Coaches',
+  startups: 'Startups',
 };
 
 export default { content, labels };

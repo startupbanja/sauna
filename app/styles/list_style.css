@@ -1,0 +1,10 @@
+.list-avatar {
+  width: 35%;
+  height: auto;
+  display: block;
+  align: left;
+}
+
+.texty {
+  align: right;
+}

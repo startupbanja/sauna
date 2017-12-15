@@ -11,3 +11,7 @@ body {
   background: black;
   color: lightgray;
 }
+
+.fullwidth {
+  width: 100%;
+}
