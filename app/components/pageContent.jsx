@@ -35,7 +35,7 @@ const schedule = {
     name: 'Moaffak Ahmed',
     img: 'http://startupsauna.com/wp-content/uploads/2017/06/Moaffak-Ahmed.jpg',
     time: '11.40 - 12.00',
-  }]
+  }],
 };
 
 const content = {
