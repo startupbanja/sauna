@@ -1,0 +1,32 @@
+.list-avatar {
+  width: 35%;
+  height: auto;
+  display: block;
+  float: left;
+  border-bottom: 15px solid #252525;
+  margin-left: 10%;
+  margin-top: 5%;
+}
+
+.text-style {
+  font-size: 25px;
+  color: #A1A19A;
+  font-family: 'Vinkel,sans-serif';
+  float: right;
+}
+
+.name-style {
+  /*margin-left: 55px;*/
+  color: #E55234;
+  margin-top: 5%;
+  margin-left: 150px;
+  font-weight: bold;
+  /*font-family: 'Downward-fall';*/
+}
+
+.divider {
+  width: 80%;
+  height: 5px;
+  margin-left: 10%;
+  margin-right: 10%;
+}
