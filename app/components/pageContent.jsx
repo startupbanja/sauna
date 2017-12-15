@@ -2,7 +2,7 @@ import React from 'react';
 import Image from './Image';
 import FeedbackView from './FeedbackView';
 import LandingPage from './LandingPage';
-import StartupList from './StartupList';
+import UserList from './UserList';
 
 const feedbackQuestions = [
   {
@@ -17,13 +17,37 @@ const feedbackQuestions = [
   },
 ];
 
+const users = [
+  {
+    name: 'joku',
+    description: 'ehehe',
+    img: '../app/imgs/coach_placeholder.png',
+  },
+  {
+    name: 'joku muu',
+    description: 'iha cool dude',
+    img: '../app/imgs/coach_placeholder.png',
+  },
+  {
+    name: 'beibi corps',
+    description: 'ehehe',
+    img: '../app/imgs/feedback2.png',
+  },
+  {
+    name: 'wgatever',
+    description: 'yolo in corporate form',
+    img: '../app/imgs/coach_placeholder.png',
+  },
+];
+
+
 const content = {
   mainPage: <div><h1>Home</h1><LandingPage /></div>,
   timetable: <div><h1>Timetable</h1><Image src="../app/imgs/userSchedule1.png" /></div>,
   userProfile: <div><h1>User Profile</h1><Image src="../app/imgs/userProfile1.png" /></div>,
   feedback: <div><FeedbackView questions={feedbackQuestions} /></div>,
-  coaches: <div><h1>Coach Information</h1><Image src="../app/imgs/coaches1.png" /></div>,
-  startups: <div><StartupList /></div>,
+  coaches: <div><UserList users={users} type="Coaches" /></div>,
+  startups: <div><UserList users={users} type="Startups" /></div>,
 };
 
 const labels = {

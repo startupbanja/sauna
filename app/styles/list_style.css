@@ -1,10 +1,17 @@
 .list-avatar {
-  width: 35%;
-  height: auto;
-  display: block;
-  align: left;
+ width: 35%;
+ height: auto;
+ display: block;
+ float: left;
 }
 
-.texty {
-  align: right;
+.text-style {
+ font-size: 25px;
+ color: #A3A3A3 ;
+ font-family: 'Vinkel,sans-serif';
+ float: right;
+}
+
+.header {
+  color: #E45336;
 }
