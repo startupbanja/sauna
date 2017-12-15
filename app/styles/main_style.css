@@ -8,8 +8,12 @@
 }
 
 body {
-  background: black;
-  color: lightgray;
+  background: #252525;
+  color: #A3A3A3;
+}
+
+.fullWidth {
+  width: 100%;
 }
 
 .fullwidth {
