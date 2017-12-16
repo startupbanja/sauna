@@ -1,0 +1,87 @@
+
+.userImage {
+
+    max-height: 30vh;
+    float:left;
+    margin-right:3%;
+}
+
+.userInfoHeader {
+    clear:both;
+}
+
+#username {
+    color:#E55234;
+}
+
+.mainInfoSection:after {
+    clear:both;
+    content:"";
+    visibility:hidden;
+}
+
+.titles li{
+    list-style:none;
+}
+
+.profileLinks li, .crendentialsList li {
+    list-style: none;
+}
+
+.userDescription {
+    padding-top:3%;
+    border-top: .2em solid #676767;
+    color:#a3a3a3;
+    clear:left;
+}
+
+.credentials {
+    clear:both;
+}
+
+.credentials h3 { 
+    text-align:center;
+    border-top: 3px solid #333;
+    border-bottom: 3px solid #333;
+}
+
+.credentialCompany {
+    color:#E55234;
+}
+
+.credentialPosition {
+    color:#a3a3a3;
+    margin-left:2%;
+}
+
+.credentialPosition:before {
+    content:"> ";
+    margin-right:1%;
+}
+
+
+
+
+
+
+
+
+
+
+/* MEDIA QUERIES */
+
+@media screen and (min-device-width:780px){
+    .profileContainer {
+        position:relative;
+        width:80%;
+        left:10%;
+    }
+}
+
+@media screen and (max-device-width:780px) {
+     .userDescription {
+        position:relative;
+        width:80%;
+        left:10%;
+    }
+}

@@ -2,6 +2,7 @@ import React from 'react';
 import Image from './Image';
 import FeedbackView from './FeedbackView';
 import LandingPage from './LandingPage';
+import UserProfile from './UserProfile';
 
 const feedbackQuestions = [
   {
@@ -19,7 +20,7 @@ const feedbackQuestions = [
 const content = {
   mainPage: <div><h1>Home</h1><LandingPage /></div>,
   timetable: <div><h1>Timetable</h1><Image src="../app/imgs/userSchedule1.png" /></div>,
-  userProfile: <div><h1>User Profile</h1><Image src="../app/imgs/userProfile1.png" /></div>,
+  userProfile: <UserProfile />,
   feedback: <div><FeedbackView questions={feedbackQuestions} /></div>,
   coaches: <div><h1>Coach Information</h1><Image src="../app/imgs/coaches1.png" /></div>,
 };
