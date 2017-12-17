@@ -14,6 +14,10 @@
     color:#E55234;
 }
 
+.mainInfoSection {
+    vertical-align: middle;
+}
+
 .mainInfoSection:after {
     clear:both;
     content:"";
@@ -62,12 +66,6 @@
 
 
 
-
-
-
-
-
-
 /* MEDIA QUERIES */
 
 @media screen and (min-device-width:780px){
@@ -84,4 +82,8 @@
         width:80%;
         left:10%;
     }
+    
+    .profileLinks {
+    clear:left;
+}
 }
