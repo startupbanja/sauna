@@ -41,6 +41,7 @@
 
 .credentials {
     clear:both;
+    position:relative;
 }
 
 .credentials h3 { 
@@ -84,6 +85,11 @@
     }
     
     .profileLinks {
-    clear:left;
-}
+        clear:left;
+    }
+    
+    .credentials {
+        width:80%;
+        left:10%;
+    }
 }
