@@ -1,77 +1,51 @@
 import React from 'react';
-import BlockHeader from './BlockHeader';
-/* import PropTypes from 'prop-types'; */
+import PropTypes from 'prop-types';
+import ProfileCredentialList from './ProfileCredentialList';
+import ProfileInfoHeader from './ProfileInfoHeader';
 
+
+// React Component for a user's profile page.
 export default class UserProfile extends React.Component {
   render() {
     return (
       <div className="profileContainer">
-        <div className="userInfoHeader">
-          <img src="../app/imgs/coach_placeholder.png" alt="Username" className="userImage" />
-          <div className="mainInfoSection">
-            <h3 id="username">Sample User</h3>
-            <ul className="titles">
-              <li>Software Team 12</li>
-              <li>Developer</li>
-            </ul>
-          </div>
-        </div>
+        <ProfileInfoHeader
+          name={this.props.name}
+          imgSrc={this.props.imgSrc}
+          titles={this.props.titles}
+        />
         <ul className="profileLinks">
           <li>
-              LinkedIn: <a href="http://linkedin.com">linkedin.com</a>
+              LinkedIn: <a href={this.props.linkedIn}>linkedin.com</a>
           </li>
         </ul>
         <div className="userDescription">
           <p>
-           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-           Sed vehicula suscipit enim et faucibus.
-           Donec quis urna ut purus consequat viverra ultricies vel ex.
-           Quisque a risus diam. Mauris luctus nisl non nibh porta blandit.
-           Aenean nec vehicula enim, a rutrum neque.
-           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-           Donec imperdiet erat orci, at placerat odio volutpat quis.
-           Nulla sodales tellus sit amet nibh dapibus, eget bibendum urna dictum.
-           Quisque mauris risus, mattis et dui vel, aliquam pretium quam.
-           Integer bibendum efficitur mi, nec facilisis arcu feugiat id.
-           Mauris pellentesque accumsan velit ut tempor.
+            {this.props.description}
           </p>
         </div>
-        <div className="credentials">
-          <BlockHeader text="Credentials" />
-          <ul className="crendentialsList">
-            <li>
-              <dl>
-                <dt className="credentialCompany">Aalto University</dt>
-                <dd className="credentialPosition">Student</dd>
-              </dl>
-            </li>
-            <li>
-              <dl>
-                <dt className="credentialCompany">Aalto University</dt>
-                <dd className="credentialPosition">Course assistant</dd>
-              </dl>
-            </li>
-            <li>
-              <dl>
-                <dt className="credentialCompany">Company</dt>
-                <dd className="credentialPosition">Position</dd>
-              </dl>
-            </li>
-          </ul>
-        </div>
+        <ProfileCredentialList credentials={this.props.credentials} />
       </div>
     );
   }
 }
 
-/*
+
 UserProfile.propTypes = {
-  linkedIn: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  linkedIn: PropTypes.string,
   imgSrc: PropTypes.string,
-  // define required props and their types here
+  description: PropTypes.string,
+  titles: PropTypes.arrayOf(PropTypes.string),
+  credentials: PropTypes.arrayOf(PropTypes.shape({
+    company: PropTypes.string.isRequired,
+    position: PropTypes.string.isRequired,
+  })).isRequired,
 };
 
 UserProfile.defaultProps = {
-  imgSrc: 'something',
+  linkedIn: 'http://linkedin.com',
+  imgSrc: '../app/imgs/coach_placeholder.png',
+  description: 'Description is not available.',
+  titles: [],
 };
-*/

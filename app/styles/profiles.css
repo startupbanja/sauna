@@ -24,11 +24,7 @@
     visibility:hidden;
 }
 
-.titles li{
-    list-style:none;
-}
-
-.profileLinks li, .crendentialsList li {
+.titles li, .profileLinks li{
     list-style: none;
 }
 
@@ -42,6 +38,10 @@
 .credentials {
     clear:both;
     position:relative;
+}
+
+.credentialList {
+    list-style:none;
 }
 
 .credentials h3 { 

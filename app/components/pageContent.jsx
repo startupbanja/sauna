@@ -63,11 +63,39 @@ const users = [
   },
 ];
 
+// Template data for the User Profile.
+const profileInfo = {
+  name: 'Sample User',
+  description:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' +
+      'Sed vehicula suscipit enim et faucibus.' +
+      'Donec quis urna ut purus consequat viverra ultricies vel ex. ' +
+      'Quisque a risus diam. Mauris luctus nisl non nibh porta blandit. ' +
+      'Aenean nec vehicula enim, a rutrum neque.' +
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' +
+      'Donec imperdiet erat orci, at placerat odio volutpat quis. ' +
+      'Nulla sodales tellus sit amet nibh dapibus, eget bibendum urna dictum. ' +
+      'Quisque mauris risus, mattis et dui vel, aliquam pretium quam. ' +
+      'Integer bibendum efficitur mi, nec facilisis arcu feugiat id. ' +
+      'Mauris pellentesque accumsan velit ut tempor. ',
+  titles: ['Software Team 12', 'Developer'],
+  credentials: [
+    { company: 'Aalto University', position: 'Student' },
+    { company: 'Aalto University', position: 'Course assistant' },
+    { company: 'Company', position: 'Position' },
+  ],
+};
+
 
 const content = {
   mainPage: <div><h1>Home</h1><LandingPage /></div>,
   timetable: <UserSchedule schedule={schedule} />,
-  userProfile: <UserProfile />,
+  userProfile: <UserProfile
+    name={profileInfo.name}
+    description={profileInfo.description}
+    titles={profileInfo.titles}
+    credentials={profileInfo.credentials}
+  />,
   feedback: <div><FeedbackView questions={feedbackQuestions} /></div>,
   coaches: <div><UserList users={users} type="Coaches" /></div>,
   startups: <div><UserList users={users} type="Startups" /></div>,
