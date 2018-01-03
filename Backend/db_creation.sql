@@ -30,7 +30,7 @@ CREATE TABLE Profiles(
 
 CREATE TABLE Credentials(
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    user_id INT¨NOT NULL,
+    user_id INT NOT NULL,
     company VARCHAR(20) NOT NULL,
     title VARCHAR(30) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES Users(id)
