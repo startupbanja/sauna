@@ -1,8 +1,8 @@
 -- TIETOKANNAN JA TAULUJEN LUONTIKYSELYT
 
-CREATE DATABASE sauna_db;
+-- CREATE DATABASE sauna_db;
 
-USE sauna_db;
+-- USE sauna_db;
 
 CREATE TABLE Batches(
     id INT PRIMARY KEY
@@ -30,7 +30,7 @@ CREATE TABLE Profiles(
 
 CREATE TABLE Credentials(
 	id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    user_id INT¨NOT NULL,
+    user_id INT NOT NULL,
     company VARCHAR(20) NOT NULL,
     title VARCHAR(30) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES Users(id)
@@ -56,7 +56,7 @@ CREATE TABLE Meetings(
     FOREIGN KEY (startup_id) REFERENCES Users(id)
 );
 
--- TESTIDATA
+TESTIDATA
 
 INSERT INTO Batches VALUES (0), (1);
 
@@ -73,7 +73,7 @@ INSERT INTO Users (type, username, password, batch, active) VALUES
 	(2, 'startup10', 'password', 1, TRUE),
 	(2, 'startup11', 'password', 1, TRUE),
 	(2, 'startup12', 'password', 1, TRUE),
-	
+
 	(1, 'coach1', 'password', 0, TRUE),
 	(1, 'coach2', 'password', 0, TRUE),
 	(1, 'coach3', 'password', 0, TRUE),
@@ -143,7 +143,7 @@ INSERT INTO Users (type, username, password, batch, active) VALUES
 	(1, 'coach67', 'password', 0, TRUE),
 	(1, 'coach68', 'password', 0, TRUE),
 	(1, 'coach69', 'password', 0, TRUE),
-	
+
 	(0, 'admin', 'admin', 0, TRUE);
 
 INSERT INTO Profiles (user_id, name, description, company, email, linkedin) VALUES
@@ -545,7 +545,7 @@ INSERT INTO Meetings (coach_id, startup_id, datetime, duration, coach_rating, st
 	(79, 10, '2017-10-10 12:00:00', 40, 0, 0),
 	(79, 11, '2017-10-10 12:00:00', 40, 0, 3),
 	(79, 12, '2017-10-10 12:00:00', 40, 0, 0);
-	
+
 INSERT INTO Credentials (user_id, company, title) VALUES
 	(13, 'Company', 'Title'),
 	(14, 'Company', 'Title'),
