@@ -29,7 +29,7 @@ CREATE TABLE Profiles(
 );
 
 CREATE TABLE Credentials(
-	id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     user_id INT NOT NULL,
     company VARCHAR(20) NOT NULL,
     title VARCHAR(30) NOT NULL,
@@ -61,7 +61,7 @@ CREATE TABLE Meetings(
 INSERT INTO Batches VALUES (0), (1);
 
 INSERT INTO Users (type, username, password, batch, active) VALUES
-    (2, 'startup1', 'password', 1, TRUE),
+	(2, 'startup1', 'password', 1, TRUE),
 	(2, 'startup2', 'password', 1, TRUE),
 	(2, 'startup3', 'password', 1, TRUE),
 	(2, 'startup4', 'password', 1, TRUE),
