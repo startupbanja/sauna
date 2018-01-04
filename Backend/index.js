@@ -24,6 +24,9 @@ app.get('/api', (req, res) => {
     database.getUsers(1, 0, (data) => {
       res.json(data);
     });
+    // database.testApi((data) => {
+    //   res.json(data);
+    // });
   }
 });
 
