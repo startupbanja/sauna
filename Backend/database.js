@@ -21,15 +21,31 @@ function closeDatabase(callback) {
   });
 }
 const userQuery = `
-SELECT name, description, email, linkedin, company, title
+SELECT name, description, email, linkedin, Credentials.company, Credentials.title
 FROM Profiles
 LEFT OUTER JOIN Credentials ON Profiles.user_id = Credentials.user_id
-WHERE user_id IN (
+WHERE Profiles.user_id IN (
   SELECT id
   FROM USERS
-  WHERE type = ? AND batch = ? AND active = true
-);
+  WHERE type = ? AND batch = ? AND active = 1
+);`;
+
+const testQ = `
+SELECT *
+FROM Users;
 `;
+
+function testApi(callback) {
+  const res = {};
+  db.all(testQ, [], (err, rows) => {
+    if (err) {
+      throw err;
+    }
+    res.data = rows;
+    return callback(res);
+  })
+}
+
 function getUsers(type, batch, callback) {
   const users = {};
   // (sql, params, callback for each row, callback on complete)
@@ -51,28 +67,36 @@ function getUsers(type, batch, callback) {
     return null;
   }, (err) => {
     if (err) {
-      return console.error(err.message);
+      // return console.error(err.message);
+      throw err
     }
-    callback(users);
-    return null;
+    return callback(users);
   });
 }
 
 
-fs.readFile('./db_creation.sql', 'utf8', (err, data) => {
+fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
   if (err) {
     return console.log(err);
   }
+  // split data into statements
+  const arr = data.split(';');
+
+  // ensure it is running in serialized mode
   db.serialize(() => {
-    db.run(data, [], (err2) => {
-      if (err2) {
-        // return console.error(err2.message);
-        throw err2;
+    arr.forEach((statement) => {
+      if (statement.trim()) {
+        db.run(statement, [], (err2) => {
+          if (err2) {
+            // return console.error(err2.message);
+            throw err2;
+          }
+          // closeDatabase();
+          return null;
+        });
       }
-      console.log('Data loaded');
-      // closeDatabase();
-      return null;
     });
+    console.log('Data loaded');
   });
   return null;
 });
@@ -81,6 +105,7 @@ fs.readFile('./db_creation.sql', 'utf8', (err, data) => {
 module.exports = {
   closeDatabase,
   getUsers,
+  testApi,
 };
 // exports.close = closeDatabase;
 // exports.db = db;
