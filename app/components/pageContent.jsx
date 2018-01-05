@@ -6,11 +6,8 @@ import LandingPage from './LandingPage';
 import UserProfilePage from './UserProfilePage';
 import UserSchedule from './UserSchedule';
 import UserList from './UserList';
-<<<<<<< bc31e9f42047325332f22dd366d17a58107df2bc
 import App from './App';
-=======
 import AdminSchedules from './AdminSchedules';
->>>>>>> Fixed syntax errors in pageContent.jsx
 
 const feedbackQuestions = {
   coach: [{
@@ -179,7 +176,6 @@ const testSchedule = [
 
 /* const adminContent = {
   mainPage: <div><h1>Home</h1><LandingPage /></div>,
-<<<<<<< bc31e9f42047325332f22dd366d17a58107df2bc
   coaches: <div><UserList type="Coaches" /></div>,
   startups: <div><UserList type="Startups" /></div>,
 }; */
@@ -206,14 +202,6 @@ const adminLabels = {
   '/main': 'Home',
   '/coaches': 'Coaches',
   '/startups': 'Startups',
-=======
-  adminSchedules: <AdminSchedules coachSchedules={testSchedule} />,
-};
-
-const adminLabels = {
-  mainPage: 'Home',
-  adminSchedules: 'Schedules',
->>>>>>> Fixed syntax errors in pageContent.jsx
 };
 // TODO change this to something better later
 function getContent(userType) {
@@ -223,7 +211,6 @@ function getContent(userType) {
   return { content: userContent, labels: userLabels };
 }
 
-<<<<<<< bc31e9f42047325332f22dd366d17a58107df2bc
 function fetchData(path, methodType, params) {
   const paramsString = Object.keys(params).map(x => `${x}=${params[x]}`).join('&');
   let query = path;
@@ -252,6 +239,3 @@ function fetchData(path, methodType, params) {
 }
 
 export default { getContent, userContent, fetchData };
-=======
-export default { getContent, userContent };
->>>>>>> Fixed syntax errors in pageContent.jsx
