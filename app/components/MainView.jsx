@@ -12,7 +12,6 @@ export default class MainView extends React.Component {
     super(props);
     this.changeContent = this.changeContent.bind(this);
     const content = pageContent.getContent(this.props.userType);
-    console.log(content);
     this.state = {
       current: (
         <div>

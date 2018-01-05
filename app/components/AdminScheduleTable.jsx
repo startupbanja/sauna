@@ -12,13 +12,13 @@ export default class AdminScheduleTable extends React.Component {
       ));
       return (
         <tr key={meeting.coachName} >
-          <td>{meeting.coachName}</td>{meetings}
+          <td className="firstColumnCell">{meeting.coachName}</td>{meetings}
         </tr>
       );
     }
 
     // Handles the case where schedules are not available.
-    if (this.props.coachSchedules.length === 0) {
+    if (this.props.schedules.length === 0) {
       return (
         <div>
           <h3>No schedules available for coaches. </h3>
@@ -26,16 +26,16 @@ export default class AdminScheduleTable extends React.Component {
     }
     // Handles the case where schedules are available.
     return (
-      <table>
+      <table className="table adminTable">
         <tbody>
-          {this.props.coachSchedules.map(x => createRow(x))}
+          {this.props.schedules.map(x => createRow(x))}
         </tbody>
       </table>);
   }
 }
 
 AdminScheduleTable.propTypes = {
-  coachSchedules: PropTypes.arrayOf(PropTypes.shape({
+  schedules: PropTypes.arrayOf(PropTypes.shape({
     coachName: PropTypes.string.isRequired,
     startUps: PropTypes.arrayOf(PropTypes.shape({
       startupName: PropTypes.string,

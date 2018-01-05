@@ -1,0 +1,19 @@
+.adminViewHeader {
+  background:#E55234;
+  color:white;
+  text-align:center;
+}
+
+.adminTable td.firstColumnCell {
+  background:#A3A3A3;
+}
+
+.adminTable td {
+  color:white;
+  background:#E55234;
+  border: 2px solid black;
+}
+
+.adminTable, .adminTable tr {
+  border: 1px solid black;
+}

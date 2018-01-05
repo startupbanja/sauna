@@ -153,7 +153,7 @@ const testSchedule = [
 
 const adminContent = {
   mainPage: <div><h1>Home</h1><LandingPage /></div>,
-  adminSchedules: <AdminSchedules coachSchedules={testSchedule} />,
+  adminSchedules: <AdminSchedules schedules={testSchedule} />,
 };
 
 const adminLabels = {
