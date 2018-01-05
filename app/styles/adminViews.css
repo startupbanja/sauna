@@ -4,16 +4,37 @@
   text-align:center;
 }
 
-.adminTable td.firstColumnCell {
+#adminTable td.firstColumnCell {
   background:#A3A3A3;
+  text-align:center;
+  vertical-align: middle;
 }
 
-.adminTable td {
+#adminTable td {
   color:white;
   background:#E55234;
   border: 2px solid black;
+  text-align: center;
 }
 
-.adminTable, .adminTable tr {
+#adminTable, #adminTable tr {
   border: 1px solid black;
+}
+
+.table>tbody>tr>td {
+  border-top:0;
+}
+
+#adminScheduleNav li.active > a {
+  background:#E55234;
+  color:white;
+}
+#adminScheduleNav li > a{
+  background:#A3A3A3;
+  color:#252525;
+}
+
+
+#adminScheduleNav li {
+  background:#252525;
 }
