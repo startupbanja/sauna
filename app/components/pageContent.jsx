@@ -87,7 +87,7 @@ const profileInfo = {
 };
 
 
-const content = {
+const userContent = {
   mainPage: <div><h1>Home</h1><LandingPage /></div>,
   timetable: <UserSchedule schedule={schedule} />,
   userProfile: <UserProfile
@@ -101,7 +101,7 @@ const content = {
   startups: <div><UserList users={users} type="Startups" /></div>,
 };
 
-const labels = {
+const userLabels = {
   mainPage: 'Home',
   timetable: 'Timetable',
   userProfile: 'User Profile',
@@ -110,4 +110,19 @@ const labels = {
   startups: 'Startups',
 };
 
-export default { content, labels };
+const adminContent = {
+  mainPage: <div><h1>Home</h1><LandingPage /></div>,
+};
+
+const adminLabels = {
+  mainPage: 'Home',
+};
+// TODO change this to something better later
+function getContent(userType) {
+  if (userType === 'admin') {
+    return { content: adminContent, labels: adminLabels };
+  }
+  return { content: userContent, labels: userLabels };
+}
+
+export default { getContent, userContent}

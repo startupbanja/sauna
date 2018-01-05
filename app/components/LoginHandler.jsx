@@ -1,7 +1,11 @@
 
 export default function handle(input) {
+  const res = {};
+  res.name = input.name;
   if (input.name === 'admin') {
-    return 'admin';
+    res.type = 'admin';
+  } else {
+    res.type = 'user';
   }
-  return 'user';
+  return res;
 }
