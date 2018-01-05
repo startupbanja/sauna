@@ -3,20 +3,20 @@ import PropTypes from 'prop-types';
 
 // React Component for the table in the admin schedule.
 export default class AdminScheduleTable extends React.Component {
-  // Creates a single row of the schedule table.
-  static createRow(meeting) {
-    const meetings = meeting.startUps.map(x => (
-      <td key={x}>{x.startupName} {x.time}</td>
-    ));
-    return (
-      <tr>
-        <td>{meeting.coachName}</td>{meetings}
-      </tr>
-    );
-  }
-
   // The traditional render method.
   render() {
+    // Creates a single row of the schedule table.
+    function createRow(meeting) {
+      const meetings = meeting.startUps.map(x => (
+        <td key={x.startupName + x.time} >{x.startupName} {x.time}</td>
+      ));
+      return (
+        <tr key={meeting.coachName} >
+          <td>{meeting.coachName}</td>{meetings}
+        </tr>
+      );
+    }
+
     // Handles the case where schedules are not available.
     if (this.props.coachSchedules.length === 0) {
       return (
@@ -27,11 +27,9 @@ export default class AdminScheduleTable extends React.Component {
     // Handles the case where schedules are available.
     return (
       <table>
-        <tr>
-          <td>
-            {this.props.coachSchedules.map(x => this.createRow(x))}
-          </td>
-        </tr>
+        <tbody>
+          {this.props.coachSchedules.map(x => createRow(x))}
+        </tbody>
       </table>);
   }
 }
