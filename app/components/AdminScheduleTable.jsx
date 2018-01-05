@@ -8,7 +8,7 @@ export default class AdminScheduleTable extends React.Component {
     // Creates a single row of the schedule table.
     function createRow(meeting) {
       const meetings = meeting.startUps.map(x => (
-        <td key={x.startupName + x.time} >{x.startupName} {x.time}</td>
+        <td key={x.startupName + x.time} >{x.startupName} <br /> {x.time}</td>
       ));
       return (
         <tr key={meeting.coachName} >
@@ -26,7 +26,7 @@ export default class AdminScheduleTable extends React.Component {
     }
     // Handles the case where schedules are available.
     return (
-      <table className="table adminTable">
+      <table className="table" id="adminTable">
         <tbody>
           {this.props.schedules.map(x => createRow(x))}
         </tbody>

@@ -20,7 +20,7 @@ export default class AdminSchedules extends React.Component {
           <h1 className="adminViewHeader">Schedules</h1>
         </div>
         <div>
-          <ul className="nav nav-tabs">
+          <ul className="nav nav-tabs" id="adminScheduleNav">
             <li className="active"><a href="#">Coaches</a></li>
             <li><a href="#">Startups</a></li>
           </ul>

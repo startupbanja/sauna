@@ -136,37 +136,37 @@ const userLabels = {
 /* eslint-disable */
 const testSchedule = [
 {
-  coachName: 'someone1',
+  coachName: 'Coach 1',
   startUps: [{
-    startupName: 'startup 1',
+    startupName: 'Startup 1',
     time: '13:00 - 13:20',
   },
   {
-    startupName: 'startup 2',
+    startupName: 'Startup 2',
     time: '13:20 - 13:40',
   },
   ],
 },
 {
-  coachName: 'someone2',
+  coachName: 'Coach 2',
   startUps: [{
-    startupName: 'startup 3',
+    startupName: 'Startup 3',
     time: '13:00 - 13:20',
   },
   {
-    startupName: 'startup 4',
+    startupName: 'Startup 4',
     time: '13:20 - 13:40',
   },
   ],
 
 },
-{ coachName: 'someone3',
+{ coachName: 'Coach 3',
   startUps: [{
-    startupName: 'startup 5',
+    startupName: 'Startup 5',
     time: '13:00 - 13:20',
   },
   {
-    startupName: 'startup 6',
+    startupName: 'Startup 6',
     time: '13:20 - 13:40',
   },
   ],},
