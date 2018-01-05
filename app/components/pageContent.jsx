@@ -6,7 +6,11 @@ import LandingPage from './LandingPage';
 import UserProfilePage from './UserProfilePage';
 import UserSchedule from './UserSchedule';
 import UserList from './UserList';
+<<<<<<< bc31e9f42047325332f22dd366d17a58107df2bc
 import App from './App';
+=======
+import AdminSchedules from './AdminSchedules';
+>>>>>>> Fixed syntax errors in pageContent.jsx
 
 const feedbackQuestions = {
   coach: [{
@@ -132,9 +136,50 @@ const userLabels = {
   '/coaches': 'Coaches',
   '/startups': 'Startups',
 };
+/* eslint-disable */
+const testSchedule = [
+{
+  coachName: 'someone1',
+  startUps: [{
+    startupName: 'startup 1',
+    time: '13:00 - 13:20',
+  },
+  {
+    startupName: 'startup 2',
+    time: '13:20 - 13:40',
+  },
+  ],
+},
+{
+  coachName: 'someone2',
+  startUps: [{
+    startupName: 'startup 3',
+    time: '13:00 - 13:20',
+  },
+  {
+    startupName: 'startup 4',
+    time: '13:20 - 13:40',
+  },
+  ],
+
+},
+{ coachName: 'someone3',
+  startUps: [{
+    startupName: 'startup 5',
+    time: '13:00 - 13:20',
+  },
+  {
+    startupName: 'startup 6',
+    time: '13:20 - 13:40',
+  },
+  ],},
+];
+
+/* eslint-enable */
 
 /* const adminContent = {
   mainPage: <div><h1>Home</h1><LandingPage /></div>,
+<<<<<<< bc31e9f42047325332f22dd366d17a58107df2bc
   coaches: <div><UserList type="Coaches" /></div>,
   startups: <div><UserList type="Startups" /></div>,
 }; */
@@ -161,6 +206,14 @@ const adminLabels = {
   '/main': 'Home',
   '/coaches': 'Coaches',
   '/startups': 'Startups',
+=======
+  adminSchedules: <AdminSchedules coachSchedules={testSchedule} />,
+};
+
+const adminLabels = {
+  mainPage: 'Home',
+  adminSchedules: 'Schedules',
+>>>>>>> Fixed syntax errors in pageContent.jsx
 };
 // TODO change this to something better later
 function getContent(userType) {
@@ -170,6 +223,7 @@ function getContent(userType) {
   return { content: userContent, labels: userLabels };
 }
 
+<<<<<<< bc31e9f42047325332f22dd366d17a58107df2bc
 function fetchData(path, methodType, params) {
   const paramsString = Object.keys(params).map(x => `${x}=${params[x]}`).join('&');
   let query = path;
@@ -198,3 +252,6 @@ function fetchData(path, methodType, params) {
 }
 
 export default { getContent, userContent, fetchData };
+=======
+export default { getContent, userContent };
+>>>>>>> Fixed syntax errors in pageContent.jsx
