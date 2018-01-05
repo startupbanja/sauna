@@ -5,6 +5,7 @@ import LandingPage from './LandingPage';
 import UserProfile from './UserProfile';
 import UserSchedule from './UserSchedule';
 import UserList from './UserList';
+import AdminSchedules from './AdminSchedules';
 
 const feedbackQuestions = [
   {
@@ -109,13 +110,55 @@ const userLabels = {
   coaches: 'Coaches',
   startups: 'Startups',
 };
+/* eslint-disable */
+const testSchedule = [
+{
+  coachName: 'someone1',
+  startUps: [{
+    startupName: 'startup 1',
+    time: '13:00 - 13:20',
+  },
+  {
+    startupName: 'startup 2',
+    time: '13:20 - 13:40',
+  },
+  ],
+},
+{
+  coachName: 'someone2',
+  startUps: [{
+    startupName: 'startup 3',
+    time: '13:00 - 13:20',
+  },
+  {
+    startupName: 'startup 4',
+    time: '13:20 - 13:40',
+  },
+  ],
+
+},
+{ coachName: 'someone3',
+  startUps: [{
+    startupName: 'startup 5',
+    time: '13:00 - 13:20',
+  },
+  {
+    startupName: 'startup 6',
+    time: '13:20 - 13:40',
+  },
+  ],},
+];
+
+/* eslint-enable */
 
 const adminContent = {
   mainPage: <div><h1>Home</h1><LandingPage /></div>,
+  adminSchedules: <AdminSchedules coachSchedules={testSchedule} />,
 };
 
 const adminLabels = {
   mainPage: 'Home',
+  adminSchedules: 'Schedules',
 };
 // TODO change this to something better later
 function getContent(userType) {
@@ -125,4 +168,4 @@ function getContent(userType) {
   return { content: userContent, labels: userLabels };
 }
 
-export default { getContent, userContent}
+export default { getContent, userContent };
