@@ -11,14 +11,16 @@ export default class MainView extends React.Component {
   constructor(props) {
     super(props);
     this.changeContent = this.changeContent.bind(this);
+    const content = pageContent.getContent(this.props.userType);
+    console.log(content);
     this.state = {
       current: (
         <div>
-          <h1>Welcome, {this.props.user}</h1>
+          <h1>Welcome, {this.props.userName}</h1>
           <LandingPage />
         </div>),
-      contentMap: pageContent.content,
-      labels: pageContent.labels,
+      contentMap: content.content,
+      labels: content.labels,
     };
   }
 
@@ -45,6 +47,7 @@ export default class MainView extends React.Component {
 }
 
 MainView.propTypes = {
-  user: PropTypes.string.isRequired,
+  userName: PropTypes.string.isRequired,
   logoff: PropTypes.func.isRequired,
+  userType: PropTypes.string.isRequired,
 };
