@@ -35,16 +35,16 @@ SELECT *
 FROM Users;
 `;
 
-function testApi(callback) {
-  const res = {};
-  db.all(testQ, [], (err, rows) => {
-    if (err) {
-      throw err;
-    }
-    res.data = rows;
-    return callback(res);
-  })
-}
+// function testApi(callback) {
+//   const res = {};
+//   db.all(testQ, [], (err, rows) => {
+//     if (err) {
+//       throw err;
+//     }
+//     res.data = rows;
+//     return callback(res);
+//   })
+// }
 
 function getUsers(type, batch, callback) {
   const users = {};
@@ -105,7 +105,7 @@ fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
 module.exports = {
   closeDatabase,
   getUsers,
-  testApi,
+  // testApi,
 };
 // exports.close = closeDatabase;
 // exports.db = db;

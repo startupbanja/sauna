@@ -1,12 +1,15 @@
-var express    = require('express');
-var app        = express();
-var bodyParser = require('body-parser');
+const express = require('express');
+const readline = require('readline');
+const bodyParser = require('body-parser');
 const database = require('./database.js');
+
+const app = express();
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-var port = process.env.PORT || 3000;
+const port = process.env.PORT || 3000;
 
 app.use(function(req, res, next) {
     console.log('Something is happening.');
@@ -47,19 +50,21 @@ function closeServer() {
 }
 
 
-// Should make process interrupting work on windows.. not tested
-// requires a module "readline", not installed yet
-// if (process.platform === 'win32') {
-//   require('readline')
-//     .createInterface({
-//       input: process.stdin,
-//       output: process.stdout
-//     })
-//     .on('SIGINT', function () {
-//       process.emit('SIGINT');
-//     });
-// }
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
 
+rl.on('line', (input) => {
+  if (input === 'exit') {
+    closeServer();
+  }
+});
+
+// make SIGINT work on both windows and linux with the readline module
+rl.on('SIGINT', () => {
+  process.emit('SIGINT');
+});
 
 // Catch interrupt signal(CTRL+C)
 // process is a node global variable
