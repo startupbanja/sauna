@@ -125,4 +125,4 @@ function getContent(userType) {
   return { content: userContent, labels: userLabels };
 }
 
-export default { getContent, userContent}
+export default { getContent, userContent };
