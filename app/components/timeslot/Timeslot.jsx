@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { TimeslotDrag } from './TimeslotDrag';
-import { TimeslotInput } from './TimeslotInput';
+import TimeslotDrag from './TimeslotDrag';
+import TimeslotInput from './TimeslotInput';
 
 export function parseMinutes(timeString) {
   if (!timeString.match(/^([0-1]?\d|2[0-3]):[0-5]\d$/)) return false;
@@ -16,7 +16,7 @@ export function parseTimeStamp(minutes) {
   return `${hours}:${minutesOver}`;
 }
 
-export class Timeslot extends React.Component {
+class Timeslot extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -43,8 +43,16 @@ export class Timeslot extends React.Component {
   }
 
   render() {
+    const dateOptions = {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'numeric',
+      year: '2-digit',
+    };
     return (
-      <div style={{ width: '300px' }}>
+      <div className="timeslot-picker">
+        <link rel="stylesheet" type="text/css" href="app/styles/timeslot_style.css" />
+        <p className="date">{this.props.date.toLocaleDateString('en-GB', dateOptions).replace(/\//g, '.')}</p>
         <TimeslotDrag
           start={parseMinutes(this.props.start)}
           end={parseMinutes(this.props.end)}
@@ -63,4 +71,7 @@ export class Timeslot extends React.Component {
 Timeslot.propTypes = {
   start: PropTypes.string.isRequired,
   end: PropTypes.string.isRequired,
+  date: PropTypes.objectOf(Date).isRequired,
 };
+
+export default Timeslot;

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { TimeslotDragable } from './TimeslotDragable';
+import TimeslotDragable from './TimeslotDragable';
 
 export const totalHeight = 400;
 
-export class TimeslotDrag extends Component {
+class TimeslotDrag extends Component {
   constructor(props) {
     super(props);
     this.handleAvailableChange = this.handleAvailableChange.bind(this);
@@ -18,6 +18,7 @@ export class TimeslotDrag extends Component {
     const containerStyle = {
       position: 'relative',
       height: totalHeight,
+      overflow: 'hidden',
     };
     let starting = (this.props.available.start - this.props.start) * totalHeight;
     starting /= (this.props.end - this.props.start);
@@ -56,3 +57,5 @@ TimeslotDrag.propTypes = {
     end: PropTypes.number,
   }).isRequired,
 };
+
+export default TimeslotDrag;
