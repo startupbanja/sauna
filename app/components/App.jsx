@@ -17,14 +17,15 @@ export default class App extends React.Component {
   changeToMenu(status) {
     switch (status) {
       case 0:
-        //TODO tee fiksumpi alert
-        alert("Incorrect username or password");
+        // TODO tee fiksumpi alert
+        alert('Incorrect username or password');
         break;
       case 1:
         this.setState({ content: <MainView type="user" logoff={this.changeToLogin} /> });
         break;
       case 2:
         this.setState({ content: <MainView type="admin" logoff={this.changeToLogin} /> });
+        break;
       default:
     }
   }

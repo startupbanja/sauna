@@ -75,6 +75,31 @@ function getUsers(type, batch, callback) {
 }
 
 
+function verifyIdentity(username, password){
+  const query = 'SELECT id, type FROM Users WHERE username = ? AND password = ?';
+  let type;
+  db.get(query, [username, password], (err, row) => {
+    if(err){
+      throw err;
+    }
+   switch(row.id){
+      case 0: 
+       type = "admin";
+       break;
+     case 1:
+     case 2:
+       type = "user";
+       break;
+     default:
+       type = "error";
+    }
+    
+  })
+  return type;
+}
+
+
+
 fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
   if (err) {
     return console.log(err);

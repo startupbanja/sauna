@@ -2,6 +2,7 @@ const express = require('express');
 const readline = require('readline');
 const bodyParser = require('body-parser');
 const database = require('./database.js');
+const bcrypt = require('bcrypt');
 
 const app = express();
 
@@ -36,6 +37,20 @@ app.get('/api', (req, res) => {
 // app.get('/api', function(req, res) {
 //     res.json({ message: req.query.q });
 // });
+
+app.post('/login', (req, res) => {
+  const username = req.body.username;
+  let password = req.body.password;
+  let statusCode;
+  
+  res.append('Access-Control-Allow-Origin', '*');
+  
+  password = bcrypt.hash(password, 10, function (err, hash) {
+    statusCode = database.verifyIdentity(username, hash);
+  });
+  res.json({ status: statusCode });
+});
+
 
 const server = app.listen(port);
 console.log('Magic happens on port ' + port);

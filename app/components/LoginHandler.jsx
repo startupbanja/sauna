@@ -1,6 +1,6 @@
 
 export default function handle(input) {
-  fetch('localhost:3000/login', {
+  fetch('http://localhost:3000/login', {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -10,7 +10,5 @@ export default function handle(input) {
       username: input.name,
       password: input.pwd,
     }),
-  }).then((response) => { response.json(); }).then((responseJson) => {
-    return responseJson.status;
-  });
+  }).then((response) => { response.json(); }).then(responseJson => responseJson.status);
 }
