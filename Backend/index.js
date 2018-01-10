@@ -2,6 +2,7 @@ const express = require('express');
 const readline = require('readline');
 const bodyParser = require('body-parser');
 const database = require('./database.js');
+const matchmaking = require('./matchmaking.js');
 
 const app = express();
 
@@ -56,8 +57,15 @@ const rl = readline.createInterface({
 });
 
 rl.on('line', (input) => {
-  if (input === 'exit') {
-    closeServer();
+  switch (input) {
+    case ('exit'):
+      closeServer();
+      break;
+    case ('test'):
+      matchmaking.run();
+      break;
+    default:
+      break;
   }
 });
 
