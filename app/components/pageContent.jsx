@@ -2,14 +2,11 @@ import React from 'react';
 /* import Image from './Image'; */
 import FeedbackView from './FeedbackView';
 import LandingPage from './LandingPage';
-<<<<<<< HEAD
 import UserProfile from './UserProfile';
 import UserSchedule from './UserSchedule';
 import UserList from './UserList';
 // import Timeslot from './timeslot/Timeslot';
-=======
-import Timeslot from './timeslot/Timeslot';
->>>>>>> 6f5655830c4176034180574fa83fecf1bfae6dfb
+
 
 const feedbackQuestions = [
   {
