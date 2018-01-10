@@ -14,8 +14,19 @@ export default class App extends React.Component {
     // this.setState = this.setState.bind(this);
   }
 
-  changeToMenu(userName) {
-    this.setState({ content: <MainView user={userName} logoff={this.changeToLogin} /> });
+  changeToMenu(status) {
+    switch (status) {
+      case 0:
+        //TODO tee fiksumpi alert
+        alert("Incorrect username or password");
+        break;
+      case 1:
+        this.setState({ content: <MainView type="user" logoff={this.changeToLogin} /> });
+        break;
+      case 2:
+        this.setState({ content: <MainView type="admin" logoff={this.changeToLogin} /> });
+      default:
+    }
   }
 
   changeToLogin() {
