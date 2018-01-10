@@ -32,8 +32,8 @@ CREATE TABLE Credentials(
 <<<<<<< c54d17863499cedadb077358e5d90e6d74d650c8
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
 =======
-	id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
->>>>>>> Now database is opened on running index.js and will close correctly on keyboard interrupt. Did work on getting user profile list but not working yet
+    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+>>>>>>> 6f5655830c4176034180574fa83fecf1bfae6dfb
     user_id INT NOT NULL,
     company VARCHAR(20) NOT NULL,
     title VARCHAR(30) NOT NULL,
@@ -87,7 +87,7 @@ INSERT INTO Users (type, username, password, batch, active) VALUES
 	(2, 'startup11', 'password', 1, TRUE),
 	(2, 'startup12', 'password', 1, TRUE),
 	(2, 'startup13', 'password', 1, TRUE),
-	
+
 	(1, 'coach1', 'password', 0, TRUE),
 	(1, 'coach2', 'password', 0, TRUE),
 	(1, 'coach3', 'password', 0, TRUE),
@@ -157,7 +157,7 @@ INSERT INTO Users (type, username, password, batch, active) VALUES
 	(1, 'coach67', 'password', 0, TRUE),
 	(1, 'coach68', 'password', 0, TRUE),
 	(1, 'coach69', 'password', 0, TRUE),
-	
+
 	(0, 'admin', 'admin', 0, TRUE);
 
 INSERT INTO Profiles (user_id, name, description, company, email, linkedin) VALUES
@@ -582,7 +582,7 @@ INSERT INTO Meetings (coach_id, startup_id, datetime, duration, coach_rating, st
 	(80, 11, '2017-10-10 12:00:00', 40, 0, 0),
 	(80, 12, '2017-10-10 12:00:00', 40, 0, 3),
 	(80, 13, '2017-10-10 12:00:00', 40, 0, 0);
-	
+
 INSERT INTO Credentials (user_id, company, title) VALUES
 	(14, 'Company', 'Title'),
 	(15, 'Company', 'Title'),
