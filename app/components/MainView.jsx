@@ -15,7 +15,7 @@ export default class MainView extends React.Component {
     let pageLabels = pageContent.labels;
     if (this.props.type === 'admin') {
       pageContents = pageContent.adminContent;
-      pageLabels = pageContent.adminLAbels;
+      pageLabels = pageContent.adminLabels;
     }
     this.state = {
       current: (

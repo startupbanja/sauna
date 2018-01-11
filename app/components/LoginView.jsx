@@ -17,12 +17,14 @@ export default class LoginView extends React.Component {
   handleInput(input) {
     // const name = input.names;
     // const pwd = input.pwd;
-    const authResult = this.state.handle(input);
-    if (authResult) {
-      this.props.login(authResult);
-    } else {
-      // handleError
-    }
+    this.state.handle(input, (authResult) => {
+      console.log(authResult);
+      if (authResult === 'user' || authResult === 'admin') {
+        this.props.login(authResult);
+      } else {
+        // handleError
+      }
+    });
   }
 
   render() {

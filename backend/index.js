@@ -41,17 +41,13 @@ app.get('/api', (req, res) => {
 app.post('/login', (req, res) => {
   const username = req.body.username;
   let password = req.body.password;
-  console.log(req.body);
-  console.log(username);
-  console.log(password);
   let statusCode;
-  
+
   res.append('Access-Control-Allow-Origin', ['*']);
-  
-  password = bcrypt.hash(password, 10, function (err, hash) {
-    statusCode = database.verifyIdentity(username, hash);
+
+  database.verifyIdentity(username, password, (type) => {
+    res.json({ status: type });
   });
-  res.json({ status: statusCode });
 });
 
 
