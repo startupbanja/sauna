@@ -2,6 +2,7 @@
 
 const sqlite = require('sqlite3').verbose();
 const fs = require('fs');
+const bcrypt = require('bcrypt');
 
 const db = new sqlite.Database(':memory:', (err) => {
   if (err) {
@@ -75,30 +76,38 @@ function getUsers(type, batch, callback) {
 }
 
 
-function verifyIdentity(username, password){
-  const query = 'SELECT id, type FROM Users WHERE username = ? AND password = ?';
+function verifyIdentity(username, password, callback) {
+  const query = 'SELECT id, type, password FROM Users WHERE username = ?';
   let type;
-  db.get(query, [username, password], (err, row) => {
-    if(err){
+  db.get(query, [username], (err, row) => {
+    if (err) {
       throw err;
     }
-   switch(row.id){
-      case 0: 
-       type = "admin";
-       break;
-     case 1:
-     case 2:
-       type = "user";
-       break;
-     default:
-       type = "error";
+    if (!row) {
+      callback('error');
+      return;
     }
-    
-  })
-  return type;
+    bcrypt.compare(password, row.password, (error, same) => {
+      if (error) throw error;
+      if (!same) {
+        callback('error');
+        return;
+      }
+      switch (row.type) {
+        case 0:
+          type = 'admin';
+          break;
+        case 1:
+        case 2:
+          type = 'user';
+          break;
+        default:
+          type = 'error';
+      }
+      callback(type);
+    });
+  });
 }
-
-
 
 fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
   if (err) {
@@ -130,6 +139,7 @@ fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
 module.exports = {
   closeDatabase,
   getUsers,
+  verifyIdentity,
   // testApi,
 };
 // exports.close = closeDatabase;

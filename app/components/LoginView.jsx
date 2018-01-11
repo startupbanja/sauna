@@ -18,7 +18,6 @@ export default class LoginView extends React.Component {
     // const name = input.names;
     // const pwd = input.pwd;
     this.state.handle(input, (authResult) => {
-      console.log(authResult);
       if (authResult === 'user' || authResult === 'admin') {
         this.props.login(authResult);
       } else {

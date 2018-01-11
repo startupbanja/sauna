@@ -11,20 +11,15 @@ export default class MainView extends React.Component {
   constructor(props) {
     super(props);
     this.changeContent = this.changeContent.bind(this);
-    let pageContents = pageContent.content;
-    let pageLabels = pageContent.labels;
-    if (this.props.type === 'admin') {
-      pageContents = pageContent.adminContent;
-      pageLabels = pageContent.adminLabels;
-    }
+    const contents = pageContent.getContent(this.props.type);
     this.state = {
       current: (
         <div>
           <h1>Welcome, {this.props.type}</h1>
           <LandingPage />
         </div>),
-      contentMap: pageContents,
-      labels: pageLabels,
+      contentMap: contents.content,
+      labels: contents.labels,
     };
   }
 
