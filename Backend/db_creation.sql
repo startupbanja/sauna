@@ -40,7 +40,7 @@ CREATE TABLE Timeslots(
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     user_id INT,
     date DATE NOT NULL,
-	time TIME NOT NULL,
+    time TIME NOT NULL,
     duration INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES Users(id)
 );
@@ -50,7 +50,7 @@ CREATE TABLE Meetings(
     coach_id INT,
     startup_id INT,
     date DATE NOT NULL,
-	time TIME NOT NULL,
+    time TIME NOT NULL,
     duration INT NOT NULL,
     coach_rating INT,
     startup_rating INT,
