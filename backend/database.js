@@ -30,6 +30,22 @@ WHERE Profiles.user_id IN (
   WHERE type = ? AND batch = ? AND active = 1
 );`;
 
+const timeslotQuery = `
+SELECT user_id, date, time, duration
+FROM Timeslots
+WHERE date IN (
+SELECT MAX(date)
+AS date
+FROM Timeslots
+);`;
+
+const ratingQuery = `
+SELECT coach_id, startup_id, coach_rating, startup_rating
+FROM Ratings
+INNER JOIN Users
+ON Ratings.startup_id=Users.id
+WHERE type=2 AND batch=? AND active=TRUE;`;
+
 const testQ = `
 SELECT *
 FROM Users;
