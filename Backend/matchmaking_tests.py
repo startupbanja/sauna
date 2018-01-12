@@ -5,19 +5,20 @@ class TestMatchmaking(unittest.TestCase):
 
   def setUp(self):
     self.dictA = {
-      startup: 1,
-      startupfeedback: 2,
-      coach: 2,
-      coachfeedback: 2
+      'startup': 1,
+      'startupfeedback': 2,
+      'coach': 2,
+      'coachfeedback': 2
     }
     self.dictB = {
-      startup: 2,
-      startupfeedback: 1,
-      coach: 1,
-      coachfeedback: 1
+      'startup': 2,
+      'startupfeedback': 1,
+      'coach': 1,
+      'coachfeedback': 1
     }
 
   def tearDown(self):
+    pass
 
   def test_getSum(self):
     self.assertEqual(matchmaking.getSum(0,0),0)
