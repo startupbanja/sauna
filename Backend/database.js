@@ -35,7 +35,6 @@ SELECT user_id, date, time, duration
 FROM Timeslots
 WHERE date IN (
 SELECT MAX(date)
-AS date
 FROM Timeslots
 );`;
 
@@ -44,7 +43,10 @@ SELECT coach_id, startup_id, coach_rating, startup_rating
 FROM Ratings
 INNER JOIN Users
 ON Ratings.startup_id=Users.id
-WHERE type=2 AND batch=? AND active=TRUE;`;
+WHERE type=2 AND active=TRUE AND batch IN (
+SELECT MAX(id)
+FROM Batches
+);`;
 
 const testQ = `
 SELECT *
