@@ -4,8 +4,6 @@ import time
 import random
 import datetime
 
-data = json.loads(sys.stdin.read())
-
 #{ feedbacks: [{startup: string, startupfeedback: int, coach: string, coachfeedback: int}],
 # availabilities: {coachname(string): {starttime: string, duration: int}}
 #}
@@ -15,27 +13,30 @@ data = json.loads(sys.stdin.read())
 # {"asd": {starttime, duration}}
 
 # change starttime and duration to timedelta objects for easy comparison
-oldAvail = data.availabilities
-def mapAvail(coach):
-  old = oldAvail[coach]
-  times = old['starttime'].split[':']
-  res = (key,
-  {
+def run():
+  data =  json.loads(sys.stdin.read())
+  oldAvail = data.availabilities
+  startupMeetingCount = {}
+
+  def mapAvail(coach):
+    old = oldAvail[coach]
+    times = old['starttime'].split[':']
+    res = (key,
+    {
     'starttime': timedelta(hours=times[0], minutes=times[1]),
     'duration': timedelta(minutes=old['duration'])
-  })
-  return res
+    })
+    return res
 
-availabilities = dict(map(mapAvail , data.availabilities.keys()) )
+  availabilities = dict(map(mapAvail , data.availabilities.keys()) )
 
 # keep track of meeting count for startups, used for sorting
-startupMeetingCount = {}
 # return of the sum of coach and startup feedbacks
 # returns 2.5 if both are -1 aka null
 def getSum(startup, coach):
   if (startup + coach == -2):
     return 2.5
-  return min(0, startup) + min(0, coach)
+  return max(0, startup) + max(0, coach)
 
 #Comparison functions for the different sorts used
 def cmpByFeedback(dictA, dictB):
@@ -53,7 +54,7 @@ def cmpByTimetotal(dictA, dictB):
   b = availabilities[dictB.coach]['duration']
   return a - b
 
-def cmpByStartupMeetingCount:
+def cmpByStartupMeetingCount():
   pass
 # TODO
 
@@ -94,16 +95,18 @@ def isLegal(startup, timetable, coach, index):
 # find a place for a feedback element in the timetable(list)
 # elem: {startup: "asd", startupfeedback: 1, coach: "dasdsa", coachfeedback: 0}
 def findPlace(elem, timetable):
-  coachTuple = timetable[elem[coach]]
+  coachTuple = timetable[elem['coach']]
   # TODO check here if startup and coach are already meeting?
   for i in range(len(coachTuple[2])):
-    if isLegal(elem[startup], timetable, coachTuple, i):
+    if isLegal(elem['startup'], timetable, coachTuple, i):
+      timetable[elem[coach]][2][i] = elem['startup']
+      return True
       #insert and return true
   return False
 
 def getEmptyTimetable(availabilities, slotSize):
   timetable = {}
-  for name in availabilities.keys()
+  for name in availabilities.keys():
     timetable[name] = (availabilities[name]['starttime'], availabilities[name]['duration'], [])
     timetable[name][2] = [None] * (availabilities[name]['duration'] / slotSize)
   return timetable
