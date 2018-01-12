@@ -48,22 +48,6 @@ SELECT MAX(id)
 FROM Batches
 );`;
 
-const testQ = `
-SELECT *
-FROM Users;
-`;
-
-// function testApi(callback) {
-//   const res = {};
-//   db.all(testQ, [], (err, rows) => {
-//     if (err) {
-//       throw err;
-//     }
-//     res.data = rows;
-//     return callback(res);
-//   })
-// }
-
 function getUsers(type, batch, callback) {
   const users = {};
   // (sql, params, callback for each row, callback on complete)
@@ -86,12 +70,55 @@ function getUsers(type, batch, callback) {
   }, (err) => {
     if (err) {
       // return console.error(err.message);
-      throw err
+      throw err;
     }
     return callback(users);
   });
 }
 
+function getRatings(callback) {
+  const ratings = [];
+  // (sql, params, callback for each row, callback on complete)
+  db.each(ratingQuery, [], (err, row) => {
+    if (err) {
+      throw err;
+    }
+    ratings.push({
+      coach: row.coach_id,
+      startup: row.startup_id,
+      coachfeedback: row.coach_rating,
+      startupfeedback: row.startup_rating,
+    });
+    return null;
+  }, (err) => {
+    if (err) {
+      // return console.error(err.message);
+      throw err;
+    }
+    return callback(ratings);
+  });
+}
+
+function getTimeslots(callback) {
+  const timeslots = {};
+  // (sql, params, callback for each row, callback on complete)
+  db.each(timeslotQuery, [], (err, row) => {
+    if (err) {
+      throw err;
+    }
+    timeslots[row.user_id] = {
+      starttime: row.time,
+      duration: row.duration,
+    };
+    return null;
+  }, (err) => {
+    if (err) {
+      // return console.error(err.message);
+      throw err;
+    }
+    return callback(timeslots);
+  });
+}
 
 fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
   if (err) {
@@ -123,7 +150,8 @@ fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
 module.exports = {
   closeDatabase,
   getUsers,
-  // testApi,
+  getRatings,
+  getTimeslots,
 };
 // exports.close = closeDatabase;
 // exports.db = db;
