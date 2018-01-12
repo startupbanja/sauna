@@ -30,21 +30,23 @@ WHERE Profiles.user_id IN (
   WHERE type = ? AND batch = ? AND active = 1
 );`;
 
-const testQ = `
-SELECT *
-FROM Users;
-`;
+const timeslotQuery = `
+SELECT user_id, date, time, duration
+FROM Timeslots
+WHERE date IN (
+SELECT MAX(date)
+FROM Timeslots
+);`;
 
-// function testApi(callback) {
-//   const res = {};
-//   db.all(testQ, [], (err, rows) => {
-//     if (err) {
-//       throw err;
-//     }
-//     res.data = rows;
-//     return callback(res);
-//   })
-// }
+const ratingQuery = `
+SELECT coach_id, startup_id, coach_rating, startup_rating
+FROM Ratings
+INNER JOIN Users
+ON Ratings.startup_id=Users.id
+WHERE type=2 AND active=TRUE AND batch IN (
+SELECT MAX(id)
+FROM Batches
+);`;
 
 function getUsers(type, batch, callback) {
   const users = {};
@@ -68,12 +70,55 @@ function getUsers(type, batch, callback) {
   }, (err) => {
     if (err) {
       // return console.error(err.message);
-      throw err
+      throw err;
     }
     return callback(users);
   });
 }
 
+function getRatings(callback) {
+  const ratings = [];
+  // (sql, params, callback for each row, callback on complete)
+  db.each(ratingQuery, [], (err, row) => {
+    if (err) {
+      throw err;
+    }
+    ratings.push({
+      coach: row.coach_id,
+      startup: row.startup_id,
+      coachfeedback: row.coach_rating,
+      startupfeedback: row.startup_rating,
+    });
+    return null;
+  }, (err) => {
+    if (err) {
+      // return console.error(err.message);
+      throw err;
+    }
+    return callback(ratings);
+  });
+}
+
+function getTimeslots(callback) {
+  const timeslots = {};
+  // (sql, params, callback for each row, callback on complete)
+  db.each(timeslotQuery, [], (err, row) => {
+    if (err) {
+      throw err;
+    }
+    timeslots[row.user_id] = {
+      starttime: row.time,
+      duration: row.duration,
+    };
+    return null;
+  }, (err) => {
+    if (err) {
+      // return console.error(err.message);
+      throw err;
+    }
+    return callback(timeslots);
+  });
+}
 
 fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
   if (err) {
@@ -105,7 +150,8 @@ fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
 module.exports = {
   closeDatabase,
   getUsers,
-  // testApi,
+  getRatings,
+  getTimeslots,
 };
 // exports.close = closeDatabase;
 // exports.db = db;
