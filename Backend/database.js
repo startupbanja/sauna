@@ -69,7 +69,7 @@ function getUsers(type, batch, callback) {
   }, (err) => {
     if (err) {
       // return console.error(err.message);
-      throw err
+      throw err;
     }
     return callback(users);
   });

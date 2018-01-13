@@ -44,12 +44,34 @@ app.post('/login', (req, res) => {
 
   res.append('Access-Control-Allow-Origin', ['*']);
 
-  bcrypt.hash(password, 10, (err, hash) => console.log(hash));
+  // bcrypt.hash(password, 10, (err, hash) => console.log(hash));
   database.verifyIdentity(username, password, (type) => {
     res.json({ status: type });
   });
 });
 
+app.get('/users', (req, res) => {
+  let type = req.query.type;
+  const batch = 1;
+  if (type === 'Startups') type = 2;
+  else type = 1;
+
+  res.append('Access-Control-Allow-Origin', ['*']);
+
+  database.getUsers(type, batch, (userList) => {
+    const userArray = [];
+    for (const user in userList) {
+      const userData = userList[user];
+      const userObj = { 
+        name: user,
+        description: userData.description,
+        img: '../app/imgs/coach_placeholder.png',
+      };
+      userArray.push(userObj);
+    }
+    res.json({ users: userArray });
+  });
+});
 
 const server = app.listen(port);
 console.log('Magic happens on port ' + port);

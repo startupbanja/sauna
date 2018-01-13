@@ -40,6 +40,8 @@ const schedule = {
   }],
 };
 
+/*
+Don't need this anymore
 const users = [
   {
     name: 'joku',
@@ -61,7 +63,7 @@ const users = [
     description: 'yolo in corporate form',
     img: '../app/imgs/coach_placeholder.png',
   },
-];
+]; */
 
 // Template data for the User Profile.
 const profileInfo = {
@@ -97,8 +99,8 @@ const userContent = {
     credentials={profileInfo.credentials}
   />,
   feedback: <div><FeedbackView questions={feedbackQuestions} /></div>,
-  coaches: <div><UserList users={users} type="Coaches" /></div>,
-  startups: <div><UserList users={users} type="Startups" /></div>,
+  coaches: <div><UserList type="Coaches" /></div>,
+  startups: <div><UserList type="Startups" /></div>,
 };
 
 const userLabels = {
