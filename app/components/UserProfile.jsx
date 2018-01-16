@@ -6,25 +6,64 @@ import ProfileInfoHeader from './ProfileInfoHeader';
 
 // React Component for a user's profile page.
 export default class UserProfile extends React.Component {
+  constructor(props) {
+    super(props);
+    this.fetchData = this.fetchData.bind(this);
+
+    // Initialize the state as empty.
+    this.state = {
+      name: '',
+      description: '',
+      linkedIn: '',
+      credentials: [],
+    };
+  }
+
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData() {
+    fetch('http://localhost:3000/profile', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      },
+      body: `userId=${this.props.id}`,
+    }).then(response => response.json())
+      .then((responseJSON) => {
+        console.log(responseJSON);
+        this.setState({
+          name: responseJSON.name,
+          description: responseJSON.description,
+          linkedIn: 'http://'.concat('', responseJSON.linkedIn),
+          credentials: responseJSON.credentials,
+        });
+
+        console.log(this.state.credentials);
+      }).catch(err => console.log(err));
+  }
+
   render() {
     return (
       <div className="profileContainer">
         <ProfileInfoHeader
-          name={this.props.name}
-          imgSrc={this.props.imgSrc}
-          titles={this.props.titles}
+          name={this.state.name}
+          imgSrc={this.state.imgSrc}
+          titles={this.state.titles}
         />
         <ul className="profileLinks">
           <li>
-              LinkedIn: <a href={this.props.linkedIn}>linkedin.com</a>
+              LinkedIn: <a href={this.state.linkedIn}>linkedin.com</a>
           </li>
         </ul>
         <div className="userDescription">
           <p>
-            {this.props.description}
+            {this.state.description}
           </p>
         </div>
-        <ProfileCredentialList credentials={this.props.credentials} />
+        <ProfileCredentialList credentials={this.state.credentials} />
       </div>
     );
   }
@@ -32,7 +71,8 @@ export default class UserProfile extends React.Component {
 
 
 UserProfile.propTypes = {
-  name: PropTypes.string.isRequired,
+  id: PropTypes.string,
+  /* name: PropTypes.string.isRequired,
   linkedIn: PropTypes.string,
   imgSrc: PropTypes.string,
   description: PropTypes.string,
@@ -40,12 +80,9 @@ UserProfile.propTypes = {
   credentials: PropTypes.arrayOf(PropTypes.shape({
     company: PropTypes.string.isRequired,
     position: PropTypes.string.isRequired,
-  })).isRequired,
+  })).isRequired, */
 };
 
 UserProfile.defaultProps = {
-  linkedIn: 'http://linkedin.com',
-  imgSrc: '../app/imgs/coach_placeholder.png',
-  description: 'Description is not available.',
-  titles: [],
+  id: '13',
 };

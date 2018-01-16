@@ -65,7 +65,7 @@ CREATE TABLE Meetings(
 
 INSERT INTO Batches VALUES (0), (1);
 
--- password for all startups and coaches is 'pass' and for admin 'admin';
+-- password for all startups and coaches is 'pass' and for admin 'admin'
 INSERT INTO Users (type, username, password, batch, active) VALUES
     (2, 'startup1', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 1, 1),
 	(2, 'startup2', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 1, 1),

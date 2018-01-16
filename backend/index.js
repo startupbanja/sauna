@@ -73,6 +73,13 @@ app.get('/users', (req, res) => {
   });
 });
 
+app.post('/profile', (req, res) => {
+  const id = req.body.userId;
+  console.log(id);
+  res.append('Access-Control-Allow-Origin', ['*']);
+  database.getProfile(id, (result) => {console.log(result); res.json(result)});
+});
+
 const server = app.listen(port);
 console.log('Magic happens on port ' + port);
 
