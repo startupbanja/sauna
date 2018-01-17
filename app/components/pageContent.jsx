@@ -99,8 +99,8 @@ const userContent = {
     credentials={profileInfo.credentials}
   />,
   feedback: <div><FeedbackView questions={feedbackQuestions} /></div>,
-  coaches: <div><UserList type="Coaches" /></div>,
-  startups: <div><UserList type="Startups" /></div>,
+  /* coaches: <div><UserList type="Coaches" /></div>,
+  startups: <div><UserList type="Startups" /></div>, */
 };
 
 const userLabels = {

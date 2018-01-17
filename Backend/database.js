@@ -22,7 +22,7 @@ function closeDatabase(callback) {
   });
 }
 const userQuery = `
-SELECT name, description, email, linkedin, Credentials.company, Credentials.title
+SELECT Profiles.user_id, name, description, email, linkedin, Credentials.company, Credentials.title
 FROM Profiles
 LEFT OUTER JOIN Credentials ON Profiles.user_id = Credentials.user_id
 WHERE Profiles.user_id IN (
@@ -47,7 +47,7 @@ FROM Users;
 //   })
 // }
 
-function getUsers(type, batch, callback) {
+function getUsers(type, batch, includeId, callback) {
   const users = {};
   // (sql, params, callback for each row, callback on complete)
   db.each(userQuery, [type, batch], (err, row) => {
@@ -64,6 +64,9 @@ function getUsers(type, batch, callback) {
         linkedin: row.linkedin,
         credentials: [[row.company, row.title]],
       };
+      if (includeId) {
+        users[row.name].id = row.user_id;
+      }
     }
     return null;
   }, (err) => {

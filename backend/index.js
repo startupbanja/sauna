@@ -25,7 +25,7 @@ app.get('/api', (req, res) => {
   if (req.query.hasOwnProperty("q")) {
     res.json({ message: req.query.q });
   } else {
-    database.getUsers(1, 0, (data) => {
+    database.getUsers(1, 0, false, (data) => {
       res.json(data);
     });
     // database.testApi((data) => {
@@ -58,11 +58,12 @@ app.get('/users', (req, res) => {
 
   res.append('Access-Control-Allow-Origin', ['*']);
 
-  database.getUsers(type, batch, (userList) => {
+  database.getUsers(type, batch, true, (userList) => {
     const userArray = [];
     for (const user in userList) {
       const userData = userList[user];
       const userObj = { 
+        id: userData.id,
         name: user,
         description: userData.description,
         img: '../app/imgs/coach_placeholder.png',

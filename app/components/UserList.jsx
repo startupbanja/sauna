@@ -26,10 +26,12 @@ export default class UserList extends React.Component {
     this.fetchAndUpdate();
   }
 
+  /* eslint-disable */
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.type === this.props.type) return;
     this.fetchAndUpdate();
   }
+  /* eslint-enable */
 
   fetchAndUpdate() {
     const query = `type=${this.props.type}`;
@@ -53,9 +55,11 @@ export default class UserList extends React.Component {
           (
             <UserListItem
               name={user.name}
+              id={user.id}
               key={user.name}
               description={user.description}
               imageSrc={user.img}
+              handleClick={this.props.handleClick}
             />
           ))}
       </div>
@@ -70,4 +74,5 @@ UserList.propTypes = {
     img: PropTypes.string,
   })).isRequired, */
   type: PropTypes.string.isRequired,
+  handleClick: PropTypes.func.isRequired,
 };

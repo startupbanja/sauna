@@ -2,9 +2,23 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 class UserListItem extends Component {
+  /* constructor(props) {
+    super(props);
+    this.state = {
+      id: -1,
+    };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      id: nextProps.id,
+    });
+  } */
+
   render() {
     return (
-      <div className="fullwidth text-style">
+      /* eslint-disable */
+      <div className="fullwidth text-style" onClick={() => this.props.handleClick(this.props.id.toString())}>
         <img className="list-avatar" src={this.props.imageSrc} alt="" />
         <div>
           <div>
@@ -15,6 +29,7 @@ class UserListItem extends Component {
           </div>
         </div>
       </div>
+      /* eslint-enable */
     );
   }
 }
@@ -28,6 +43,8 @@ UserListItem.propTypes = {
   name: PropTypes.string.isRequired,
   imageSrc: PropTypes.string,
   description: PropTypes.string,
+  handleClick: PropTypes.func.isRequired,
+  id: PropTypes.number.isRequired,
 };
 
 export default UserListItem;

@@ -33,15 +33,12 @@ export default class UserProfile extends React.Component {
       body: `userId=${this.props.id}`,
     }).then(response => response.json())
       .then((responseJSON) => {
-        console.log(responseJSON);
         this.setState({
           name: responseJSON.name,
           description: responseJSON.description,
           linkedIn: 'http://'.concat('', responseJSON.linkedIn),
           credentials: responseJSON.credentials,
         });
-
-        console.log(this.state.credentials);
       }).catch(err => console.log(err));
   }
 
