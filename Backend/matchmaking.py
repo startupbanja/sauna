@@ -13,22 +13,6 @@ import datetime
 # {"asd": {starttime, duration}}
 
 # change starttime and duration to timedelta objects for easy comparison
-def run():
-  data =  json.loads(sys.stdin.read())
-  oldAvail = data.availabilities
-  startupMeetingCount = {}
-
-  def mapAvail(coach):
-    old = oldAvail[coach]
-    times = old['starttime'].split[':']
-    res = (key,
-    {
-    'starttime': timedelta(hours=times[0], minutes=times[1]),
-    'duration': timedelta(minutes=old['duration'])
-    })
-    return res
-
-  availabilities = dict(map(mapAvail , data.availabilities.keys()) )
 
 # keep track of meeting count for startups, used for sorting
 # return of the sum of coach and startup feedbacks
@@ -40,27 +24,28 @@ def getSum(startup, coach):
 
 #Comparison functions for the different sorts used
 def cmpByFeedback(dictA, dictB):
-  sumA = getSum(dictA.startupfeedback, dictA.coachfeedback)
-  sumB = getSum(dictB.startupfeedback, dictB.coachfeedback)
-  return sumA - sumB
+  sumA = getSum(dictA['startupfeedback'], dictA['coachfeedback'])
+  sumB = getSum(dictB['startupfeedback'], dictB['coachfeedback'])
+  return int(sumA - sumB)
 
-def cmpByTimestart(dictA, dictB):
-  a = availabilities[dictA.coach]['starttime']
-  b = availabilities[dictB.coach]['starttime']
+def cmpByTimestart(dictA, dictB, availabilities):
+  a = availabilities[dictA['coach']]['starttime'].seconds
+  b = availabilities[dictB['coach']]['starttime'].seconds
   return a - b
 
-def cmpByTimetotal(dictA, dictB):
-  a = availabilities[dictA.coach]['duration']
-  b = availabilities[dictB.coach]['duration']
+def cmpByTimetotal(dictA, dictB, availabilities):
+  a = availabilities[dictA['coach']]['duration'].seconds
+  b = availabilities[dictB['coach']]['duration'].seconds
   return a - b
 
-def cmpByStartupMeetingCount():
-  pass
-# TODO
+def cmpByStartupMeetingCount(dictA, dictB, startupMeetingCount):
+  a = startupMeetingCount[dictA['startup']]
+  b = startupMeetingCount[dictB['startup']]
+  return a - b
 
 def filterFeedbacks(elem):
-  startup = elem.startupfeedback
-  coach = elem.coachfeedback
+  startup = elem['startupfeedback']
+  coach = elem['coachfeedback']
   if startup == 0:
     return False
   if coach == 0 and startup == -1:
@@ -69,75 +54,139 @@ def filterFeedbacks(elem):
     return False
   return True
 
+def timedeltaToMins(timedelta):
+  return timedelta.seconds / 60
+
 # returns true if there would be a double booking
 def isLegal(startup, timetable, coach, index):
-  slotSize = timedelta(minutes = 40) # TODO
+  slotSize = 40#datetime.timedelta(minutes = 40) # TODO
   # check if they are already meeting
   if startup in timetable[coach][2]:
     return False
   # check if coach is reserved at that time
-  if coachTuple[2][i] != None:
+  if timetable[coach][2][index] != None:
     return False
   # check if startup is reserved at that time
   # starttime = coachTuple[0]
-  nOfSlots = timetable[coach][1] / slotSize
+  nOfSlots = timetable[coach][1] // slotSize
   for newCoach in timetable:
     if newCoach != coach:
       starttime0 = timetable[coach][0]
-      timeToBeChecked = starttime0 + slotSize * i
+      timeToBeChecked = starttime0 + datetime.timedelta(minutes=slotSize * index)
       starttime1 = timetable[newCoach][0]
-      i1 = (timeToBeChecked - starttime1) / slotSize ## TODO int? double?
-      if timetable[newCoach][i1] == startup:
+      i1 = timedeltaToMins((timeToBeChecked - starttime1) // slotSize)
+      if len(timetable[newCoach]) > i1 and timetable[newCoach][i1] == startup:
         return False
   return True
 
 
 # find a place for a feedback element in the timetable(list)
 # elem: {startup: "asd", startupfeedback: 1, coach: "dasdsa", coachfeedback: 0}
-def findPlace(elem, timetable):
-  coachTuple = timetable[elem['coach']]
+def findPlace(elem, timetable, startupMeetingCount):
+  coach = elem['coach']
+  startup = elem['startup']
   # TODO check here if startup and coach are already meeting?
-  for i in range(len(coachTuple[2])):
-    if isLegal(elem['startup'], timetable, coachTuple, i):
-      timetable[elem[coach]][2][i] = elem['startup']
-      return True
+  for i in range(len(timetable[coach][2])):
+    if isLegal(startup, timetable, coach, i):
       #insert and return true
+      startupMeetingCount[startup] += 1
+      timetable[coach][2][i] = startup
+      return True
   return False
 
 def getEmptyTimetable(availabilities, slotSize):
   timetable = {}
   for name in availabilities.keys():
-    timetable[name] = (availabilities[name]['starttime'], availabilities[name]['duration'], [])
-    timetable[name][2] = [None] * (availabilities[name]['duration'] / slotSize)
+    timetable[name] = [availabilities[name]['starttime'], availabilities[name]['duration'], []]
+    slotCount = (availabilities[name]['duration'] / slotSize).seconds / 60
+    timetable[name][2] = [None] * slotCount
   return timetable
+
+def init(test, testData):
+  if test:
+    data = testData
+  else:
+    data = json.loads(sys.stdin.read())
+
+  feedbacks = data['feedbacks']
+  oldAvail = data['availabilities']
+  startupMeetingCount = dict(map(lambda d: (d['startup'], 0), feedbacks))
+  # startupMeetingCount = {feedbacks[k]['startup']: 0 for k in feedbacks.keys()}
+  def mapAvail(coach):
+    old = oldAvail[coach]
+    times = old['starttime'].split(':')
+    res = (coach,
+    {
+    'starttime': datetime.timedelta(hours=int(times[0]), minutes=int(times[1])),
+    'duration': datetime.timedelta(minutes=old['duration'])
+    })
+    return res
+  availabilities = dict(map(mapAvail , oldAvail.keys()) )
+  return feedbacks, availabilities, startupMeetingCount
+# timedelta, int (minutes), int
+def toTimeString(start, duration, i):
+  time = start.seconds + (duration * 60 * i)
+  secs = time % 60
+  mins = time / 60 % 60
+  hrs = time / (60 * 60)
+  return "{:02}:{:02}:{:02}".format(hrs, mins, secs)
+
+def transformToReturn(timetable):
+  duration = 40
+  res = []
+  for key in timetable.keys():
+    times = timetable[key]
+    start = times[0]
+    total = times[1]
+    slots = times[2]
+    for i, startup in enumerate(slots):
+      time = toTimeString(start, duration, i)
+      res.append({'coach': key, 'startup': startup, 'time': time, 'duration': duration})
+  return res
 
 
 # return value: {coach, startup, time, duration}
-def matchmake(feedbacks, availabilities):
+def matchmake(feedbacks, availabilities, startupMeetingCount):
   slotSize = 40
   #timetable: {coach: (start, duration, [null, "startup1", etc])}
   timetable = getEmptyTimetable(availabilities, slotSize)
   # filter out elements with too low feedback
-  filtered = filter(filterFeedbacks, feedbacks)
+  sortedList = filter(filterFeedbacks, feedbacks)
 
-  sortedList = random.shuffle(filtered)
-  cmpFunctions = [cmpByStartupMeetingCount, cmpByTimetotal, cmpByTimestart, cmpByFeedback]
+  random.shuffle(sortedList)
+
+  # list of our comparison functions for sorting. we use lambdas because some of
+  # the functions need additional parameters than a, b
+  # here a, b are members of the "feedbacks" list
+  cmpFunctions = [
+    lambda a, b: cmpByStartupMeetingCount(a,b,startupMeetingCount),
+    lambda a, b: cmpByTimetotal(a, b, availabilities),
+    lambda a, b: cmpByTimestart(a, b, availabilities),
+    cmpByFeedback
+  ]
   i = 0
-  while i < len(feedbacks):
+  while i < len(sortedList):
     # sort feedbacks list
     for f in cmpFunctions:
       sortedList = sorted(sortedList, f)
 
-    curRating = getSum(sortedList[i].startupfeedback, sortedList[i].coachfeedback)
+    curRating = getSum(sortedList[i]['startupfeedback'], sortedList[i]['coachfeedback'])
     newRating = curRating
-    while (i < len(feedbacks)):
+    while (i < len(sortedList)):
       # take current element
       cur = sortedList[i]
-      newRating = getSum(cur.startupfeedback, cur.coachfeedback)
+      newRating = getSum(cur['startupfeedback'], cur['coachfeedback'])
       # are we still on the same rating? if not, break into outer loop, sort again
       if (newRating != curRating):
         break
       # place into a free slot in the timetable
-      found = findPlace(cur, timetable)
+      found = findPlace(cur, timetable, startupMeetingCount)
       i += 1
-  return timetable
+  transformed = transformToReturn(timetable)
+  return json.dumps(transformed)
+
+params = init(False, None)
+
+ready = matchmake(params[0], params[1], params[2])
+
+print(ready)
