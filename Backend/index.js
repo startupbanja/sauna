@@ -36,13 +36,14 @@ app.get('/api', (req, res) => {
 
 //  muuta callback muotoon
 app.get('/timeslots', (req, res) => {
-  const ratings = database.getRatings();
   database.getTimeslots((timeslots) => {
-    const data = {
-      feedbacks: ratings,
-      availabilities: timeslots,
-    };
-    res.json(data);
+    database.getRatings((ratings) => {
+      const data = {
+        feedbacks: ratings,
+        availabilities: timeslots,
+      };
+      res.json(data);
+    });
   });
 });
 
