@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const database = require('./database.js');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
+const FileStore = require('session-file-store')(session);
 
 const app = express();
 
@@ -11,9 +12,13 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(session({
+  cookie: {
+    domain: '127.0.0.1',
+  },
   secret: '12saUna45',
-  resave: false,
+  resave: true,
   saveUninitialized: true,
+  store: new FileStore(),
   // TODO set store to some PostgreSQL session storage https://github.com/expressjs/session
 }));
 
@@ -49,11 +54,13 @@ app.post('/login', (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
 
-  res.append('Access-Control-Allow-Origin', ['*']);
+  res.append('Access-Control-Allow-Origin', 'http://127.0.0.1:8080');
+  res.append('Access-Control-Allow-Credentials', 'true');
 
   // bcrypt.hash(password, 10, (err, hash) => console.log(hash));
   database.verifyIdentity(username, password, (type, userId) => {
-    if (userId !== false) req.session.userId = userId;
+    if (userId !== false) req.session.userID = userId;
+    console.log(req.session.userID);
     res.json({ status: type });
   });
 });
@@ -64,7 +71,10 @@ app.get('/users', (req, res) => {
   if (type === 'Startups') type = 2;
   else type = 1;
 
-  res.append('Access-Control-Allow-Origin', ['*']);
+  console.log(req.session.userID);
+
+  res.append('Access-Control-Allow-Origin', 'http://127.0.0.1:8080');
+  res.append('Access-Control-Allow-Credentials', 'true');
 
   database.getUsers(type, batch, true, (userList) => {
     const userArray = [];

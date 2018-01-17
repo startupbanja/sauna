@@ -35,8 +35,9 @@ export default class UserList extends React.Component {
 
   fetchAndUpdate() {
     const query = `type=${this.props.type}`;
-    fetch(`http://localhost:3000/users?${query}`, {
+    fetch(`http://127.0.0.1:3000/users?${query}`, {
       method: 'GET',
+      credentials: 'include',
       headers: {
         Accept: 'application/json',
       },
