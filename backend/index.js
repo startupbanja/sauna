@@ -14,7 +14,7 @@ app.use(session({
   secret: '12saUna45',
   resave: false,
   saveUninitialized: true,
-  // TODO set store to some PostgreSQL session storage
+  // TODO set store to some PostgreSQL session storage https://github.com/expressjs/session
 }));
 
 const port = process.env.PORT || 3000;
