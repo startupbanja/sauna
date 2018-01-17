@@ -26,6 +26,11 @@ const port = process.env.PORT || 3000;
 
 app.use((req, res, next) => {
   console.log('Something is happening.');
+
+  // Allow frontend to send cookies
+  res.append('Access-Control-Allow-Origin', req.get('origin'));
+  res.append('Access-Control-Allow-Credentials', 'true');
+
   next();
 });
 
@@ -54,13 +59,9 @@ app.post('/login', (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
 
-  res.append('Access-Control-Allow-Origin', 'http://127.0.0.1:8080');
-  res.append('Access-Control-Allow-Credentials', 'true');
-
   // bcrypt.hash(password, 10, (err, hash) => console.log(hash));
   database.verifyIdentity(username, password, (type, userId) => {
     if (userId !== false) req.session.userID = userId;
-    console.log(req.session.userID);
     res.json({ status: type });
   });
 });
@@ -70,11 +71,6 @@ app.get('/users', (req, res) => {
   const batch = 1;
   if (type === 'Startups') type = 2;
   else type = 1;
-
-  console.log(req.session.userID);
-
-  res.append('Access-Control-Allow-Origin', 'http://127.0.0.1:8080');
-  res.append('Access-Control-Allow-Credentials', 'true');
 
   database.getUsers(type, batch, true, (userList) => {
     const userArray = [];
@@ -92,11 +88,14 @@ app.get('/users', (req, res) => {
   });
 });
 
-app.post('/profile', (req, res) => {
-  const id = req.body.userId;
-  console.log(id);
-  res.append('Access-Control-Allow-Origin', ['*']);
-  database.getProfile(id, (result) => {console.log(result); res.json(result)});
+app.get('/profile', (req, res) => {
+  let id;
+  if (typeof req.query.userId !== 'undefined') id = req.query.userId;
+  else id = req.session.userID;
+
+  database.getProfile(id, (result) => {
+    res.json(result);
+  });
 });
 
 const server = app.listen(port);

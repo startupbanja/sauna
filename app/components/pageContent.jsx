@@ -65,7 +65,7 @@ const users = [
 ]; */
 
 // Template data for the User Profile.
-const profileInfo = {
+/* const profileInfo = {
   name: 'Sample User',
   description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' +
@@ -85,18 +85,13 @@ const profileInfo = {
     { company: 'Aalto University', position: 'Course assistant' },
     { company: 'Company', position: 'Position' },
   ],
-};
+}; */
 
 
 const userContent = {
   mainPage: <div><h1>Home</h1><LandingPage /></div>,
   timetable: <UserSchedule schedule={schedule} />,
-  userProfile: <UserProfile
-    name={profileInfo.name}
-    description={profileInfo.description}
-    titles={profileInfo.titles}
-    credentials={profileInfo.credentials}
-  />,
+  userProfile: <UserProfile />,
   feedback: <div><FeedbackView questions={feedbackQuestions} /></div>,
   /* coaches: <div><UserList type="Coaches" /></div>,
   startups: <div><UserList type="Startups" /></div>, */

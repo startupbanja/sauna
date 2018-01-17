@@ -19,7 +19,7 @@ class UserListItem extends Component {
     return (
       /* eslint-disable */
       <div className="fullwidth text-style" onClick={() => this.props.handleClick(this.props.id.toString())}>
-        <img className="list-avatar" src={this.props.imageSrc} alt="" />
+        <img className="list-avatar img-responsive" src={this.props.imageSrc} alt="" />
         <div>
           <div>
             <span className="header">{this.props.name}</span>

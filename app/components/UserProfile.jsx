@@ -23,14 +23,20 @@ export default class UserProfile extends React.Component {
     this.fetchData();
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.id === prevProps.id) return;
+    this.fetchData();
+  }
+
   fetchData() {
-    fetch('http://localhost:3000/profile', {
-      method: 'POST',
+    let query = '';
+    if (typeof this.props.id !== 'undefined') query = `userId=${this.props.id}`;
+    fetch(`http://127.0.0.1:3000/profile?${query}`, {
+      method: 'GET',
+      credentials: 'include',
       headers: {
         Accept: 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
       },
-      body: `userId=${this.props.id}`,
     }).then(response => response.json())
       .then((responseJSON) => {
         this.setState({
@@ -80,6 +86,6 @@ UserProfile.propTypes = {
   })).isRequired, */
 };
 
-UserProfile.defaultProps = {
+/* UserProfile.defaultProps = {
   id: '13',
-};
+}; */

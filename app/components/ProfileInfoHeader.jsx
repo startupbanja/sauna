@@ -18,7 +18,7 @@ export default class ProfileInfoHeader extends React.Component {
     ));
     return (
       <div className="userInfoHeader">
-        <img src={this.props.imgSrc} alt="Username" className="userImage" />
+        <img src={this.props.imgSrc} alt="Username" className="userImage img-responsive" />
         <div className="mainInfoSection">
           <h3 id="username">{this.props.name}</h3>
           <ul className="titles">
