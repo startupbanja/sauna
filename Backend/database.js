@@ -69,7 +69,7 @@ function getUsers(type, batch, callback) {
   }, (err) => {
     if (err) {
       // return console.error(err.message);
-      throw err
+      throw err;
     }
     return callback(users);
   });
@@ -78,7 +78,6 @@ function getUsers(type, batch, callback) {
 
 function verifyIdentity(username, password, callback) {
   const query = 'SELECT id, type, password FROM Users WHERE username = ?';
-  let type;
   db.get(query, [username], (err, row) => {
     if (err) {
       throw err;
@@ -93,18 +92,22 @@ function verifyIdentity(username, password, callback) {
         callback('error');
         return;
       }
+      let type;
+      let userId = false;
       switch (row.type) {
         case 0:
           type = 'admin';
+          userId = row.id;
           break;
         case 1:
         case 2:
           type = 'user';
+          userId = row.id;
           break;
         default:
           type = 'error';
       }
-      callback(type);
+      callback(type, userId);
     });
   });
 }

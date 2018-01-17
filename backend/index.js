@@ -3,26 +3,33 @@ const readline = require('readline');
 const bodyParser = require('body-parser');
 const database = require('./database.js');
 const bcrypt = require('bcrypt');
+const session = require('express-session');
 
 const app = express();
 
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(session({
+  secret: '12saUna45',
+  resave: false,
+  saveUninitialized: true,
+  // TODO set store to some PostgreSQL session storage
+}));
 
 const port = process.env.PORT || 3000;
 
-app.use(function(req, res, next) {
-    console.log('Something is happening.');
-    next();
+app.use((req, res, next) => {
+  console.log('Something is happening.');
+  next();
 });
 
 app.get('/', (req, res) => {
-    res.sendFile(__dirname+"/index.html");
+  res.sendFile(`${__dirname}/index.html`);
 });
 
 app.get('/api', (req, res) => {
-  if (req.query.hasOwnProperty("q")) {
+  if (req.query.hasOwnProperty('q')) {
     res.json({ message: req.query.q });
   } else {
     database.getUsers(1, 0, (data) => {
@@ -40,19 +47,20 @@ app.get('/api', (req, res) => {
 
 app.post('/login', (req, res) => {
   const username = req.body.username;
-  let password = req.body.password;
+  const password = req.body.password;
 
   res.append('Access-Control-Allow-Origin', ['*']);
 
-  bcrypt.hash(password, 10, (err, hash) => console.log(hash));
-  database.verifyIdentity(username, password, (type) => {
+  // bcrypt.hash(password, 10, (err, hash) => console.log(hash));
+  database.verifyIdentity(username, password, (type, userId) => {
+    if (userId !== false) req.session.userId = userId;
     res.json({ status: type });
   });
 });
 
 
 const server = app.listen(port);
-console.log('Magic happens on port ' + port);
+console.log(`Magic happens on port ${port}`);
 
 function closeServer() {
   database.closeDatabase(() => {
