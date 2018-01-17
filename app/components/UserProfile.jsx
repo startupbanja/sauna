@@ -16,6 +16,7 @@ export default class UserProfile extends React.Component {
       description: '',
       linkedIn: '',
       credentials: [],
+      canModify: false,
     };
   }
 
@@ -44,6 +45,7 @@ export default class UserProfile extends React.Component {
           description: responseJSON.description,
           linkedIn: 'http://'.concat('', responseJSON.linkedIn),
           credentials: responseJSON.credentials,
+          canModify: responseJSON.canModify,
         });
       }).catch(err => console.log(err));
   }

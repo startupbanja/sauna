@@ -94,6 +94,9 @@ app.get('/profile', (req, res) => {
   else id = req.session.userID;
 
   database.getProfile(id, (result) => {
+    if (req.session.userID == id || req.session.userID === 82) {
+      Object.assign(result, { canModify: true });
+    }
     res.json(result);
   });
 });

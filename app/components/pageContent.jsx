@@ -4,6 +4,7 @@ import FeedbackView from './FeedbackView';
 import LandingPage from './LandingPage';
 import UserProfile from './UserProfile';
 import UserSchedule from './UserSchedule';
+import UserList from './UserList';
 
 const feedbackQuestions = [
   {
@@ -108,10 +109,14 @@ const userLabels = {
 
 const adminContent = {
   mainPage: <div><h1>Home</h1><LandingPage /></div>,
+  coaches: <div><UserList type="Coaches" /></div>,
+  startups: <div><UserList type="Startups" /></div>,
 };
 
 const adminLabels = {
   mainPage: 'Home',
+  coaches: 'Coaches',
+  startups: 'Startups',
 };
 // TODO change this to something better later
 function getContent(userType) {
