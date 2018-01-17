@@ -32,7 +32,7 @@ app.get('/api', (req, res) => {
   if (req.query.hasOwnProperty('q')) {
     res.json({ message: req.query.q });
   } else {
-    database.getUsers(1, 0, (data) => {
+    database.getUsers(1, 0, false, (data) => {
       res.json(data);
     });
     // database.testApi((data) => {
@@ -58,6 +58,36 @@ app.post('/login', (req, res) => {
   });
 });
 
+app.get('/users', (req, res) => {
+  let type = req.query.type;
+  const batch = 1;
+  if (type === 'Startups') type = 2;
+  else type = 1;
+
+  res.append('Access-Control-Allow-Origin', ['*']);
+
+  database.getUsers(type, batch, true, (userList) => {
+    const userArray = [];
+    for (const user in userList) {
+      const userData = userList[user];
+      const userObj = { 
+        id: userData.id,
+        name: user,
+        description: userData.description,
+        img: '../app/imgs/coach_placeholder.png',
+      };
+      userArray.push(userObj);
+    }
+    res.json({ users: userArray });
+  });
+});
+
+app.post('/profile', (req, res) => {
+  const id = req.body.userId;
+  console.log(id);
+  res.append('Access-Control-Allow-Origin', ['*']);
+  database.getProfile(id, (result) => {console.log(result); res.json(result)});
+});
 
 const server = app.listen(port);
 console.log(`Magic happens on port ${port}`);

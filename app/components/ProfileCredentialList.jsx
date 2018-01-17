@@ -7,8 +7,16 @@ import BlockHeader from './BlockHeader';
 export default class ProfileCredentialList extends React.Component {
   constructor(props) {
     super(props);
+    console.log(props.credentials);
     this.state = { credentials: props.credentials };
   }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      credentials: nextProps.credentials,
+    });
+  }
+
   render() {
     const h4Style = {
       textAlign: 'center',
@@ -46,9 +54,5 @@ ProfileCredentialList.propTypes = {
   credentials: PropTypes.arrayOf(PropTypes.shape({
     company: PropTypes.string.isRequired,
     position: PropTypes.string.isRequired,
-  })),
-};
-
-ProfileCredentialList.defaultProps = {
-  credentials: [],
+  })).isRequired,
 };

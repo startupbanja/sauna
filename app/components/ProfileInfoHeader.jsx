@@ -6,6 +6,12 @@ export default class ProfileInfoHeader extends React.Component {
     super(props);
     this.state = { titles: props.titles };
   }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      titles: nextProps.titles,
+    });
+  }
   render() {
     const titles = this.state.titles.map(x => (
       <li key={x}>{x}</li>
@@ -26,6 +32,11 @@ export default class ProfileInfoHeader extends React.Component {
 
 ProfileInfoHeader.propTypes = {
   name: PropTypes.string.isRequired,
-  imgSrc: PropTypes.string.isRequired,
-  titles: PropTypes.arrayOf(PropTypes.string).isRequired,
+  imgSrc: PropTypes.string,
+  titles: PropTypes.arrayOf(PropTypes.string),
+};
+
+ProfileInfoHeader.defaultProps = {
+  imgSrc: '../app/imgs/coach_placeholder.png',
+  titles: [],
 };

@@ -65,6 +65,7 @@ CREATE TABLE Meetings(
 
 INSERT INTO Batches VALUES (0), (1);
 
+-- password for all startups and coaches is 'pass' and for admin 'admin'
 INSERT INTO Users (type, username, password, batch, active) VALUES
     (2, 'startup1', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 1, 1),
 	(2, 'startup2', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 1, 1),
@@ -79,14 +80,14 @@ INSERT INTO Users (type, username, password, batch, active) VALUES
 	(2, 'startup11', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 1, 1),
 	(2, 'startup12', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 1, 1),
 
-	(1, 'coach1', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 0, 1),
-	(1, 'coach2', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 0, 1),
-	(1, 'coach3', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 0, 1),
-	(1, 'coach4', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 0, 1),
-	(1, 'coach5', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 0, 1),
-	(1, 'coach6', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 0, 1),
-	(1, 'coach7', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 0, 1),
-	(1, 'coach8', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 0, 1),
+	(1, 'coach1', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 1, 1),
+	(1, 'coach2', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 1, 1),
+	(1, 'coach3', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 1, 1),
+	(1, 'coach4', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 1, 1),
+	(1, 'coach5', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 1, 1),
+	(1, 'coach6', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 1, 1),
+	(1, 'coach7', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 1, 1),
+	(1, 'coach8', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 1, 1),
 	(1, 'coach9', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 0, 1),
 	(1, 'coach10', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 0, 1),
 	(1, 'coach11', '$2a$10$pq4sHnSRQLeLx2RiIJK5f.WhtahwUZK62d5zTVM.3zYzhV/GD4bRG', 0, 1),
