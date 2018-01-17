@@ -221,7 +221,20 @@ INSERT INTO Profiles (user_id, name, description, company, email, linkedin) VALU
 	(78, 'Timo Tirkkonen', 'Coach description', 'Coach company', 'coach66@email.com', 'linkedin.com/coach66'),
 	(79, 'Torsti Tenhunen', 'Coach description', 'Coach company', 'coach67@email.com', 'linkedin.com/coach67'),
 	(80, 'Ville Vesterinen', 'Coach description', 'Coach company', 'coach68@email.com', 'linkedin.com/coach68'),
-	(81, 'Ville Miettinen', 'Coach description', 'Coach company', 'coach69@email.com', 'linkedin.com/coach69');
+	(81, 'Ville Miettinen', 'Coach description', 'Coach company', 'coach69@email.com', 'linkedin.com/coach69'),
+	
+	(1, 'Startup 1', 'Startup description', 'Startup Business', 'www.startup1.com', ''),
+	(2, 'Startup 2', 'Startup description', 'Startup Business', 'www.startup2.com', ''),
+	(3, 'Startup 3', 'Startup description', 'Startup Business', 'www.startup3.com', ''),
+	(4, 'Startup 4', 'Startup description', 'Startup Business', 'www.startup4.com', ''),
+	(5, 'Startup 5', 'Startup description', 'Startup Business', 'www.startup5.com', ''),
+	(6, 'Startup 6', 'Startup description', 'Startup Business', 'www.startup6.com', ''),
+	(7, 'Startup 7', 'Startup description', 'Startup Business', 'www.startup7.com', ''),
+	(8, 'Startup 8', 'Startup description', 'Startup Business', 'www.startup8.com', ''),
+	(9, 'Startup 9', 'Startup description', 'Startup Business', 'www.startup9.com', ''),
+	(10, 'Startup 10', 'Startup description', 'Startup Business', 'www.startup10.com', ''),
+	(11, 'Startup 11', 'Startup description', 'Startup Business', 'www.startup11.com', ''),
+	(12, 'Startup 12', 'Startup description', 'Startup Business', 'www.startup12.com', '');
 
 INSERT INTO Meetings (coach_id, startup_id, datetime, duration, coach_rating, startup_rating) VALUES
 	(14, 2, '2017-10-10 12:00:00', 40, 0, 3),
@@ -621,7 +634,20 @@ INSERT INTO Credentials (user_id, company, title) VALUES
 	(78, 'Company', 'Title'),
 	(79, 'Company', 'Title'),
 	(80, 'Company', 'Title'),
-	(81, 'Company', 'Title');
+	(81, 'Company', 'Title'),
+	
+	(1, 'Name', 'Position'),
+	(2, 'Name', 'Position'),
+	(3, 'Name', 'Position'),
+	(4, 'Name', 'Position'),
+	(5, 'Name', 'Position'),
+	(6, 'Name', 'Position'),
+	(7, 'Name', 'Position'),
+	(8, 'Name', 'Position'),
+	(9, 'Name', 'Position'),
+	(10, 'Name', 'Position'),
+	(11, 'Name', 'Position'),
+	(12, 'Name', 'Position');
 
 INSERT INTO Timeslots (user_id, datetime, duration) VALUES
 	(13, '2017-10-20 12:00:00', 240),
