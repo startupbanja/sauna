@@ -43,7 +43,7 @@ def cmpByStartupMeetingCount(dictA, dictB, startupMeetingCount):
   b = startupMeetingCount[dictB['startup']]
   return a - b
 
-def filterFeedbacks(elem):
+def filterFeedbacks(elem, availabilities):
   startup = elem['startupfeedback']
   coach = elem['coachfeedback']
   if startup == 0:
@@ -51,6 +51,8 @@ def filterFeedbacks(elem):
   if coach == 0 and startup == -1:
     return False
   if getSum(coach, startup) <= 2: #coach != -1 and startup != -1 and startup + coach <= 2:
+    return False
+  if elem['coach'] not in availabilities.keys():
     return False
   return True
 
@@ -99,7 +101,7 @@ def getEmptyTimetable(availabilities, slotSize):
   for name in availabilities.keys():
     timetable[name] = [availabilities[name]['starttime'], availabilities[name]['duration'], []]
     slotCount = (availabilities[name]['duration'] / slotSize).seconds / 60
-    timetable[name][2] = [None] * slotCount
+    timetable[name][2] = [None] * int(slotCount)
   return timetable
 
 def init(test, testData):
@@ -140,8 +142,9 @@ def transformToReturn(timetable):
     total = times[1]
     slots = times[2]
     for i, startup in enumerate(slots):
-      time = toTimeString(start, duration, i)
-      res.append({'coach': key, 'startup': startup, 'time': time, 'duration': duration})
+      if startup != None:
+        time = toTimeString(start, duration, i)
+        res.append({'coach': key, 'startup': startup, 'time': time, 'duration': duration})
   return res
 
 
@@ -151,8 +154,8 @@ def matchmake(feedbacks, availabilities, startupMeetingCount):
   #timetable: {coach: (start, duration, [null, "startup1", etc])}
   timetable = getEmptyTimetable(availabilities, slotSize)
   # filter out elements with too low feedback
-  sortedList = filter(filterFeedbacks, feedbacks)
 
+  sortedList = filter(lambda a: filterFeedbacks(a, availabilities), feedbacks)
   random.shuffle(sortedList)
 
   # list of our comparison functions for sorting. we use lambdas because some of
@@ -182,6 +185,7 @@ def matchmake(feedbacks, availabilities, startupMeetingCount):
       # place into a free slot in the timetable
       found = findPlace(cur, timetable, startupMeetingCount)
       i += 1
+
   transformed = transformToReturn(timetable)
   return json.dumps(transformed)
 
@@ -189,4 +193,4 @@ params = init(False, None)
 
 ready = matchmake(params[0], params[1], params[2])
 
-print(ready)
+sys.stdout.write(ready)

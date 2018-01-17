@@ -84,8 +84,8 @@ function getRatings(callback) {
       throw err;
     }
     ratings.push({
-      coach: row.coach_id,
-      startup: row.startup_id,
+      coach: row.coach_id.toString(),
+      startup: row.startup_id.toString(),
       coachfeedback: row.coach_rating,
       startupfeedback: row.startup_rating,
     });
