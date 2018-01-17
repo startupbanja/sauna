@@ -34,6 +34,18 @@ app.get('/api', (req, res) => {
   }
 });
 
+//  muuta callback muotoon
+app.get('/timeslots', (req, res) => {
+  const ratings = database.getRatings();
+  database.getTimeslots((timeslots) => {
+    const data = {
+      feedbacks: ratings,
+      availabilities: timeslots,
+    };
+    res.json(data);
+  });
+});
+
 // app.get('/api', function(req, res) {
 //     res.json({ message: req.query.q });
 // });
