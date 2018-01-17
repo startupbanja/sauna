@@ -23,16 +23,19 @@ def getSum(startup, coach):
   return max(0, startup) + max(0, coach)
 
 #Comparison functions for the different sorts used
+# dictA, dictB are elements from the "feedbacks" list
 def cmpByFeedback(dictA, dictB):
   sumA = getSum(dictA['startupfeedback'], dictA['coachfeedback'])
   sumB = getSum(dictB['startupfeedback'], dictB['coachfeedback'])
   return int(sumA - sumB)
 
+#compare by starting time of coach availability
 def cmpByTimestart(dictA, dictB, availabilities):
   a = availabilities[dictA['coach']]['starttime'].seconds
   b = availabilities[dictB['coach']]['starttime'].seconds
   return a - b
 
+# compare by duration of coach availability
 def cmpByTimetotal(dictA, dictB, availabilities):
   a = availabilities[dictA['coach']]['duration'].seconds
   b = availabilities[dictB['coach']]['duration'].seconds
@@ -43,6 +46,11 @@ def cmpByStartupMeetingCount(dictA, dictB, startupMeetingCount):
   b = startupMeetingCount[dictB['startup']]
   return a - b
 
+#Filters out feedback elements that meet the following criteria:
+# Startuo gave feedback score 0
+# Coach gave 0 and startup gave no response
+# Sum of feedbacks is less than 0
+# Coach did not give any available times
 def filterFeedbacks(elem, availabilities):
   startup = elem['startupfeedback']
   coach = elem['coachfeedback']
@@ -59,7 +67,8 @@ def filterFeedbacks(elem, availabilities):
 def timedeltaToMins(timedelta):
   return timedelta.seconds / 60
 
-# returns true if there would be a double booking
+# returns true if there would be a double booking at a certain timeslot in timetable
+#
 def isLegal(startup, timetable, coach, index):
   slotSize = 40#datetime.timedelta(minutes = 40) # TODO
   # check if they are already meeting
@@ -151,7 +160,7 @@ def transformToReturn(timetable):
 # return value: {coach, startup, time, duration}
 def matchmake(feedbacks, availabilities, startupMeetingCount):
   slotSize = 40
-  #timetable: {coach: (start, duration, [null, "startup1", etc])}
+  #timetable: {coach: [start, duration, [null, "startup1", etc]]}
   timetable = getEmptyTimetable(availabilities, slotSize)
   # filter out elements with too low feedback
 
@@ -189,8 +198,10 @@ def matchmake(feedbacks, availabilities, startupMeetingCount):
   transformed = transformToReturn(timetable)
   return json.dumps(transformed)
 
+
+# COMMENT OUT THESE THREE LINES WHEN TESTING
+###
 params = init(False, None)
-
 ready = matchmake(params[0], params[1], params[2])
-
 sys.stdout.write(ready)
+###
