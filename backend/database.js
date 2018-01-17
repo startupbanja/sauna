@@ -76,7 +76,7 @@ function getUsers(type, batch, callback) {
   });
 }
 
-function getRatings() {
+function getRatings(callback) {
   const ratings = [];
   // (sql, params, callback for each row, callback on complete)
   db.each(ratingQuery, [], (err, row) => {
@@ -95,7 +95,7 @@ function getRatings() {
       // return console.error(err.message);
       throw err;
     }
-    return ratings;
+    return callback(ratings);
   });
 }
 
