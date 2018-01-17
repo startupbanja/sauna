@@ -4,7 +4,6 @@ import FeedbackView from './FeedbackView';
 import LandingPage from './LandingPage';
 import UserProfile from './UserProfile';
 import UserSchedule from './UserSchedule';
-import UserList from './UserList';
 
 const feedbackQuestions = [
   {
