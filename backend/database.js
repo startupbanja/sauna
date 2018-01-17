@@ -43,7 +43,7 @@ SELECT coach_id, startup_id, coach_rating, startup_rating
 FROM Ratings
 INNER JOIN Users
 ON Ratings.startup_id=Users.id
-WHERE type=2 AND active=TRUE AND batch IN (
+WHERE type=2 AND active=1 AND batch IN (
 SELECT MAX(id)
 FROM Batches
 );`;
@@ -76,7 +76,7 @@ function getUsers(type, batch, callback) {
   });
 }
 
-function getRatings(callback) {
+function getRatings() {
   const ratings = [];
   // (sql, params, callback for each row, callback on complete)
   db.each(ratingQuery, [], (err, row) => {
@@ -95,13 +95,12 @@ function getRatings(callback) {
       // return console.error(err.message);
       throw err;
     }
-    return callback(ratings);
+    return ratings;
   });
 }
 
 function getTimeslots(callback) {
   const timeslots = {};
-  // (sql, params, callback for each row, callback on complete)
   db.each(timeslotQuery, [], (err, row) => {
     if (err) {
       throw err;
