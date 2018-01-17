@@ -42,7 +42,7 @@ app.get('/timeslots', (req, res) => {
         feedbacks: ratings,
         availabilities: timeslots,
       };
-      res.json(data);
+      matchmaking.run(data, rdy => res.json(rdy));
     });
   });
 });
