@@ -80,8 +80,22 @@ class TestMatchmaking(unittest.TestCase):
     self.assertEqual(matchmaking.cmpByTimestart(self.definedFeedbacks[0],self.definedFeedbacks[0],self.definedAvailabilities),0)
     self.assertEqual(matchmaking.cmpByTimestart(self.definedFeedbacks[0],self.definedFeedbacks[4],self.definedAvailabilities),0)
     self.assertEqual(matchmaking.cmpByTimestart(self.definedFeedbacks[0],self.definedFeedbacks[8],self.definedAvailabilities),-3600)
-    self.assertEqual(matchmaking.cmpByTimestart(self.definedFeedbacks[0],self.definedFeedbacks[8],self.definedAvailabilities),3600)
+    self.assertEqual(matchmaking.cmpByTimestart(self.definedFeedbacks[8],self.definedFeedbacks[0],self.definedAvailabilities),3600)
 
+  def test_cmpByTimetotal(self):
+    self.assertEqual(matchmaking.cmpByTimetotal(self.definedFeedbacks[0],self.definedFeedbacks[0],self.definedAvailabilities),0)
+    self.assertEqual(matchmaking.cmpByTimetotal(self.definedFeedbacks[0],self.definedFeedbacks[4],self.definedAvailabilities),7200)
+    self.assertEqual(matchmaking.cmpByTimetotal(self.definedFeedbacks[0],self.definedFeedbacks[8],self.definedAvailabilities),7200)
+    self.assertEqual(matchmaking.cmpByTimetotal(self.definedFeedbacks[8],self.definedFeedbacks[0],self.definedAvailabilities),-7200)
+
+  def test_cmpByStartupMeetingCount(self):
+    startupMeetingCount = {
+      1: 1,
+      2: 2
+    }
+    self.assertEqual(matchmaking.cmpByStartupMeetingCount(self.definedFeedbacks[0],self.definedFeedbacks[0],startupMeetingCount),0)
+    self.assertEqual(matchmaking.cmpByStartupMeetingCount(self.definedFeedbacks[0],self.definedFeedbacks[4],startupMeetingCount),-1)
+    self.assertEqual(matchmaking.cmpByStartupMeetingCount(self.definedFeedbacks[4],self.definedFeedbacks[0],startupMeetingCount),1)
 
 
 if __name__ == '__main__':
