@@ -47,9 +47,9 @@ def cmpByStartupMeetingCount(dictA, dictB, startupMeetingCount):
   return a - b
 
 #Filters out feedback elements that meet the following criteria:
-# Startuo gave feedback score 0
+# Startup gave feedback score 0
 # Coach gave 0 and startup gave no response
-# Sum of feedbacks is less than 0
+# Sum of feedbacks is 2 or less
 # Coach did not give any available times
 def filterFeedbacks(elem, availabilities):
   startup = elem['startupfeedback']
