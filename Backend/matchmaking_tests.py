@@ -97,6 +97,17 @@ class TestMatchmaking(unittest.TestCase):
     self.assertEqual(matchmaking.cmpByStartupMeetingCount(self.definedFeedbacks[0],self.definedFeedbacks[4],startupMeetingCount),-1)
     self.assertEqual(matchmaking.cmpByStartupMeetingCount(self.definedFeedbacks[4],self.definedFeedbacks[0],startupMeetingCount),1)
 
+  def test_filterFeedbacks(self):
+    self.assertEqual(matchmaking.filterFeedbacks(self.definedFeedbacks[0], self.definedAvailabilities),True)
+    # Coach not in availabilities
+    self.assertEqual(matchmaking.filterFeedbacks(self.definedFeedbacks[12], self.definedAvailabilities),False)
+    # Startup gave feedback score 0
+    self.assertEqual(matchmaking.filterFeedbacks(self.definedFeedbacks[4], self.definedAvailabilities),False)
+    # Coach gave 0 and startup gave no response
+    self.assertEqual(matchmaking.filterFeedbacks({'startup': 1,'startupfeedback':-1,'coach':1,'coachfeedback':0}, self.definedAvailabilities),False)
+    # Sum of feedbacks is 2 or less
+    self.assertEqual(matchmaking.filterFeedbacks({'startup': 1,'startupfeedback':1,'coach':1,'coachfeedback':1}, self.definedAvailabilities),False)
+
 
 if __name__ == '__main__':
     unittest.main()
