@@ -6,74 +6,29 @@ import ProfileInfoHeader from './ProfileInfoHeader';
 
 // React Component for a user's profile page.
 export default class UserProfile extends React.Component {
-  constructor(props) {
-    super(props);
-    this.fetchData = this.fetchData.bind(this);
-
-    // Initialize the state as empty.
-    this.state = {
-      name: '',
-      description: '',
-      linkedIn: '',
-      credentials: [],
-      canModify: false,
-      titles: [],
-    };
-  }
-
-  componentDidMount() {
-    this.fetchData();
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.id === prevProps.id) return;
-    this.fetchData();
-  }
-
-  fetchData() {
-    let query = '';
-    if (typeof this.props.id !== 'undefined') query = `userId=${this.props.id}`;
-    fetch(`http://127.0.0.1:3000/profile?${query}`, {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        Accept: 'application/json',
-      },
-    }).then(response => response.json())
-      .then((responseJSON) => {
-        this.setState({
-          name: responseJSON.name,
-          description: responseJSON.description,
-          linkedIn: 'http://'.concat('', responseJSON.linkedIn),
-          credentials: responseJSON.credentials,
-          canModify: responseJSON.canModify,
-          titles: [responseJSON.company],
-        });
-      }).catch(err => console.log(err));
-  }
-
   render() {
     return (
       <div className="profileContainer container">
         <link rel="stylesheet" type="text/css" href="app/styles/user_profile_style.css" />
         <ProfileInfoHeader
-          name={this.state.name}
-          imgSrc={this.state.imgSrc}
-          titles={this.state.titles}
-          canModify={this.state.canModify}
+          name={this.props.name}
+          imgSrc={this.props.imgSrc}
+          titles={this.props.titles}
+          canModify={this.props.canModify}
+          onModifyClick={this.props.onModifyClick}
         />
         <ul className="profileLinks">
           <li>
-              LinkedIn: <a href={this.state.linkedIn}>linkedin.com</a>
+              LinkedIn: <a href={this.props.linkedIn}>linkedin.com</a>
           </li>
         </ul>
         <hr />
         <div className="userDescription">
           <p>
-            {this.state.description}
+            {this.props.description}
           </p>
         </div>
-        <ProfileCredentialList credentials={this.state.credentials} />
+        <ProfileCredentialList credentials={this.props.credentials} />
       </div>
     );
   }
@@ -81,8 +36,7 @@ export default class UserProfile extends React.Component {
 
 
 UserProfile.propTypes = {
-  id: PropTypes.string,
-  /* name: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
   linkedIn: PropTypes.string,
   imgSrc: PropTypes.string,
   description: PropTypes.string,
@@ -90,9 +44,16 @@ UserProfile.propTypes = {
   credentials: PropTypes.arrayOf(PropTypes.shape({
     company: PropTypes.string.isRequired,
     position: PropTypes.string.isRequired,
-  })).isRequired, */
+  })),
+  canModify: PropTypes.bool,
+  onModifyClick: PropTypes.func.isRequired,
 };
 
-/* UserProfile.defaultProps = {
-  id: '13',
-}; */
+UserProfile.defaultProps = {
+  linkedIn: '',
+  imgSrc: '../app/imgs/coach_placeholder.png',
+  description: '',
+  titles: [],
+  credentials: [],
+  canModify: false,
+};

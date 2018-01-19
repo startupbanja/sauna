@@ -17,7 +17,16 @@ export default class ProfileInfoHeader extends React.Component {
       <li key={x}>{x}</li>
     ));
     let modifyBtn = '';
-    if (this.props.canModify) modifyBtn = <span className="glyphicon glyphicon-cog" />;
+    if (this.props.canModify) {
+      modifyBtn = (
+        <span
+          className="glyphicon glyphicon-cog"
+          onClick={this.props.onModifyClick}
+          role="button"
+          tabIndex={0}
+          onKeyPress={this.props.onModifyClick}
+        />);
+    }
     return (
       <div className="userInfoHeader row">
         <img src={this.props.imgSrc} alt="Username" className="userImage img-responsive col-xs-5" />
@@ -38,6 +47,7 @@ ProfileInfoHeader.propTypes = {
   imgSrc: PropTypes.string,
   titles: PropTypes.arrayOf(PropTypes.string),
   canModify: PropTypes.bool,
+  onModifyClick: PropTypes.func.isRequired,
 };
 
 ProfileInfoHeader.defaultProps = {

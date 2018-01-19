@@ -2,7 +2,7 @@ import React from 'react';
 /* import Image from './Image'; */
 import FeedbackView from './FeedbackView';
 import LandingPage from './LandingPage';
-import UserProfile from './UserProfile';
+import UserProfilePage from './UserProfilePage';
 import UserSchedule from './UserSchedule';
 import UserList from './UserList';
 
@@ -92,7 +92,7 @@ const users = [
 const userContent = {
   mainPage: <div><h1>Home</h1><LandingPage /></div>,
   timetable: <UserSchedule schedule={schedule} />,
-  userProfile: <UserProfile />,
+  userProfile: <UserProfilePage />,
   feedback: <div><FeedbackView questions={feedbackQuestions} /></div>,
   /* coaches: <div><UserList type="Coaches" /></div>,
   startups: <div><UserList type="Startups" /></div>, */
