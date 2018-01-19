@@ -17,6 +17,7 @@ export default class UserProfile extends React.Component {
       linkedIn: '',
       credentials: [],
       canModify: false,
+      titles: [],
     };
   }
 
@@ -24,7 +25,7 @@ export default class UserProfile extends React.Component {
     this.fetchData();
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if (this.props.id === prevProps.id) return;
     this.fetchData();
   }
@@ -46,23 +47,27 @@ export default class UserProfile extends React.Component {
           linkedIn: 'http://'.concat('', responseJSON.linkedIn),
           credentials: responseJSON.credentials,
           canModify: responseJSON.canModify,
+          titles: [responseJSON.company],
         });
       }).catch(err => console.log(err));
   }
 
   render() {
     return (
-      <div className="profileContainer">
+      <div className="profileContainer container">
+        <link rel="stylesheet" type="text/css" href="app/styles/user_profile_style.css" />
         <ProfileInfoHeader
           name={this.state.name}
           imgSrc={this.state.imgSrc}
           titles={this.state.titles}
+          canModify={this.state.canModify}
         />
         <ul className="profileLinks">
           <li>
               LinkedIn: <a href={this.state.linkedIn}>linkedin.com</a>
           </li>
         </ul>
+        <hr />
         <div className="userDescription">
           <p>
             {this.state.description}

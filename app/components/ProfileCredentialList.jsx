@@ -32,7 +32,9 @@ export default class ProfileCredentialList extends React.Component {
         <li key={obj.company}>
           <dl>
             <dt className="credentialCompany">{obj.company}</dt>
-            <dd className="credentialPosition">{obj.position}</dd>
+            <dd className="credentialPosition">
+              <span className="glyphicon glyphicon-menu-right" />{obj.position}
+            </dd>
           </dl>
         </li>));
       credentialList = (
@@ -43,7 +45,7 @@ export default class ProfileCredentialList extends React.Component {
 
     return (
       <div className="credentials">
-        <BlockHeader text="Credentials" />
+        <BlockHeader text="Credentials" color="#363636" />
         {credentialList}
       </div>
     );

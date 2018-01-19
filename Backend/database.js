@@ -80,7 +80,7 @@ function getUsers(type, batch, includeId, callback) {
 
 function getProfile(id, callback) {
   const info = {};
-  const query = `SELECT name, description, email, linkedin, Credentials.company, Credentials.title
+  const query = `SELECT name, description, Profiles.company AS currentCompany, email, linkedin, Credentials.company, Credentials.title
                  FROM Profiles
                  LEFT OUTER JOIN Credentials ON Profiles.user_id = Credentials.user_id
                  WHERE Profiles.user_id = ?;`;
@@ -95,6 +95,7 @@ function getProfile(id, callback) {
         info.description = row.description;
         info.email = row.email;
         info.linkedIn = row.linkedin;
+        info.company = row.currentCompany;
         info.credentials = [{ company: row.company, position: row.title }];
       } else {
         info.credentials.push({ company: row.company, position: row.title });
