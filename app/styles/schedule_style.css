@@ -1,6 +1,6 @@
-.list-avatar {
-  width: 35%;
-  height: auto;
+.schedule-list-avatar {
+  max-height: 30%;
+  max-width: 30%;
   display: block;
   float: left;
   border-bottom: 15px solid #252525;
@@ -9,18 +9,16 @@
   padding: 2%;
 }
 
-.text-style {
+.schedule-text-style {
   font-size: 25px;
   color: #A1A19A;
   font-family: 'Vinkel,sans-serif';
-  float: right;
 }
 
-.name-style {
+.schedule-name-style {
   /*margin-left: 55px;*/
   color: #E55234;
   margin-top: 5%;
-  margin-left: 150px;
   font-weight: bold;
   /*font-family: 'Downward-fall';*/
 }
@@ -32,7 +30,7 @@
   margin-right: 10%;
 }
 
-.header-style {
+.schedule-header-style {
   color: #A1A19A;
   font-weight: bold;
   font-family: 'Vinkel,sans-serif';
