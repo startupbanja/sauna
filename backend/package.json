@@ -6,6 +6,10 @@
     "type": "git",
     "url": "git+https://github.com/teemukaaria/sauna.git"
   },
+  "scripts": {
+    "start": "node index.js",
+    "test": "python matchmaking_tests.py"
+  },
   "license": "ISC",
   "dependencies": {
     "body-parser": "~1.0.1",
