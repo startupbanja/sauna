@@ -24,11 +24,11 @@ export default class UserList extends React.Component {
         <h1>List of {this.state.type}</h1>
         {this.state.users.map(user =>
           (
-            <div className="fullwidth text-style" key={user.name}>
+            <div className="fullwidth list-text-style" key={user.name}>
               <img className="list-avatar" src={user.img} alt="" />
               <div>
                 <div>
-                  <span className="header">{user.name}</span>
+                  <span className="list-header">{user.name}</span>
                 </div>
                 <div>
                   <i>{user.description}</i>

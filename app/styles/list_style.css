@@ -1,17 +1,21 @@
 .list-avatar {
- width: 35%;
- height: auto;
- display: block;
- float: left;
+  max-height: 30%;
+  max-width: 30%;
+  display: block;
+  float: left;
+  border-bottom: 10px solid #252525;
+  margin-left: 5%;
+  /*margin-top: 5%;*/
+  /* padding: 2%; */
 }
 
-.text-style {
+.list-text-style {
  font-size: 25px;
  color: #A3A3A3 ;
  font-family: 'Vinkel,sans-serif';
  float: right;
 }
 
-.header {
+.list-header {
   color: #E45336;
 }
