@@ -82,6 +82,10 @@ class EditUserProfile extends Component {
     console.log(jsonData);
     fetch('http://localhost:3000/updateProfile', {
       method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
       body: jsonData,
     }).then(response => console.log(response));
   }

@@ -30,7 +30,7 @@ app.use((req, res, next) => {
   // Allow frontend to send cookies
   res.append('Access-Control-Allow-Origin', req.get('origin'));
   res.append('Access-Control-Allow-Credentials', 'true');
-
+  res.append('Access-Control-Allow-Headers', 'Content-Type');
   next();
 });
 
@@ -99,6 +99,28 @@ app.get('/profile', (req, res) => {
     }
     res.json(result);
   });
+});
+
+app.post('/updateProfile', (req, res) => {
+  // Create a JSON object from response.
+  const JSONObject = JSON.parse(req.body);
+  let linkedIn;
+  let description;
+
+  // Titles and  credentials will always get passed through.
+  const titles = JSONObject.titles;
+  const credentials = JSONObject.credentials;
+
+  if (JSONObject.hasOwnProperty('linkedIn')) {
+    linkedIn = JSONObject.linkedIn;
+  }
+
+  if (JSONObject.hasOwnProperty('description')) {
+    description = JSONObject.description;
+  }
+
+  // TODO: implement database functionality.
+  res.json();
 });
 
 const server = app.listen(port);
