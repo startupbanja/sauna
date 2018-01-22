@@ -2,6 +2,7 @@ import unittest
 import matchmaking
 import datetime
 import random
+import convertToCsv
 
 class TestMatchmaking(unittest.TestCase):
 
@@ -65,7 +66,9 @@ class TestMatchmaking(unittest.TestCase):
     self.assertEqual(matchmaking.getSum(-1,2),2)
 
   def test_matchmake(self):
+    print("---test_matchmake")
     print(matchmaking.matchmake(self.paramTuple[0], self.paramTuple[1], self.paramTuple[2]))
+    print("---")
 
   def test_cmpByFeedback(self):
     self.assertEqual(matchmaking.cmpByFeedback(self.definedFeedbacks[0],self.definedFeedbacks[0]),0)
@@ -108,6 +111,9 @@ class TestMatchmaking(unittest.TestCase):
     # Sum of feedbacks is 2 or less
     self.assertEqual(matchmaking.filterFeedbacks({'startup': 1,'startupfeedback':1,'coach':1,'coachfeedback':1}, self.definedAvailabilities),False)
 
+  def test_csvconversion(self):
+    data = matchmaking.matchmake(self.paramTuple[0], self.paramTuple[1], self.paramTuple[2])
+    convertToCsv.convert(data, "unittest_data.csv")
 
 if __name__ == '__main__':
     unittest.main()

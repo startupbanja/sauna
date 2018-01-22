@@ -3,6 +3,7 @@ import sys
 import time
 import random
 import datetime
+import convertToCsv
 
 #{ feedbacks: [{startup: string, startupfeedback: int, coach: string, coachfeedback: int}],
 # availabilities: {coachname(string): {starttime: string, duration: int}}
@@ -24,6 +25,7 @@ def getSum(startup, coach):
 
 #Comparison functions for the different sorts used
 # dictA, dictB are elements from the "feedbacks" list
+#TODO check if ordering is done the correct way
 def cmpByFeedback(dictA, dictB):
   sumA = getSum(dictA['startupfeedback'], dictA['coachfeedback'])
   sumB = getSum(dictB['startupfeedback'], dictB['coachfeedback'])
@@ -69,8 +71,8 @@ def timedeltaToMins(timedelta):
 
 # returns true if there would be a double booking at a certain timeslot in timetable
 #
-def isLegal(startup, timetable, coach, index):
-  slotSize = 40#datetime.timedelta(minutes = 40) # TODO
+def isLegal(startup, timetable, coach, index, slotSize):
+  # slotSize = 40#datetime.timedelta(minutes = 40)
   # check if they are already meeting
   if startup in timetable[coach][2]:
     return False
@@ -85,20 +87,23 @@ def isLegal(startup, timetable, coach, index):
       starttime0 = timetable[coach][0]
       timeToBeChecked = starttime0 + datetime.timedelta(minutes=slotSize * index)
       starttime1 = timetable[newCoach][0]
-      i1 = timedeltaToMins((timeToBeChecked - starttime1) // slotSize)
-      if len(timetable[newCoach]) > i1 and timetable[newCoach][i1] == startup:
+      if timeToBeChecked < starttime1:
+        continue
+      delta = timedeltaToMins(timeToBeChecked - starttime1)
+      i1 = delta // slotSize
+      if i1 < len(timetable[newCoach][2]) and timetable[newCoach][2][i1] == startup:
         return False
   return True
 
 
 # find a place for a feedback element in the timetable(list)
 # elem: {startup: "asd", startupfeedback: 1, coach: "dasdsa", coachfeedback: 0}
-def findPlace(elem, timetable, startupMeetingCount):
+def findPlace(elem, timetable, startupMeetingCount, slotSize):
   coach = elem['coach']
   startup = elem['startup']
   # TODO check here if startup and coach are already meeting?
   for i in range(len(timetable[coach][2])):
-    if isLegal(startup, timetable, coach, i):
+    if isLegal(startup, timetable, coach, i, slotSize):
       #insert and return true
       startupMeetingCount[startup] += 1
       timetable[coach][2][i] = startup
@@ -113,7 +118,7 @@ def getEmptyTimetable(availabilities, slotSize):
     timetable[name][2] = [None] * int(slotCount)
   return timetable
 
-def init(test, testData):
+def init(test, testData, slotSize=40):
   if test:
     data = testData
   else:
@@ -133,7 +138,17 @@ def init(test, testData):
     })
     return res
   availabilities = dict(map(mapAvail , oldAvail.keys()) )
+
+  #normalize availability times so they all begin at the same increments of 40 mins
+  firstTime = min(map(lambda a: availabilities[a]['starttime'], availabilities.keys()))
+  for k in availabilities.keys():
+    delta = (availabilities[k]['starttime'] - firstTime).seconds // 60 % slotSize
+    if delta != 0:
+      availabilities[k]['starttime'] += datetime.timedelta(minutes=delta)
+      availabilities[k]['duration'] -= datetime.timedelta(minutes=delta)
+
   return feedbacks, availabilities, startupMeetingCount
+
 # timedelta, int (minutes), int
 def toTimeString(start, duration, i):
   time = start.seconds + (duration * 60 * i)
@@ -142,8 +157,8 @@ def toTimeString(start, duration, i):
   hrs = time / (60 * 60)
   return "{:02}:{:02}:{:02}".format(hrs, mins, secs)
 
-def transformToReturn(timetable):
-  duration = 40
+def transformToReturn(timetable, slotSize):
+  duration = slotSize
   res = []
   for key in timetable.keys():
     times = timetable[key]
@@ -151,15 +166,19 @@ def transformToReturn(timetable):
     total = times[1]
     slots = times[2]
     for i, startup in enumerate(slots):
-      if startup != None:
+      # if startup != None:
         time = toTimeString(start, duration, i)
         res.append({'coach': key, 'startup': startup, 'time': time, 'duration': duration})
   return res
 
 
 # return value: {coach, startup, time, duration}
-def matchmake(feedbacks, availabilities, startupMeetingCount):
-  slotSize = 40
+def matchmake(feedbacks,
+  availabilities,
+  startupMeetingCount,
+  slotSize=40,
+  seed=None):
+  random.seed(seed)
   #timetable: {coach: [start, duration, [null, "startup1", etc]]}
   timetable = getEmptyTimetable(availabilities, slotSize)
   # filter out elements with too low feedback
@@ -192,16 +211,17 @@ def matchmake(feedbacks, availabilities, startupMeetingCount):
       if (newRating != curRating):
         break
       # place into a free slot in the timetable
-      found = findPlace(cur, timetable, startupMeetingCount)
+      found = findPlace(cur, timetable, startupMeetingCount, slotSize)
       i += 1
 
-  transformed = transformToReturn(timetable)
+  transformed = transformToReturn(timetable, slotSize)
   return json.dumps(transformed)
 
 
-# COMMENT OUT THESE THREE LINES WHEN TESTING
+# COMMENT OUT THESE FOUR LINES WHEN TESTING
 ###
 params = init(False, None)
 ready = matchmake(params[0], params[1], params[2])
+convertToCsv.convert(ready, "database_data.csv")
 sys.stdout.write(ready)
 ###
