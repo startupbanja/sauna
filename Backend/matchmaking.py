@@ -5,6 +5,7 @@ import random
 import datetime
 import convertToCsv
 
+
 #{ feedbacks: [{startup: string, startupfeedback: int, coach: string, coachfeedback: int}],
 # availabilities: {coachname(string): {starttime: string, duration: int}}
 #}
@@ -20,29 +21,35 @@ import convertToCsv
 # returns 2.5 if both are -1 aka null
 def getSum(startup, coach):
   if (startup + coach == -2):
-    return 2.5
-  return max(0, startup) + max(0, coach)
+    return 25
+  if startup == 3 and coach == -1:
+    return 35
+  return max(0, startup)*10 + max(0, coach)*10
 
 #Comparison functions for the different sorts used
 # dictA, dictB are elements from the "feedbacks" list
 #TODO check if ordering is done the correct way
+#return largest first
 def cmpByFeedback(dictA, dictB):
   sumA = getSum(dictA['startupfeedback'], dictA['coachfeedback'])
   sumB = getSum(dictB['startupfeedback'], dictB['coachfeedback'])
-  return int(sumA - sumB)
+  return -1*(sumA - sumB)
 
 #compare by starting time of coach availability
+#return earlies first
 def cmpByTimestart(dictA, dictB, availabilities):
   a = availabilities[dictA['coach']]['starttime'].seconds
   b = availabilities[dictB['coach']]['starttime'].seconds
   return a - b
 
 # compare by duration of coach availability
+# return smallest duration first
 def cmpByTimetotal(dictA, dictB, availabilities):
   a = availabilities[dictA['coach']]['duration'].seconds
   b = availabilities[dictB['coach']]['duration'].seconds
   return a - b
 
+#return smallest count first
 def cmpByStartupMeetingCount(dictA, dictB, startupMeetingCount):
   a = startupMeetingCount[dictA['startup']]
   b = startupMeetingCount[dictB['startup']]
@@ -60,7 +67,7 @@ def filterFeedbacks(elem, availabilities):
     return False
   if coach == 0 and startup == -1:
     return False
-  if getSum(coach, startup) <= 2: #coach != -1 and startup != -1 and startup + coach <= 2:
+  if getSum(coach, startup) <= 20: #coach != -1 and startup != -1 and startup + coach <= 2:
     return False
   if elem['coach'] not in availabilities.keys():
     return False
@@ -102,7 +109,9 @@ def findPlace(elem, timetable, startupMeetingCount, slotSize):
   coach = elem['coach']
   startup = elem['startup']
   # TODO check here if startup and coach are already meeting?
-  for i in range(len(timetable[coach][2])):
+  rng = range(len(timetable[coach][2]))
+  random.shuffle(rng)
+  for i in rng:
     if isLegal(startup, timetable, coach, i, slotSize):
       #insert and return true
       startupMeetingCount[startup] += 1
@@ -118,15 +127,26 @@ def getEmptyTimetable(availabilities, slotSize):
     timetable[name][2] = [None] * int(slotCount)
   return timetable
 
-def init(test, testData, slotSize=40):
-  if test:
-    data = testData
-  else:
-    data = json.loads(sys.stdin.read())
-
+def init(data, slotSize=40):
   feedbacks = data['feedbacks']
   oldAvail = data['availabilities']
   startupMeetingCount = dict(map(lambda d: (d['startup'], 0), feedbacks))
+  startupsFromFeedbacks = set(map(lambda a: a['startup'], feedbacks))
+  # coachesFromFeedbacks = set(map(lambda a: a['coach'], feedbacks))
+
+  def containsElem(startup, coach):
+    for elem in feedbacks:
+      if elem['startup'] == startup and elem['coach'] == coach:
+        return True
+    return False
+
+  #Generate empty feedbacks(-1, -1) for coaches, startup pairs who are available but have no feedback data
+  for coach in oldAvail.keys():
+    for startup in startupsFromFeedbacks:
+      if not containsElem(startup, coach):
+        feedbacks.append({'coach': coach, 'startup': startup, 'coachfeedback': -1, 'startupfeedback': -1})
+
+
   # startupMeetingCount = {feedbacks[k]['startup']: 0 for k in feedbacks.keys()}
   def mapAvail(coach):
     old = oldAvail[coach]
@@ -171,6 +191,18 @@ def transformToReturn(timetable, slotSize):
         res.append({'coach': key, 'startup': startup, 'time': time, 'duration': duration})
   return res
 
+def countSlots(timetable):
+  matched = 0
+  empty = 0
+  size = 0
+  for k in timetable.keys():
+    for slot in timetable[k][2]:
+      size += 1
+      if slot == None:
+        empty +=1
+      else:
+        matched += 1
+  return { 'matches': matches, 'empty': empty, 'size': size }
 
 # return value: {coach, startup, time, duration}
 def matchmake(feedbacks,
@@ -191,37 +223,51 @@ def matchmake(feedbacks,
   # here a, b are members of the "feedbacks" list
   cmpFunctions = [
     lambda a, b: cmpByStartupMeetingCount(a,b,startupMeetingCount),
-    lambda a, b: cmpByTimetotal(a, b, availabilities),
+    # lambda a, b: cmpByTimetotal(a, b, availabilities),
     lambda a, b: cmpByTimestart(a, b, availabilities),
     cmpByFeedback
   ]
-  i = 0
-  while i < len(sortedList):
-    # sort feedbacks list
-    for f in cmpFunctions:
-      sortedList = sorted(sortedList, f)
+  # itemsMatched = 0
+  elementsToRetry = []
+  retries = 0
+  stats = {'notFoundCount': 0, 'notFound': [], 'full': []}
+  while retries < 10:
+    i = 0
+    if elementsToRetry:
+      sortedList = elementsToRetry
+      elementsToRetry = []
+    while i < len(sortedList):
+      # i -= itemsMatched
+      # itemsMatched = 0
+      # sort feedbacks list
+      # sortedList = filter(lambda a: a != None, sortedList)
+      for f in cmpFunctions:
+        sortedList = sorted(sortedList, f)
 
-    curRating = getSum(sortedList[i]['startupfeedback'], sortedList[i]['coachfeedback'])
-    newRating = curRating
-    while (i < len(sortedList)):
-      # take current element
-      cur = sortedList[i]
-      newRating = getSum(cur['startupfeedback'], cur['coachfeedback'])
-      # are we still on the same rating? if not, break into outer loop, sort again
-      if (newRating != curRating):
-        break
-      # place into a free slot in the timetable
-      found = findPlace(cur, timetable, startupMeetingCount, slotSize)
-      i += 1
+      curRating = getSum(sortedList[i]['startupfeedback'], sortedList[i]['coachfeedback'])
+      newRating = curRating
+      while (i < len(sortedList)):
+        # take current element
+        cur = sortedList[i]
+        newRating = getSum(cur['startupfeedback'], cur['coachfeedback'])
+        # are we still on the same rating? if not, break into outer loop, sort again
+        if (newRating != curRating):
+          break
+        # place into a free slot in the timetable
+        found = findPlace(cur, timetable, startupMeetingCount, slotSize)
+        if not found:
+          #Check if that coach has a full timetable already
+          if None not in timetable[cur['coach']][2]:
+            stats['full'].append(cur)
+          else:
+            elementsToRetry.append(cur)
+        # if found:
+        #   itemsMatched += 1
+        #   sortedList[i] = None
+        i += 1
+    retries += 1
 
+  stats['notFound'] = elementsToRetry
+  stats['notFoundCount'] = len(elementsToRetry)
   transformed = transformToReturn(timetable, slotSize)
-  return json.dumps(transformed)
-
-
-# COMMENT OUT THESE FOUR LINES WHEN TESTING
-###
-params = init(False, None)
-ready = matchmake(params[0], params[1], params[2])
-convertToCsv.convert(ready, "database_data.csv")
-sys.stdout.write(ready)
-###
+  return (json.dumps(transformed), json.dumps(stats))

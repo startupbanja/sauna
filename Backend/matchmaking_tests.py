@@ -24,7 +24,7 @@ class TestMatchmaking(unittest.TestCase):
       'duration': random.randrange(0, 240, 40)
       }
     testData = {'feedbacks': self.feedbacks, 'availabilities': self.availabilities}
-    self.paramTuple = matchmaking.init(True, testData)
+    self.paramTuple = matchmaking.init(testData)
     self.definedFeedbacks = [];
     userid = 0;
     for i in [-1,0,1,3]:
@@ -50,7 +50,7 @@ class TestMatchmaking(unittest.TestCase):
       'duration': 120
     }
     definedTestData = {'feedbacks': self.definedFeedbacks, 'availabilities': self.definedAvailabilities}
-    self.definedParamTuple = matchmaking.init(True, definedTestData)
+    self.definedParamTuple = matchmaking.init(definedTestData)
     self.definedAvailabilities = self.definedParamTuple[1]
 
 
@@ -59,37 +59,56 @@ class TestMatchmaking(unittest.TestCase):
 
   def test_getSum(self):
     self.assertEqual(matchmaking.getSum(0,0),0)
-    self.assertEqual(matchmaking.getSum(0,1),1)
+    self.assertEqual(matchmaking.getSum(0,1),10)
     self.assertEqual(matchmaking.getSum(-1,0),0)
-    self.assertEqual(matchmaking.getSum(-1,-1),2.5)
-    self.assertEqual(matchmaking.getSum(2,3),5)
-    self.assertEqual(matchmaking.getSum(-1,2),2)
+    self.assertEqual(matchmaking.getSum(-1,-1),25)
+    self.assertEqual(matchmaking.getSum(2,3),50)
+    self.assertEqual(matchmaking.getSum(-1,2),20)
+    self.assertEqual(matchmaking.getSum(3,-1),35)
+
 
   def test_matchmake(self):
-    print("---test_matchmake")
-    print(matchmaking.matchmake(self.paramTuple[0], self.paramTuple[1], self.paramTuple[2]))
-    print("---")
+    pass
+    # print("---test_matchmake")
+    # (result, stats) = matchmaking.matchmake(self.paramTuple[0], self.paramTuple[1], self.paramTuple[2])
+    # print(stats)
+    # print("---")
 
   def test_cmpByFeedback(self):
-    self.assertEqual(matchmaking.cmpByFeedback(self.definedFeedbacks[0],self.definedFeedbacks[0]),0)
-    self.assertEqual(matchmaking.cmpByFeedback(self.definedFeedbacks[0],self.definedFeedbacks[4]),2)
-    self.assertEqual(matchmaking.cmpByFeedback(self.definedFeedbacks[0],self.definedFeedbacks[8]),1)
-    self.assertEqual(matchmaking.cmpByFeedback(self.definedFeedbacks[0],self.definedFeedbacks[12]),0)
-    self.assertEqual(matchmaking.cmpByFeedback(self.definedFeedbacks[4],self.definedFeedbacks[0]),-2)
-    self.assertEqual(matchmaking.cmpByFeedback(self.definedFeedbacks[8],self.definedFeedbacks[0]),-1)
-    self.assertEqual(matchmaking.cmpByFeedback(self.definedFeedbacks[12],self.definedFeedbacks[0]),0)
+    def test(i1,i2):
+      # print(str(i1) + ': ' + str(self.definedFeedbacks[i1]) +'\n'+str(i2)+ ': '+ str(self.definedFeedbacks[i2]))
+      return matchmaking.cmpByFeedback(self.definedFeedbacks[i1],self.definedFeedbacks[i2])
+    self.assertTrue(test(0,0) == 0)
+    self.assertTrue(test(0,12) > 0)
+    self.assertTrue(test(12,0) < 0)
+    self.assertTrue(test(0,4) < 0)
+    self.assertTrue(test(0,8) < 0)
+    self.assertTrue(test(4,0) > 0)
+    self.assertTrue(test(8,0) > 0)
 
   def test_cmpByTimestart(self):
-    self.assertEqual(matchmaking.cmpByTimestart(self.definedFeedbacks[0],self.definedFeedbacks[0],self.definedAvailabilities),0)
-    self.assertEqual(matchmaking.cmpByTimestart(self.definedFeedbacks[0],self.definedFeedbacks[4],self.definedAvailabilities),0)
-    self.assertEqual(matchmaking.cmpByTimestart(self.definedFeedbacks[0],self.definedFeedbacks[8],self.definedAvailabilities),-3600)
-    self.assertEqual(matchmaking.cmpByTimestart(self.definedFeedbacks[8],self.definedFeedbacks[0],self.definedAvailabilities),3600)
+    def test(i1, i2):
+      return matchmaking.cmpByTimestart(self.definedFeedbacks[i1],self.definedFeedbacks[i2],self.definedAvailabilities)
+    self.assertTrue(test(0,0) == 0)
+    self.assertTrue(test(0,4) == 0)
+    self.assertTrue(test(0,8) < 0)
+    self.assertTrue(test(8,0) > 0)
+    # self.assertEqual(matchmaking.cmpByTimestart(self.definedFeedbacks[0],self.definedFeedbacks[0],self.definedAvailabilities),0)
+    # self.assertEqual(matchmaking.cmpByTimestart(self.definedFeedbacks[0],self.definedFeedbacks[4],self.definedAvailabilities),0)
+    # self.assertEqual(matchmaking.cmpByTimestart(self.definedFeedbacks[0],self.definedFeedbacks[8],self.definedAvailabilities),-3600)
+    # self.assertEqual(matchmaking.cmpByTimestart(self.definedFeedbacks[8],self.definedFeedbacks[0],self.definedAvailabilities),3600)
 
   def test_cmpByTimetotal(self):
-    self.assertEqual(matchmaking.cmpByTimetotal(self.definedFeedbacks[0],self.definedFeedbacks[0],self.definedAvailabilities),0)
-    self.assertEqual(matchmaking.cmpByTimetotal(self.definedFeedbacks[0],self.definedFeedbacks[4],self.definedAvailabilities),7200)
-    self.assertEqual(matchmaking.cmpByTimetotal(self.definedFeedbacks[0],self.definedFeedbacks[8],self.definedAvailabilities),7200)
-    self.assertEqual(matchmaking.cmpByTimetotal(self.definedFeedbacks[8],self.definedFeedbacks[0],self.definedAvailabilities),-7200)
+    def test(i1, i2):
+      return matchmaking.cmpByTimetotal(self.definedFeedbacks[i1],self.definedFeedbacks[i2],self.definedAvailabilities)
+    self.assertTrue(test(0,0) == 0)
+    self.assertTrue(test(0,4) > 0)
+    self.assertTrue(test(0,8) > 0)
+    self.assertTrue(test(8,0) < 0)
+    # self.assertEqual(matchmaking.cmpByTimetotal(self.definedFeedbacks[0],self.definedFeedbacks[0],self.definedAvailabilities),0)
+    # self.assertEqual(matchmaking.cmpByTimetotal(self.definedFeedbacks[0],self.definedFeedbacks[4],self.definedAvailabilities),7200)
+    # self.assertEqual(matchmaking.cmpByTimetotal(self.definedFeedbacks[0],self.definedFeedbacks[8],self.definedAvailabilities),7200)
+    # self.assertEqual(matchmaking.cmpByTimetotal(self.definedFeedbacks[8],self.definedFeedbacks[0],self.definedAvailabilities),-7200)
 
   def test_cmpByStartupMeetingCount(self):
     startupMeetingCount = {
@@ -112,7 +131,7 @@ class TestMatchmaking(unittest.TestCase):
     self.assertEqual(matchmaking.filterFeedbacks({'startup': 1,'startupfeedback':1,'coach':1,'coachfeedback':1}, self.definedAvailabilities),False)
 
   def test_csvconversion(self):
-    data = matchmaking.matchmake(self.paramTuple[0], self.paramTuple[1], self.paramTuple[2])
+    (data, stats) = matchmaking.matchmake(self.paramTuple[0], self.paramTuple[1], self.paramTuple[2])
     convertToCsv.convert(data, "unittest_data.csv")
 
 if __name__ == '__main__':

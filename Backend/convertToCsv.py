@@ -1,6 +1,6 @@
 import json
 
-# two time strings, HH::MM::HH
+# two time strings, HH:MM:HH
 def getFirstRow(first, last):
   start = int(first[0:2])
   end = int(last[0:2])
@@ -20,15 +20,17 @@ def convert(data, filename):
       result[coach] = [[ element['time'], element['startup'] ]]
     else:
       result[coach].append([ element['time'], element['startup'] ])
-# Now: { 'coachname': [[startup1, time1],[startup2, time2]]}
+# Now: { 'coachname': [[ time1, startup1],[time2, startup2]]}
   for k in result.keys():
     result[k].sort(key=lambda a: a[0])
 
   # for k in result.keys():
   #   print(str(k) + ": " + str(result[k]))
-  times = map(lambda a: result[a][0][0], result.keys())
-  firstTime = min(times)
-  lastTime = max(times)
+  times = map(lambda a: result[a], result.keys())
+  firstTimes = map(lambda a: result[a][0][0], result.keys())
+  lastTimes = map(lambda a: result[a][-1][0], result.keys())
+  firstTime = min(firstTimes)
+  lastTime = max(lastTimes)
 
   firstRow = getFirstRow(firstTime, lastTime)
   rows = map(lambda a: [a]+[""]*(len(firstRow) - 1), result.keys())
@@ -42,6 +44,7 @@ def convert(data, filename):
   # for r in rows:
   #   print(r)
   resString = ""
+  rows.sort(key=lambda a: a[0])
   for row in [firstRow] + rows:
     for element in row:
       resString += str(element) + ","
