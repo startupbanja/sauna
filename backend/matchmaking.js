@@ -1,14 +1,17 @@
 const childProcess = require('child_process');
 
 
-function runMatchmaking() {
-  const filename = './test.py';
-  // console.log('asd');
-  const jsonData = { feedbacks: [], availabilities: [] };
+function runMatchmaking(jsonData, callback) {
+  const filename = './run_matchmaking.py';
   const newProcess = childProcess.spawn('python', [filename]);
-  // console.log('dsa')
+  let storage = [];
   newProcess.stdout.on('data', (data) => {
-    console.log(data.toString());
+    storage += data;
+    // console.log(data.toString());
+  });
+  newProcess.stdout.on('end', () => {
+    const parsed = JSON.parse(storage.toString());
+    callback(parsed);
   });
   newProcess.stderr.on('data', (data) => {
     console.log(data.toString());
