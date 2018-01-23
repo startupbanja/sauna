@@ -9,7 +9,7 @@ export default class UserProfile extends React.Component {
   render() {
     return (
       <div className="profileContainer container">
-        <link rel="stylesheet" type="text/css" href="app/styles/user_profile_style.css" />
+        <link rel="stylesheet" type="text/css" href="/app/styles/user_profile_style.css" />
         <ProfileInfoHeader
           name={this.props.name}
           imgSrc={this.props.imgSrc}

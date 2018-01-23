@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import UserListItem from './UserListItem';
 // import Image from './Image';
@@ -54,14 +55,19 @@ export default class UserList extends React.Component {
         <h1>List of {this.props.type}</h1>
         {this.state.users.map(user =>
           (
-            <UserListItem
-              name={user.name}
-              id={user.id}
+            <Link
               key={user.name}
-              description={user.description}
-              imageSrc={user.img}
-              handleClick={this.props.handleClick}
-            />
+              to={`${this.props.match.url}/${user.id}`}
+              href={`${this.props.match.url}/${user.id}`}
+            >
+              <UserListItem
+                name={user.name}
+                id={user.id}
+                description={user.description}
+                imageSrc={user.img}
+                // handleClick={this.props.handleClick}
+              />
+            </Link>
           ))}
       </div>
     );
@@ -75,5 +81,6 @@ UserList.propTypes = {
     img: PropTypes.string,
   })).isRequired, */
   type: PropTypes.string.isRequired,
-  handleClick: PropTypes.func.isRequired,
+  // handleClick: PropTypes.func.isRequired,
+  match: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
 };

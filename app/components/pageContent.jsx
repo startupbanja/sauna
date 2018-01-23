@@ -1,4 +1,5 @@
 import React from 'react';
+import { Route, Switch } from 'react-router-dom';
 /* import Image from './Image'; */
 import FeedbackView from './FeedbackView';
 import LandingPage from './LandingPage';
@@ -88,35 +89,72 @@ const users = [
   ],
 }; */
 
-
-const userContent = {
+/* const userContent = {
   mainPage: <div><h1>Home</h1><LandingPage /></div>,
   timetable: <UserSchedule schedule={schedule} />,
   userProfile: <UserProfilePage />,
   feedback: <div><FeedbackView questions={feedbackQuestions} /></div>,
-  /* coaches: <div><UserList type="Coaches" /></div>,
-  startups: <div><UserList type="Startups" /></div>, */
-};
+  coaches: <UserList type="Coaches" />,
+  startups: <div><UserList type="Startups" /></div>,
+}; */
+const userContent = (
+  <Switch>
+    <Route path="/coaches/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />
+    <Route
+      exact
+      path="/coaches"
+      render={({ match }) => <UserList match={match} type="Coaches" />}
+    />
+    <Route path="/startups/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />
+    <Route
+      exact
+      path="/startups"
+      render={({ match }) => <UserList match={match} type="Startups" />}
+    />
+    <Route path="/main" render={() => <div><h1>Home</h1><LandingPage /></div>} />
+    <Route path="/timetable" render={() => <UserSchedule schedule={schedule} />} />
+    <Route path="/user" component={UserProfilePage} />
+    <Route path="/feedback" render={() => <FeedbackView questions={feedbackQuestions} />} />
+  </Switch>
+);
 
 const userLabels = {
-  mainPage: 'Home',
-  timetable: 'Timetable',
-  userProfile: 'User Profile',
-  feedback: 'Feedback',
-  coaches: 'Coaches',
-  startups: 'Startups',
+  '/main': 'Home',
+  '/timetable': 'Timetable',
+  '/user': 'User Profile',
+  '/feedback': 'Feedback',
+  '/coaches': 'Coaches',
+  '/startups': 'Startups',
 };
 
-const adminContent = {
+/* const adminContent = {
   mainPage: <div><h1>Home</h1><LandingPage /></div>,
   coaches: <div><UserList type="Coaches" /></div>,
   startups: <div><UserList type="Startups" /></div>,
-};
+}; */
+
+const adminContent = (
+  <Switch>
+    <Route path="/main" render={() => <div><h1>Home</h1><LandingPage /></div>} />
+    <Route path="/coaches/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />
+    <Route
+      exact
+      path="/coaches"
+      render={({ match }) => <UserList match={match} type="Coaches" />}
+    />
+    <Route path="/startups/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />
+    <Route
+      exact
+      path="/startups"
+      render={({ match }) => <UserList match={match} type="Startups" />}
+    />
+  </Switch>
+);
 
 const adminLabels = {
-  mainPage: 'Home',
-  coaches: 'Coaches',
-  startups: 'Startups',
+  '/main': 'Home',
+  '/coaches': 'Coaches',
+  '/startups': 'Startups',
 };
 // TODO change this to something better later
 function getContent(userType) {

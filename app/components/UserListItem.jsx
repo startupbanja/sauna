@@ -18,7 +18,8 @@ class UserListItem extends Component {
   render() {
     return (
       /* eslint-disable */
-      <div className="fullwidth text-style" onClick={() => this.props.handleClick(this.props.id.toString())}>
+      // <div className="fullwidth text-style" onClick={() => this.props.handleClick(this.props.id.toString())}>
+      <div className="fullwidth text-style" >
         <img className="list-avatar img-responsive" src={this.props.imageSrc} alt="" />
         <div>
           <div>
@@ -43,7 +44,7 @@ UserListItem.propTypes = {
   name: PropTypes.string.isRequired,
   imageSrc: PropTypes.string,
   description: PropTypes.string,
-  handleClick: PropTypes.func.isRequired,
+  // handleClick: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
 };
 

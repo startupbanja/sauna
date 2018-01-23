@@ -16,6 +16,7 @@ app.use(session({
     domain: '127.0.0.1',
   },
   secret: '12saUna45',
+  name: 'ssauna.sid',
   resave: true,
   saveUninitialized: true,
   store: new FileStore(),
