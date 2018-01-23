@@ -3,7 +3,7 @@
   max-width: 30%;
   display: block;
   float: left;
-  border-bottom: 15px solid #252525;
+  /* border-bottom: 10px solid #252525; */
   margin-left: 5%;
   /*margin-top: 5%;*/
   padding: 2%;
@@ -18,12 +18,12 @@
 .schedule-name-style {
   /*margin-left: 55px;*/
   color: #E55234;
-  margin-top: 5%;
+  /* margin-top: 5%; */
   font-weight: bold;
   /*font-family: 'Downward-fall';*/
 }
 
-.divider {
+.schedule-divider {
   width: 80%;
   height: 5px;
   margin-left: 10%;
@@ -31,8 +31,9 @@
 }
 
 .schedule-header-style {
+  font-size: 25px;
   color: #A1A19A;
-  font-weight: bold;
+  /* font-weight: bold; */
   font-family: 'Vinkel,sans-serif';
   text-align: center;
 }

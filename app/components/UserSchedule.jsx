@@ -9,7 +9,7 @@ export default class UserSchedule extends React.Component {
   render() {
     return (
       <div>
-        <h1 className="schedule-header-style">{this.state.schedule.date}</h1>
+        <div className="schedule-header-style">{this.state.schedule.date}</div>
         {this.state.schedule.meetings.map(b => (
           <div id="figure" key={b.name}>
             <div className="schedule-text-style">
@@ -17,7 +17,7 @@ export default class UserSchedule extends React.Component {
               <figcaption className="schedule-name-style">{b.name}</figcaption>
               {b.time}
             </div>
-            <img src="../app/imgs/piste2.png" alt="" className="divider" />
+            <img src="../app/imgs/piste2.png" alt="" className="schedule-divider" />
           </div>
         ))}
       </div>
