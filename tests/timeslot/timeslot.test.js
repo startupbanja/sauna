@@ -30,16 +30,16 @@ test('parseTimeStamp works correctly', () => {
 });
 
 test('Timeslot initializes correctly', () => {
-  var timeslot = renderer.create(<Timeslot start="8:00" end="12:00" />); //eslint-disable-line
+  var timeslot = renderer.create(<Timeslot date={new Date(2018, 4, 28)} start="8:00" end="12:00" />); //eslint-disable-line
   let tree = timeslot.toJSON();
   expect(tree).toMatchSnapshot();
-  timeslot = renderer.create(<Timeslot start="12:20" end="20:40" />);
+  timeslot = renderer.create(<Timeslot date={new Date(2017, 1, 1)} start="12:20" end="20:40" />);
   tree = timeslot.toJSON();
   expect(tree).toMatchSnapshot();
 });
 
 test('Timeslot handles change correctly', () => {
-  const timeslot = shallow(<Timeslot start="10:00" end="12:00" />);
+  const timeslot = shallow(<Timeslot date={new Date(2018, 2, 3)} start="10:00" end="12:00" />);
   timeslot.instance().handleChange('start', -30);
   expect(timeslot.state().available).toEqual({ start: 600, end: 600 });
   timeslot.instance().handleChange('end', 130);
