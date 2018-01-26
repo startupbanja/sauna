@@ -20,7 +20,8 @@ module.exports = {
     },
     output: {
         filename: 'transformed.js',
-        path: __dirname + '/build'
+        path: __dirname + '/build/',
+        publicPath: '/'
     },
     resolve: {
         extensions: ['.js', '.jsx']
@@ -31,6 +32,9 @@ module.exports = {
         $: 'jquery',
         jQuery: 'jquery'
       })
-    ]
+    ],
+    devServer: {
+        historyApiFallback: true,
+    }
 };
 /* eslint-enable */

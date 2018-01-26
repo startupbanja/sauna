@@ -1,12 +1,12 @@
 import React from 'react';
+import { Route, Switch } from 'react-router-dom';
 /* import Image from './Image'; */
 import FeedbackView from './FeedbackView';
 import LandingPage from './LandingPage';
-import UserProfile from './UserProfile';
+import UserProfilePage from './UserProfilePage';
 import UserSchedule from './UserSchedule';
 import UserList from './UserList';
-// import Timeslot from './timeslot/Timeslot';
-
+import App from './App';
 
 const feedbackQuestions = [
   {
@@ -46,6 +46,9 @@ const schedule = {
   }],
 };
 
+
+/*
+Don't need this anymore
 const users = [
   {
     name: 'joku',
@@ -67,10 +70,10 @@ const users = [
     description: 'yolo in corporate form',
     img: '../app/imgs/coach_placeholder.png',
   },
-];
+]; */
 
 // Template data for the User Profile.
-const profileInfo = {
+/* const profileInfo = {
   name: 'Sample User',
   description:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' +
@@ -90,38 +93,74 @@ const profileInfo = {
     { company: 'Aalto University', position: 'Course assistant' },
     { company: 'Company', position: 'Position' },
   ],
-};
+}; */
 
-
-const userContent = {
+/* const userContent = {
   mainPage: <div><h1>Home</h1><LandingPage /></div>,
   timetable: <UserSchedule schedule={schedule} />,
-  userProfile: <UserProfile
-    name={profileInfo.name}
-    description={profileInfo.description}
-    titles={profileInfo.titles}
-    credentials={profileInfo.credentials}
-  />,
+  userProfile: <UserProfilePage />,
   feedback: <div><FeedbackView questions={feedbackQuestions} /></div>,
-  coaches: <div><UserList users={users} type="Coaches" /></div>,
-  startups: <div><UserList users={users} type="Startups" /></div>,
-};
+  coaches: <UserList type="Coaches" />,
+  startups: <div><UserList type="Startups" /></div>,
+}; */
+const userContent = (
+  <Switch>
+    <Route path="/coaches/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />
+    <Route
+      exact
+      path="/coaches"
+      render={({ match }) => <UserList match={match} type="Coaches" />}
+    />
+    <Route path="/startups/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />
+    <Route
+      exact
+      path="/startups"
+      render={({ match }) => <UserList match={match} type="Startups" />}
+    />
+    <Route path="/main" render={() => <div><h1>Home</h1><LandingPage /></div>} />
+    <Route path="/timetable" render={() => <UserSchedule schedule={schedule} />} />
+    <Route path="/user" component={UserProfilePage} />
+    <Route path="/feedback" render={() => <FeedbackView questions={feedbackQuestions} />} />
+  </Switch>
+);
 
 const userLabels = {
-  mainPage: 'Home',
-  timetable: 'Timetable',
-  userProfile: 'User Profile',
-  feedback: 'Feedback',
-  coaches: 'Coaches',
-  startups: 'Startups',
+  '/main': 'Home',
+  '/timetable': 'Timetable',
+  '/user': 'User Profile',
+  '/feedback': 'Feedback',
+  '/coaches': 'Coaches',
+  '/startups': 'Startups',
 };
 
-const adminContent = {
+/* const adminContent = {
   mainPage: <div><h1>Home</h1><LandingPage /></div>,
-};
+  coaches: <div><UserList type="Coaches" /></div>,
+  startups: <div><UserList type="Startups" /></div>,
+}; */
+
+const adminContent = (
+  <Switch>
+    <Route path="/main" render={() => <div><h1>Home</h1><LandingPage /></div>} />
+    <Route path="/coaches/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />
+    <Route
+      exact
+      path="/coaches"
+      render={({ match }) => <UserList match={match} type="Coaches" />}
+    />
+    <Route path="/startups/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />
+    <Route
+      exact
+      path="/startups"
+      render={({ match }) => <UserList match={match} type="Startups" />}
+    />
+  </Switch>
+);
 
 const adminLabels = {
-  mainPage: 'Home',
+  '/main': 'Home',
+  '/coaches': 'Coaches',
+  '/startups': 'Startups',
 };
 // TODO change this to something better later
 function getContent(userType) {
@@ -131,4 +170,31 @@ function getContent(userType) {
   return { content: userContent, labels: userLabels };
 }
 
-export default { getContent, userContent };
+function fetchData(path, methodType, params) {
+  const paramsString = Object.keys(params).map(x => `${x}=${params[x]}`).join('&');
+  let query = path;
+  let bodyParams;
+  if (methodType.toLowerCase() === 'get') query += `?${paramsString}`;
+  else bodyParams = paramsString;
+  return new Promise((resolve, reject) =>
+    fetch(`http://127.0.0.1:3000${query}`, {
+      method: methodType,
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: bodyParams,
+    }).then((response) => {
+      if (response.status === 401) {
+        App.logOff();
+        reject();
+      } else resolve(response.json());
+    })
+      .catch((error) => {
+        console.log(error);
+        reject();
+      }));
+}
+
+export default { getContent, userContent, fetchData };

@@ -8,21 +8,21 @@ export default class LoginView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      handle: LoginHandler, // This is currently just a function that returns true
+      handle: LoginHandler,
     };
     this.handleInput = this.handleInput.bind(this);
   }
 
 
   handleInput(input) {
-    // const name = input.names;
-    // const pwd = input.pwd;
-    const authResult = this.state.handle(input);
-    if (authResult) {
-      this.props.login(authResult);
-    } else {
-      // handleError
-    }
+    this.state.handle(input, (authResult) => {
+      if (authResult === 'user' || authResult === 'admin') {
+        document.cookie = `ssaunaloggedin=${authResult}`;
+        this.props.login(authResult);
+      } else {
+        // handleError
+      }
+    });
   }
 
   render() {

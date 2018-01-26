@@ -8,17 +8,21 @@ import ProfileInfoHeader from './ProfileInfoHeader';
 export default class UserProfile extends React.Component {
   render() {
     return (
-      <div className="profileContainer">
+      <div className="profileContainer container">
+        <link rel="stylesheet" type="text/css" href="/app/styles/user_profile_style.css" />
         <ProfileInfoHeader
           name={this.props.name}
           imgSrc={this.props.imgSrc}
           titles={this.props.titles}
+          canModify={this.props.canModify}
+          onModifyClick={this.props.onModifyClick}
         />
         <ul className="profileLinks">
           <li>
               LinkedIn: <a href={this.props.linkedIn}>linkedin.com</a>
           </li>
         </ul>
+        <hr />
         <div className="userDescription">
           <p>
             {this.props.description}
@@ -40,12 +44,16 @@ UserProfile.propTypes = {
   credentials: PropTypes.arrayOf(PropTypes.shape({
     company: PropTypes.string.isRequired,
     position: PropTypes.string.isRequired,
-  })).isRequired,
+  })),
+  canModify: PropTypes.bool,
+  onModifyClick: PropTypes.func.isRequired,
 };
 
 UserProfile.defaultProps = {
-  linkedIn: 'http://linkedin.com',
+  linkedIn: '',
   imgSrc: '../app/imgs/coach_placeholder.png',
-  description: 'Description is not available.',
+  description: '',
   titles: [],
+  credentials: [],
+  canModify: false,
 };

@@ -39,6 +39,7 @@ export default class LoginForm extends React.Component {
           <input
             className="form-control"
             onChange={this.usernameChanged}
+            name="username"
             placeholder="Username"
             required=""
             type="email"
@@ -46,19 +47,18 @@ export default class LoginForm extends React.Component {
           <input
             className="form-control"
             onChange={this.pwdChanged}
+            name="password"
             placeholder="Password"
             required=""
             type="password"
           />
-          <button
-            className="btn btn-lg btn-primary btn-block"
-            onClick={this.handleSubmit}
-            type="submit"
-          >
-            Sign in
-          </button>
         </form>
-
+        <button
+          className="btn btn-lg btn-primary btn-block"
+          onClick={this.handleSubmit}
+        >
+            Sign in
+        </button>
       </div>
 
     );

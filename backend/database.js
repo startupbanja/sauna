@@ -2,6 +2,7 @@
 
 const sqlite = require('sqlite3').verbose();
 const fs = require('fs');
+const bcrypt = require('bcrypt');
 
 const db = new sqlite.Database(':memory:', (err) => {
   if (err) {
@@ -21,7 +22,7 @@ function closeDatabase(callback) {
   });
 }
 const userQuery = `
-SELECT name, description, email, linkedin, Credentials.company, Credentials.title
+SELECT Profiles.user_id, name, description, email, linkedin, Credentials.company, Credentials.title
 FROM Profiles
 LEFT OUTER JOIN Credentials ON Profiles.user_id = Credentials.user_id
 WHERE Profiles.user_id IN (
@@ -46,7 +47,7 @@ FROM Users;
 //   })
 // }
 
-function getUsers(type, batch, callback) {
+function getUsers(type, batch, includeId, callback) {
   const users = {};
   // (sql, params, callback for each row, callback on complete)
   db.each(userQuery, [type, batch], (err, row) => {
@@ -63,17 +64,82 @@ function getUsers(type, batch, callback) {
         linkedin: row.linkedin,
         credentials: [[row.company, row.title]],
       };
+      if (includeId) {
+        users[row.name].id = row.user_id;
+      }
     }
     return null;
   }, (err) => {
     if (err) {
       // return console.error(err.message);
-      throw err
+      throw err;
     }
     return callback(users);
   });
 }
 
+function getProfile(id, callback) {
+  const info = {};
+  const query = `SELECT name, description, Profiles.company AS currentCompany, email, linkedin, Credentials.company, Credentials.title
+                 FROM Profiles
+                 LEFT OUTER JOIN Credentials ON Profiles.user_id = Credentials.user_id
+                 WHERE Profiles.user_id = ?;`;
+
+  db.all(query, [Number(id)], (err, rows) => {
+    if (err) {
+      throw err;
+    }
+    rows.forEach((row) => {
+      if (info.name === undefined) {
+        info.name = row.name;
+        info.description = row.description;
+        info.email = row.email;
+        info.linkedIn = row.linkedin;
+        info.company = row.currentCompany;
+        info.credentials = [{ company: row.company, position: row.title }];
+      } else {
+        info.credentials.push({ company: row.company, position: row.title });
+      }
+    });
+    callback(info);
+  });
+}
+
+function verifyIdentity(username, password, callback) {
+  const query = 'SELECT id, type, password FROM Users WHERE username = ?';
+  db.get(query, [username], (err, row) => {
+    if (err) {
+      throw err;
+    }
+    if (!row) {
+      callback('error');
+      return;
+    }
+    bcrypt.compare(password, row.password, (error, same) => {
+      if (error) throw error;
+      if (!same) {
+        callback('error');
+        return;
+      }
+      let type;
+      let userId = false;
+      switch (row.type) {
+        case 0:
+          type = 'admin';
+          userId = row.id;
+          break;
+        case 1:
+        case 2:
+          type = 'user';
+          userId = row.id;
+          break;
+        default:
+          type = 'error';
+      }
+      callback(type, userId);
+    });
+  });
+}
 
 fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
   if (err) {
@@ -105,6 +171,8 @@ fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
 module.exports = {
   closeDatabase,
   getUsers,
+  verifyIdentity,
+  getProfile,
   // testApi,
 };
 // exports.close = closeDatabase;

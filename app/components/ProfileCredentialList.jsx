@@ -9,6 +9,13 @@ export default class ProfileCredentialList extends React.Component {
     super(props);
     this.state = { credentials: props.credentials };
   }
+
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      credentials: nextProps.credentials,
+    });
+  }
+
   render() {
     const h4Style = {
       textAlign: 'center',
@@ -24,7 +31,9 @@ export default class ProfileCredentialList extends React.Component {
         <li key={obj.company}>
           <dl>
             <dt className="credentialCompany">{obj.company}</dt>
-            <dd className="credentialPosition">{obj.position}</dd>
+            <dd className="credentialPosition">
+              <span className="glyphicon glyphicon-menu-right" />{obj.position}
+            </dd>
           </dl>
         </li>));
       credentialList = (
@@ -35,7 +44,7 @@ export default class ProfileCredentialList extends React.Component {
 
     return (
       <div className="credentials">
-        <BlockHeader text="Credentials" />
+        <BlockHeader text="Credentials" color="#363636" />
         {credentialList}
       </div>
     );
@@ -46,9 +55,5 @@ ProfileCredentialList.propTypes = {
   credentials: PropTypes.arrayOf(PropTypes.shape({
     company: PropTypes.string.isRequired,
     position: PropTypes.string.isRequired,
-  })),
-};
-
-ProfileCredentialList.defaultProps = {
-  credentials: [],
+  })).isRequired,
 };
