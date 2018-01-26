@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import UserListItem from './UserListItem';
 // import Image from './Image';
+import pageContent from './pageContent';
 
 export default class UserList extends React.Component {
   constructor(props) {
@@ -35,18 +36,11 @@ export default class UserList extends React.Component {
   /* eslint-enable */
 
   fetchAndUpdate() {
-    const query = `type=${this.props.type}`;
-    fetch(`http://127.0.0.1:3000/users?${query}`, {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        Accept: 'application/json',
-      },
-    }).then(response => response.json())
-      .then(responseJson => this.setState({
-        users: responseJson.users,
-      }))
-      .catch(error => console.log(error));
+    pageContent.fetchData('/users', 'get', {
+      type: this.props.type,
+    }).then(responseJson => this.setState({
+      users: responseJson.users,
+    }));
   }
 
   render() {

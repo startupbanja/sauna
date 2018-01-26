@@ -6,6 +6,7 @@ import LandingPage from './LandingPage';
 import UserProfilePage from './UserProfilePage';
 import UserSchedule from './UserSchedule';
 import UserList from './UserList';
+import App from './App';
 
 const feedbackQuestions = [
   {
@@ -164,4 +165,31 @@ function getContent(userType) {
   return { content: userContent, labels: userLabels };
 }
 
-export default { getContent, userContent };
+function fetchData(path, methodType, params) {
+  const paramsString = Object.keys(params).map(x => `${x}=${params[x]}`).join('&');
+  let query = path;
+  let bodyParams;
+  if (methodType.toLowerCase() === 'get') query += `?${paramsString}`;
+  else bodyParams = paramsString;
+  return new Promise((resolve, reject) =>
+    fetch(`http://127.0.0.1:3000${query}`, {
+      method: methodType,
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: bodyParams,
+    }).then((response) => {
+      if (response.status === 401) {
+        App.logOff();
+        reject();
+      } else resolve(response.json());
+    })
+      .catch((error) => {
+        console.log(error);
+        reject();
+      }));
+}
+
+export default { getContent, userContent, fetchData };

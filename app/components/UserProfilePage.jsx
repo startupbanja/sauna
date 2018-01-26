@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import UserProfile from './UserProfile';
 import EditUserProfile from './EditUserProfile';
+import pageContent from './pageContent';
 
 class UserProfilePage extends Component {
   constructor(props) {
@@ -31,15 +32,9 @@ class UserProfilePage extends Component {
   }
 
   fetchData() {
-    let query = '';
-    if (typeof this.props.id !== 'undefined') query = `userId=${this.props.id}`;
-    fetch(`http://127.0.0.1:3000/profile?${query}`, {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        Accept: 'application/json',
-      },
-    }).then(response => response.json())
+    let params = {};
+    if (typeof this.props.id !== 'undefined') params = { userId: this.props.id };
+    pageContent.fetchData('/profile', 'get', params)
       .then((responseJSON) => {
         this.setState({
           name: responseJSON.name,
@@ -49,7 +44,7 @@ class UserProfilePage extends Component {
           canModify: responseJSON.canModify,
           titles: [responseJSON.company],
         });
-      }).catch(err => console.log(err));
+      });
   }
 
   handleModifyClick() {

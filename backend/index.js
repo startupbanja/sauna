@@ -32,6 +32,11 @@ app.use((req, res, next) => {
   res.append('Access-Control-Allow-Origin', req.get('origin'));
   res.append('Access-Control-Allow-Credentials', 'true');
 
+  if (!req.session.userID && req.path !== '/login') {
+    res.sendStatus(401);
+    return;
+  }
+
   next();
 });
 

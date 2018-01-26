@@ -1,6 +1,12 @@
+import pageContent from './pageContent';
+
 
 export default function handle(input, callback) {
-  const bodyString = `username=${input.name}&password=${input.pwd}`;
+  pageContent.fetchData('/login', 'post', {
+    username: input.name,
+    password: input.pwd,
+  }).then(response => callback(response.status));
+  /* const bodyString = `username=${input.name}&password=${input.pwd}`;
   fetch('http://127.0.0.1:3000/login', {
     method: 'POST',
     credentials: 'include',
@@ -11,5 +17,5 @@ export default function handle(input, callback) {
     body: bodyString,
   }).then(response => response.json())
     .then(responseJson => callback(responseJson.status))
-    .catch(error => console.error(error));
+    .catch(error => console.error(error)); */
 }

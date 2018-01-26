@@ -3,10 +3,15 @@ import LoginView from './LoginView';
 import MainView from './MainView';
 
 export default class App extends React.Component {
+  static logOff() {
+    this.changeToLogin();
+  }
+
   constructor(props) {
     super(props);
     this.changeToMenu = this.changeToMenu.bind(this);
     this.changeToLogin = this.changeToLogin.bind(this);
+    App.logOff = App.logOff.bind(this);
     let firstContent = <LoginView login={this.changeToMenu} />;
     if (document.cookie.indexOf('ssaunaloggedin=') > -1) {
       let type = '';
