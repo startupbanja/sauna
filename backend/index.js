@@ -2,7 +2,6 @@ const express = require('express');
 const readline = require('readline');
 const bodyParser = require('body-parser');
 const database = require('./database.js');
-const bcrypt = require('bcrypt');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 
@@ -102,11 +101,11 @@ app.get('/profile', (req, res) => {
 });
 
 app.post('/updateProfile', (req, res) => {
-  // Create a JSON object from response.
+  // Create a JSON object from request.
   const JSONObject = JSON.parse(req.body);
   let linkedIn;
   let description;
-
+  const uid = req.session.usedID;
   // Titles and  credentials will always get passed through.
   const titles = JSONObject.titles;
   const credentials = JSONObject.credentials;
