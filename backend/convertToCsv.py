@@ -5,10 +5,18 @@ def getFirstRow(first, last):
   start = int(first[0:2])
   end = int(last[0:2])
   res = [""]
-  mins = ["00", "20", "40"]
-  for hour in range(start, end + 1):
-    for minute in mins:
-      res.append("{:02}:{}:00".format(hour, minute))
+  ##TODO hard coded for 40 mins currently
+  mins = ["00", "40", "20" ] * (end - start)
+  hours = []
+  for i, h in enumerate(range(start, end + 1)):
+    hours.append(h)
+    if i % 2 == 0:
+      hours.append(h)
+  for hour, minute in zip (hours, mins):
+    res.append("{:02}:{}:00".format(hour, minute))
+  # for hour in hours:
+  #   for minute in mins:
+  #     res.append("{:02}:{}:00".format(hour, minute))
   return res
 
 def convert(data, filename):

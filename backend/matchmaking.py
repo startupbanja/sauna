@@ -202,7 +202,12 @@ def countSlots(timetable):
         empty +=1
       else:
         matched += 1
-  return { 'matches': matches, 'empty': empty, 'size': size }
+  return { 'matched': matched, 'empty': empty, 'size': size }
+
+# finds a timeslot for a meeting between a startup and a coach by moving
+# other startups, guaranteed to produce a legal timetable
+def fit(coach, startup):
+  pass
 
 # return value: {coach, startup, time, duration}
 def matchmake(feedbacks,
@@ -223,14 +228,14 @@ def matchmake(feedbacks,
   # here a, b are members of the "feedbacks" list
   cmpFunctions = [
     lambda a, b: cmpByStartupMeetingCount(a,b,startupMeetingCount),
-    # lambda a, b: cmpByTimetotal(a, b, availabilities),
+    lambda a, b: cmpByTimetotal(a, b, availabilities),
     lambda a, b: cmpByTimestart(a, b, availabilities),
     cmpByFeedback
   ]
   # itemsMatched = 0
   elementsToRetry = []
   retries = 0
-  stats = {'notFoundCount': 0, 'notFound': [], 'full': []}
+  stats = {'notFoundCount': 0, 'notFound': [], 'coachFull': []}
   while retries < 10:
     i = 0
     if elementsToRetry:
@@ -258,7 +263,7 @@ def matchmake(feedbacks,
         if not found:
           #Check if that coach has a full timetable already
           if None not in timetable[cur['coach']][2]:
-            stats['full'].append(cur)
+            stats['coachFull'].append(cur)
           else:
             elementsToRetry.append(cur)
         # if found:
@@ -269,5 +274,6 @@ def matchmake(feedbacks,
 
   stats['notFound'] = elementsToRetry
   stats['notFoundCount'] = len(elementsToRetry)
+  stats['slots'] = countSlots(timetable)
   transformed = transformToReturn(timetable, slotSize)
   return (json.dumps(transformed), json.dumps(stats))

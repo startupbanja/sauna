@@ -34,17 +34,30 @@ app.get('/api', (req, res) => {
   }
 });
 
-//  muuta callback muotoon
-app.get('/timeslots', (req, res) => {
+function runAlgorithm(callback) {
   database.getTimeslots((timeslots) => {
     database.getRatings((ratings) => {
       const data = {
         feedbacks: ratings,
         availabilities: timeslots,
       };
-      matchmaking.run(data, rdy => res.json(rdy));
+      matchmaking.run(data, rdy => callback(rdy));
     });
   });
+}
+
+//  muuta callback muotoon
+app.get('/timeslots', (req, res) => {
+  runAlgorithm(result => res.json(result));
+  // database.getTimeslots((timeslots) => {
+  //   database.getRatings((ratings) => {
+  //     const data = {
+  //       feedbacks: ratings,
+  //       availabilities: timeslots,
+  //     };
+  //     matchmaking.run(data, rdy => res.json(rdy));
+  //   });
+  // });
 });
 
 // app.get('/api', function(req, res) {
@@ -74,8 +87,8 @@ rl.on('line', (input) => {
     case ('exit'):
       closeServer();
       break;
-    case ('test'):
-      matchmaking.run();
+    case ('run'):
+      runAlgorithm(() => null);
       break;
     default:
       break;
