@@ -3,7 +3,7 @@ const childProcess = require('child_process');
 
 function runMatchmaking(jsonData, callback) {
   const filename = './run_matchmaking.py';
-  const newProcess = childProcess.spawn('python', [filename]);
+  const newProcess = childProcess.spawn('python3', [filename]);
   let storage = [];
   newProcess.stdout.on('data', (data) => {
     storage += data;

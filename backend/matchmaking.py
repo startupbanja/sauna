@@ -1,8 +1,4 @@
-import json
-import sys
-import time
-import random
-import datetime
+import json, sys, time, random, datetime, functools
 import convertToCsv
 
 
@@ -96,7 +92,7 @@ def isLegal(startup, timetable, coach, index, slotSize):
       starttime1 = timetable[newCoach][0]
       if timeToBeChecked < starttime1:
         continue
-      delta = timedeltaToMins(timeToBeChecked - starttime1)
+      delta = int(timedeltaToMins(timeToBeChecked - starttime1))
       i1 = delta // slotSize
       if i1 < len(timetable[newCoach][2]) and timetable[newCoach][2][i1] == startup:
         return False
@@ -109,7 +105,7 @@ def findPlace(elem, timetable, startupMeetingCount, slotSize):
   coach = elem['coach']
   startup = elem['startup']
   # TODO check here if startup and coach are already meeting?
-  rng = range(len(timetable[coach][2]))
+  rng = list(range(len(timetable[coach][2])))
   random.shuffle(rng)
   for i in rng:
     if isLegal(startup, timetable, coach, i, slotSize):
@@ -173,8 +169,8 @@ def init(data, slotSize=40):
 def toTimeString(start, duration, i):
   time = start.seconds + (duration * 60 * i)
   secs = time % 60
-  mins = time / 60 % 60
-  hrs = time / (60 * 60)
+  mins = time // 60 % 60
+  hrs = time // (60 * 60)
   return "{:02}:{:02}:{:02}".format(hrs, mins, secs)
 
 def transformToReturn(timetable, slotSize):
@@ -215,7 +211,8 @@ def matchmake(feedbacks,
   timetable = getEmptyTimetable(availabilities, slotSize)
   # filter out elements with too low feedback
 
-  sortedList = filter(lambda a: filterFeedbacks(a, availabilities), feedbacks)
+  # sortedList = filter(lambda a: filterFeedbacks(a, availabilities), feedbacks)
+  sortedList = [x for x in feedbacks if filterFeedbacks(x, availabilities)]
   random.shuffle(sortedList)
 
   # list of our comparison functions for sorting. we use lambdas because some of
@@ -242,7 +239,7 @@ def matchmake(feedbacks,
       # sort feedbacks list
       # sortedList = filter(lambda a: a != None, sortedList)
       for f in cmpFunctions:
-        sortedList = sorted(sortedList, f)
+        sortedList = sorted(sortedList, key=functools.cmp_to_key(f))
 
       curRating = getSum(sortedList[i]['startupfeedback'], sortedList[i]['coachfeedback'])
       newRating = curRating

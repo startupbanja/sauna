@@ -33,7 +33,8 @@ def convert(data, filename):
   lastTime = max(lastTimes)
 
   firstRow = getFirstRow(firstTime, lastTime)
-  rows = map(lambda a: [a]+[""]*(len(firstRow) - 1), result.keys())
+  # rows = list(map(lambda a: [a]+[""]*(len(firstRow) - 1), result.keys())
+  rows = [ [a]+[""]*(len(firstRow) - 1) for a in result.keys()]
   for row in rows:
     coach = row[0]
     for pair in result[coach]:
