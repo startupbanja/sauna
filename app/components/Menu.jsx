@@ -40,13 +40,14 @@ export default class Menu extends React.Component {
             </ul>
             <ul className="nav navbar-nav navbar-right">
               <li className="nav-item menuListItem">
-                <a
+                <Link
                   className="nav-link"
                   href="#"
                   onClick={this.props.logoff}
+                  to="/"
                 >
                 Log Off
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
