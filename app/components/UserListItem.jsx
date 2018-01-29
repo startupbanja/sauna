@@ -45,7 +45,7 @@ UserListItem.propTypes = {
   imageSrc: PropTypes.string,
   description: PropTypes.string,
   // handleClick: PropTypes.func.isRequired,
-  id: PropTypes.number.isRequired,
+  id: PropTypes.number.isRequired, // eslint-disable-line
 };
 
 export default UserListItem;

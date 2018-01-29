@@ -42,7 +42,7 @@ class EditUserProfile extends Component {
 }
 
 EditUserProfile.propTypes = {
-  id: PropTypes.number,
+  id: PropTypes.number, // eslint-disable-line react/no-unused-prop-types
   name: PropTypes.string.isRequired,
   linkedIn: PropTypes.string,
   // imgSrc: PropTypes.string,
