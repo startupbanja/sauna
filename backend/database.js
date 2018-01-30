@@ -48,6 +48,14 @@ SELECT MAX(id)
 FROM Batches
 );`;
 
+const startupQuery = `
+SELECT id
+FROM USERS
+WHERE type=2 AND batch IN (
+SELECT MAX(id)
+FROM Batches
+);`;
+
 function getUsers(type, batch, callback) {
   const users = {};
   // (sql, params, callback for each row, callback on complete)
@@ -73,6 +81,24 @@ function getUsers(type, batch, callback) {
       throw err;
     }
     return callback(users);
+  });
+}
+
+function getStartups(callback) {
+  const startups = [];
+  // (sql, params, callback for each row, callback on complete)
+  db.each(startupQuery, [], (err, row) => {
+    if (err) {
+      throw err;
+    }
+    startups.push(row.startup_id.toString());
+    return null;
+  }, (err) => {
+    if (err) {
+      // return console.error(err.message);
+      throw err;
+    }
+    return callback(startups);
   });
 }
 
@@ -151,6 +177,7 @@ module.exports = {
   getUsers,
   getRatings,
   getTimeslots,
+  getStartups,
 };
 // exports.close = closeDatabase;
 // exports.db = db;
