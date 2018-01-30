@@ -149,6 +149,8 @@ function verifyIdentity(username, password, callback) {
       }
       callback(type, userId);
     });
+  });
+}
 
 function getStartups(callback) {
   const startups = [];
@@ -238,7 +240,6 @@ fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
   return null;
 });
 
-
 module.exports = {
   closeDatabase,
   getUsers,
@@ -248,4 +249,3 @@ module.exports = {
   getTimeslots,
   getStartups,
 };
-

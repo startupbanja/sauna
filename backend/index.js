@@ -45,7 +45,6 @@ app.use((req, res, next) => {
 
 app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/index.html`);
-
 });
 
 app.get('/api', (req, res) => {
@@ -115,7 +114,7 @@ app.get('/users', (req, res) => {
     const userArray = [];
     for (const user in userList) {
       const userData = userList[user];
-      const userObj = { 
+      const userObj = {
         id: userData.id,
         name: user,
         description: userData.description,
