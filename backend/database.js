@@ -91,7 +91,7 @@ function getStartups(callback) {
     if (err) {
       throw err;
     }
-    startups.push(row.startup_id.toString());
+    startups.push(row.id.toString());
     return null;
   }, (err) => {
     if (err) {
