@@ -6,9 +6,9 @@ import convertToCsv
 # availabilities: {coachname(string): {starttime: string, duration: int}}
 #}
 
-# {startup: "asd", startupfeedback: 1, coach: "dasdsa", coachfeedback: 0}
+# {startup: "startupid", startupfeedback: 1, coach: "coachid", coachfeedback: 0}
 
-# {"asd": {starttime, duration}}
+# {"coachid": {starttime, duration}}
 
 # change starttime and duration to timedelta objects for easy comparison
 
@@ -99,7 +99,7 @@ def isLegal(startup, timetable, coach, index, slotSize):
 
 
 # find a place for a feedback element in the timetable(list)
-# elem: {startup: "asd", startupfeedback: 1, coach: "dasdsa", coachfeedback: 0}
+# elem: {startup: "startupid", startupfeedback: 1, coach: "coachid", coachfeedback: 0}
 def findPlace(elem, timetable, startupMeetingCount, slotSize):
   coach = elem['coach']
   startup = elem['startup']
@@ -180,9 +180,8 @@ def transformToReturn(timetable, slotSize):
     total = times[1]
     slots = times[2]
     for i, startup in enumerate(slots):
-      # if startup != None:
-        time = toTimeString(start, duration, i)
-        res.append({'coach': key, 'startup': startup, 'time': time, 'duration': duration})
+      time = toTimeString(start, duration, i)
+      res.append({'coach': key, 'startup': startup, 'time': time, 'duration': duration})
   return res
 
 def countSlots(timetable):
@@ -198,10 +197,6 @@ def countSlots(timetable):
         matched += 1
   return { 'matched': matched, 'empty': empty, 'size': size }
 
-# finds a timeslot for a meeting between a startup and a coach by moving
-# other startups, guaranteed to produce a legal timetable
-# def fit(coach, startup):
-#   pass
 
 # return value: {coach, startup, time, duration}
 def matchmake(feedbacks,

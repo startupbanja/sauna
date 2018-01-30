@@ -23,7 +23,8 @@ class TestMatchmaking(unittest.TestCase):
       'starttime': str(random.randrange(9,12))+ ":00:00",
       'duration': random.randrange(0, 240, 40)
       }
-    testData = {'feedbacks': self.feedbacks, 'availabilities': self.availabilities}
+    self.startups = list(range(10))
+    testData = {'feedbacks': self.feedbacks, 'availabilities': self.availabilities, 'startups': self.startups}
     self.paramTuple = matchmaking.init(testData)
     self.definedFeedbacks = [];
     userid = 0;
@@ -49,7 +50,7 @@ class TestMatchmaking(unittest.TestCase):
       'starttime': "10:00:00",
       'duration': 120
     }
-    definedTestData = {'feedbacks': self.definedFeedbacks, 'availabilities': self.definedAvailabilities}
+    definedTestData = {'feedbacks': self.definedFeedbacks, 'availabilities': self.definedAvailabilities, 'startups': self.startups}
     self.definedParamTuple = matchmaking.init(definedTestData)
     self.definedAvailabilities = self.definedParamTuple[1]
 
