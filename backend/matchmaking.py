@@ -126,8 +126,10 @@ def getEmptyTimetable(availabilities, slotSize):
 def init(data, slotSize=40):
   feedbacks = data['feedbacks']
   oldAvail = data['availabilities']
-  startupMeetingCount = dict(map(lambda d: (d['startup'], 0), feedbacks))
-  startupsFromFeedbacks = set(map(lambda a: a['startup'], feedbacks))
+  startups = data['startups']
+
+  startupMeetingCount = dict(map(lambda a: (a, 0), startups))
+  # startupsFromFeedbacks = set(map(lambda a: a['startup'], feedbacks))
   # coachesFromFeedbacks = set(map(lambda a: a['coach'], feedbacks))
 
   def containsElem(startup, coach):
@@ -138,7 +140,7 @@ def init(data, slotSize=40):
 
   #Generate empty feedbacks(-1, -1) for coaches, startup pairs who are available but have no feedback data
   for coach in oldAvail.keys():
-    for startup in startupsFromFeedbacks:
+    for startup in startups:
       if not containsElem(startup, coach):
         feedbacks.append({'coach': coach, 'startup': startup, 'coachfeedback': -1, 'startupfeedback': -1})
 
@@ -202,8 +204,8 @@ def countSlots(timetable):
 
 # finds a timeslot for a meeting between a startup and a coach by moving
 # other startups, guaranteed to produce a legal timetable
-def fit(coach, startup):
-  pass
+# def fit(coach, startup):
+#   pass
 
 # return value: {coach, startup, time, duration}
 def matchmake(feedbacks,
@@ -233,10 +235,12 @@ def matchmake(feedbacks,
   elementsToRetry = []
   retries = 0
   stats = {'notFoundCount': 0, 'notFound': [], 'coachFull': []}
-  while retries < 10:
+  while retries < 1:
     i = 0
     if elementsToRetry:
       sortedList = elementsToRetry
+      random.shuffle(sortedList)
+
       elementsToRetry = []
     while i < len(sortedList):
       # i -= itemsMatched
@@ -257,6 +261,8 @@ def matchmake(feedbacks,
           break
         # place into a free slot in the timetable
         found = findPlace(cur, timetable, startupMeetingCount, slotSize)
+        if found and retries > 0:
+          sys.stderr.write("found one retrying")
         if not found:
           #Check if that coach has a full timetable already
           if None not in timetable[cur['coach']][2]:

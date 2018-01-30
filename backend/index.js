@@ -34,7 +34,7 @@ app.get('/api', (req, res) => {
   }
 });
 
-function runAlgorithm(callback) {
+function runAlgorithm(callback, commit = false) {
   database.getTimeslots((timeslots) => {
     database.getRatings((ratings) => {
       const data = {
@@ -42,6 +42,9 @@ function runAlgorithm(callback) {
         availabilities: timeslots,
       };
       matchmaking.run(data, rdy => callback(rdy));
+      // if (commit) {
+      // database save rdy
+      // }
     });
   });
 }
