@@ -1,36 +1,37 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-const styles = {
-  line: {
-    position: 'absolute',
-    display: 'inline',
-    height: '4px',
-    background: '#A3A3A3',
-    width: '100%',
-    top: '3px',
-  },
-  dot: {
-    display: 'inline',
-    height: '10px',
-    width: '10px',
-    background: '#A3A3A3',
-    borderRadius: '100%',
-  },
-  border: {
-    position: 'relative',
-    flexGrow: '2',
-    overflow: 'hidden',
-  },
-  header: {
-    margin: '0px',
-    fontWeight: 'bold',
-    padding: '2%',
-  },
-};
-
 class BlockHeader extends Component {
   render() {
+    const styles = {
+      line: {
+        position: 'absolute',
+        display: 'inline',
+        height: '4px',
+        background: this.props.color,
+        width: '100%',
+        top: '3px',
+      },
+      dot: {
+        display: 'inline',
+        height: '10px',
+        width: '10px',
+        background: this.props.color,
+        borderRadius: '100%',
+      },
+      border: {
+        position: 'relative',
+        flexGrow: '2',
+        overflow: 'hidden',
+      },
+      header: {
+        margin: '0px',
+        fontWeight: 'bold',
+        padding: '2%',
+        color: this.props.color,
+      },
+    };
+
     return (
       <div style={{ display: 'flex', alignItems: 'center' }} >
         <div style={styles.border}>
@@ -51,6 +52,11 @@ class BlockHeader extends Component {
 
 BlockHeader.propTypes = {
   text: PropTypes.string.isRequired,
+  color: PropTypes.string,
+};
+
+BlockHeader.defaultProps = {
+  color: '#A3A3A3',
 };
 
 export default BlockHeader;

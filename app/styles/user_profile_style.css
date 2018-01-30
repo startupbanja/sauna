@@ -1,0 +1,64 @@
+.profileContainer #username {
+  color: #E45336;
+}
+
+.profileContainer .mainInfoSection {
+  padding: 0px;
+}
+
+.profileContainer .mainInfoSection span {
+  top: 10px;
+  right: 10px;
+  float: right;
+  font-size: 1.5em;
+}
+
+.profileContainer .titles {
+  padding: 0px;
+  list-style-type: none;
+  color: white;
+  font-size: 1.2em;
+}
+
+.profileContainer .profileLinks {
+  padding: 5px;
+  list-style-type: none;
+  color: white;
+  font-size: 1.2em;
+  margin: 0px;
+}
+
+.profileContainer .profileLinks a {
+  color: #A3A3A3;
+}
+
+.profileContainer hr {
+  border-color: #363636;
+  border-width: 3px;
+  margin: 0px 0px 5px 0px;
+}
+
+.profileContainer .userDescription p {
+  font-size: 1.2em;
+  margin: 0px;
+  padding: 5px;
+}
+
+.profileContainer .credentialList {
+  list-style-type: none;
+  font-size: 1.2em;
+  padding: 5px;
+}
+
+.profileContainer .credentialList dt {
+  color: #E45336;
+}
+
+.profileContainer .credentialList dd {
+  position: absolute;
+}
+
+.profileContainer .credentialList dd span {
+  font-size: 0.7em;
+  padding-left: 10px;
+}
