@@ -63,7 +63,7 @@ def filterFeedbacks(elem, availabilities):
     return False
   if coach == 0 and startup == -1:
     return False
-  if getSum(coach, startup) <= 20: #coach != -1 and startup != -1 and startup + coach <= 2:
+  if getSum(coach, startup) <= 20:
     return False
   if elem['coach'] not in availabilities.keys():
     return False
@@ -75,7 +75,6 @@ def timedeltaToMins(timedelta):
 # returns true if there would be a double booking at a certain timeslot in timetable
 #
 def isLegal(startup, timetable, coach, index, slotSize):
-  # slotSize = 40#datetime.timedelta(minutes = 40)
   # check if they are already meeting
   if startup in timetable[coach][2]:
     return False
@@ -129,8 +128,6 @@ def init(data, slotSize=40):
   startups = data['startups']
 
   startupMeetingCount = dict(map(lambda a: (a, 0), startups))
-  # startupsFromFeedbacks = set(map(lambda a: a['startup'], feedbacks))
-  # coachesFromFeedbacks = set(map(lambda a: a['coach'], feedbacks))
 
   def containsElem(startup, coach):
     for elem in feedbacks:
@@ -145,7 +142,6 @@ def init(data, slotSize=40):
         feedbacks.append({'coach': coach, 'startup': startup, 'coachfeedback': -1, 'startupfeedback': -1})
 
 
-  # startupMeetingCount = {feedbacks[k]['startup']: 0 for k in feedbacks.keys()}
   def mapAvail(coach):
     old = oldAvail[coach]
     times = old['starttime'].split(':')
@@ -218,7 +214,6 @@ def matchmake(feedbacks,
   timetable = getEmptyTimetable(availabilities, slotSize)
   # filter out elements with too low feedback
 
-  # sortedList = filter(lambda a: filterFeedbacks(a, availabilities), feedbacks)
   sortedList = [x for x in feedbacks if filterFeedbacks(x, availabilities)]
   random.shuffle(sortedList)
 
@@ -231,52 +226,32 @@ def matchmake(feedbacks,
     lambda a, b: cmpByTimestart(a, b, availabilities),
     cmpByFeedback
   ]
-  # itemsMatched = 0
-  elementsToRetry = []
-  retries = 0
-  stats = {'notFoundCount': 0, 'notFound': [], 'coachFull': []}
-  while retries < 1:
-    i = 0
-    if elementsToRetry:
-      sortedList = elementsToRetry
-      random.shuffle(sortedList)
+  stats = {'coachFull': []}
+  i = 0
+  while i < len(sortedList):
+    # sort feedbacks list
+    for f in cmpFunctions:
+      sortedList = sorted(sortedList, key=functools.cmp_to_key(f))
 
-      elementsToRetry = []
-    while i < len(sortedList):
-      # i -= itemsMatched
-      # itemsMatched = 0
-      # sort feedbacks list
-      # sortedList = filter(lambda a: a != None, sortedList)
-      for f in cmpFunctions:
-        sortedList = sorted(sortedList, key=functools.cmp_to_key(f))
+    curRating = getSum(sortedList[i]['startupfeedback'], sortedList[i]['coachfeedback'])
+    newRating = curRating
+    while (i < len(sortedList)):
+      # take current element
+      cur = sortedList[i]
+      newRating = getSum(cur['startupfeedback'], cur['coachfeedback'])
+      # are we still on the same rating? if not, break into outer loop, sort again
+      if (newRating != curRating):
+        break
+      # place into a free slot in the timetable
+      found = findPlace(cur, timetable, startupMeetingCount, slotSize)
 
-      curRating = getSum(sortedList[i]['startupfeedback'], sortedList[i]['coachfeedback'])
-      newRating = curRating
-      while (i < len(sortedList)):
-        # take current element
-        cur = sortedList[i]
-        newRating = getSum(cur['startupfeedback'], cur['coachfeedback'])
-        # are we still on the same rating? if not, break into outer loop, sort again
-        if (newRating != curRating):
-          break
-        # place into a free slot in the timetable
-        found = findPlace(cur, timetable, startupMeetingCount, slotSize)
-        if found and retries > 0:
-          sys.stderr.write("found one retrying")
-        if not found:
-          #Check if that coach has a full timetable already
-          if None not in timetable[cur['coach']][2]:
-            stats['coachFull'].append(cur)
-          else:
-            elementsToRetry.append(cur)
-        # if found:
-        #   itemsMatched += 1
-        #   sortedList[i] = None
-        i += 1
-    retries += 1
+      if not found:
+        #Check if that coach has a full timetable already
+        if None not in timetable[cur['coach']][2]:
+          stats['coachFull'].append(cur)
 
-  stats['notFound'] = elementsToRetry
-  stats['notFoundCount'] = len(elementsToRetry)
+      i += 1
+
   stats['slots'] = countSlots(timetable)
   transformed = transformToReturn(timetable, slotSize)
   return (json.dumps(transformed), json.dumps(stats))
