@@ -120,8 +120,8 @@ function getFeedback(id, callback) {
   const feedbacks = [];
   const query = `
     SELECT id AS meetingId, user_id, name, description, rating, "/app/imgs/coach_placeholder.png" AS image_src
-    FROM 
-      (SELECT id, 
+    FROM
+      (SELECT id,
           CASE
             WHEN coach_id = ? THEN startup_id
             WHEN startup_id = ? THEN coach_id
@@ -131,7 +131,7 @@ function getFeedback(id, callback) {
             WHEN startup_id = ? THEN startup_rating
           END rating
         FROM Meetings
-        WHERE (coach_id = ? OR startup_id = ?) AND date = 
+        WHERE (coach_id = ? OR startup_id = ?) AND date =
           (SELECT MAX(date) FROM Meetings WHERE coach_id = ? OR startup_id = ?))
       NATURAL JOIN Profiles`;
   db.all(query, [id, id, id, id, id, id, id, id], (err, rows) => {
@@ -265,6 +265,35 @@ function getTimeslots(callback) {
   });
 }
 
+function check() {
+  db.all("SELECT * FROM Meetings WHERE date = '2018-01-01'", [], (err, rows) => {
+    if (err) console.log(err);
+    console.log('success?');
+    rows.forEach(row => console.log(row));
+  });
+}
+
+const saveMatchmakingQuery = `
+INSERT INTO Meetings(coach_id, startup_id, date, time, duration, coach_rating, startup_rating)
+VALUES
+`;
+// jsonData is in array(parsed) form
+function saveMatchmaking(jsonData, dateString, callback) {
+  // filter nulls
+  const data = jsonData.filter(obj => obj.startup !== null);
+
+  const strings = data.map((row) => {
+    const {
+      coach, startup, duration, time,
+    } = row;
+    return `( ${coach}, ${startup}, '${dateString}', '${time}', ${duration}, -1, -1)`;
+  });
+  const query = `${saveMatchmakingQuery}${strings.join(',\n')};`;
+  // console.log(query);
+  db.run(query, () => callback());
+}
+
+
 fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
   if (err) {
     return console.log(err);
@@ -278,10 +307,8 @@ fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
       if (statement.trim()) {
         db.run(statement, [], (err2) => {
           if (err2) {
-            // return console.error(err2.message);
             throw err2;
           }
-          // closeDatabase();
           return null;
         });
       }
@@ -301,4 +328,5 @@ module.exports = {
   getStartups,
   getFeedback,
   giveFeedback,
+  saveMatchmaking,
 };
