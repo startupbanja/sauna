@@ -60,7 +60,7 @@ app.get('/api', (req, res) => {
   }
 });
 
-function runAlgorithm(callback, commit = false) {
+function runAlgorithm(callback) {
   database.getTimeslots((timeslots) => {
     database.getRatings((ratings) => {
       database.getStartups((startupdata) => {
@@ -164,6 +164,11 @@ rl.on('line', (input) => {
       break;
     case ('run'):
       runAlgorithm(() => null);
+      break;
+    case ('run -s'):
+      runAlgorithm((data) => { // TODO placeholder date
+        database.saveMatchmaking(data, '2018-01-01', () => console.log('saved'));
+      });
       break;
     default:
       break;
