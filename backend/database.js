@@ -265,13 +265,13 @@ function getTimeslots(callback) {
   });
 }
 
-function check() {
-  db.all("SELECT * FROM Meetings WHERE date = '2018-01-01'", [], (err, rows) => {
-    if (err) console.log(err);
-    console.log('success?');
-    rows.forEach(row => console.log(row));
-  });
-}
+// function check() {
+//   db.all("SELECT * FROM Meetings WHERE date = '2018-01-01'", [], (err, rows) => {
+//     if (err) console.log(err);
+//     console.log('success?');
+//     rows.forEach(row => console.log(row));
+//   });
+// }
 
 const saveMatchmakingQuery = `
 INSERT INTO Meetings(coach_id, startup_id, date, time, duration, coach_rating, startup_rating)
@@ -317,6 +317,36 @@ fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
   });
   return null;
 });
+// Get an object mapping all ids from startups and coaches of the current batch and map them to their names.
+// Currently returns all coaches with any branch number
+//Checks for active = 1 for all rows
+function getMapping(batch, callback) {
+  const coachType = 1;
+  const startupType = 2;
+  // const coachBatch = 1;
+  const result = {
+    startups: {},
+    coaches: {},
+  };
+  const q = `SELECT Users.id AS id, Profiles.name AS name, Users.type AS type
+  FROM Users
+  INNER JOIN Profiles
+  ON Users.id = Profiles.user_id
+  WHERE active = 1 AND ((Users.type = ? AND Users.batch = ?)
+  OR Users.type = ?);`;
+  db.each(q, [startupType, batch, coachType], (err, row) => {
+    if (err) throw err;
+    if (row.type === startupType) {
+      result.startups[row.id] = row.name;
+    } else if (row.type === coachType) {
+      result.coaches[row.id] = row.name;
+    }
+  }, (err) => {
+    if (err) throw err;
+    callback(result);
+  });
+}
+
 
 module.exports = {
   closeDatabase,
@@ -329,4 +359,5 @@ module.exports = {
   getFeedback,
   giveFeedback,
   saveMatchmaking,
+  getMapping,
 };
