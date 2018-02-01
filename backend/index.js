@@ -69,7 +69,11 @@ function runAlgorithm(callback) {
           availabilities: timeslots,
           startups: startupdata,
         };
-        matchmaking.run(data, rdy => callback(rdy));
+        const batch = 1
+        database.getMapping(batch, (mapping) => {
+          const dataWithMapping = { data, mapping };
+          matchmaking.run(dataWithMapping, rdy => callback(rdy));
+        })
       });
     });
   });
@@ -78,15 +82,6 @@ function runAlgorithm(callback) {
 //  muuta callback muotoon
 app.get('/timeslots', (req, res) => {
   runAlgorithm(result => res.json(result));
-  // database.getTimeslots((timeslots) => {
-  //   database.getRatings((ratings) => {
-  //     const data = {
-  //       feedbacks: ratings,
-  //       availabilities: timeslots,
-  //     };
-  //     matchmaking.run(data, rdy => res.json(rdy));
-  //   });
-  // });
 });
 
 // app.get('/api', function(req, res) {
