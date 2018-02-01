@@ -99,8 +99,11 @@ app.post('/login', (req, res) => {
 
   // bcrypt.hash(password, 10, (err, hash) => console.log(hash));
   database.verifyIdentity(username, password, (type, userId) => {
-    if (userId !== false) req.session.userID = userId;
-    res.json({ status: type });
+    if (userId !== false) {
+      req.session.userID = userId;
+      req.session.userType = type;
+    }
+    res.json({ status: (type === 'coach' || type === 'startup') ? 'user' : type });
   });
 });
 
@@ -136,6 +139,16 @@ app.get('/profile', (req, res) => {
       Object.assign(result, { canModify: true });
     }
     res.json(result);
+  });
+});
+
+app.get('/feedback', (req, res) => {
+  const id = req.session.userID;
+  database.getFeedback(id, (result) => {
+    res.json({
+      data: result,
+      userType: req.session.userType,
+    });
   });
 });
 

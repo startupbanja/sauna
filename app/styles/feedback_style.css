@@ -4,9 +4,11 @@
 
 .radiobutton {
   background-color: #A3A3A3;
+  color: white;
 }
 .radiobutton.active {
   background-color: #E55234;
+  color: white;
 }
 
 .cardImage {

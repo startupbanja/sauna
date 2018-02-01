@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import $ from 'jquery';
 import FeedbackForm from './FeedbackForm';
 import Button from './Button';
+import pageContent from './pageContent';
 
 
 // This is the class that shows the whole page content after login
@@ -11,10 +12,16 @@ export default class FeedbackView extends React.Component {
   constructor(props) {
     super(props);
     this.getData = this.getData.bind(this);
-    const newData = this.getData();
     this.submitForm = this.submitForm.bind(this);
     this.state = {
-      data: newData,
+      data: [{
+        user_id: null,
+        name: '',
+        description: '',
+        image_src: '',
+        rating: null,
+      }],
+      userType: 'coach',
       index: 0,
       choices: [],
     };
@@ -23,23 +30,19 @@ export default class FeedbackView extends React.Component {
     this.resetChoices = this.resetChoices.bind(this);
   }
 
+
+  componentDidMount() {
+    this.getData();
+  }
+
   getData() { //eslint-disable-line
-    return [{
-      name: 'Coach One',
-      image_src: '../app/imgs/coach_placeholder.png',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam et lacus dapibus, ullamcorper sem sed, tincidunt ante.',
-    },
-    {
-      name: 'Coach Two',
-      image_src: '../app/imgs/coach_placeholder.png',
-      description: 'Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore.',
-    },
-    {
-      name: 'Coach Three',
-      image_src: '../app/imgs/coach_placeholder.png',
-      description: 'asdasdasd',
-    },
-    ];
+    pageContent.fetchData('/feedback', 'get', {})
+      .then((result) => {
+        this.setState({
+          data: result.data,
+          userType: result.userType,
+        });
+      });
   }
 
   submitForm(id) { // eslint-disable-line
@@ -74,7 +77,7 @@ export default class FeedbackView extends React.Component {
         <FeedbackForm
           info={this.state.data[this.state.index]}
           onSubmit={this.submitForm}
-          questions={this.props.questions}
+          questions={this.props.questions[this.state.userType]}
           handleChange={this.handleChange}
           handleReset={this.resetChoices}
         />
@@ -104,9 +107,16 @@ export default class FeedbackView extends React.Component {
 }
 
 FeedbackView.propTypes = {
-  questions: PropTypes.arrayOf(PropTypes.shape({
-    index: PropTypes.number,
-    question: PropTypes.string,
-    options: PropTypes.arrayOf(PropTypes.number),
-  })).isRequired,
+  questions: PropTypes.shape({
+    coach: PropTypes.arrayOf(PropTypes.shape({
+      index: PropTypes.number,
+      question: PropTypes.string,
+      options: PropTypes.arrayOf(PropTypes.number),
+    })),
+    startup: PropTypes.arrayOf(PropTypes.shape({
+      index: PropTypes.number,
+      question: PropTypes.string,
+      options: PropTypes.arrayOf(PropTypes.number),
+    })),
+  }).isRequired,
 };
