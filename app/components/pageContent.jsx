@@ -10,12 +10,12 @@ import App from './App';
 
 const feedbackQuestions = {
   coach: [{
-    index: 1,
+    index: 0,
     question: 'Would you like to meet again?',
     options: [0, 1, 2],
   }],
   startup: [{
-    index: 1,
+    index: 0,
     question: 'Would you like to meet again?',
     options: [0, 1, 3],
   }],

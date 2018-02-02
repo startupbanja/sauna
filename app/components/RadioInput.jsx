@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import $ from 'jquery';
 /* eslint
 jsx-a11y/label-has-for: "warn",
 jsx-a11y/click-events-have-key-events: "warn",
@@ -7,6 +8,19 @@ jsx-a11y/no-noninteractive-element-to-interactive-role: "warn"
 */
 // TODO make the activeness of buttons change here, not based on bootstrap jquery stuff
 export default class RadioInput extends React.Component {
+  constructor(props) {
+    super(props);
+    this.componentDidUpdate = this.componentDidUpdate.bind(this);
+  }
+
+  componentDidUpdate() {
+    const { rating } = this.props;
+    $('.radiobutton').each(function doSmth() {
+      if ($(this).attr('value') === rating.toString()) $(this).addClass('active');
+      else $(this).removeClass('active');
+    });
+  }
+
   render() {
     const choices = this.props.options.map(option =>
       (
@@ -15,6 +29,7 @@ export default class RadioInput extends React.Component {
           className="btn btn-secondary radiobutton"
           role="button"
           htmlFor={`${this.props.id}_${option}`}
+          value={option}
           onClick={() => { this.props.onChange(this.props.index, option); }}
         >
           <input
@@ -46,5 +61,10 @@ RadioInput.propTypes = {
   options: PropTypes.arrayOf(PropTypes.number).isRequired,
   question: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
+  rating: PropTypes.number,
   index: PropTypes.number.isRequired,
+};
+
+RadioInput.defaultProps = {
+  rating: null,
 };

@@ -152,6 +152,16 @@ app.get('/feedback', (req, res) => {
   });
 });
 
+app.post('/giveFeedback', (req, res) => {
+  const userType = req.session.userType;
+  const meetingId = req.body.meetingId;
+  const rating = req.body.rating;
+
+  database.giveFeedback(meetingId, rating, (userType === 'coach') ? 'coach_rating' : 'startup_rating', (result) => {
+    res.json({ status: result });
+  });
+});
+
 const server = app.listen(port);
 console.log(`Magic happens on port ${port}`);
 

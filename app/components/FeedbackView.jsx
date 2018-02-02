@@ -12,9 +12,10 @@ export default class FeedbackView extends React.Component {
   constructor(props) {
     super(props);
     this.getData = this.getData.bind(this);
-    this.submitForm = this.submitForm.bind(this);
+    this.submitCurrentForm = this.submitCurrentForm.bind(this);
     this.state = {
       data: [{
+        meetingId: null,
         user_id: null,
         name: '',
         description: '',
@@ -23,11 +24,8 @@ export default class FeedbackView extends React.Component {
       }],
       userType: 'coach',
       index: 0,
-      choices: [],
     };
     this.changeForm = this.changeForm.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.resetChoices = this.resetChoices.bind(this);
   }
 
 
@@ -45,25 +43,23 @@ export default class FeedbackView extends React.Component {
       });
   }
 
-  submitForm(id) { // eslint-disable-line
-    console.log(id + " " + JSON.stringify(this.state.choices)); // eslint-disable-line
-    this.changeForm(this.state.index + 1);
-  }
-
-  handleChange(index, value) {
-    this.setState((oldState) => {
-      const newChoices = oldState.choices.slice(0);
-      newChoices[index] = value;
-      return { choices: newChoices };
+  submitCurrentForm(newRating) {
+    pageContent.fetchData('/giveFeedback', 'post', {
+      meetingId: this.state.data[this.state.index].meetingId,
+      rating: newRating,
+    }).then((result) => {
+      this.setState((oldState) => {
+        const newData = oldState.data.slice();
+        newData[this.state.index].rating = newRating;
+        return {
+          data: newData,
+        };
+      });
+      this.changeForm(this.state.index + 1);
     });
-  }
-  resetChoices() {
-    this.setState({ choices: [] });
-    $('.radiobutton').removeClass('active');
   }
 
   changeForm(newI) {
-    this.resetChoices();
     if (newI < 0 || newI > this.state.data.length - 1) return false;
     this.setState({
       index: newI,
@@ -76,10 +72,8 @@ export default class FeedbackView extends React.Component {
       <div>
         <FeedbackForm
           info={this.state.data[this.state.index]}
-          onSubmit={this.submitForm}
+          onSubmit={this.submitCurrentForm}
           questions={this.props.questions[this.state.userType]}
-          handleChange={this.handleChange}
-          handleReset={this.resetChoices}
         />
         <div className="row">
           <div className="col-xs-5">

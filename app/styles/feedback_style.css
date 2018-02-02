@@ -11,6 +11,10 @@
   color: white;
 }
 
+.radiobutton.focus {
+  color: white;
+}
+
 .cardImage {
   max-height: 30vh;
 }

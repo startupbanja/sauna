@@ -8,30 +8,17 @@ import InfoCard from './InfoCard';
 export default class FeedbackForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      choices: [],
-    };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleChange(index, value) {
-    // this.setState((oldState) => {
-    //   const newChoices = oldState.choices.slice(0);
-    //   newChoices[index] = value;
-    //   return { choices: newChoices };
-    // });
-    this.props.handleChange(index, value);
+    this.handleSubmit(value);
   }
 
-  handleSubmit() {
-    this.props.onSubmit(this.props.info.name, this.state.choices);
+  handleSubmit(value) {
+    this.props.onSubmit((value === undefined) ? this.state.choices[0] : value);
   }
-
-  resetChoices() {
-    this.props.handleReset();
-  }
-
 
   render() {
     const radioInputs = this.props.questions.map(obj =>
@@ -42,6 +29,7 @@ export default class FeedbackForm extends React.Component {
         index={obj.index}
         options={obj.options}
         question={obj.question}
+        rating={this.props.info.rating}
         onChange={this.handleChange}
       />
       ));
@@ -52,7 +40,8 @@ export default class FeedbackForm extends React.Component {
         <form className="radiobuttons form-inline">
           {radioInputs}
         </form>
-        <Button className="btn btn-lg ffbutton-red" onClick={this.handleSubmit} text="Done" />
+        { // <Button className="btn btn-lg ffbutton-red" onClick={this.handleSubmit} text="Done" />
+        }
       </div>
     );
   }
@@ -64,13 +53,15 @@ FeedbackForm.propTypes = {
     name: PropTypes.string,
     image_src: PropTypes.string,
     description: PropTypes.string,
+    rating: PropTypes.number,
+    meetingId: PropTypes.number,
   }).isRequired,
   questions: PropTypes.arrayOf(PropTypes.shape({
     index: PropTypes.number,
     question: PropTypes.string,
     options: PropTypes.arrayOf(PropTypes.number),
   })).isRequired,
-  handleReset: PropTypes.func.isRequired,
-  handleChange: PropTypes.func.isRequired,
+  // handleReset: PropTypes.func.isRequired,
+  // handleChange: PropTypes.func.isRequired,
   // activeChoices: PropTypes.arrayOf(PropTypes.number).isRequired,
 };

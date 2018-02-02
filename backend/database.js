@@ -119,7 +119,7 @@ function getProfile(id, callback) {
 function getFeedback(id, callback) {
   const feedbacks = [];
   const query = `
-    SELECT id, user_id, name, description, rating, "/app/imgs/coach_placeholder.png" AS image_src
+    SELECT id AS meetingId, user_id, name, description, rating, "/app/imgs/coach_placeholder.png" AS image_src
     FROM 
       (SELECT id, 
           CASE
@@ -137,6 +137,31 @@ function getFeedback(id, callback) {
   db.all(query, [id, id, id, id, id, id, id, id], (err, rows) => {
     if (err) throw err;
     callback(rows);
+  });
+}
+
+function giveFeedback(meetingId, rating, field, callback) {
+  const query = `
+  UPDATE Meetings
+  SET ${field} = ?
+  WHERE id = ?;`;
+  db.run(query, [rating, meetingId], (err) => {
+    if (err) throw err;
+    const query2 = `
+    SELECT startup_id, coach_id
+    FROM Meetings
+    WHERE id = ?`;
+    db.get(query2, [meetingId], (err3, row) => {
+      if (err3) throw err3;
+      const query3 = `
+      UPDATE Ratings
+      SET ${field} = ?
+      WHERE startup_id = ? AND coach_id = ?`;
+      db.run(query3, [rating, row.startup_id, row.coach_id], (error) => {
+        if (error) throw error;
+        callback('success');
+      });
+    });
   });
 }
 
@@ -275,4 +300,5 @@ module.exports = {
   getTimeslots,
   getStartups,
   getFeedback,
+  giveFeedback,
 };
