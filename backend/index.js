@@ -410,6 +410,20 @@ app.post('/insertAvailability', (req, res, next) => {
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send({ error: 'An error has occured!' });
+
+app.post('/updateProfile', (req, res) => {
+
+  // Create a JSON object from request body.
+  const JSONObject = req.body;
+  const uid = JSONObject.uid;
+  const linkedIn = JSONObject.linkedIn;
+  const description = JSONObject.description;
+  const titles = JSONObject.titles;
+  const credentials = JSONObject.credentials;
+  
+  database.updateProfile(uid, linkedIn, description, titles[0], credentials);
+  // TODO: implement database functionality.
+  res.json();
 });
 
 const server = app.listen(port);

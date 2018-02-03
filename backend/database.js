@@ -24,6 +24,12 @@ function closeDatabase(callback) {
 }
 
 
+function throwErr(err) {
+  if (err) {
+    throw err;
+  }
+}
+
 function getUsers(type, batch, includeId, callback) {
   const users = {};
   const query = `
@@ -268,6 +274,61 @@ function insertAvailability(userId, date, startTime, duration, callback) {
   db.run(query, [userId, date, startTime, duration], (err) => {
     if (err) return callback(err);
     return callback(err, { status: 'success' });
+  });
+}
+
+// Updates the credentials for given user (based on UID).
+function updateCredentials(uid, credentials) {
+  const deleteSQL = 'DELETE FROM Credentials WHERE user_id = ? AND company = ? AND title = ?';
+  const insertSQL = 'INSERT INTO Credentials(user_id, company, title) VALUES(?,?,?);';
+
+  // Fetches all credentials for the given uid and processes them.
+  db.all('SELECT company, title FROM Credentials WHERE user_id = ?', [uid], (err, rows) => {
+    throwErr(err);
+    const rowsAsJSON = rows.map(x => JSON.stringify(x));
+    const credentialsAsJSON = credentials.map(x => JSON.stringify(x));
+    const toBeInserted = []; // holds the credentials to be inserted into the db.
+    const toBeRemoved = []; // holds the credentials that should be deleted.
+
+    // If new credentials do not contain a row, add it to deleted creds.
+    rowsAsJSON.forEach((row) => {
+      if (!credentialsAsJSON.includes(row)) {
+        const obj = JSON.parse(row);
+        toBeRemoved.push({ company: obj.company, position: obj.title });
+      }
+    });
+
+    // If new credentials contain an entry that is not yet present, add it.
+    credentialsAsJSON.forEach((cred) => {
+      if (!rowsAsJSON.includes(cred)) {
+        const obj = JSON.parse(cred);
+        toBeInserted.push({ company: obj.company, position: obj.position });
+      }
+    });
+
+    // Deletes the obsolete credentials.
+    toBeRemoved.forEach((cred) => {
+      db.run(deleteSQL, [uid, cred.company, cred.position], (error) => {
+        throwErr(error);
+      });
+    });
+
+    // Inserts the new credentials.
+    toBeInserted.forEach((cred) => {
+      db.run(insertSQL, [uid, cred.company, cred.position], (error) => {
+        throwErr(error);
+      });
+    });
+  });
+}
+
+function updateProfile(uid, linkedIn, description, title, credentials) {
+  const query = 'UPDATE Profiles SET linkedIn = ?, description = ?, company = ? WHERE user_id = ?';
+  db.run(query, [linkedIn, description, title, uid], (err) => {
+    if (err) {
+      throw err;
+    }
+    updateCredentials(uid, credentials);
   });
 }
 
