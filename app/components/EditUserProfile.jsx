@@ -1,7 +1,72 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import Button from './Button';
 
 class EditUserProfile extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      credentials: this.props.credentials,
+    };
+  }
+  /* eslint-disable */
+  getValueOfField(id) {
+    return document.getElementById(id).value;
+  }
+  
+  // Returns the values of the title fields in the form.
+  getTitles() {
+    let titles = [];
+    document.querySelectorAll('.title').forEach(function(elem){
+      titles.push(elem.value);
+    });
+    return titles;
+  }
+  
+  // Returns the values of the credentials fields.
+  getCredentials() {
+    let credentials = [];
+    
+    document.querySelectorAll('.credentialField').forEach(function(elem){
+      const children = elem.children;
+      if (children[0].value !== '' && children[1].value !== '') {
+        credentials.push({
+          company: children[0].value,
+          position: children[1].value,
+        });
+      }
+    });
+    return credentials;
+  }
+  
+  /* eslint-enable */
+  getInputData() {
+    return {
+      linkedIn: this.getValueOfField('linkedIn'),
+      description: this.getValueOfField('description'),
+      titles: this.getTitles(),
+      credentials: this.getCredentials(),
+    };
+  }
+
+  addCredential() {
+    this.setState({
+      credentials: this.state.credentials.concat({ company: 'Company', position: 'Position' }),
+    });
+  }
+  handleSubmit() {
+    const input = this.getInputData();
+    fetch('http://localhost:3000/updateProfile', {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(Object.assign(input, { uid: this.props.id })),
+    }).then(response => console.log(response));
+  }
+
   render() {
     return (
       <div className="editProfileContainer container">
@@ -19,16 +84,29 @@ class EditUserProfile extends Component {
             {this.props.titles.map(value => <input className="edit-text" key={`title${value.id}`} type="text" value={value} />)}
           </div>
           <div>
-            <div className="edit-para">Credentials:</div>
-            {this.props.credentials.map(value =>
-              (
-                <div key={`cred${value.id}`}>
-                  <input className="edit-text" key={`company${value.id}`} type="text" value={value.company} />
-                  <input className="edit-text" key={`position${value.id}`} type="text" value={value.position} />
-                </div>
-              ))
-            }
+
+            <p>Credentials:</p>
+            <p><b>NOTE:</b>To remove a credential, just leave it blank.</p>
+            <div id="credentialFieldsContainer">
+              {this.state.credentials.map(value =>
+                (
+                  <div key={`cred${value.id}`} className="credentialField">
+                    <input key={`company${value.id}`} type="text" defaultValue={value.company} />
+                    <input key={`position${value.id}`} type="text" defaultValue={value.position} />
+                  </div>
+                ))
+              }
+            </div>
+            <button onClick={() => this.addCredential()}>
+              <span className="glyphicon glyphicon-plus-sign" />
+              Add a credential.
+            </button>
           </div>
+          <Button
+            className="btn btn-lg ffbutton-red"
+            onClick={() => this.handleSubmit()}
+            text="Save"
+          />
         </form>
       </div>
     );
