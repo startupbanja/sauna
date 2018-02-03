@@ -139,6 +139,21 @@ app.get('/profile', (req, res) => {
   });
 });
 
+app.post('/updateProfile', (req, res) => {
+
+  // Create a JSON object from request body.
+  const JSONObject = req.body;
+  const uid = JSONObject.uid;
+  const linkedIn = JSONObject.linkedIn;
+  const description = JSONObject.description;
+  const titles = JSONObject.titles;
+  const credentials = JSONObject.credentials;
+  
+  database.updateProfile(uid, linkedIn, description, titles[0], credentials);
+  // TODO: implement database functionality.
+  res.json();
+});
+
 const server = app.listen(port);
 console.log(`Magic happens on port ${port}`);
 
