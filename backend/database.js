@@ -116,6 +116,55 @@ function getProfile(id, callback) {
   });
 }
 
+function getFeedback(id, callback) {
+  const feedbacks = [];
+  const query = `
+    SELECT id AS meetingId, user_id, name, description, rating, "/app/imgs/coach_placeholder.png" AS image_src
+    FROM 
+      (SELECT id, 
+          CASE
+            WHEN coach_id = ? THEN startup_id
+            WHEN startup_id = ? THEN coach_id
+          END user_id,
+          CASE
+            WHEN coach_id = ? THEN coach_rating
+            WHEN startup_id = ? THEN startup_rating
+          END rating
+        FROM Meetings
+        WHERE (coach_id = ? OR startup_id = ?) AND date = 
+          (SELECT MAX(date) FROM Meetings WHERE coach_id = ? OR startup_id = ?))
+      NATURAL JOIN Profiles`;
+  db.all(query, [id, id, id, id, id, id, id, id], (err, rows) => {
+    if (err) throw err;
+    callback(rows);
+  });
+}
+
+function giveFeedback(meetingId, rating, field, callback) {
+  const query = `
+  UPDATE Meetings
+  SET ${field} = ?
+  WHERE id = ?;`;
+  db.run(query, [rating, meetingId], (err) => {
+    if (err) throw err;
+    const query2 = `
+    SELECT startup_id, coach_id
+    FROM Meetings
+    WHERE id = ?`;
+    db.get(query2, [meetingId], (err3, row) => {
+      if (err3) throw err3;
+      const query3 = `
+      UPDATE Ratings
+      SET ${field} = ?
+      WHERE startup_id = ? AND coach_id = ?`;
+      db.run(query3, [rating, row.startup_id, row.coach_id], (error) => {
+        if (error) throw error;
+        callback('success');
+      });
+    });
+  });
+}
+
 function verifyIdentity(username, password, callback) {
   const query = 'SELECT id, type, password FROM Users WHERE username = ?';
   db.get(query, [username], (err, row) => {
@@ -140,8 +189,11 @@ function verifyIdentity(username, password, callback) {
           userId = row.id;
           break;
         case 1:
+          type = 'coach';
+          userId = row.id;
+          break;
         case 2:
-          type = 'user';
+          type = 'startup';
           userId = row.id;
           break;
         default:
@@ -210,7 +262,6 @@ function getTimeslots(callback) {
       throw err;
     }
     return callback(timeslots);
-
   });
 }
 
@@ -248,4 +299,6 @@ module.exports = {
   getRatings,
   getTimeslots,
   getStartups,
+  getFeedback,
+  giveFeedback,
 };

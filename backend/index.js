@@ -99,8 +99,11 @@ app.post('/login', (req, res) => {
 
   // bcrypt.hash(password, 10, (err, hash) => console.log(hash));
   database.verifyIdentity(username, password, (type, userId) => {
-    if (userId !== false) req.session.userID = userId;
-    res.json({ status: type });
+    if (userId !== false) {
+      req.session.userID = userId;
+      req.session.userType = type;
+    }
+    res.json({ status: (type === 'coach' || type === 'startup') ? 'user' : type });
   });
 });
 
@@ -136,6 +139,26 @@ app.get('/profile', (req, res) => {
       Object.assign(result, { canModify: true });
     }
     res.json(result);
+  });
+});
+
+app.get('/feedback', (req, res) => {
+  const id = req.session.userID;
+  database.getFeedback(id, (result) => {
+    res.json({
+      data: result,
+      userType: req.session.userType,
+    });
+  });
+});
+
+app.post('/giveFeedback', (req, res) => {
+  const userType = req.session.userType;
+  const meetingId = req.body.meetingId;
+  const rating = req.body.rating;
+
+  database.giveFeedback(meetingId, rating, (userType === 'coach') ? 'coach_rating' : 'startup_rating', (result) => {
+    res.json({ status: result });
   });
 });
 

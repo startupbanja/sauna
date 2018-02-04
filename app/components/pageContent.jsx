@@ -8,18 +8,18 @@ import UserSchedule from './UserSchedule';
 import UserList from './UserList';
 import App from './App';
 
-const feedbackQuestions = [
-  {
+const feedbackQuestions = {
+  coach: [{
     index: 0,
-    question: 'Was it useful?',
+    question: 'Would you like to meet again?',
     options: [0, 1, 2],
-  },
-  {
-    index: 1,
+  }],
+  startup: [{
+    index: 0,
     question: 'Would you like to meet again?',
     options: [0, 1, 3],
-  },
-];
+  }],
+};
 
 const schedule = {
   date: 'Wed 27.11.2017',

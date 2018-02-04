@@ -23,7 +23,7 @@ CREATE TABLE Users(
     FOREIGN KEY (batch) REFERENCES Batches(id)
 );
 
-CREATE TABLE Profiles(
+CREATE TABLE CoachProfiles(
     user_id INT,
     name VARCHAR(30) NOT NULL,
     description TEXT,
@@ -33,12 +33,34 @@ CREATE TABLE Profiles(
     FOREIGN KEY (user_id) REFERENCES Users(id)
 );
 
+CREATE TABLE StartupProfiles(
+    user_id INT,
+    name VARCHAR(30) NOT NULL,
+    description TEXT,
+    email VARCHAR(50) NOT NULL,
+    website VARCHAR(100),
+    FOREIGN KEY (user_id) REFERENCES Users(id)
+);
+
+CREATE TEMP VIEW IF NOT EXISTS Profiles AS
+SELECT user_id, name, description, email, website, NULL AS company, NULL AS linkedin FROM StartupProfiles
+	UNION ALL
+SELECT user_id, name, description, email, NULL AS website, company, linkedin FROM CoachProfiles;
+
 CREATE TABLE Credentials(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INT NOT NULL,
     company VARCHAR(20) NOT NULL,
     title VARCHAR(30) NOT NULL,
     FOREIGN KEY (user_id) REFERENCES Users(id)
+);
+
+CREATE TABLE TeamMembers(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    startup_id INT NOT NULL,
+    name VARCHAR(40) NOT NULL,
+    title VARCHAR(30) NOT NULL,
+    FOREIGN KEY (startup_id) REFERENCES Users(id)
 );
 
 CREATE TABLE Timeslots(
@@ -164,7 +186,7 @@ INSERT INTO Users (type, username, password, batch, active) VALUES
 	
 	(0, 'admin', '$2a$10$CRYjO.6VHRvS0nnc/LvDp.dWJlchXzeGpiU2M2yWrlD1zFDsmLPMm', 0, 1);
 
-INSERT INTO Profiles (user_id, name, description, company, email, linkedin) VALUES
+INSERT INTO CoachProfiles (user_id, name, description, company, email, linkedin) VALUES
 	(14, 'Aape Pohjavirta', 'Coach description', 'Coach company', 'coach1@email.com', 'linkedin.com/coach1'),
 	(15, 'Andrea Di Pietrantonio', 'Coach description', 'Coach company', 'coach2@email.com', 'linkedin.com/coach2'),
 	(16, 'Antti Pennanen', 'Coach description', 'Coach company', 'coach3@email.com', 'linkedin.com/coach3'),
@@ -235,7 +257,22 @@ INSERT INTO Profiles (user_id, name, description, company, email, linkedin) VALU
 	(81, 'Ville Vesterinen', 'Coach description', 'Coach company', 'coach68@email.com', 'linkedin.com/coach68'),
 	(82, 'Ville Miettinen', 'Coach description', 'Coach company', 'coach69@email.com', 'linkedin.com/coach69');
 
+INSERT INTO StartupProfiles (user_id, name, description, email, website) VALUES
+	(1, 'Startup1', 'Startup Description', 'startup1@ssauna.com', 'www.startup1.com'),
+	(2, 'Startup2', 'Startup Description', 'startup2@ssauna.com', 'www.startup2.com'),
+	(3, 'Startup3', 'Startup Description', 'startup3@ssauna.com', 'www.startup3.com'),
+	(4, 'Startup4', 'Startup Description', 'startup4@ssauna.com', 'www.startup4.com'),
+	(5, 'Startup5', 'Startup Description', 'startup5@ssauna.com', 'www.startup5.com'),
+	(6, 'Startup6', 'Startup Description', 'startup6@ssauna.com', 'www.startup6.com'),
+	(7, 'Startup7', 'Startup Description', 'startup7@ssauna.com', 'www.startup7.com'),
+	(8, 'Startup8', 'Startup Description', 'startup8@ssauna.com', 'www.startup8.com'),
+	(9, 'Startup8', 'Startup Description', 'startup9@ssauna.com', 'www.startup9.com'),
+	(10, 'Startup10', 'Startup Description', 'startup10@ssauna.com', 'www.startup10.com');
+
 INSERT INTO Meetings (coach_id, startup_id, date, time, duration, coach_rating, startup_rating) VALUES
+	(15, 7, '2017-10-03', '12:00:00', 40, 0, 1),
+	(15, 8, '2017-10-03', '12:00:00', 40, 1, 3),
+	(15, 10, '2017-10-03', '12:00:00', 40, 0, 0),
 	(15, 3, '2017-10-10', '12:00:00', 40, 0, 3),
 	(15, 4, '2017-10-10', '12:00:00', 40, 0, 1),
 	(15, 5, '2017-10-10', '12:00:00', 40, 2, 3),
