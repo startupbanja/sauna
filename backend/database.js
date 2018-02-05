@@ -272,6 +272,7 @@ function getTimeslots(callback) {
 //     rows.forEach(row => console.log(row));
 //   });
 // }
+<<<<<<< HEAD
 
 const saveMatchmakingQuery = `
 INSERT INTO Meetings(coach_id, startup_id, date, time, duration, coach_rating, startup_rating)
@@ -282,6 +283,18 @@ function saveMatchmaking(jsonData, dateString, callback) {
   // filter nulls
   const data = jsonData.filter(obj => obj.startup !== null);
 
+=======
+
+const saveMatchmakingQuery = `
+INSERT INTO Meetings(coach_id, startup_id, date, time, duration, coach_rating, startup_rating)
+VALUES
+`;
+// jsonData is in array(parsed) form
+function saveMatchmaking(jsonData, dateString, callback) {
+  // filter nulls
+  const data = jsonData.filter(obj => obj.startup !== null);
+
+>>>>>>> 6412d8fe827af4722cfb0169ea33459b114065f4
   const strings = data.map((row) => {
     const {
       coach, startup, duration, time,
