@@ -2,6 +2,7 @@
 
 const sqlite = require('sqlite3').verbose();
 const fs = require('fs');
+const bcrypt = require('bcrypt');
 
 const db = new sqlite.Database(':memory:', (err) => {
   if (err) {
@@ -21,7 +22,7 @@ function closeDatabase(callback) {
   });
 }
 const userQuery = `
-SELECT name, description, email, linkedin, Credentials.company, Credentials.title
+SELECT Profiles.user_id, name, description, email, linkedin, Credentials.company, Credentials.title
 FROM Profiles
 LEFT OUTER JOIN Credentials ON Profiles.user_id = Credentials.user_id
 WHERE Profiles.user_id IN (
@@ -30,23 +31,33 @@ WHERE Profiles.user_id IN (
   WHERE type = ? AND batch = ? AND active = 1
 );`;
 
-const testQ = `
-SELECT *
-FROM Users;
-`;
+const timeslotQuery = `
+SELECT user_id, date, time, duration
+FROM Timeslots
+WHERE date IN (
+SELECT MAX(date)
+FROM Timeslots
+);`;
 
-// function testApi(callback) {
-//   const res = {};
-//   db.all(testQ, [], (err, rows) => {
-//     if (err) {
-//       throw err;
-//     }
-//     res.data = rows;
-//     return callback(res);
-//   })
-// }
+const ratingQuery = `
+SELECT coach_id, startup_id, coach_rating, startup_rating
+FROM Ratings
+INNER JOIN Users
+ON Ratings.startup_id=Users.id
+WHERE type=2 AND active=1 AND batch IN (
+SELECT MAX(id)
+FROM Batches
+);`;
 
-function getUsers(type, batch, callback) {
+const startupQuery = `
+SELECT id
+FROM USERS
+WHERE type=2 AND batch IN (
+SELECT MAX(id)
+FROM Batches
+);`;
+
+function getUsers(type, batch, includeId, callback) {
   const users = {};
   // (sql, params, callback for each row, callback on complete)
   db.each(userQuery, [type, batch], (err, row) => {
@@ -63,17 +74,196 @@ function getUsers(type, batch, callback) {
         linkedin: row.linkedin,
         credentials: [[row.company, row.title]],
       };
+      if (includeId) {
+        users[row.name].id = row.user_id;
+      }
     }
     return null;
   }, (err) => {
     if (err) {
       // return console.error(err.message);
-      throw err
+      throw err;
     }
     return callback(users);
   });
 }
 
+
+function getProfile(id, callback) {
+  const info = {};
+  const query = `SELECT name, description, Profiles.company AS currentCompany, email, linkedin, Credentials.company, Credentials.title
+                 FROM Profiles
+                 LEFT OUTER JOIN Credentials ON Profiles.user_id = Credentials.user_id
+                 WHERE Profiles.user_id = ?;`;
+
+  db.all(query, [Number(id)], (err, rows) => {
+    if (err) {
+      throw err;
+    }
+    rows.forEach((row) => {
+      if (info.name === undefined) {
+        info.name = row.name;
+        info.description = row.description;
+        info.email = row.email;
+        info.linkedIn = row.linkedin;
+        info.company = row.currentCompany;
+        info.credentials = [{ company: row.company, position: row.title }];
+      } else {
+        info.credentials.push({ company: row.company, position: row.title });
+      }
+    });
+    callback(info);
+  });
+}
+
+function getFeedback(id, callback) {
+  const feedbacks = [];
+  const query = `
+    SELECT id AS meetingId, user_id, name, description, rating, "/app/imgs/coach_placeholder.png" AS image_src
+    FROM 
+      (SELECT id, 
+          CASE
+            WHEN coach_id = ? THEN startup_id
+            WHEN startup_id = ? THEN coach_id
+          END user_id,
+          CASE
+            WHEN coach_id = ? THEN coach_rating
+            WHEN startup_id = ? THEN startup_rating
+          END rating
+        FROM Meetings
+        WHERE (coach_id = ? OR startup_id = ?) AND date = 
+          (SELECT MAX(date) FROM Meetings WHERE coach_id = ? OR startup_id = ?))
+      NATURAL JOIN Profiles`;
+  db.all(query, [id, id, id, id, id, id, id, id], (err, rows) => {
+    if (err) throw err;
+    callback(rows);
+  });
+}
+
+function giveFeedback(meetingId, rating, field, callback) {
+  const query = `
+  UPDATE Meetings
+  SET ${field} = ?
+  WHERE id = ?;`;
+  db.run(query, [rating, meetingId], (err) => {
+    if (err) throw err;
+    const query2 = `
+    SELECT startup_id, coach_id
+    FROM Meetings
+    WHERE id = ?`;
+    db.get(query2, [meetingId], (err3, row) => {
+      if (err3) throw err3;
+      const query3 = `
+      UPDATE Ratings
+      SET ${field} = ?
+      WHERE startup_id = ? AND coach_id = ?`;
+      db.run(query3, [rating, row.startup_id, row.coach_id], (error) => {
+        if (error) throw error;
+        callback('success');
+      });
+    });
+  });
+}
+
+function verifyIdentity(username, password, callback) {
+  const query = 'SELECT id, type, password FROM Users WHERE username = ?';
+  db.get(query, [username], (err, row) => {
+    if (err) {
+      throw err;
+    }
+    if (!row) {
+      callback('error');
+      return;
+    }
+    bcrypt.compare(password, row.password, (error, same) => {
+      if (error) throw error;
+      if (!same) {
+        callback('error');
+        return;
+      }
+      let type;
+      let userId = false;
+      switch (row.type) {
+        case 0:
+          type = 'admin';
+          userId = row.id;
+          break;
+        case 1:
+          type = 'coach';
+          userId = row.id;
+          break;
+        case 2:
+          type = 'startup';
+          userId = row.id;
+          break;
+        default:
+          type = 'error';
+      }
+      callback(type, userId);
+    });
+  });
+}
+
+function getStartups(callback) {
+  const startups = [];
+  // (sql, params, callback for each row, callback on complete)
+  db.each(startupQuery, [], (err, row) => {
+    if (err) {
+      throw err;
+    }
+    startups.push(row.id.toString());
+    return null;
+  }, (err) => {
+    if (err) {
+      // return console.error(err.message);
+      throw err;
+    }
+    return callback(startups);
+  });
+}
+
+function getRatings(callback) {
+  const ratings = [];
+  // (sql, params, callback for each row, callback on complete)
+  db.each(ratingQuery, [], (err, row) => {
+    if (err) {
+      throw err;
+    }
+    ratings.push({
+      coach: row.coach_id.toString(),
+      startup: row.startup_id.toString(),
+      coachfeedback: row.coach_rating,
+      startupfeedback: row.startup_rating,
+    });
+    return null;
+  }, (err) => {
+    if (err) {
+      // return console.error(err.message);
+      throw err;
+    }
+    return callback(ratings);
+  });
+}
+
+function getTimeslots(callback) {
+  const timeslots = {};
+  db.each(timeslotQuery, [], (err, row) => {
+    if (err) {
+      throw err;
+    }
+    timeslots[row.user_id] = {
+      starttime: row.time,
+      duration: row.duration,
+    };
+    return null;
+  }, (err) => {
+    if (err) {
+      // return console.error(err.message);
+      throw err;
+    }
+    return callback(timeslots);
+  });
+}
 
 fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
   if (err) {
@@ -101,12 +291,14 @@ fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
   return null;
 });
 
-
 module.exports = {
   closeDatabase,
   getUsers,
-  // testApi,
+  verifyIdentity,
+  getProfile,
+  getRatings,
+  getTimeslots,
+  getStartups,
+  getFeedback,
+  giveFeedback,
 };
-// exports.close = closeDatabase;
-// exports.db = db;
-// exports.getUsers = getUsers;

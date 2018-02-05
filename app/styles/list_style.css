@@ -9,6 +9,10 @@
   /* padding: 2%; */
 }
 
+div.text-style {
+  display: inline-block;
+}
+
 .list-text-style {
  font-size: 25px;
  color: #A3A3A3 ;
