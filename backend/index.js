@@ -54,9 +54,6 @@ app.get('/api', (req, res) => {
     database.getUsers(1, 0, false, (data) => {
       res.json(data);
     });
-    // database.testApi((data) => {
-    //   res.json(data);
-    // });
   }
 });
 
@@ -83,10 +80,6 @@ function runAlgorithm(callback) {
 app.get('/timeslots', (req, res) => {
   runAlgorithm(result => res.json(result));
 });
-
-// app.get('/api', function(req, res) {
-//     res.json({ message: req.query.q });
-// });
 
 app.post('/login', (req, res) => {
   const username = req.body.username;

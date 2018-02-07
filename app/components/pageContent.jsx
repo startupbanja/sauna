@@ -195,6 +195,12 @@ const adminContent = (
       path="/startups"
       render={({ match }) => <UserList match={match} type="Startups" />}
     />
+    <Route
+      path="/timetable"
+      render={() => (
+        <AdminSchedules />
+      )}
+    />
   </Switch>
 );
 
