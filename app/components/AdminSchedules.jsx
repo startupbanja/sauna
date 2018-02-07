@@ -3,12 +3,12 @@ import React from 'react';
 import AdminScheduleTable from './AdminScheduleTable';
 import pageContent from './pageContent';
 // React Component for the schedule view for admins.
-// fetchData('/timeslots', 'GET', null)
 export default class AdminSchedules extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { date: 'TODO DATE', schedule: [] };
+    this.state = { date: 'TODO DATE', schedule: [], firstColumn: 'coach' };
     this.getTimetable = this.getTimetable.bind(this);
+    this.toggle = this.toggle.bind(this);
     this.getTimetable();
   }
 
@@ -18,25 +18,40 @@ export default class AdminSchedules extends React.Component {
     });
   }
 
+  toggle(n) {
+    this.setState({ firstColumn: n });
+  }
+
   render() {
     return (
       <div>
-        <div>
-          <h1>Schedules</h1>
+        <div className="toggle-container">
+          <h1>Timetable</h1>
           <h2>{this.state.date}</h2>
+          <div className="">
+            <ul className="toggle-ul">
+              <li>
+                {/* conditionally set active class based on firstColumn */}
+                <button
+                  className={`toggle-button ${this.state.firstColumn === 'coach' ? 'active' : ''}`}
+                  onClick={() => this.toggle('coach')}
+                >
+                  Coaches
+                </button>
+              </li>
+              <li>
+                <button
+                  className={`toggle-button ${this.state.firstColumn === 'startup' ? 'active' : ''}`}
+                  onClick={() => this.toggle('startup')}
+                >
+                Startups
+                </button>
+              </li>
+            </ul>
+          </div>
         </div>
-        <AdminScheduleTable schedule={this.state.schedule} />
+        <AdminScheduleTable schedule={this.state.schedule} firstColumn={this.state.firstColumn} />
       </div>
     );
   }
 }
-
-// AdminSchedules.propTypes = {
-//   coachSchedules: PropTypes.arrayOf(PropTypes.shape({
-//     coachName: PropTypes.string.isRequired,
-//     startUps: PropTypes.arrayOf(PropTypes.shape({
-//       startupName: PropTypes.string,
-//       time: PropTypes.string,
-//     })),
-//   })).isRequired,
-// };
