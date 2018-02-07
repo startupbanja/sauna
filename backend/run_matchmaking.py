@@ -2,7 +2,7 @@ import matchmaking, json, sys
 import convertToCsv
 
 received = json.loads(sys.stdin.read())
-# parameters for matchamking algorithm
+# parameters for matchmaking algorithm
 data = received['data']
 # mapping from startup and coach id to name
 mapping = received['mapping']
