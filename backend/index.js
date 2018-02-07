@@ -60,7 +60,7 @@ app.get('/api', (req, res) => {
   }
 });
 
-function runAlgorithm(callback, commit = false) {
+function runAlgorithm(callback) {
   database.getTimeslots((timeslots) => {
     database.getRatings((ratings) => {
       database.getStartups((startupdata) => {
@@ -69,7 +69,11 @@ function runAlgorithm(callback, commit = false) {
           availabilities: timeslots,
           startups: startupdata,
         };
-        matchmaking.run(data, rdy => callback(rdy));
+        const batch = 1
+        database.getMapping(batch, (mapping) => {
+          const dataWithMapping = { data, mapping };
+          matchmaking.run(dataWithMapping, rdy => callback(rdy));
+        })
       });
     });
   });
@@ -78,15 +82,6 @@ function runAlgorithm(callback, commit = false) {
 //  muuta callback muotoon
 app.get('/timeslots', (req, res) => {
   runAlgorithm(result => res.json(result));
-  // database.getTimeslots((timeslots) => {
-  //   database.getRatings((ratings) => {
-  //     const data = {
-  //       feedbacks: ratings,
-  //       availabilities: timeslots,
-  //     };
-  //     matchmaking.run(data, rdy => res.json(rdy));
-  //   });
-  // });
 });
 
 // app.get('/api', function(req, res) {
@@ -187,6 +182,11 @@ rl.on('line', (input) => {
       break;
     case ('run'):
       runAlgorithm(() => null);
+      break;
+    case ('run -s'):
+      runAlgorithm((data) => { // TODO placeholder date
+        database.saveMatchmaking(data, '2018-01-01', () => console.log('saved'));
+      });
       break;
     default:
       break;
