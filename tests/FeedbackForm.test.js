@@ -36,7 +36,8 @@ describe('function calls', () => {
 
     test('handleChange is called', () => {
       const handleChange = jest.fn();
-      feedbackForm.handleSubmit = handleChange;
+      feedbackForm.handleChange = handleChange;
+      feedbackForm.forceUpdate();
       const form = ReactTestUtils.findRenderedDOMComponentWithClass(feedbackForm, 'btn btn-secondary radiobutton');
       ReactTestUtils.Simulate.click(form);
       expect(handleChange.mock.calls.length).toBe(1);
