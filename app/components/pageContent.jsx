@@ -7,6 +7,7 @@ import UserProfilePage from './UserProfilePage';
 import UserSchedule from './UserSchedule';
 import UserList from './UserList';
 import App from './App';
+import AdminManagePage from './admin_manage/AdminManagePage';
 
 const feedbackQuestions = {
   coach: [{
@@ -46,63 +47,6 @@ const schedule = {
   }],
 };
 
-
-/*
-Don't need this anymore
-const users = [
-  {
-    name: 'joku',
-    description: 'ehehe',
-    img: '../app/imgs/coach_placeholder.png',
-  },
-  {
-    name: 'joku muu',
-    description: 'iha cool dude',
-    img: '../app/imgs/coach_placeholder.png',
-  },
-  {
-    name: 'beibi corps',
-    description: 'ehehe',
-    img: '../app/imgs/feedback2.png',
-  },
-  {
-    name: 'wgatever',
-    description: 'yolo in corporate form',
-    img: '../app/imgs/coach_placeholder.png',
-  },
-]; */
-
-// Template data for the User Profile.
-/* const profileInfo = {
-  name: 'Sample User',
-  description:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' +
-      'Sed vehicula suscipit enim et faucibus.' +
-      'Donec quis urna ut purus consequat viverra ultricies vel ex. ' +
-      'Quisque a risus diam. Mauris luctus nisl non nibh porta blandit. ' +
-      'Aenean nec vehicula enim, a rutrum neque.' +
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' +
-      'Donec imperdiet erat orci, at placerat odio volutpat quis. ' +
-      'Nulla sodales tellus sit amet nibh dapibus, eget bibendum urna dictum. ' +
-      'Quisque mauris risus, mattis et dui vel, aliquam pretium quam. ' +
-      'Integer bibendum efficitur mi, nec facilisis arcu feugiat id. ' +
-      'Mauris pellentesque accumsan velit ut tempor. ',
-  titles: ['Software Team 12', 'Developer'],
-  credentials: [
-    { company: 'Aalto University', position: 'Student' },
-    { company: 'Aalto University', position: 'Course assistant' },
-    { company: 'Company', position: 'Position' },
-  ],
-}; */
-
-/* const userContent = {
-  mainPage: <div><h1>Home</h1><LandingPage /></div>,
-  timetable: <UserSchedule schedule={schedule} />,
-  userProfile: <UserProfilePage />,
-  feedback: <div><FeedbackView questions={feedbackQuestions} /></div>,
-  coaches: <UserList type="Coaches" />,
-  startups: <div><UserList type="Startups" /></div>,
-}; */
 const userContent = (
   <Switch>
     <Route path="/coaches/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />
@@ -133,12 +77,6 @@ const userLabels = {
   '/startups': 'Startups',
 };
 
-/* const adminContent = {
-  mainPage: <div><h1>Home</h1><LandingPage /></div>,
-  coaches: <div><UserList type="Coaches" /></div>,
-  startups: <div><UserList type="Startups" /></div>,
-}; */
-
 const adminContent = (
   <Switch>
     <Route path="/main" render={() => <div><h1>Home</h1><LandingPage /></div>} />
@@ -154,6 +92,7 @@ const adminContent = (
       path="/startups"
       render={({ match }) => <UserList match={match} type="Startups" />}
     />
+    <Route path="/manage" component={AdminManagePage} />
   </Switch>
 );
 
@@ -161,6 +100,7 @@ const adminLabels = {
   '/main': 'Home',
   '/coaches': 'Coaches',
   '/startups': 'Startups',
+  '/manage': 'Manage',
 };
 // TODO change this to something better later
 function getContent(userType) {
