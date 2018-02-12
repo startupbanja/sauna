@@ -69,7 +69,8 @@ CREATE TABLE Timeslots(
     date DATE NOT NULL,
     time TIME NOT NULL,
     duration INT NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES Users(id)
+    FOREIGN KEY (user_id) REFERENCES Users(id),
+		FOREIGN KEY (date) REFERENCES MeetingDays(date)
 );
 
 CREATE TABLE Meetings(
@@ -82,7 +83,15 @@ CREATE TABLE Meetings(
     coach_rating INT,
     startup_rating INT,
     FOREIGN KEY (coach_id) REFERENCES Users(id),
-    FOREIGN KEY (startup_id) REFERENCES Users(id)
+    FOREIGN KEY (startup_id) REFERENCES Users(id),
+		FOREIGN KEY (date) REFERENCES MeetingDays(date)
+);
+
+CREATE TABLE MeetingDays(
+	date DATE PRIMARY KEY,
+	startTime TIME NOT NULL,
+	endTime TIME NOT NULL,
+	split INT NOT NULL
 );
 
 CREATE TABLE Ratings(
@@ -268,6 +277,10 @@ INSERT INTO StartupProfiles (user_id, name, description, email, website) VALUES
 	(8, 'Startup8', 'Startup Description', 'startup8@ssauna.com', 'www.startup8.com'),
 	(9, 'Startup8', 'Startup Description', 'startup9@ssauna.com', 'www.startup9.com'),
 	(10, 'Startup10', 'Startup Description', 'startup10@ssauna.com', 'www.startup10.com');
+
+INSERT INTO MeetingDays (date, startTime, endTime, split) VALUES
+	('2017-10-03', '10:00:00', '16:00:00', 40),
+	('2017-10-10', '10:00:00', '16:00:00', 40);
 
 INSERT INTO Meetings (coach_id, startup_id, date, time, duration, coach_rating, startup_rating) VALUES
 	(15, 7, '2017-10-03', '12:00:00', 40, 0, 1),

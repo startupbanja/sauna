@@ -165,6 +165,19 @@ function giveFeedback(meetingId, rating, field, callback) {
   });
 }
 
+
+function createMeetingDay(date, start, end, split, callback) {
+  const query = `INSERT INTO MeetingDays(date, startTime, endTime, split)
+    VALUES (?, ?, ?, ?)`;
+  db.run(query, [date, start, end, split], (err) => {
+    if (err) throw err;
+    db.all('SELECT * FROM MeetingDays', [], (err, rows) => {
+      console.log(rows);
+      callback({ status: 'success' });
+    });
+  });
+}
+
 function verifyIdentity(username, password, callback) {
   const query = 'SELECT id, type, password FROM Users WHERE username = ?';
   db.get(query, [username], (err, row) => {
@@ -361,4 +374,5 @@ module.exports = {
   giveFeedback,
   saveMatchmaking,
   getMapping,
+  createMeetingDay,
 };
