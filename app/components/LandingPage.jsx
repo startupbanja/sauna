@@ -7,7 +7,6 @@ class LandingPage extends Component {
   render() {
     return (
       <div className="container" >
-        <link rel="stylesheet" type="text/css" href="app/styles/landing_style.css" />
         <h3 className="text-center" style={{ fontWeight: 'bold' }}>Coming up</h3>
         <ComingUpCarousel />
         <BlockHeader text="Mind these:" />

@@ -171,26 +171,29 @@ function createMeetingDay(date, start, end, split, callback) {
     VALUES (?, ?, ?, ?)`;
   db.run(query, [date, start, end, split], (err) => {
     if (err) throw err;
-    db.all('SELECT * FROM MeetingDays', [], (err, rows) => {
-      console.log(rows);
-      callback({ status: 'success' });
-    });
+    callback({ status: 'success' });
   });
 }
 
-function getComingMeetingDay(callback) {
+function getComingMeetingDay(userId, callback) {
   const query = `SELECT date, startTime, endTime, split
     FROM MeetingDays
-    WHERE date IN (
+    WHERE MeetingDays.date IN (
       SELECT MAX(date) FROM MeetingDays
     )`;
   db.get(query, [], (err, result) => {
     if (err) throw err;
-    callback(result);
+    const query2 = 'SELECT time, duration FROM Timeslots WHERE user_id = ? AND date = ?';
+    db.get(query2, [userId, result.date], (err2, result2) => {
+      if (err2) throw err2;
+      if (result2 !== undefined) Object.assign(result, result2);
+      else Object.assign(result, { time: null, duration: null });
+      callback(result);
+    });
   });
 }
 
-function insertTimeslot(userId, date, startTime, duration, callback) {
+function insertAvailability(userId, date, startTime, duration, callback) {
   const query = `INSERT INTO Timeslots(user_id, date, time, duration)
     VALUES (?, ?, ?, ?)`;
   db.run(query, [userId, date, startTime, duration], (err) => {
@@ -397,5 +400,5 @@ module.exports = {
   getMapping,
   createMeetingDay,
   getComingMeetingDay,
-  insertTimeslot,
+  insertAvailability,
 };

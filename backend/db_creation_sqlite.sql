@@ -70,7 +70,8 @@ CREATE TABLE Timeslots(
     time TIME NOT NULL,
     duration INT NOT NULL,
     FOREIGN KEY (user_id) REFERENCES Users(id),
-		FOREIGN KEY (date) REFERENCES MeetingDays(date)
+		FOREIGN KEY (date) REFERENCES MeetingDays(date),
+		UNIQUE (user_id, date) ON CONFLICT REPLACE
 );
 
 CREATE TABLE Meetings(
@@ -280,7 +281,9 @@ INSERT INTO StartupProfiles (user_id, name, description, email, website) VALUES
 
 INSERT INTO MeetingDays (date, startTime, endTime, split) VALUES
 	('2017-10-03', '10:00:00', '16:00:00', 40),
-	('2017-10-10', '10:00:00', '16:00:00', 40);
+	('2017-10-10', '10:00:00', '16:00:00', 40),
+	('2017-10-20', '10:00:00', '16:00:00', 40);
+
 
 INSERT INTO Meetings (coach_id, startup_id, date, time, duration, coach_rating, startup_rating) VALUES
 	(15, 7, '2017-10-03', '12:00:00', 40, 0, 1),

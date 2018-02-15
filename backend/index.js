@@ -176,7 +176,18 @@ app.post('/createMeetingDay', (req, res) => {
 });
 
 app.get('/getComingMeetingDay', (req, res) => {
-  database.getComingMeetingDay((result) => {
+  database.getComingMeetingDay(req.session.userID, (result) => {
+    res.json(result);
+  });
+});
+
+app.post('/insertAvailability', (req, res) => {
+  const userId = req.session.userID;
+  const date = req.body.date;
+  const startTime = req.body.start;
+  let duration = (new Date(`${date}T${req.body.end}`).getTime() - new Date(`${date}T${startTime}`).getTime());
+  duration = parseInt(duration / 60000, 10);
+  database.insertAvailability(userId, date, startTime, duration, (result) => {
     res.json(result);
   });
 });
