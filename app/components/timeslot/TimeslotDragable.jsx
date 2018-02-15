@@ -32,8 +32,8 @@ class TimeslotDragable extends Component {
     }
     return (
       <div className={classes} style={containerStyle}>
-        <p style={{ top: '5px' }}>{parseTimeStamp(this.props.start)}</p>
-        <p style={{ bottom: '5px' }}>{parseTimeStamp(this.props.end)}</p>
+        <p style={{ top: '5px' }}>{parseTimeStamp(Math.round(this.props.start / 5) * 5)}</p>
+        <p style={{ bottom: '5px' }}>{parseTimeStamp(Math.round(this.props.end / 5) * 5)}</p>
         {topDragBall}
         {bottomDragBall}
       </div>

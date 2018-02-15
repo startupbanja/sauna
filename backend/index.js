@@ -27,6 +27,21 @@ app.use(session({
 
 const port = process.env.PORT || 3000;
 
+app.use((req, res, next) => {
+  console.log('Something is happening.');
+
+  // Allow frontend to send cookies
+  res.append('Access-Control-Allow-Origin', req.get('origin'));
+  res.append('Access-Control-Allow-Credentials', 'true');
+
+  if (!req.session.userID && req.path !== '/login') {
+    res.sendStatus(401);
+    return;
+  }
+
+  next();
+});
+
 // logs user in and sets for session:
 // userID = user's personal id and type = one of 'coach', 'startup', 'admin'
 app.post('/login', (req, res) => {
@@ -41,21 +56,6 @@ app.post('/login', (req, res) => {
     }
     res.json({ status: (type === 'coach' || type === 'startup') ? 'user' : type });
   });
-});
-
-app.use((req, res, next) => {
-  console.log('Something is happening.');
-
-  // Allow frontend to send cookies
-  res.append('Access-Control-Allow-Origin', req.get('origin'));
-  res.append('Access-Control-Allow-Credentials', 'true');
-
-  if (!req.session.userID && req.path !== '/login') {
-    res.sendStatus(401);
-    return;
-  }
-
-  next();
 });
 
 // Use when admin is required to allow access
@@ -171,6 +171,12 @@ app.post('/createMeetingDay', (req, res) => {
   const end = req.body.end;
   const split = req.body.split;
   database.createMeetingDay(date, start, end, split, (result) => {
+    res.json(result);
+  });
+});
+
+app.get('/getComingMeetingDay', (req, res) => {
+  database.getComingMeetingDay((result) => {
     res.json(result);
   });
 });

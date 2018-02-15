@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import TimeslotDrag from './TimeslotDrag';
 import TimeslotInput from './TimeslotInput';
+import pageContents from '../pageContent';
 
 export function parseMinutes(timeString) {
   if (!timeString.match(/^([0-1]?\d|2[0-3]):[0-5]\d$/)) return false;
@@ -21,21 +22,48 @@ class Timeslot extends React.Component {
     super(props);
     this.state = {
       available: {
-        start: parseMinutes(this.props.start),
-        end: parseMinutes(this.props.start),
+        start: 0,
+        end: 0,
       },
+      date: new Date(),
+      start: 0,
+      end: 0,
+      split: 0,
     };
     this.handleChange = this.handleChange.bind(this);
+    this.fetchData = this.fetchData.bind(this);
+  }
+
+  componentDidMount() {
+    this.fetchData();
+  }
+
+  fetchData() {
+    pageContents.fetchData('/getComingMeetingDay', 'GET', {})
+      .then((result) => {
+        const start = parseMinutes(new Date(`${result.date}T${result.startTime}`).toTimeString().substr(0, 5));
+        const end = parseMinutes(new Date(`${result.date}T${result.endTime}`).toTimeString().substr(0, 5));
+        this.setState({
+          date: new Date(result.date),
+          start,
+          end,
+          split: result.split,
+          available: {
+            start,
+            end,
+          },
+        });
+      });
   }
 
   handleChange(to, change) {
     let newStart = this.state.available.start;
     let newEnd = this.state.available.end;
     if (to === 'start') {
-      newStart = Math.max(newStart + change, parseMinutes(this.props.start));
+      newStart = Math.max(newStart + change, this.state.start);
       newStart = Math.round(Math.min(newStart, newEnd));
     } else if (to === 'end') {
-      newEnd = Math.min(newEnd + change, parseMinutes(this.props.end));
+      newEnd = Math.min(newEnd + change, this.state.end);
       newEnd = Math.round(Math.max(newEnd, newStart));
     }
     const newObj = { available: { start: newStart, end: newEnd } };
@@ -47,15 +75,15 @@ class Timeslot extends React.Component {
       weekday: 'short',
       day: 'numeric',
       month: 'numeric',
-      year: '2-digit',
+      year: 'numeric',
     };
     return (
-      <div className="timeslot-picker">
+      <div className="timeslot-picker container">
         <link rel="stylesheet" type="text/css" href="app/styles/timeslot_style.css" />
-        <p className="date">{this.props.date.toLocaleDateString('en-GB', dateOptions).replace(/\//g, '.')}</p>
+        <p className="date">{this.state.date.toLocaleDateString('en-GB', dateOptions).replace(/\//g, '.')}</p>
         <TimeslotDrag
-          start={parseMinutes(this.props.start)}
-          end={parseMinutes(this.props.end)}
+          start={this.state.start}
+          end={this.state.end}
           available={this.state.available}
           onChange={this.handleChange}
         />
@@ -67,11 +95,5 @@ class Timeslot extends React.Component {
     );
   }
 }
-
-Timeslot.propTypes = {
-  start: PropTypes.string.isRequired,
-  end: PropTypes.string.isRequired,
-  date: PropTypes.objectOf(Date).isRequired,
-};
 
 export default Timeslot;

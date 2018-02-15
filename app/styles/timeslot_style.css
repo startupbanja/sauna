@@ -24,6 +24,7 @@
   background: black;
   position: absolute;
   left: 50%;
+  cursor: pointer;
 }
 
 .timeslot-input {
@@ -41,8 +42,12 @@
   display: inline-block;
   width: 70px;
   background: transparent;
-  border: transparent;
+  border-bottom: solid 2px white;
+  border-top: transparent;
+  border-left: transparent;
+  border-right: transparent;
   text-align: center;
+  margin: 5px;
 }
 
 .timeslot-picker .date {

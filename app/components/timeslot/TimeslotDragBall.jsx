@@ -7,13 +7,17 @@ class TimeslotDragBall extends Component {
     super(props);
     this.handleDrag = this.handleDrag.bind(this);
     this.handleTouchMove = this.handleTouchMove.bind(this);
+    this.state = {
+      dragY: 0,
+    };
   }
 
   handleDrag(event) {
-    if (event.clientY === 0) return;
+    const clientY = (event.clientY !== 0) ? event.clientY : this.state.dragY;
+    if (clientY === 0) return;
     let origY = event.target.parentElement.offsetTop;
     origY += (event.target.offsetTop + (totalHeight * 0.015));
-    const dragY = event.clientY - event.target.closest('.dragContainer').getBoundingClientRect().top;
+    const dragY = clientY - event.target.closest('.dragContainer').getBoundingClientRect().top;
     this.props.onChange(dragY - origY);
   }
 
@@ -36,7 +40,19 @@ class TimeslotDragBall extends Component {
       <div
         className="timeslot-dragball"
         draggable="true"
-        onDrag={this.handleDrag}
+        onDrag={event => this.handleDrag(event)}
+        // onDragStart and onDragEnd needed for dragging in Firefox
+        onDragStart={(event) => {
+          event.dataTransfer.setData('text/plain', null);
+          document.ondragover = (eve) => {
+            eve = eve || window.event; // eslint-disable-line
+            this.setState({ dragY: eve.clientY });
+          };
+        }}
+        onDragEnd={() => {
+          document.ondragover = () => {};
+          this.setState({ dragY: 0 });
+        }}
         onTouchMove={this.handleTouchMove}
         style={styles}
       />

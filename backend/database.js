@@ -178,6 +178,27 @@ function createMeetingDay(date, start, end, split, callback) {
   });
 }
 
+function getComingMeetingDay(callback) {
+  const query = `SELECT date, startTime, endTime, split
+    FROM MeetingDays
+    WHERE date IN (
+      SELECT MAX(date) FROM MeetingDays
+    )`;
+  db.get(query, [], (err, result) => {
+    if (err) throw err;
+    callback(result);
+  });
+}
+
+function insertTimeslot(userId, date, startTime, duration, callback) {
+  const query = `INSERT INTO Timeslots(user_id, date, time, duration)
+    VALUES (?, ?, ?, ?)`;
+  db.run(query, [userId, date, startTime, duration], (err) => {
+    if (err) throw err;
+    callback({ status: 'success' });
+  });
+}
+
 function verifyIdentity(username, password, callback) {
   const query = 'SELECT id, type, password FROM Users WHERE username = ?';
   db.get(query, [username], (err, row) => {
@@ -375,4 +396,6 @@ module.exports = {
   saveMatchmaking,
   getMapping,
   createMeetingDay,
+  getComingMeetingDay,
+  insertTimeslot,
 };
