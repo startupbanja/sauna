@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import pageContents from '../pageContent';
 
-function validateForm(e) {
+export function validateForm(e) {
   e.preventDefault();
   const date = $('#dateInput').val();
   const start = new Date(`${date}T${$('#startTimeInput').val()}`);
