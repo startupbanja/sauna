@@ -35,7 +35,7 @@ class TimeslotDragable extends Component {
       const splitCount = ((this.props.end - this.props.start) / this.props.split);
       const splitHeight = this.props.totalHeight / splitCount;
       for (let i = 1; i < splitCount; i += 1) {
-        splitBreaks.push(<hr style={{ top: ((i * splitHeight) - (i * 2)) + 1 }} />);
+        splitBreaks.push(<hr style={{ top: ((i * splitHeight) - (i * 2)) + 1 }} key={`hr_${i}`} />);
       }
     }
     return (

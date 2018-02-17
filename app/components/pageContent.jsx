@@ -8,7 +8,7 @@ import UserSchedule from './UserSchedule';
 import UserList from './UserList';
 import App from './App';
 import AdminManagePage from './admin_manage/AdminManagePage';
-import Timeslot from './timeslot/Timeslot';
+import TimeslotView from './timeslot/TimeslotView';
 
 const feedbackQuestions = {
   coach: [{
@@ -66,7 +66,7 @@ const userContent = (
     <Route path="/timetable" render={() => <UserSchedule schedule={schedule} />} />
     <Route path="/user" component={UserProfilePage} />
     <Route path="/feedback" render={() => <FeedbackView questions={feedbackQuestions} />} />
-    <Route path="/availability" component={Timeslot} />
+    <Route path="/availability" component={TimeslotView} />
   </Switch>
 );
 

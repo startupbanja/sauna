@@ -15,7 +15,9 @@ function validateForm(e) {
       end: end.toTimeString().substr(0, 8),
       split: parseInt($('#splitInput').val(), 10),
     });
+    return true;
   }
+  return false;
 }
 
 class NewMeetingDayBlock extends Component {

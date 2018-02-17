@@ -1,9 +1,7 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import TimeslotDrag from './TimeslotDrag';
 import TimeslotInput from './TimeslotInput';
-import pageContents from '../pageContent';
 
 export function parseMinutes(timeString) {
   if (!timeString.match(/^([0-1]?\d|2[0-3]):[0-5]\d$/)) return false;
@@ -18,46 +16,21 @@ export function parseTimeStamp(minutes) {
   return `${hours}:${minutesOver}`;
 }
 
-/* Component for presenting and submitting users availabilities */
+/* Component for presenting and editing users availabilities */
 class Timeslot extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       available: {
-        start: 0,
-        end: 0,
+        start: this.props.available.start,
+        end: this.props.available.end,
       },
-      date: new Date(),
-      start: 0,
-      end: 0,
-      split: 0,
+      start: this.props.start,
+      end: this.props.end,
     };
     this.handleChange = this.handleChange.bind(this);
-    this.fetchData = this.fetchData.bind(this);
     this.submitAvailability = this.submitAvailability.bind(this);
     this.askForMoreTime = this.askForMoreTime.bind(this);
-  }
-
-  componentDidMount() {
-    this.fetchData();
-  }
-
-  fetchData() {
-    pageContents.fetchData('/getComingMeetingDay', 'GET', {})
-      .then((result) => {
-        const start = parseMinutes(new Date(`${result.date}T${result.startTime}`).toTimeString().substr(0, 5));
-        const end = parseMinutes(new Date(`${result.date}T${result.endTime}`).toTimeString().substr(0, 5));
-        this.setState({
-          date: new Date(result.date),
-          start,
-          end,
-          split: result.split,
-          available: {
-            start: (result.time === null) ? start : parseMinutes(result.time),
-            end: (result.duration === null) ? end : parseMinutes(result.time) + result.duration,
-          },
-        });
-      });
   }
 
   handleChange(to, change) {
@@ -79,24 +52,14 @@ class Timeslot extends React.Component {
     let endAvail = Math.round(this.state.available.end / 5) * 5;
     startAvail = this.askForMoreTime('start', startAvail);
     endAvail = this.askForMoreTime('end', endAvail);
-    let startTime = Math.ceil((startAvail - this.state.start) / this.state.split);
-    startTime = (startTime * this.state.split) + this.state.start;
-    let endTime = Math.floor((endAvail - this.state.start) / this.state.split);
-    endTime = (endTime * this.state.split) + this.state.start;
-    pageContents.fetchData('/insertAvailability', 'POST', {
-      date: this.state.date.toISOString().substr(0, 10),
-      start: parseTimeStamp(startTime),
-      end: parseTimeStamp(endTime),
-    }).then((result) => {
-      if (result.status === 'success') this.props.history.push('/main');
-    });
+    this.props.onSubmit(startAvail, endAvail);
   }
 
   askForMoreTime(type, availability) {
     if (type === 'start') {
-      let start = Math.floor((availability - this.state.start) / this.state.split);
-      start = (start * this.state.split) + this.state.start;
-      const cond1 = availability - start < this.state.split / 2;
+      let start = Math.floor((availability - this.state.start) / this.props.split);
+      start = (start * this.props.split) + this.state.start;
+      const cond1 = availability - start < this.props.split / 2;
       const cond2 = availability - start > 0;
       if (cond1 && cond2) {
         if (confirm(`Could you come ${availability - start} minutes earlier?`)) { // eslint-disable-line
@@ -110,9 +73,9 @@ class Timeslot extends React.Component {
         }
       }
     } else if (type === 'end') {
-      let endTime = Math.ceil((availability - this.state.start) / this.state.split);
-      endTime = (endTime * this.state.split) + this.state.start;
-      const cond1 = endTime - availability < this.state.split / 2;
+      let endTime = Math.ceil((availability - this.state.start) / this.props.split);
+      endTime = (endTime * this.props.split) + this.state.start;
+      const cond1 = endTime - availability < this.props.split / 2;
       const cond2 = endTime - availability > 0;
       if (cond1 && cond2) {
         if (confirm(`Could you stay ${endTime - availability} minutes longer?`)) { // eslint-disable-line
@@ -130,22 +93,14 @@ class Timeslot extends React.Component {
   }
 
   render() {
-    const dateOptions = {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'numeric',
-      year: 'numeric',
-    };
     return (
-      <div className="timeslot-picker container">
-        <link rel="stylesheet" type="text/css" href="app/styles/timeslot_style.css" />
-        <p className="date">{this.state.date.toLocaleDateString('en-GB', dateOptions).replace(/\//g, '.')}</p>
+      <div className="container">
         <TimeslotDrag
           start={this.state.start}
           end={this.state.end}
           available={this.state.available}
           onChange={this.handleChange}
-          split={this.state.split}
+          split={this.props.split}
         />
         <TimeslotInput
           available={this.state.available}
@@ -158,9 +113,14 @@ class Timeslot extends React.Component {
 }
 
 Timeslot.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func,
+  start: PropTypes.number.isRequired,
+  end: PropTypes.number.isRequired,
+  available: PropTypes.shape({
+    start: PropTypes.number.isRequired,
+    end: PropTypes.number.isRequired,
   }).isRequired,
+  split: PropTypes.number.isRequired,
+  onSubmit: PropTypes.func.isRequired,
 };
 
-export default withRouter(Timeslot);
+export default Timeslot;
