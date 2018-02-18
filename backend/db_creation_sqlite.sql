@@ -113,7 +113,7 @@ INSERT INTO Users (type, username, password, batch, active) VALUES
 	(2, 'startup11', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
 	(2, 'startup12', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
 	(2, 'startup13', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
-	
+
 	(1, 'coach1', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
 	(1, 'coach2', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
 	(1, 'coach3', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
@@ -183,7 +183,7 @@ INSERT INTO Users (type, username, password, batch, active) VALUES
 	(1, 'coach67', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
 	(1, 'coach68', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
 	(1, 'coach69', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	
+
 	(0, 'admin', '$2a$10$CRYjO.6VHRvS0nnc/LvDp.dWJlchXzeGpiU2M2yWrlD1zFDsmLPMm', 0, 1);
 
 INSERT INTO CoachProfiles (user_id, name, description, company, email, linkedin) VALUES
@@ -258,16 +258,19 @@ INSERT INTO CoachProfiles (user_id, name, description, company, email, linkedin)
 	(82, 'Ville Miettinen', 'Coach description', 'Coach company', 'coach69@email.com', 'linkedin.com/coach69');
 
 INSERT INTO StartupProfiles (user_id, name, description, email, website) VALUES
-	(1, 'Startup1', 'Startup Description', 'startup1@ssauna.com', 'www.startup1.com'),
-	(2, 'Startup2', 'Startup Description', 'startup2@ssauna.com', 'www.startup2.com'),
-	(3, 'Startup3', 'Startup Description', 'startup3@ssauna.com', 'www.startup3.com'),
-	(4, 'Startup4', 'Startup Description', 'startup4@ssauna.com', 'www.startup4.com'),
-	(5, 'Startup5', 'Startup Description', 'startup5@ssauna.com', 'www.startup5.com'),
-	(6, 'Startup6', 'Startup Description', 'startup6@ssauna.com', 'www.startup6.com'),
-	(7, 'Startup7', 'Startup Description', 'startup7@ssauna.com', 'www.startup7.com'),
-	(8, 'Startup8', 'Startup Description', 'startup8@ssauna.com', 'www.startup8.com'),
-	(9, 'Startup8', 'Startup Description', 'startup9@ssauna.com', 'www.startup9.com'),
-	(10, 'Startup10', 'Startup Description', 'startup10@ssauna.com', 'www.startup10.com');
+	(1, 'AdLaunch', 'Startup Description', 'startup1@ssauna.com', 'www.startup1.com'),
+	(2, 'Avanto', 'Startup Description', 'startup2@ssauna.com', 'www.startup2.com'),
+	(3, 'BeWarned', 'Startup Description', 'startup3@ssauna.com', 'www.startup3.com'),
+	(4, 'BrightCharger', 'Startup Description', 'startup4@ssauna.com', 'www.startup4.com'),
+	(5, 'Collabee', 'Startup Description', 'startup5@ssauna.com', 'www.startup5.com'),
+	(6, 'Frank', 'Startup Description', 'startup6@ssauna.com', 'www.startup6.com'),
+	(7, 'Hefio', 'Startup Description', 'startup7@ssauna.com', 'www.startup7.com'),
+	(8, 'Leap', 'Startup Description', 'startup8@ssauna.com', 'www.startup8.com'),
+	(9, 'Mappointer', 'Startup Description', 'startup9@ssauna.com', 'www.startup9.com'),
+	(10, 'Polkadot', 'Startup Description', 'startup10@ssauna.com', 'www.startup10.com'),
+	(11, 'Silvere', 'Startup Description', 'startup11@ssauna.com', 'www.startup11.com'),
+	(12, 'Yealloh', 'Startup Description', 'startup12@ssauna.com', 'www.startup12.com'),
+	(13, '2MEU', 'Startup Description', 'startup13@ssauna.com', 'www.startup13.com');
 
 INSERT INTO Meetings (coach_id, startup_id, date, time, duration, coach_rating, startup_rating) VALUES
 	(15, 7, '2017-10-03', '12:00:00', 40, 0, 1),
@@ -623,7 +626,7 @@ INSERT INTO Meetings (coach_id, startup_id, date, time, duration, coach_rating, 
 	(80, 11, '2017-10-10', '12:00:00', 40, 0, 0),
 	(80, 12, '2017-10-10', '12:00:00', 40, 0, 3),
 	(80, 13, '2017-10-10', '12:00:00', 40, 0, 0);
-	
+
 INSERT INTO Credentials (user_id, company, title) VALUES
 	(14, 'Company', 'Title'),
 	(15, 'Company', 'Title'),
