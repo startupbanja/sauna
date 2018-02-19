@@ -54,9 +54,6 @@ app.get('/api', (req, res) => {
     database.getUsers(1, 0, false, (data) => {
       res.json(data);
     });
-    // database.testApi((data) => {
-    //   res.json(data);
-    // });
   }
 });
 
@@ -79,14 +76,9 @@ function runAlgorithm(callback) {
   });
 }
 
-//  muuta callback muotoon
 app.get('/timeslots', (req, res) => {
-  runAlgorithm(result => res.json(result));
+  runAlgorithm(result => res.json({ schedule: result }));
 });
-
-// app.get('/api', function(req, res) {
-//     res.json({ message: req.query.q });
-// });
 
 app.post('/login', (req, res) => {
   const username = req.body.username;
@@ -134,6 +126,44 @@ app.get('/profile', (req, res) => {
       Object.assign(result, { canModify: true });
     }
     res.json(result);
+  });
+});
+
+// TODO coach names
+app.get('/meetings', (req, res) => {
+  const allMeetings = [];
+  database.getTimetable((meetings) => {
+    database.getTimeslots((timeslots) => {
+      const dur = meetings[0].duration;
+      for (const timeslot in timeslots) { // eslint-disable-line
+        const id = timeslot;
+        var remaining = timeslots[id].duration;
+        const time = new Date('2000-01-01T' + timeslots[id].starttime);
+        while (remaining > 0) {
+          allMeetings.push({
+            coach: id.toString(),
+            startup: null,
+            time: ('0' + (time.getHours())).slice(-2) + ':' + ('0' + time.getMinutes()).slice(-2) + ':' + ('0' + time.getSeconds()).slice(-2),
+            duration: dur,
+          });
+          time.setMinutes(time.getMinutes() + dur);
+          remaining -= dur;
+        }
+      }
+      for (var meeting in meetings) { //eslint-disable-line
+        meeting = meetings[meeting];
+        const index = allMeetings.findIndex(element => (element.coach === meeting.coach_id && element.time === meeting.time));
+        if (index !== -1) {
+          allMeetings[index] = {
+            coach: meeting.coach_id,
+            startup: meeting.startup,
+            time: meeting.time,
+            duration: meeting.duration,
+          };
+        }
+      }
+      res.json({ schedule: allMeetings });
+    });
   });
 });
 

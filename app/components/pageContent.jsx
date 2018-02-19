@@ -7,6 +7,7 @@ import UserProfilePage from './UserProfilePage';
 import UserSchedule from './UserSchedule';
 import UserList from './UserList';
 import App from './App';
+import AdminSchedules from './AdminSchedules';
 
 const feedbackQuestions = {
   coach: [{
@@ -132,6 +133,46 @@ const userLabels = {
   '/coaches': 'Coaches',
   '/startups': 'Startups',
 };
+/* eslint-disable */
+const testSchedule = [
+{
+  coachName: 'Coach 1',
+  startUps: [{
+    startupName: 'Startup 1',
+    time: '13:00 - 13:20',
+  },
+  {
+    startupName: 'Startup 2',
+    time: '13:20 - 13:40',
+  },
+  ],
+},
+{
+  coachName: 'Coach 2',
+  startUps: [{
+    startupName: 'Startup 3',
+    time: '13:00 - 13:20',
+  },
+  {
+    startupName: 'Startup 4',
+    time: '13:20 - 13:40',
+  },
+  ],
+
+},
+{ coachName: 'Coach 3',
+  startUps: [{
+    startupName: 'Startup 5',
+    time: '13:00 - 13:20',
+  },
+  {
+    startupName: 'Startup 6',
+    time: '13:20 - 13:40',
+  },
+  ],},
+];
+
+/* eslint-enable */
 
 /* const adminContent = {
   mainPage: <div><h1>Home</h1><LandingPage /></div>,
@@ -153,6 +194,12 @@ const adminContent = (
       exact
       path="/startups"
       render={({ match }) => <UserList match={match} type="Startups" />}
+    />
+    <Route
+      path="/timetable"
+      render={() => (
+        <AdminSchedules />
+      )}
     />
   </Switch>
 );
