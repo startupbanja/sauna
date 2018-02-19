@@ -9,6 +9,7 @@ import UserList from './UserList';
 import App from './App';
 import AdminManagePage from './admin_manage/AdminManagePage';
 import TimeslotView from './timeslot/TimeslotView';
+import AdminSchedules from './AdminSchedules';
 
 const feedbackQuestions = {
   coach: [{
@@ -79,6 +80,46 @@ const userLabels = {
   '/startups': 'Startups',
   '/availability': 'Availability',
 };
+/* eslint-disable */
+const testSchedule = [
+{
+  coachName: 'Coach 1',
+  startUps: [{
+    startupName: 'Startup 1',
+    time: '13:00 - 13:20',
+  },
+  {
+    startupName: 'Startup 2',
+    time: '13:20 - 13:40',
+  },
+  ],
+},
+{
+  coachName: 'Coach 2',
+  startUps: [{
+    startupName: 'Startup 3',
+    time: '13:00 - 13:20',
+  },
+  {
+    startupName: 'Startup 4',
+    time: '13:20 - 13:40',
+  },
+  ],
+
+},
+{ coachName: 'Coach 3',
+  startUps: [{
+    startupName: 'Startup 5',
+    time: '13:00 - 13:20',
+  },
+  {
+    startupName: 'Startup 6',
+    time: '13:20 - 13:40',
+  },
+  ],},
+];
+
+/* eslint-enable */
 
 const adminContent = (
   <Switch>
@@ -96,6 +137,12 @@ const adminContent = (
       render={({ match }) => <UserList match={match} type="Startups" />}
     />
     <Route path="/manage" component={AdminManagePage} />
+    <Route
+      path="/timetable"
+      render={() => (
+        <AdminSchedules />
+      )}
+    />
   </Switch>
 );
 

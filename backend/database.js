@@ -331,6 +331,37 @@ function saveMatchmaking(jsonData, dateString, callback) {
   db.run(query, () => callback());
 }
 
+function getTimetable(callback) {
+  const query = `
+    SELECT CoachProfiles.name AS coach, StartupProfiles.name AS startup, time, duration, coach_id, startup_id
+    FROM Meetings
+    LEFT OUTER JOIN CoachProfiles ON CoachProfiles.user_id = coach_id
+    LEFT OUTER JOIN StartupProfiles ON StartupProfiles.user_id = startup_id
+    WHERE date = (SELECT MAX(date) FROM Meetings);
+    `;
+  const meetings = [];
+  db.each(query, [], (err, row) => {
+    if (err) {
+      throw err;
+    }
+    const meeting = {
+      coach: row.coach,
+      coach_id: row.coach_id.toString(),
+      startup: row.startup,
+      time: row.time,
+      duration: row.duration,
+    };
+    meetings.push(meeting);
+    return null;
+  }, (err) => {
+    if (err) {
+      // return console.error(err.message);
+      throw err;
+    }
+    return callback(meetings);
+  });
+}
+
 
 fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
   if (err) {
@@ -357,7 +388,7 @@ fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
 });
 // Get an object mapping all ids from startups and coaches of the current batch and map them to their names.
 // Currently returns all coaches with any branch number
-//Checks for active = 1 for all rows
+// Checks for active = 1 for all rows
 function getMapping(batch, callback) {
   const coachType = 1;
   const startupType = 2;
@@ -401,4 +432,5 @@ module.exports = {
   createMeetingDay,
   getComingMeetingDay,
   insertAvailability,
+  getTimetable,
 };
