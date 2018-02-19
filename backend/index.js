@@ -77,7 +77,7 @@ function runAlgorithm(callback) {
 }
 
 app.get('/timeslots', (req, res) => {
-  runAlgorithm(result => res.json(result));
+  runAlgorithm(result => res.json({ schedule: result }));
 });
 
 app.post('/login', (req, res) => {
@@ -143,7 +143,7 @@ app.get('/meetings', (req, res) => {
           allMeetings.push({
             coach: id.toString(),
             startup: null,
-            time: ('0' + (time.getHours() - 2)).slice(-2) + ':' + ('0' + time.getMinutes()).slice(-2) + ':' + ('0' + time.getSeconds()).slice(-2),
+            time: ('0' + (time.getHours())).slice(-2) + ':' + ('0' + time.getMinutes()).slice(-2) + ':' + ('0' + time.getSeconds()).slice(-2),
             duration: dur,
           });
           time.setMinutes(time.getMinutes() + dur);

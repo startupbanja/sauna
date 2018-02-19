@@ -13,8 +13,9 @@ export default class AdminSchedules extends React.Component {
   }
 
   getTimetable() {
-    pageContent.fetchData('/timeslots', 'GET', {}).then((response) => {
-      this.setState({ schedule: response });
+    pageContent.fetchData('/meetings', 'GET', {}).then((response) => {
+      console.log(response);
+      this.setState({ schedule: response.schedule });
     });
   }
 
