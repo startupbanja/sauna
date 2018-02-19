@@ -265,14 +265,6 @@ function getTimeslots(callback) {
   });
 }
 
-// function check() {
-//   db.all("SELECT * FROM Meetings WHERE date = '2018-01-01'", [], (err, rows) => {
-//     if (err) console.log(err);
-//     console.log('success?');
-//     rows.forEach(row => console.log(row));
-//   });
-// }
-
 
 const saveMatchmakingQuery = `
 INSERT INTO Meetings(coach_id, startup_id, date, time, duration, coach_rating, startup_rating)
