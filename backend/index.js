@@ -27,7 +27,6 @@ app.use(session({
 
 const port = process.env.PORT || 3000;
 
-
 app.use((req, res, next) => {
   console.log('Something is happening.');
 
@@ -42,6 +41,32 @@ app.use((req, res, next) => {
 
   next();
 });
+
+// logs user in and sets for session:
+// userID = user's personal id and type = one of 'coach', 'startup', 'admin'
+app.post('/login', (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  // bcrypt.hash(password, 10, (err, hash) => console.log(hash));
+  database.verifyIdentity(username, password, (type, userId) => {
+    if (userId !== false) {
+      req.session.userID = userId;
+      req.session.userType = type;
+    }
+    res.json({ status: (type === 'coach' || type === 'startup') ? 'user' : type });
+  });
+});
+
+// Use when admin is required to allow access
+function requireAdmin(req, res) {
+  if (req.session.userType !== 'admin') {
+    res.sendStatus(401);
+    res.end();
+    return false;
+  }
+  return true;
+}
 
 app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/index.html`);
@@ -66,11 +91,11 @@ function runAlgorithm(callback) {
           availabilities: timeslots,
           startups: startupdata,
         };
-        const batch = 1
+        const batch = 1;
         database.getMapping(batch, (mapping) => {
           const dataWithMapping = { data, mapping };
           matchmaking.run(dataWithMapping, rdy => callback(rdy));
-        })
+        });
       });
     });
   });
@@ -78,20 +103,6 @@ function runAlgorithm(callback) {
 
 app.get('/timeslots', (req, res) => {
   runAlgorithm(result => res.json({ schedule: result }));
-});
-
-app.post('/login', (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
-
-  // bcrypt.hash(password, 10, (err, hash) => console.log(hash));
-  database.verifyIdentity(username, password, (type, userId) => {
-    if (userId !== false) {
-      req.session.userID = userId;
-      req.session.userType = type;
-    }
-    res.json({ status: (type === 'coach' || type === 'startup') ? 'user' : type });
-  });
 });
 
 app.get('/users', (req, res) => {
@@ -184,6 +195,34 @@ app.post('/giveFeedback', (req, res) => {
 
   database.giveFeedback(meetingId, rating, (userType === 'coach') ? 'coach_rating' : 'startup_rating', (result) => {
     res.json({ status: result });
+  });
+});
+
+app.post('/createMeetingDay', (req, res) => {
+  if (!requireAdmin(req, res)) return;
+  const date = req.body.date;
+  const start = req.body.start;
+  const end = req.body.end;
+  const split = req.body.split;
+  database.createMeetingDay(date, start, end, split, (result) => {
+    res.json(result);
+  });
+});
+
+app.get('/getComingMeetingDay', (req, res) => {
+  database.getComingMeetingDay(req.session.userID, (result) => {
+    res.json(result);
+  });
+});
+
+app.post('/insertAvailability', (req, res) => {
+  const userId = req.session.userID;
+  const date = req.body.date;
+  const startTime = req.body.start;
+  let duration = (new Date(`${date}T${req.body.end}`).getTime() - new Date(`${date}T${startTime}`).getTime());
+  duration = parseInt(duration / 60000, 10);
+  database.insertAvailability(userId, date, startTime, duration, (result) => {
+    res.json(result);
   });
 });
 
