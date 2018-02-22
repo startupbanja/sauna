@@ -150,7 +150,7 @@ const adminLabels = {
   '/main': 'Home',
   '/coaches': 'Coaches',
   '/startups': 'Startups',
-  '/meetingDays': 'Meeeting days',
+  '/meetingDays': 'Meeting days',
 };
 // TODO change this to something better later
 function getContent(userType) {
