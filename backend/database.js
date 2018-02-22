@@ -220,6 +220,18 @@ function getComingTimeslots(callback) {
   });
 }
 
+function getGivenFeedbacks(callback) {
+  const query = `SELECT Users.type, Profiles.name, Meetings.startup_rating, Meetings.coach_rating
+    FROM Users
+    LEFT OUTER JOIN Profiles ON Users.id = Profiles.user_id
+    LEFT OUTER JOIN Meetings ON Users.id = Meetings.coach_id OR Users.id = Meetings.startup_id
+    WHERE Meetings.date = (SELECT MAX(Date) FROM MeetingDays WHERE Date < date("now"))`;
+  db.all(query, [], (err, result) => {
+    if (err) throw err;
+    callback(result);
+  });
+}
+
 function insertAvailability(userId, date, startTime, duration, callback) {
   const query = `INSERT INTO Timeslots(user_id, date, time, duration)
     VALUES (?, ?, ?, ?)`;
@@ -524,4 +536,5 @@ module.exports = {
   getUserMap,
   getComingDates,
   getComingTimeslots,
+  getGivenFeedbacks,
 };

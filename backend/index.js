@@ -35,10 +35,10 @@ app.use((req, res, next) => {
   res.append('Access-Control-Allow-Credentials', 'true');
 
   // if user has not logged in, returns not authorized and ends the request
-  if (!req.session.userID && req.path !== '/login') {
+  /*if (!req.session.userID && req.path !== '/login') {
     res.sendStatus(401);
     return;
-  }
+  }*/
 
   next();
 });
@@ -222,6 +222,44 @@ app.get('/numberOfTimeslots', (req, res) => {
       timeslots[element.date].total += 1;
     }
     res.json(timeslots);
+  });
+});
+
+app.get('/givenFeedbacks', (req, res) => {
+  const givenFeedbacks = {
+    startups: {},
+    coaches: {},
+    startupTotal: 0,
+    startupDone: 0,
+    coachTotal: 0,
+    coachDone: 0
+  };
+  // Result is in form [{type: type, name: name, startup_rating: rating, coach_rating: rating}]
+  // Type 1 => Coach, Type 2 => Startup
+  database.getGivenFeedbacks((result) => {
+    for (const index in result) { //eslint-disable-line
+      const element = result[index];
+      if (element.type === 1) {
+        if (element.coach_rating !== null) {
+          givenFeedbacks.coaches[element.name] = true;
+        } else if (givenFeedbacks.coaches[element.name] === undefined) {
+          givenFeedbacks.coaches[element.name] = false;
+        }
+      } else if (element.startup_rating !== null) {
+        givenFeedbacks.startups[element.name] = true;
+      } else if (givenFeedbacks.startups[element.name] === undefined) {
+        givenFeedbacks.startups[element.name] = false;
+      }
+    }
+    for (const index in givenFeedbacks.startups) {//eslint-disable-line
+      givenFeedbacks.startupTotal += 1;
+      if (givenFeedbacks.startups[index] === true) givenFeedbacks.startupDone += 1;
+    }
+    for (const index in givenFeedbacks.coaches) {//eslint-disable-line
+      givenFeedbacks.coachTotal += 1;
+      if (givenFeedbacks.coaches[index] === true) givenFeedbacks.coachDone += 1;
+    }
+    res.json(givenFeedbacks);
   });
 });
 
