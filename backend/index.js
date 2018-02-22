@@ -1,4 +1,4 @@
-const express = require('express');
+  const express = require('express');
 const readline = require('readline');
 const bodyParser = require('body-parser');
 const database = require('./database.js');
@@ -35,10 +35,10 @@ app.use((req, res, next) => {
   res.append('Access-Control-Allow-Credentials', 'true');
 
   // if user has not logged in, returns not authorized and ends the request
-  /*if (!req.session.userID && req.path !== '/login') {
+  if (!req.session.userID && req.path !== '/login') {
     res.sendStatus(401);
     return;
-  }*/
+  }
 
   next();
 });
