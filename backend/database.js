@@ -176,13 +176,33 @@ function createMeetingDay(date, start, end, split, callback) {
 }
 
 function getComingMeetingDays(userId, callback) {
-  const query = `SELECT MeetingDays.date, startTime, endTime, split, time, duration, user_id
+  const query = `SELECT MeetingDays.date, startTime, endTime, split, time, duration
     FROM MeetingDays
     LEFT OUTER JOIN Timeslots on Timeslots.date = MeetingDays.date
     WHERE (user_id = ? OR user_id IS NULL) AND MeetingDays.date >= date("now")`;
   db.all(query, [userId], (err, result) => {
     if (err) throw err;
     callback(result);
+  });
+}
+
+function getComingDates(callback) {
+  const dates = [];
+  const query = `SELECT date
+    FROM MeetingDays
+    WHERE MeetingDays.date >= date("now")`;
+  db.each(query, [], (err, row) => {
+    if (err) {
+      throw err;
+    }
+    dates.push(row.date);
+    return null;
+  }, (err) => {
+    if (err) {
+      // return console.error(err.message);
+      throw err;
+    }
+    return callback(dates);
   });
 }
 
@@ -488,4 +508,5 @@ module.exports = {
   getTimetable,
   setTimetable,
   getUserMap,
+  getComingDates,
 };
