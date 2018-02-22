@@ -132,37 +132,42 @@ app.get('/profile', (req, res) => {
 // TODO coach names
 app.get('/meetings', (req, res) => {
   const allMeetings = [];
-  database.getTimetable((meetings) => {
-    database.getTimeslots((timeslots) => {
-      const dur = meetings[0].duration;
-      for (const timeslot in timeslots) { // eslint-disable-line
-        const id = timeslot;
-        var remaining = timeslots[id].duration;
-        const time = new Date('2000-01-01T' + timeslots[id].starttime);
-        while (remaining > 0) {
-          allMeetings.push({
-            coach: id.toString(),
-            startup: null,
-            time: ('0' + (time.getHours())).slice(-2) + ':' + ('0' + time.getMinutes()).slice(-2) + ':' + ('0' + time.getSeconds()).slice(-2),
-            duration: dur,
-          });
-          time.setMinutes(time.getMinutes() + dur);
-          remaining -= dur;
+  database.getUserMap((keys) => {
+    database.getTimetable((meetings) => {
+      database.getTimeslots((timeslots) => {
+        const dur = meetings[0].duration;
+        for (const timeslot in timeslots) { // eslint-disable-line
+          const id = timeslot;
+          var remaining = timeslots[id].duration;
+          const time = new Date('2000-01-01T' + timeslots[id].starttime);
+          while (remaining > 0) {
+            allMeetings.push({
+              coach: id.toString(),
+              startup: null,
+              time: ('0' + (time.getHours())).slice(-2) + ':' + ('0' + time.getMinutes()).slice(-2) + ':' + ('0' + time.getSeconds()).slice(-2),
+              duration: dur,
+            });
+            time.setMinutes(time.getMinutes() + dur);
+            remaining -= dur;
+          }
         }
-      }
-      for (var meeting in meetings) { //eslint-disable-line
-        meeting = meetings[meeting];
-        const index = allMeetings.findIndex(element => (element.coach === meeting.coach_id && element.time === meeting.time));
-        if (index !== -1) {
-          allMeetings[index] = {
-            coach: meeting.coach_id,
-            startup: meeting.startup,
-            time: meeting.time,
-            duration: meeting.duration,
-          };
+        for (var meeting in meetings) { //eslint-disable-line
+          meeting = meetings[meeting];
+          const index = allMeetings.findIndex(element => (element.coach === meeting.coach && element.time === meeting.time));
+          if (index !== -1) {
+            allMeetings[index] = {
+              coach: meeting.coach,
+              startup: meeting.startup,
+              time: meeting.time,
+              duration: meeting.duration,
+            };
+          }
         }
-      }
-      res.json({ schedule: allMeetings });
+        for (var meeting in allMeetings) {
+          allMeetings[meeting].coach = keys[allMeetings[meeting].coach];
+        }
+        res.json({ schedule: allMeetings });
+      });
     });
   });
 });

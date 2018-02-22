@@ -245,6 +245,30 @@ function getRatings(callback) {
   });
 }
 
+// Used for getting a map of {User_id: Name} and {Name: User_id}
+// Used in deciphering and ciphering schedule from admin view
+function getUserMap(callback) {
+  const q = `
+            SELECT name, user_id
+            FROM Profiles;`;
+  const keys = {};
+  // (sql, params, callback for each row, callback on complete)
+  db.each(q, [], (err, row) => {
+    if (err) {
+      throw err;
+    }
+    keys[row.name] = row.user_id.toString();
+    keys[row.user_id] = row.name;
+    return null;
+  }, (err) => {
+    if (err) {
+      // return console.error(err.message);
+      throw err;
+    }
+    return callback(keys);
+  });
+}
+
 function getTimeslots(callback) {
   const timeslots = {};
   db.each(timeslotQuery, [], (err, row) => {
@@ -308,8 +332,7 @@ function getTimetable(callback) {
       throw err;
     }
     const meeting = {
-      coach: row.coach,
-      coach_id: row.coach_id.toString(),
+      coach: row.coach_id.toString(),
       startup: row.startup,
       time: row.time,
       duration: row.duration,
@@ -393,4 +416,5 @@ module.exports = {
   saveMatchmaking,
   getMapping,
   getTimetable,
+  getUserMap,
 };
