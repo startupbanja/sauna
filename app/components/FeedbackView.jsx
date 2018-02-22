@@ -83,7 +83,7 @@ export default class FeedbackView extends React.Component {
             />
           </div>
           <div className="col-xs-4" >
-            <p>{`${this.state.index + 1} / ${this.state.data.length}`}</p>
+            <p className="feedback-nro">{`${this.state.index + 1} / ${this.state.data.length}`}</p>
           </div>
           <div className="col-xs-3">
             <Button
