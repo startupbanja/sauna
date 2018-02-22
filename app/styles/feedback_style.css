@@ -33,6 +33,13 @@
   color: #545454;
 }
 
+.feedback-question {
+  font-size: 18px;
+  position: fixed;
+  bottom: 42%;
+  margin-left: 2%;
+}
+
 .feedback-btn {
   font-size: 30px;
   position: fixed;
