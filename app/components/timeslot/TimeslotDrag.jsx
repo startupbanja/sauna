@@ -33,6 +33,8 @@ class TimeslotDrag extends Component {
           ending={totalHeight}
           type="break"
           dragable={false}
+          split={this.props.split}
+          totalHeight={totalHeight}
         />
         <TimeslotDragable
           start={this.props.available.start}
@@ -56,6 +58,7 @@ TimeslotDrag.propTypes = {
     start: PropTypes.number,
     end: PropTypes.number,
   }).isRequired,
+  split: PropTypes.number.isRequired,
 };
 
 export default TimeslotDrag;

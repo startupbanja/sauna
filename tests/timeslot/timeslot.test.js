@@ -30,18 +30,41 @@ test('parseTimeStamp works correctly', () => {
 });
 
 test('Timeslot initializes correctly', () => {
-  var timeslot = renderer.create(<Timeslot date={new Date(2018, 4, 28)} start="8:00" end="12:00" />); //eslint-disable-line
+  const onSubmit = jest.fn();
+  var timeslot = renderer.create(<Timeslot  //eslint-disable-line
+    date={new Date(2018, 4, 28)}
+    start={480}
+    end={720}
+    split={40}
+    available={{ start: 480, end: 720 }}
+    onSubmit={onSubmit}
+  />);
   let tree = timeslot.toJSON();
   expect(tree).toMatchSnapshot();
-  timeslot = renderer.create(<Timeslot date={new Date(2017, 1, 1)} start="12:20" end="20:40" />);
+  timeslot = renderer.create(<Timeslot  //eslint-disable-line
+    date={new Date(2017, 1, 1)}
+    start={740}
+    end={1240}
+    split={20}
+    available={{ start: 860, end: 1100 }}
+    onSubmit={onSubmit}
+  />);
   tree = timeslot.toJSON();
   expect(tree).toMatchSnapshot();
 });
 
 test('Timeslot handles change correctly', () => {
-  const timeslot = shallow(<Timeslot date={new Date(2018, 2, 3)} start="10:00" end="12:00" />);
+  const onSubmit = jest.fn();
+  const timeslot = shallow(<Timeslot
+    date={new Date(2018, 4, 28)}
+    start={600}
+    end={720}
+    split={40}
+    available={{ start: 480, end: 720 }}
+    onSubmit={onSubmit}
+  />);
   timeslot.instance().handleChange('start', -30);
-  expect(timeslot.state().available).toEqual({ start: 600, end: 600 });
+  expect(timeslot.state().available).toEqual({ start: 600, end: 720 });
   timeslot.instance().handleChange('end', 130);
   expect(timeslot.state().available).toEqual({ start: 600, end: 720 });
   timeslot.instance().handleChange('start', 10);

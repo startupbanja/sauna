@@ -27,7 +27,7 @@ class TimeslotInputElement extends Component {
   }
 
   render() {
-    let value = parseTimeStamp(this.props.time);
+    let value = parseTimeStamp(Math.round(this.props.time / 5) * 5);
     if (this.state.editedValue !== '') value = this.state.editedValue;
     return (
       <input

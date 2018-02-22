@@ -165,6 +165,43 @@ function giveFeedback(meetingId, rating, field, callback) {
   });
 }
 
+
+function createMeetingDay(date, start, end, split, callback) {
+  const query = `INSERT INTO MeetingDays(date, startTime, endTime, split)
+    VALUES (?, ?, ?, ?)`;
+  db.run(query, [date, start, end, split], (err) => {
+    if (err) throw err;
+    callback({ status: 'success' });
+  });
+}
+
+function getComingMeetingDay(userId, callback) {
+  const query = `SELECT date, startTime, endTime, split
+    FROM MeetingDays
+    WHERE MeetingDays.date IN (
+      SELECT MAX(date) FROM MeetingDays
+    )`;
+  db.get(query, [], (err, result) => {
+    if (err) throw err;
+    const query2 = 'SELECT time, duration FROM Timeslots WHERE user_id = ? AND date = ?';
+    db.get(query2, [userId, result.date], (err2, result2) => {
+      if (err2) throw err2;
+      if (result2 !== undefined) Object.assign(result, result2);
+      else Object.assign(result, { time: null, duration: null });
+      callback(result);
+    });
+  });
+}
+
+function insertAvailability(userId, date, startTime, duration, callback) {
+  const query = `INSERT INTO Timeslots(user_id, date, time, duration)
+    VALUES (?, ?, ?, ?)`;
+  db.run(query, [userId, date, startTime, duration], (err) => {
+    if (err) throw err;
+    callback({ status: 'success' });
+  });
+}
+
 function verifyIdentity(username, password, callback) {
   const query = 'SELECT id, type, password FROM Users WHERE username = ?';
   db.get(query, [username], (err, row) => {
@@ -384,5 +421,8 @@ module.exports = {
   giveFeedback,
   saveMatchmaking,
   getMapping,
+  createMeetingDay,
+  getComingMeetingDay,
+  insertAvailability,
   getTimetable,
 };
