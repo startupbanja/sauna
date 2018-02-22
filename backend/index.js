@@ -207,6 +207,24 @@ app.get('/comingTimeslots', (req, res) => {
   });
 });
 
+app.get('/numberOfTimeslots', (req, res) => {
+  const timeslots = {};
+  // Result is in form [{name:"coachname",date:"dateString",time:"timestring",duration:null}]
+  database.getComingTimeslots((result) => {
+    for (const index in result) { //eslint-disable-line
+      const element = result[index];
+      if (timeslots[element.date] === undefined) {
+        timeslots[element.date] = { total: 0, done: 0 };
+      }
+      if (element.duration !== null) {
+        timeslots[element.date].done += 1;
+      }
+      timeslots[element.date].total += 1;
+    }
+    res.json(timeslots);
+  });
+});
+
 /* gets the pending feedbacks from last meeting for a specific user */
 app.get('/feedback', (req, res) => {
   const id = req.session.userID;
