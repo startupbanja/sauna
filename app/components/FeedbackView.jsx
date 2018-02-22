@@ -55,7 +55,6 @@ export default class FeedbackView extends React.Component {
           data: newData,
         };
       });
-      this.changeForm(this.state.index + 1);
     });
   }
 
@@ -78,8 +77,8 @@ export default class FeedbackView extends React.Component {
         <div className="row">
           <div className="col-xs-5">
             <Button
-              className="btn"
-              text="prev"
+              className="feedback-btn"
+              text="<"
               onClick={() => { this.changeForm(this.state.index - 1); }}
             />
           </div>
@@ -88,8 +87,8 @@ export default class FeedbackView extends React.Component {
           </div>
           <div className="col-xs-3">
             <Button
-              className="btn"
-              text="next"
+              className="feedback-btn"
+              text=">"
               onClick={() => { this.changeForm(this.state.index + 1); }}
             />
           </div>

@@ -35,29 +35,28 @@
 .timeslot-input {
   font-size: x-large;
   text-align: center;
-  color: white;
+  color: #676767;
   margin-top: 20px;
 }
 
 .timeslot-input p {
   display: inline-block;
+  margin-right: 20px;
+  margin-left: 20px;
 }
 
 .timeslot-input input {
   display: inline-block;
   width: 70px;
-  background: transparent;
-  border-bottom: solid 2px white;
-  border-top: transparent;
-  border-left: transparent;
-  border-right: transparent;
+  background: white;
   text-align: center;
   margin: 5px;
 }
 
 .timeslot-picker .date {
-  color: #E45336;
+  color: #E55234;
   text-align: center;
-  font-size: x-large;
+  font-size: 25px;
   margin-bottom: 20px;
+  margin-top: 5px;
 }

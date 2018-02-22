@@ -10,7 +10,7 @@ export default class InfoCard extends React.Component {
           <div className="col-xs-5">
             <img className="img-responsive cardImage" src={this.props.info.image_src} alt="coach" />
           </div>
-          <div className="col-xs-7">
+          <div className="feedback-info">
             <p>{this.props.info.description}</p>
           </div>
         </div>

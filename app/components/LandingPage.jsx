@@ -12,10 +12,13 @@ class LandingPage extends Component {
         <BlockHeader text="Mind these:" />
         <div className="row">
           <div className="col-sm-6 col-xs-12" style={{ padding: '10px' }}>
-            <button type="button" className=" btn btn-lg btn-red col-xs-12">View feedback</button>
+            <button type="button" className=" btn btn-lg btn-red col-xs-12">View Timetable</button>
           </div>
           <div className="col-sm-6 col-xs-12" style={{ padding: '10px' }}>
-            <button type="button" className="btn btn-lg btn-red col-xs-12">View Coaches</button>
+            <button type="button" className="btn btn-lg btn-red col-xs-12">Edit Your Availabilities</button>
+          </div>
+          <div className="col-sm-6 col-xs-12" style={{ padding: '10px' }}>
+            <button type="button" className="btn btn-lg btn-red col-xs-12">View Feedbacks</button>
           </div>
         </div>
         <BlockHeader text="Problems?" />
