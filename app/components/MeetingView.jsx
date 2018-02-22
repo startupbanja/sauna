@@ -15,6 +15,10 @@ export default class MeetingView extends React.Component {
     return '2018-01-01';
   }
 
+  fetchDates() {
+    
+  }
+
 
   render() {
     return (

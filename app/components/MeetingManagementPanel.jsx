@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import AdminScheduleTable from './AdminScheduleTable';
 import pageContent from './pageContent';
-// React Component for the schedule view for admins.
+
 export default class MeetingManagementPanel extends React.Component {
   constructor(props) {
     super(props);
@@ -13,11 +12,21 @@ export default class MeetingManagementPanel extends React.Component {
   runMatchmaking() {
     console.log('run');
   }
-
+  /*
+  {
+    availabilities: [{coach: timeString}, {coach: null}, ...]
+  }
+  // timeString can be empty if answered but not available
+  */
   fetchAvailabilities() {
 
   }
-
+  /*
+  {
+    coaches: [{ name: true/false }, ...],
+    startups: [{ name: true/false }, ...]
+  }
+  */
   fetchFeedbacks() {
 
   }
