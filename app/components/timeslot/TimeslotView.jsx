@@ -19,7 +19,7 @@ class TimeslotView extends Component {
   }
 
   fetchData() {
-    pageContents.fetchData('/getComingMeetingDay', 'GET', {})
+    pageContents.fetchData('/getComingMeetingDays', 'GET', {})
       .then((result) => {
         const start = parseMinutes(new Date(`${result.date}T${result.startTime}`).toTimeString().substr(0, 5));
         const end = parseMinutes(new Date(`${result.date}T${result.endTime}`).toTimeString().substr(0, 5));

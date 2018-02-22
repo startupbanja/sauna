@@ -175,21 +175,15 @@ function createMeetingDay(date, start, end, split, callback) {
   });
 }
 
-function getComingMeetingDay(userId, callback) {
-  const query = `SELECT date, startTime, endTime, split
+function getComingMeetingDays(userId, callback) {
+  const query = `SELECT MeetingDays.date, startTime, endTime, split
     FROM MeetingDays
-    WHERE MeetingDays.date IN (
-      SELECT MAX(date) FROM MeetingDays
-    )`;
-  db.get(query, [], (err, result) => {
+    LEFT INNER JOIN Timeslots
+      ON Timeslots.date = MeetingDays.date
+    WHERE MeetingDays.date >= date("now")`;
+  db.all(query, [], (err, result) => {
     if (err) throw err;
-    const query2 = 'SELECT time, duration FROM Timeslots WHERE user_id = ? AND date = ?';
-    db.get(query2, [userId, result.date], (err2, result2) => {
-      if (err2) throw err2;
-      if (result2 !== undefined) Object.assign(result, result2);
-      else Object.assign(result, { time: null, duration: null });
-      callback(result);
-    });
+    console.log(result);
   });
 }
 
@@ -430,7 +424,7 @@ module.exports = {
   saveMatchmaking,
   getMapping,
   createMeetingDay,
-  getComingMeetingDay,
+  getComingMeetingDays,
   insertAvailability,
   getTimetable,
 };

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 import pageContents from '../pageContent';
 
+/* Makes sure that the meetings can be devided in full lenght
+  and submits the data */
 export function validateForm(e) {
   e.preventDefault();
   const date = $('#dateInput').val();
@@ -20,7 +22,29 @@ export function validateForm(e) {
   return false;
 }
 
+/* Conponen for displaying and submitting new meeting days */
 class NewMeetingDayBlock extends Component {
+  constructor(props) {
+    super(props);
+    this.fetchScheduledDays = this.fetchScheduledDays.bind(this);
+    this.state = {
+      days: [],
+    };
+  }
+
+  componentDidMount() {
+    this.fetchScheduledDays();
+  }
+
+  fetchScheduledDays() {
+    pageContents.fetchData('/getComingMeetingDays', 'GET', {})
+      .then((result) => {
+        this.setState({
+          days: [result],
+        });
+      });
+  }
+
   render() {
     /* eslint-disable */
     return (
@@ -50,12 +74,11 @@ class NewMeetingDayBlock extends Component {
               <input className="form-control" type="number" id="splitInput" defaultValue="40" min="0" step="1" required />
             </div>
           </div>
-          <div className="form-group">
-            <label htmlFor="invitesText" className="control-label">Invites</label>
-            <textarea className="form-control" id="invitesText" placeholder="coach1@mail.com;coach2@mail.com;..." />
-          </div>
           <button className="btn btn-primary" type="submit">Create</button>
         </form>
+        <div>
+          {this.state.days.map(day => <p key={day.date}>{day.date}</p>)}
+        </div>
       </div>
     );
     /* eslint-enable */

@@ -34,6 +34,7 @@ app.use((req, res, next) => {
   res.append('Access-Control-Allow-Origin', req.get('origin'));
   res.append('Access-Control-Allow-Credentials', 'true');
 
+  // if user has not logged in, returns not authorized and ends the request
   if (!req.session.userID && req.path !== '/login') {
     res.sendStatus(401);
     return;
@@ -105,6 +106,7 @@ app.get('/timeslots', (req, res) => {
   runAlgorithm(result => res.json({ schedule: result }));
 });
 
+/* gets the initail data from all the coaches or startups */
 app.get('/users', (req, res) => {
   let type = req.query.type;
   const batch = 1;
@@ -127,6 +129,8 @@ app.get('/users', (req, res) => {
   });
 });
 
+/* gets a profile data for a defined user or
+  for the requesting user if no requested id is provided */
 app.get('/profile', (req, res) => {
   let id;
   if (typeof req.query.userId !== 'undefined') id = req.query.userId;
@@ -178,6 +182,7 @@ app.get('/meetings', (req, res) => {
   });
 });
 
+/* gets the pending feedbacks from last meeting for a specific user */
 app.get('/feedback', (req, res) => {
   const id = req.session.userID;
   database.getFeedback(id, (result) => {
@@ -188,6 +193,7 @@ app.get('/feedback', (req, res) => {
   });
 });
 
+/* sets either coach_rating or startup_rating for a specific meeting */
 app.post('/giveFeedback', (req, res) => {
   const userType = req.session.userType;
   const meetingId = req.body.meetingId;
@@ -198,6 +204,7 @@ app.post('/giveFeedback', (req, res) => {
   });
 });
 
+/* adds a new meeting day */
 app.post('/createMeetingDay', (req, res) => {
   if (!requireAdmin(req, res)) return;
   const date = req.body.date;
@@ -209,12 +216,14 @@ app.post('/createMeetingDay', (req, res) => {
   });
 });
 
-app.get('/getComingMeetingDay', (req, res) => {
-  database.getComingMeetingDay(req.session.userID, (result) => {
+/* gets the still to come meeting days with given availabilities for a specific user */
+app.get('/getComingMeetingDays', (req, res) => {
+  database.getComingMeetingDays(req.session.userID, (result) => {
     res.json(result);
   });
 });
 
+/* Sets the users availability for a specific day */
 app.post('/insertAvailability', (req, res) => {
   const userId = req.session.userID;
   const date = req.body.date;
