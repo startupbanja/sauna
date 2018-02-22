@@ -176,14 +176,13 @@ function createMeetingDay(date, start, end, split, callback) {
 }
 
 function getComingMeetingDays(userId, callback) {
-  const query = `SELECT MeetingDays.date, startTime, endTime, split
+  const query = `SELECT MeetingDays.date, startTime, endTime, split, time, duration, user_id
     FROM MeetingDays
-    LEFT INNER JOIN Timeslots
-      ON Timeslots.date = MeetingDays.date
-    WHERE MeetingDays.date >= date("now")`;
-  db.all(query, [], (err, result) => {
+    LEFT OUTER JOIN Timeslots on Timeslots.date = MeetingDays.date
+    WHERE (user_id = ? OR user_id IS NULL) AND MeetingDays.date >= date("now")`;
+  db.all(query, [userId], (err, result) => {
     if (err) throw err;
-    console.log(result);
+    callback(result);
   });
 }
 

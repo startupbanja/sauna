@@ -1,56 +1,38 @@
 import React, { Component } from 'react';
 import $ from 'jquery';
+import PropTypes from 'prop-types';
 import pageContents from '../pageContent';
-
-/* Makes sure that the meetings can be devided in full lenght
-  and submits the data */
-export function validateForm(e) {
-  e.preventDefault();
-  const date = $('#dateInput').val();
-  const start = new Date(`${date}T${$('#startTimeInput').val()}`);
-  const end = new Date(`${date}T${$('#endTimeInput').val()}`);
-  const diff = (end.getTime() - start.getTime()) / 60000;
-  if (diff % parseInt($('#splitInput').val(), 10) === 0) {
-    pageContents.fetchData('/createMeetingDay', 'POST', {
-      date,
-      start: start.toTimeString().substr(0, 8),
-      end: end.toTimeString().substr(0, 8),
-      split: parseInt($('#splitInput').val(), 10),
-    });
-    return true;
-  }
-  return false;
-}
 
 /* Conponen for displaying and submitting new meeting days */
 class NewMeetingDayBlock extends Component {
   constructor(props) {
     super(props);
-    this.fetchScheduledDays = this.fetchScheduledDays.bind(this);
-    this.state = {
-      days: [],
-    };
+    this.validateForm = this.validateForm.bind(this);
   }
 
-  componentDidMount() {
-    this.fetchScheduledDays();
-  }
-
-  fetchScheduledDays() {
-    pageContents.fetchData('/getComingMeetingDays', 'GET', {})
-      .then((result) => {
-        this.setState({
-          days: [result],
-        });
-      });
+  /* Makes sure that the meetings can be devided in full lenght
+  and submits the data */
+  validateForm(e) {
+    e.preventDefault();
+    const date = $('#dateInput').val();
+    const start = new Date(`${date}T${$('#startTimeInput').val()}`);
+    const end = new Date(`${date}T${$('#endTimeInput').val()}`);
+    const diff = (end.getTime() - start.getTime()) / 60000;
+    if (diff % parseInt($('#splitInput').val(), 10) === 0) {
+      pageContents.fetchData('/createMeetingDay', 'POST', {
+        date,
+        start: start.toTimeString().substr(0, 8),
+        end: end.toTimeString().substr(0, 8),
+        split: parseInt($('#splitInput').val(), 10),
+      }).then(() => this.props.onSubmit());
+    }
   }
 
   render() {
     /* eslint-disable */
     return (
       <div>
-        <h4>New Meeting Day</h4>
-        <form className="form-horizontal" onSubmit={validateForm}>
+        <form className="form-horizontal" onSubmit={this.validateForm}>
           <div className="form-group">
             <label htmlFor="dateInput" className="control-label col-sm-2">Date</label>
             <div className="col-sm-10">
@@ -76,13 +58,14 @@ class NewMeetingDayBlock extends Component {
           </div>
           <button className="btn btn-primary" type="submit">Create</button>
         </form>
-        <div>
-          {this.state.days.map(day => <p key={day.date}>{day.date}</p>)}
-        </div>
       </div>
     );
     /* eslint-enable */
   }
 }
+
+NewMeetingDayBlock.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+};
 
 export default NewMeetingDayBlock;
