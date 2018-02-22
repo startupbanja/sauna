@@ -27,7 +27,6 @@ app.use(session({
 
 const port = process.env.PORT || 3000;
 
-
 app.use((req, res, next) => {
   console.log('Something is happening.');
 
@@ -35,6 +34,7 @@ app.use((req, res, next) => {
   res.append('Access-Control-Allow-Origin', req.get('origin'));
   res.append('Access-Control-Allow-Credentials', 'true');
 
+  // if user has not logged in, returns not authorized and ends the request
   if (!req.session.userID && req.path !== '/login') {
     res.sendStatus(401);
     return;
@@ -42,6 +42,32 @@ app.use((req, res, next) => {
 
   next();
 });
+
+// logs user in and sets for session:
+// userID = user's personal id and type = one of 'coach', 'startup', 'admin'
+app.post('/login', (req, res) => {
+  const username = req.body.username;
+  const password = req.body.password;
+
+  // bcrypt.hash(password, 10, (err, hash) => console.log(hash));
+  database.verifyIdentity(username, password, (type, userId) => {
+    if (userId !== false) {
+      req.session.userID = userId;
+      req.session.userType = type;
+    }
+    res.json({ status: (type === 'coach' || type === 'startup') ? 'user' : type });
+  });
+});
+
+// Use when admin is required to allow access
+function requireAdmin(req, res) {
+  if (req.session.userType !== 'admin') {
+    res.sendStatus(401);
+    res.end();
+    return false;
+  }
+  return true;
+}
 
 app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/index.html`);
@@ -66,11 +92,11 @@ function runAlgorithm(callback) {
           availabilities: timeslots,
           startups: startupdata,
         };
-        const batch = 1
+        const batch = 1;
         database.getMapping(batch, (mapping) => {
           const dataWithMapping = { data, mapping };
           matchmaking.run(dataWithMapping, rdy => callback(rdy));
-        })
+        });
       });
     });
   });
@@ -80,20 +106,7 @@ app.get('/timeslots', (req, res) => {
   runAlgorithm(result => res.json({ schedule: result }));
 });
 
-app.post('/login', (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
-
-  // bcrypt.hash(password, 10, (err, hash) => console.log(hash));
-  database.verifyIdentity(username, password, (type, userId) => {
-    if (userId !== false) {
-      req.session.userID = userId;
-      req.session.userType = type;
-    }
-    res.json({ status: (type === 'coach' || type === 'startup') ? 'user' : type });
-  });
-});
-
+/* gets the initail data from all the coaches or startups */
 app.get('/users', (req, res) => {
   let type = req.query.type;
   const batch = 1;
@@ -116,6 +129,8 @@ app.get('/users', (req, res) => {
   });
 });
 
+/* gets a profile data for a defined user or
+  for the requesting user if no requested id is provided */
 app.get('/profile', (req, res) => {
   let id;
   if (typeof req.query.userId !== 'undefined') id = req.query.userId;
@@ -172,6 +187,7 @@ app.get('/meetings', (req, res) => {
   });
 });
 
+/* gets the pending feedbacks from last meeting for a specific user */
 app.get('/feedback', (req, res) => {
   const id = req.session.userID;
   database.getFeedback(id, (result) => {
@@ -182,6 +198,7 @@ app.get('/feedback', (req, res) => {
   });
 });
 
+/* sets either coach_rating or startup_rating for a specific meeting */
 app.post('/giveFeedback', (req, res) => {
   const userType = req.session.userType;
   const meetingId = req.body.meetingId;
@@ -189,6 +206,37 @@ app.post('/giveFeedback', (req, res) => {
 
   database.giveFeedback(meetingId, rating, (userType === 'coach') ? 'coach_rating' : 'startup_rating', (result) => {
     res.json({ status: result });
+  });
+});
+
+/* adds a new meeting day */
+app.post('/createMeetingDay', (req, res) => {
+  if (!requireAdmin(req, res)) return;
+  const date = req.body.date;
+  const start = req.body.start;
+  const end = req.body.end;
+  const split = req.body.split;
+  database.createMeetingDay(date, start, end, split, (result) => {
+    res.json(result);
+  });
+});
+
+/* gets the still to come meeting days with given availabilities for a specific user */
+app.get('/getComingMeetingDays', (req, res) => {
+  database.getComingMeetingDays(req.session.userID, (result) => {
+    res.json(result);
+  });
+});
+
+/* Sets the users availability for a specific day */
+app.post('/insertAvailability', (req, res) => {
+  const userId = req.session.userID;
+  const date = req.body.date;
+  const startTime = req.body.start;
+  let duration = (new Date(`${date}T${req.body.end}`).getTime() - new Date(`${date}T${startTime}`).getTime());
+  duration = parseInt(duration / 60000, 10);
+  database.insertAvailability(userId, date, startTime, duration, (result) => {
+    res.json(result);
   });
 });
 

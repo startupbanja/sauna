@@ -5,8 +5,17 @@ ShallowWrapper {
   "length": 1,
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <Timeslot
-    end="12:00"
-    start="10:00"
+    available={
+      Object {
+        "end": 720,
+        "start": 480,
+      }
+    }
+    date={2018-05-27T21:00:00.000Z}
+    end={720}
+    onSubmit={[Function]}
+    split={40}
+    start={600}
   />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
@@ -24,27 +33,32 @@ ShallowWrapper {
         <TimeslotDrag
           available={
             Object {
-              "end": 600,
-              "start": 600,
+              "end": 720,
+              "start": 480,
             }
           }
           end={720}
           onChange={[Function]}
+          split={40}
           start={600}
         />,
         <TimeslotInput
           available={
             Object {
-              "end": 600,
-              "start": 600,
+              "end": 720,
+              "start": 480,
             }
           }
           onChange={[Function]}
         />,
+        <button
+          className="btn btn-lg btn-red"
+          onClick={[Function]}
+        >
+          Submit
+        </button>,
       ],
-      "style": Object {
-        "width": "300px",
-      },
+      "className": "container",
     },
     "ref": null,
     "rendered": Array [
@@ -54,11 +68,12 @@ ShallowWrapper {
         "nodeType": "class",
         "props": Object {
           "available": Object {
-            "end": 600,
-            "start": 600,
+            "end": 720,
+            "start": 480,
           },
           "end": 720,
           "onChange": [Function],
+          "split": 40,
           "start": 600,
         },
         "ref": null,
@@ -71,14 +86,27 @@ ShallowWrapper {
         "nodeType": "class",
         "props": Object {
           "available": Object {
-            "end": 600,
-            "start": 600,
+            "end": 720,
+            "start": 480,
           },
           "onChange": [Function],
         },
         "ref": null,
         "rendered": null,
         "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": "Submit",
+          "className": "btn btn-lg btn-red",
+          "onClick": [Function],
+        },
+        "ref": null,
+        "rendered": "Submit",
+        "type": "button",
       },
     ],
     "type": "div",
@@ -93,27 +121,32 @@ ShallowWrapper {
           <TimeslotDrag
             available={
               Object {
-                "end": 600,
-                "start": 600,
+                "end": 720,
+                "start": 480,
               }
             }
             end={720}
             onChange={[Function]}
+            split={40}
             start={600}
           />,
           <TimeslotInput
             available={
               Object {
-                "end": 600,
-                "start": 600,
+                "end": 720,
+                "start": 480,
               }
             }
             onChange={[Function]}
           />,
+          <button
+            className="btn btn-lg btn-red"
+            onClick={[Function]}
+          >
+            Submit
+          </button>,
         ],
-        "style": Object {
-          "width": "300px",
-        },
+        "className": "container",
       },
       "ref": null,
       "rendered": Array [
@@ -123,11 +156,12 @@ ShallowWrapper {
           "nodeType": "class",
           "props": Object {
             "available": Object {
-              "end": 600,
-              "start": 600,
+              "end": 720,
+              "start": 480,
             },
             "end": 720,
             "onChange": [Function],
+            "split": 40,
             "start": 600,
           },
           "ref": null,
@@ -140,14 +174,27 @@ ShallowWrapper {
           "nodeType": "class",
           "props": Object {
             "available": Object {
-              "end": 600,
-              "start": 600,
+              "end": 720,
+              "start": 480,
             },
             "onChange": [Function],
           },
           "ref": null,
           "rendered": null,
           "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": "Submit",
+            "className": "btn btn-lg btn-red",
+            "onClick": [Function],
+          },
+          "ref": null,
+          "rendered": "Submit",
+          "type": "button",
         },
       ],
       "type": "div",
@@ -168,8 +215,17 @@ ShallowWrapper {
   "length": 1,
   Symbol(enzyme.__root__): [Circular],
   Symbol(enzyme.__unrendered__): <Timeslot
-    end="12:00"
-    start="10:00"
+    available={
+      Object {
+        "end": 720,
+        "start": 480,
+      }
+    }
+    date={2018-05-27T21:00:00.000Z}
+    end={720}
+    onSubmit={[Function]}
+    split={40}
+    start={600}
   />,
   Symbol(enzyme.__renderer__): Object {
     "batchedUpdates": [Function],
@@ -187,27 +243,32 @@ ShallowWrapper {
         <TimeslotDrag
           available={
             Object {
-              "end": 600,
-              "start": 600,
+              "end": 720,
+              "start": 480,
             }
           }
           end={720}
           onChange={[Function]}
+          split={40}
           start={600}
         />,
         <TimeslotInput
           available={
             Object {
-              "end": 600,
-              "start": 600,
+              "end": 720,
+              "start": 480,
             }
           }
           onChange={[Function]}
         />,
+        <button
+          className="btn btn-lg btn-red"
+          onClick={[Function]}
+        >
+          Submit
+        </button>,
       ],
-      "style": Object {
-        "width": "300px",
-      },
+      "className": "container",
     },
     "ref": null,
     "rendered": Array [
@@ -217,11 +278,12 @@ ShallowWrapper {
         "nodeType": "class",
         "props": Object {
           "available": Object {
-            "end": 600,
-            "start": 600,
+            "end": 720,
+            "start": 480,
           },
           "end": 720,
           "onChange": [Function],
+          "split": 40,
           "start": 600,
         },
         "ref": null,
@@ -234,14 +296,27 @@ ShallowWrapper {
         "nodeType": "class",
         "props": Object {
           "available": Object {
-            "end": 600,
-            "start": 600,
+            "end": 720,
+            "start": 480,
           },
           "onChange": [Function],
         },
         "ref": null,
         "rendered": null,
         "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": "Submit",
+          "className": "btn btn-lg btn-red",
+          "onClick": [Function],
+        },
+        "ref": null,
+        "rendered": "Submit",
+        "type": "button",
       },
     ],
     "type": "div",
@@ -256,27 +331,32 @@ ShallowWrapper {
           <TimeslotDrag
             available={
               Object {
-                "end": 600,
-                "start": 600,
+                "end": 720,
+                "start": 480,
               }
             }
             end={720}
             onChange={[Function]}
+            split={40}
             start={600}
           />,
           <TimeslotInput
             available={
               Object {
-                "end": 600,
-                "start": 600,
+                "end": 720,
+                "start": 480,
               }
             }
             onChange={[Function]}
           />,
+          <button
+            className="btn btn-lg btn-red"
+            onClick={[Function]}
+          >
+            Submit
+          </button>,
         ],
-        "style": Object {
-          "width": "300px",
-        },
+        "className": "container",
       },
       "ref": null,
       "rendered": Array [
@@ -286,11 +366,12 @@ ShallowWrapper {
           "nodeType": "class",
           "props": Object {
             "available": Object {
-              "end": 600,
-              "start": 600,
+              "end": 720,
+              "start": 480,
             },
             "end": 720,
             "onChange": [Function],
+            "split": 40,
             "start": 600,
           },
           "ref": null,
@@ -303,14 +384,27 @@ ShallowWrapper {
           "nodeType": "class",
           "props": Object {
             "available": Object {
-              "end": 600,
-              "start": 600,
+              "end": 720,
+              "start": 480,
             },
             "onChange": [Function],
           },
           "ref": null,
           "rendered": null,
           "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": "Submit",
+            "className": "btn btn-lg btn-red",
+            "onClick": [Function],
+          },
+          "ref": null,
+          "rendered": "Submit",
+          "type": "button",
         },
       ],
       "type": "div",
@@ -328,52 +422,75 @@ ShallowWrapper {
 
 exports[`Timeslot initializes correctly 1`] = `
 <div
-  style={
-    Object {
-      "width": "300px",
-    }
-  }
+  className="container"
 >
   <div
     className="dragContainer"
     style={
       Object {
         "height": 400,
+        "overflow": "hidden",
         "position": "relative",
       }
     }
   >
     <div
-      className="dragableContainer"
+      className="dragableContainer unavailable"
       style={
         Object {
-          "background": "gray",
           "height": 400,
-          "position": "absolute",
           "top": 0,
-          "width": "100%",
         }
       }
     >
       <p
         style={
           Object {
-            "margin": "0px",
-            "position": "absolute",
-            "right": "5px",
             "top": "5px",
           }
         }
       >
         8:00
       </p>
+      <hr
+        style={
+          Object {
+            "top": 65.66666666666667,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 130.33333333333334,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 195,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 259.6666666666667,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 324.33333333333337,
+          }
+        }
+      />
       <p
         style={
           Object {
             "bottom": "5px",
-            "margin": "0px",
-            "position": "absolute",
-            "right": "5px",
           }
         }
       >
@@ -384,20 +501,14 @@ exports[`Timeslot initializes correctly 1`] = `
       className="dragableContainer"
       style={
         Object {
-          "background": "orange",
-          "height": 0,
-          "position": "absolute",
+          "height": 400,
           "top": 0,
-          "width": "100%",
         }
       }
     >
       <p
         style={
           Object {
-            "margin": "0px",
-            "position": "absolute",
-            "right": "5px",
             "top": "5px",
           }
         }
@@ -408,42 +519,37 @@ exports[`Timeslot initializes correctly 1`] = `
         style={
           Object {
             "bottom": "5px",
-            "margin": "0px",
-            "position": "absolute",
-            "right": "5px",
           }
         }
       >
-        8:00
+        12:00
       </p>
       <div
+        className="timeslot-dragball"
         draggable="true"
         onDrag={[Function]}
+        onDragEnd={[Function]}
+        onDragStart={[Function]}
         onTouchMove={[Function]}
         style={
           Object {
-            "background": "black",
-            "borderRadius": "100%",
             "height": 12,
-            "left": "50%",
-            "position": "absolute",
             "top": -6,
             "width": 12,
           }
         }
       />
       <div
+        className="timeslot-dragball"
         draggable="true"
         onDrag={[Function]}
+        onDragEnd={[Function]}
+        onDragStart={[Function]}
         onTouchMove={[Function]}
         style={
           Object {
-            "background": "black",
-            "borderRadius": "100%",
             "bottom": -6,
             "height": 12,
-            "left": "50%",
-            "position": "absolute",
             "width": 12,
           }
         }
@@ -451,110 +557,241 @@ exports[`Timeslot initializes correctly 1`] = `
     </div>
   </div>
   <div>
-    <div>
-      <div
-        style={
-          Object {
-            "margin": "5px",
-            "position": "relative",
-          }
-        }
-      >
-        <label>
-          Start
-        </label>
-        <input
-          onBlur={[Function]}
-          onChange={[Function]}
-          onKeyPress={[Function]}
-          style={
-            Object {
-              "position": "absolute",
-              "right": 0,
-            }
-          }
-          type="text"
-          value="8:00"
-        />
-      </div>
-      <div
-        style={
-          Object {
-            "margin": "5px",
-            "position": "relative",
-          }
-        }
-      >
-        <label>
-          End
-        </label>
-        <input
-          onBlur={[Function]}
-          onChange={[Function]}
-          onKeyPress={[Function]}
-          style={
-            Object {
-              "position": "absolute",
-              "right": 0,
-            }
-          }
-          type="text"
-          value="8:00"
-        />
-      </div>
+    <div
+      className="timeslot-input"
+    >
+      <input
+        onBlur={[Function]}
+        onChange={[Function]}
+        onKeyPress={[Function]}
+        type="text"
+        value="8:00"
+      />
+      <p>
+        -
+      </p>
+      <input
+        onBlur={[Function]}
+        onChange={[Function]}
+        onKeyPress={[Function]}
+        type="text"
+        value="12:00"
+      />
     </div>
   </div>
+  <button
+    className="btn btn-lg btn-red"
+    onClick={[Function]}
+  >
+    Submit
+  </button>
 </div>
 `;
 
 exports[`Timeslot initializes correctly 2`] = `
 <div
-  style={
-    Object {
-      "width": "300px",
-    }
-  }
+  className="container"
 >
   <div
     className="dragContainer"
     style={
       Object {
         "height": 400,
+        "overflow": "hidden",
         "position": "relative",
       }
     }
   >
     <div
-      className="dragableContainer"
+      className="dragableContainer unavailable"
       style={
         Object {
-          "background": "gray",
           "height": 400,
-          "position": "absolute",
           "top": 0,
-          "width": "100%",
         }
       }
     >
       <p
         style={
           Object {
-            "margin": "0px",
-            "position": "absolute",
-            "right": "5px",
             "top": "5px",
           }
         }
       >
         12:20
       </p>
+      <hr
+        style={
+          Object {
+            "top": 15,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 29,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 43,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 57,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 71,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 85,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 99,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 113,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 127,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 141,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 155,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 169,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 183,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 197,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 211,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 225,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 239,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 253,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 267,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 281,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 295,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 309,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 323,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 337,
+          }
+        }
+      />
       <p
         style={
           Object {
             "bottom": "5px",
-            "margin": "0px",
-            "position": "absolute",
-            "right": "5px",
           }
         }
       >
@@ -565,66 +802,55 @@ exports[`Timeslot initializes correctly 2`] = `
       className="dragableContainer"
       style={
         Object {
-          "background": "orange",
-          "height": 0,
-          "position": "absolute",
-          "top": 0,
-          "width": "100%",
+          "height": 192,
+          "top": 96,
         }
       }
     >
       <p
         style={
           Object {
-            "margin": "0px",
-            "position": "absolute",
-            "right": "5px",
             "top": "5px",
           }
         }
       >
-        12:20
+        14:20
       </p>
       <p
         style={
           Object {
             "bottom": "5px",
-            "margin": "0px",
-            "position": "absolute",
-            "right": "5px",
           }
         }
       >
-        12:20
+        18:20
       </p>
       <div
+        className="timeslot-dragball"
         draggable="true"
         onDrag={[Function]}
+        onDragEnd={[Function]}
+        onDragStart={[Function]}
         onTouchMove={[Function]}
         style={
           Object {
-            "background": "black",
-            "borderRadius": "100%",
             "height": 12,
-            "left": "50%",
-            "position": "absolute",
             "top": -6,
             "width": 12,
           }
         }
       />
       <div
+        className="timeslot-dragball"
         draggable="true"
         onDrag={[Function]}
+        onDragEnd={[Function]}
+        onDragStart={[Function]}
         onTouchMove={[Function]}
         style={
           Object {
-            "background": "black",
-            "borderRadius": "100%",
             "bottom": -6,
             "height": 12,
-            "left": "50%",
-            "position": "absolute",
             "width": 12,
           }
         }
@@ -632,58 +858,33 @@ exports[`Timeslot initializes correctly 2`] = `
     </div>
   </div>
   <div>
-    <div>
-      <div
-        style={
-          Object {
-            "margin": "5px",
-            "position": "relative",
-          }
-        }
-      >
-        <label>
-          Start
-        </label>
-        <input
-          onBlur={[Function]}
-          onChange={[Function]}
-          onKeyPress={[Function]}
-          style={
-            Object {
-              "position": "absolute",
-              "right": 0,
-            }
-          }
-          type="text"
-          value="12:20"
-        />
-      </div>
-      <div
-        style={
-          Object {
-            "margin": "5px",
-            "position": "relative",
-          }
-        }
-      >
-        <label>
-          End
-        </label>
-        <input
-          onBlur={[Function]}
-          onChange={[Function]}
-          onKeyPress={[Function]}
-          style={
-            Object {
-              "position": "absolute",
-              "right": 0,
-            }
-          }
-          type="text"
-          value="12:20"
-        />
-      </div>
+    <div
+      className="timeslot-input"
+    >
+      <input
+        onBlur={[Function]}
+        onChange={[Function]}
+        onKeyPress={[Function]}
+        type="text"
+        value="14:20"
+      />
+      <p>
+        -
+      </p>
+      <input
+        onBlur={[Function]}
+        onChange={[Function]}
+        onKeyPress={[Function]}
+        type="text"
+        value="18:20"
+      />
     </div>
   </div>
+  <button
+    className="btn btn-lg btn-red"
+    onClick={[Function]}
+  >
+    Submit
+  </button>
 </div>
 `;
