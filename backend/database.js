@@ -206,6 +206,20 @@ function getComingDates(callback) {
   });
 }
 
+// Returns coming availabilities of coaches and names of the coaches
+function getComingTimeslots(callback) {
+  const query = `SELECT CoachProfiles.name, MeetingDays.date, Timeslots.time, Timeslots.duration
+    FROM Users
+    LEFT OUTER JOIN CoachProfiles ON Users.id = CoachProfiles.user_id
+    LEFT OUTER JOIN MeetingDays
+    LEFT OUTER JOIN Timeslots ON MeetingDays.date = Timeslots.date AND Timeslots.user_id = Users.id
+    WHERE MeetingDays.date >= date("now") AND Users.active = 1 AND Users.type = 1`;
+  db.all(query, [], (err, result) => {
+    if (err) throw err;
+    callback(result);
+  });
+}
+
 function insertAvailability(userId, date, startTime, duration, callback) {
   const query = `INSERT INTO Timeslots(user_id, date, time, duration)
     VALUES (?, ?, ?, ?)`;
@@ -509,4 +523,5 @@ module.exports = {
   setTimetable,
   getUserMap,
   getComingDates,
+  getComingTimeslots,
 };

@@ -144,7 +144,6 @@ app.get('/profile', (req, res) => {
   });
 });
 
-// TODO coach names
 app.get('/meetings', (req, res) => {
   const allMeetings = [];
   database.getUserMap((keys) => {
@@ -154,7 +153,7 @@ app.get('/meetings', (req, res) => {
         for (const timeslot in timeslots) { // eslint-disable-line
           const id = timeslot;
           var remaining = timeslots[id].duration;
-          const time = new Date('2000-01-01T' + timeslots[id].starttime);
+          const time = new Date('2000-10-10T' + timeslots[id].starttime);
           while (remaining > 0) {
             allMeetings.push({
               coach: id.toString(),
@@ -184,6 +183,27 @@ app.get('/meetings', (req, res) => {
         res.json({ schedule: allMeetings });
       });
     });
+  });
+});
+
+app.get('/comingTimeslots', (req, res) => {
+  const timeslots = {};
+  // Result is in form [{name:"coachname",date:"dateString",time:"timestring",duration:null}]
+  database.getComingTimeslots((result) => {
+    for (const index in result) { //eslint-disable-line
+      const element = result[index];
+      if (timeslots[element.date] === undefined) {
+        timeslots[element.date] = {};
+      }
+      if (element.duration === null) {
+        timeslots[element.date][element.name] = null;
+      } else {
+        const time = new Date('2000-01-01T' + element.time);
+        time.setMinutes(time.getMinutes() + element.duration);
+        timeslots[element.date][element.name] = element.time + '-' + ('0' + (time.getHours())).slice(-2) + ':' + ('0' + time.getMinutes()).slice(-2) + ':' + ('0' + time.getSeconds()).slice(-2);
+      }
+    }
+    res.json(timeslots);
   });
 });
 
