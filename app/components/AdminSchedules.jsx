@@ -6,7 +6,7 @@ import pageContent from './pageContent';
 export default class AdminSchedules extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { date: this.props.date , schedule: [], firstColumn: 'coach' };
+    this.state = { date: this.props.date, schedule: [], firstColumn: 'coach' };
     this.getTimetable = this.getTimetable.bind(this);
     this.toggle = this.toggle.bind(this);
     this.getTimetable();
@@ -58,4 +58,4 @@ export default class AdminSchedules extends React.Component {
 
 AdminSchedules.propTypes = {
   date: PropTypes.string.isRequired,
-}
+};

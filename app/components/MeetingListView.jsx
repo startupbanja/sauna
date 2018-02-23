@@ -35,6 +35,11 @@ export default class MeetingListView extends React.Component {
           >
             View timetable
           </Link>
+          <button
+            className="btn btn-danger"
+            onClick={() => this.props.runMatchmaking(date)}
+          > Run Matchmaking
+          </button>
         </li>
       );
     });
@@ -56,4 +61,5 @@ MeetingListView.propTypes = {
   //   coachTotal: PropTypes.number,
   //   coachDone: PropTypes.number,
   // }).isRequired,
+  runMatchmaking: PropTypes.func.isRequired,
 };

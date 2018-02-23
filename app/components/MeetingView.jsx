@@ -4,6 +4,11 @@ import MeetingDetailView from './MeetingDetailView';
 import MeetingListView from './MeetingListView';
 import pageContent from './pageContent';
 
+function runMatchmaking(date) {
+  pageContent.fetchData('/runMatchmaking', 'POST', { date })
+    .then(res => console.log(res.success));
+}
+
 // This component will be used to fetch data related to meetings and then
 // render either a list or detail view of meetings
 export default class MeetingView extends React.Component {
@@ -69,6 +74,7 @@ export default class MeetingView extends React.Component {
       (<MeetingListView
         feedbacks={this.state.feedbacks}
         nOfAvailabilities={this.state.nOfAvail}
+        runMatchmaking={runMatchmaking}
       />);
 
     return (

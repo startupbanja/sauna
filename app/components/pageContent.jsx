@@ -142,7 +142,7 @@ const adminContent = (
     <Route
       path="/timetable/:date"
       render={({ match }) => (
-        <AdminSchedules date={match.params.date}/>
+        <AdminSchedules date={match.params.date} />
       )}
     />
     <Route
@@ -155,7 +155,7 @@ const adminContent = (
     <Route
       path="/meetings/:date/"
       render={({ match }) => (
-        <MeetingView detail={true} date={match.params.date} />
+        <MeetingView detail date={match.params.date} />
       )}
     />
   </Switch>
@@ -165,7 +165,8 @@ const adminLabels = {
   '/main': 'Home',
   '/coaches': 'Coaches',
   '/startups': 'Startups',
-  '/meetingDays': 'Meeeting days',
+  '/meetingDays': 'Meeting days',
+  '/meetings/': 'Meeting info',
 };
 // TODO change this to something better later
 function getContent(userType) {

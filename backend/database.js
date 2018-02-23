@@ -281,6 +281,8 @@ function getStartups(callback) {
   });
 }
 
+// return an array of {coach, startup, coachfeedback, startupfeedback}
+// Currently uses newest batch number TODO
 function getRatings(callback) {
   const q = `
   SELECT coach_id, startup_id, coach_rating, startup_rating
@@ -337,6 +339,7 @@ function getUserMap(callback) {
   });
 }
 
+// Get coach timeslot info for a given date
 function getTimeslots(date, callback) {
   const q = `
   SELECT user_id, date, time, duration

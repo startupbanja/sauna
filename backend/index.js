@@ -28,7 +28,6 @@ app.use(session({
 const port = process.env.PORT || 3000;
 
 app.use((req, res, next) => {
-  console.log('Something is happening.');
 
   // Allow frontend to send cookies
   res.append('Access-Control-Allow-Origin', req.get('origin'));
@@ -83,28 +82,6 @@ app.get('/api', (req, res) => {
   }
 });
 
-function runAlgorithm(date, callback) {
-  database.getTimeslots(date, (timeslots) => {
-    database.getRatings((ratings) => {
-      database.getStartups((startupdata) => {
-        const data = {
-          feedbacks: ratings,
-          availabilities: timeslots,
-          startups: startupdata,
-        };
-        const batch = 1;
-        database.getMapping(batch, (mapping) => {
-          const dataWithMapping = { data, mapping };
-          matchmaking.run(dataWithMapping, rdy => callback(rdy));
-        });
-      });
-    });
-  });
-}
-
-app.get('/timeslots', (req, res) => {
-  runAlgorithm(result => res.json({ schedule: result }));
-});
 
 /* gets the initail data from all the coaches or startups */
 app.get('/users', (req, res) => {
@@ -148,11 +125,11 @@ app.get('/meetings', (req, res) => {
   const allMeetings = [];
   database.getUserMap((keys) => {
     database.getTimetable((meetings) => {
-      database.getTimeslots((timeslots) => {
+      database.getTimeslots(req.query.date, (timeslots) => {
         const dur = meetings[0].duration;
         for (const timeslot in timeslots) { // eslint-disable-line
           const id = timeslot;
-          var remaining = timeslots[id].duration;
+          let remaining = timeslots[id].duration;
           const time = new Date('2000-10-10T' + timeslots[id].starttime);
           while (remaining > 0) {
             allMeetings.push({
@@ -297,9 +274,36 @@ app.post('/createMeetingDay', (req, res) => {
   });
 });
 
+// Run algorithm with given date and save to database and create a .csv file
+function runAlgorithm(date, callback) {
+  database.getTimeslots(date, (timeslots) => {
+    database.getRatings((ratings) => {
+      database.getStartups((startupdata) => {
+        const data = {
+          feedbacks: ratings,
+          availabilities: timeslots,
+          startups: startupdata,
+        };
+        const batch = 1;
+        database.getMapping(batch, (mapping) => {
+          const dataWithMapping = { data, mapping };
+          matchmaking.run(dataWithMapping, rdy => callback(rdy));
+        });
+      });
+    });
+  });
+}
+
+// TODO sanitize date;
 app.post('/runMatchmaking', (req, res) => {
-  runAlgorithm();
-})
+  if (req.body.date) {
+    runAlgorithm(req.body.date, (data) => {
+      database.saveMatchmaking(data, req.params.date, () => res.json({ success: true }));
+    });
+  } else {
+    res.json({ success: false });
+  }
+});
 /* gets the still to come meeting days with given availabilities for a specific user */
 app.get('/getComingMeetingDays', (req, res) => {
   database.getComingMeetingDays(req.session.userID, (result) => {
