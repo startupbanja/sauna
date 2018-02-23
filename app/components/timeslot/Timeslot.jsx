@@ -93,8 +93,15 @@ class Timeslot extends React.Component {
   }
 
   render() {
+    const dateOptions = {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+    };
     return (
       <div className="container">
+        <p className="date">{this.props.date.toLocaleDateString('en-GB', dateOptions).replace(/\//g, '.')}</p>
         <TimeslotDrag
           start={this.state.start}
           end={this.state.end}
@@ -113,6 +120,7 @@ class Timeslot extends React.Component {
 }
 
 Timeslot.propTypes = {
+  date: PropTypes.objectOf(Date).isRequired,
   start: PropTypes.number.isRequired,
   end: PropTypes.number.isRequired,
   available: PropTypes.shape({

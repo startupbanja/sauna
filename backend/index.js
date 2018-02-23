@@ -232,7 +232,7 @@ app.get('/givenFeedbacks', (req, res) => {
     startupTotal: 0,
     startupDone: 0,
     coachTotal: 0,
-    coachDone: 0
+    coachDone: 0,
   };
   // Result is in form [{type: type, name: name, startup_rating: rating, coach_rating: rating}]
   // Type 1 => Coach, Type 2 => Startup

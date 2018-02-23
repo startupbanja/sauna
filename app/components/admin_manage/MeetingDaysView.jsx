@@ -8,14 +8,21 @@ class MeetingDaysView extends Component {
   constructor(props) {
     super(props);
     this.fetchScheduledDays = this.fetchScheduledDays.bind(this);
+    this.fetchAvailabilityStats = this.fetchAvailabilityStats.bind(this);
+    this.fetchGivenFeedbacks = this.fetchGivenFeedbacks.bind(this);
     this.handleNewMeetingDaySubmit = this.handleNewMeetingDaySubmit.bind(this);
+    this.renderMeetingDay = this.renderMeetingDay.bind(this);
     this.state = {
       days: [],
+      availabilities: {},
+      feedbacks: {},
     };
   }
 
   componentDidMount() {
     this.fetchScheduledDays();
+    this.fetchAvailabilityStats();
+    this.fetchGivenFeedbacks();
   }
 
   fetchScheduledDays() {
@@ -26,6 +33,27 @@ class MeetingDaysView extends Component {
         });
       });
   }
+  fetchAvailabilityStats() {
+    pageContent.fetchData('/numberOfTimeslots', 'GET', {})
+      .then((result) => {
+        this.setState({
+          availabilities: result,
+        });
+      });
+  }
+  fetchGivenFeedbacks() {
+    pageContent.fetchData('/givenFeedbacks', 'GET', {})
+      .then((result) => {
+        this.setState({
+          feedbacks: {
+            startupTotal: result.startupTotal,
+            startupDone: result.startupDone,
+            coachTotal: result.coachTotal,
+            coachDone: result.coachDone,
+          },
+        });
+      });
+  }
 
   handleNewMeetingDaySubmit() {
     const modal = $('#newMeetingDayModal');
@@ -33,6 +61,21 @@ class MeetingDaysView extends Component {
     modal.addClass('out');
     $('.modal-backdrop').remove();
     this.fetchScheduledDays();
+  }
+
+  renderMeetingDay(index) {
+    if (this.state.days.length > index) {
+      const date = this.state.days[index].date; // eslint-disable-line
+      const { total, done } = this.state.availabilities[date] || { total: null, done: null };
+      return (
+        <div className="meeting-day-container" key={index}>
+          <p className="meeting-date">{date}</p>
+          {(total !== null && done !== null) &&
+            <p>{`${done}/${total} Coaches' availabilities`}</p>}
+        </div>
+      );
+    }
+    return undefined;
   }
 
   render() {
@@ -66,15 +109,19 @@ class MeetingDaysView extends Component {
         </div>
 
         <div className="next-day-container">
-          <p className="meeting-date">
-            {(this.state.days.length > 0) && this.state.days[0].date}
-          </p>
+          {this.renderMeetingDay(0)}
+          {((this.state.feedbacks.coachTotal && this.state.feedbacks.coachDone !== undefined)
+            || undefined) &&
+            <p>{`${this.state.feedbacks.coachDone}/${this.state.feedbacks.coachTotal} Coaches' feedbacks`}</p>}
+          {((this.state.feedbacks.startupTotal && this.state.feedbacks.startupDone !== undefined)
+            || undefined) &&
+            <p>{`${this.state.feedbacks.startupDone}/${this.state.feedbacks.startupTotal} Startups' feedbacks`}</p>}
         </div>
 
         <hr />
 
         <div className="coming-days-container">
-          {this.state.days.map(day => <p className="meeting-date" key={day.date}>{day.date}</p>)}
+          {this.state.days.map((day, index) => this.renderMeetingDay(index))}
         </div>
       </div>
     );
