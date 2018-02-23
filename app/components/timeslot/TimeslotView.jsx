@@ -42,14 +42,33 @@ class TimeslotView extends Component {
   }
 
   submitAvailability(startAvail, endAvail) {
-    let startTime = Math.ceil((startAvail - this.state.start) / this.state.split);
-    startTime = (startTime * this.state.split) + this.state.start;
-    let endTime = Math.floor((endAvail - this.state.start) / this.state.split);
-    endTime = (endTime * this.state.split) + this.state.start;
+    const meetingDay = this.state.data[this.state.index];
+    let startTime = Math.ceil((startAvail - meetingDay.start) / meetingDay.split);
+    startTime = (startTime * meetingDay.split) + meetingDay.start;
+    let endTime = Math.floor((endAvail - meetingDay.start) / meetingDay.split);
+    endTime = (endTime * meetingDay.split) + meetingDay.start;
     pageContents.fetchData('/insertAvailability', 'POST', {
-      date: this.state.date.toISOString().substr(0, 10),
+      date: meetingDay.date.toISOString().substr(0, 10),
       start: parseTimeStamp(startTime),
       end: parseTimeStamp(endTime),
+    }).then((result) => {
+      if (result.status === 'success') {
+        const oldData = this.state.data;
+        oldData[this.state.index].available = {
+          start: startTime,
+          end: endTime,
+        };
+        this.setState({
+          data: oldData,
+        });
+        this.changeDate(1);
+      }
+    });
+  }
+
+  changeDate(diff) {
+    this.setState({
+      index: Math.min(this.state.data.length - 1, Math.max(0, this.state.index + diff)),
     });
   }
 
@@ -65,6 +84,9 @@ class TimeslotView extends Component {
           available={day.available}
           date={day.date}
           onSubmit={this.submitAvailability}
+          onMoveToPrev={((this.state.index > 0) || undefined) && (() => this.changeDate(-1))}
+          onMoveToNext={((this.state.index < this.state.data.length - 1) || undefined)
+            && (() => this.changeDate(1))}
         />
       );
     }

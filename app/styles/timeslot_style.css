@@ -46,13 +46,9 @@
 .timeslot-input input {
   display: inline-block;
   width: 70px;
-  background: transparent;
-  border-bottom: solid 2px white;
-  border-top: transparent;
-  border-left: transparent;
-  border-right: transparent;
+  color: black;
   text-align: center;
-  margin: 5px;
+  margin: 10px;
 }
 
 .timeslot-picker .date {
@@ -60,4 +56,14 @@
   text-align: center;
   font-size: x-large;
   margin-bottom: 20px;
+}
+
+.timeslot-container .navigation-container {
+  text-align: center;
+  margin: 20px;
+}
+
+.timeslot-container .navigation-container span.glyphicon {
+  transform: scale(2);
+  margin: 0px 20px;
 }
