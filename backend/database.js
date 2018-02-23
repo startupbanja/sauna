@@ -203,8 +203,10 @@ function getComingTimeslots(callback) {
   });
 }
 
+// Get given feedbacks  from latest meeting using the closest date in the past
+// Also returns the date
 function getGivenFeedbacks(callback) {
-  const query = `SELECT Users.type, Profiles.name, Meetings.startup_rating, Meetings.coach_rating
+  const query = `SELECT Users.type, Profiles.name, Meetings.startup_rating, Meetings.coach_rating, Meetings.date
     FROM Users
     LEFT OUTER JOIN Profiles ON Users.id = Profiles.user_id
     LEFT OUTER JOIN Meetings ON Users.id = Meetings.coach_id OR Users.id = Meetings.startup_id

@@ -54,11 +54,12 @@ export default class MeetingView extends React.Component {
   coachTotal: int,
   coachDone: int
   }
-
+  get the feedbacks from the most recent passed meeting
 */
   fetchFeedbacks() {
     pageContent.fetchData('/givenFeedbacks', 'GET', { })
       .then((response) => {
+        console.log(response);
         this.setState({ feedbacks: response });
       });
   }
