@@ -285,7 +285,9 @@ INSERT INTO StartupProfiles (user_id, name, description, email, website) VALUES
 INSERT INTO MeetingDays (date, startTime, endTime, split) VALUES
 	('2017-10-03', '10:00:00', '16:00:00', 40),
 	('2017-10-10', '10:00:00', '16:00:00', 40),
-	('2017-10-20', '10:00:00', '16:00:00', 40);
+	('2017-10-20', '10:00:00', '16:00:00', 40),
+	('2018-02-22', '10:00:00', '16:00:00', 40),
+	('2018-02-28', '10:00:00', '16:00:00', 40);
 
 
 INSERT INTO Meetings (coach_id, startup_id, date, time, duration, coach_rating, startup_rating) VALUES
