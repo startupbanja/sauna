@@ -61,6 +61,8 @@ class MeetingDaysView extends Component {
     modal.addClass('out');
     $('.modal-backdrop').remove();
     this.fetchScheduledDays();
+    this.fetchAvailabilityStats();
+    this.fetchGivenFeedbacks();
   }
 
   renderMeetingDay(index) {
@@ -121,7 +123,7 @@ class MeetingDaysView extends Component {
         <hr />
 
         <div className="coming-days-container">
-          {this.state.days.map((day, index) => this.renderMeetingDay(index))}
+          {this.state.days.slice(1).map((day, index) => this.renderMeetingDay(index + 1))}
         </div>
       </div>
     );

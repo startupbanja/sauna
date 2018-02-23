@@ -32,6 +32,6 @@ p.meeting-date {
   font-size: 1.5em;
 }
 
-div.next-day-container p.meeting-date {
+div.next-day-container {
   text-align: center;
 }
