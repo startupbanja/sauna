@@ -186,6 +186,52 @@ function getComingMeetingDays(userId, callback) {
   });
 }
 
+function getComingDates(callback) {
+  const dates = [];
+  const query = `SELECT date
+    FROM MeetingDays
+    WHERE MeetingDays.date >= date("now")`;
+  db.each(query, [], (err, row) => {
+    if (err) {
+      throw err;
+    }
+    dates.push(row.date);
+    return null;
+  }, (err) => {
+    if (err) {
+      // return console.error(err.message);
+      throw err;
+    }
+    return callback(dates);
+  });
+}
+
+// Returns coming availabilities of coaches and names of the coaches
+function getComingTimeslots(callback) {
+  const query = `SELECT CoachProfiles.name, MeetingDays.date, Timeslots.time, Timeslots.duration
+    FROM Users
+    LEFT OUTER JOIN CoachProfiles ON Users.id = CoachProfiles.user_id
+    LEFT OUTER JOIN MeetingDays
+    LEFT OUTER JOIN Timeslots ON MeetingDays.date = Timeslots.date AND Timeslots.user_id = Users.id
+    WHERE MeetingDays.date >= date("now") AND Users.active = 1 AND Users.type = 1`;
+  db.all(query, [], (err, result) => {
+    if (err) throw err;
+    callback(result);
+  });
+}
+
+function getGivenFeedbacks(callback) {
+  const query = `SELECT Users.type, Profiles.name, Meetings.startup_rating, Meetings.coach_rating
+    FROM Users
+    LEFT OUTER JOIN Profiles ON Users.id = Profiles.user_id
+    LEFT OUTER JOIN Meetings ON Users.id = Meetings.coach_id OR Users.id = Meetings.startup_id
+    WHERE Meetings.date = (SELECT MAX(Date) FROM MeetingDays WHERE Date < date("now"))`;
+  db.all(query, [], (err, result) => {
+    if (err) throw err;
+    callback(result);
+  });
+}
+
 function insertAvailability(userId, date, startTime, duration, callback) {
   const query = `INSERT INTO Timeslots(user_id, date, time, duration)
     VALUES (?, ?, ?, ?)`;
@@ -275,6 +321,30 @@ function getRatings(callback) {
   });
 }
 
+// Used for getting a map of {User_id: Name} and {Name: User_id}
+// Used in deciphering and ciphering schedule from admin view
+function getUserMap(callback) {
+  const q = `
+            SELECT name, user_id
+            FROM Profiles;`;
+  const keys = {};
+  // (sql, params, callback for each row, callback on complete)
+  db.each(q, [], (err, row) => {
+    if (err) {
+      throw err;
+    }
+    keys[row.name] = row.user_id.toString();
+    keys[row.user_id.toString()] = row.name;
+    return null;
+  }, (err) => {
+    if (err) {
+      // return console.error(err.message);
+      throw err;
+    }
+    return callback(keys);
+  });
+}
+
 function getTimeslots(callback) {
   const timeslots = {};
   db.each(timeslotQuery, [], (err, row) => {
@@ -338,8 +408,7 @@ function getTimetable(callback) {
       throw err;
     }
     const meeting = {
-      coach: row.coach,
-      coach_id: row.coach_id.toString(),
+      coach: row.coach_id.toString(),
       startup: row.startup,
       time: row.time,
       duration: row.duration,
@@ -352,6 +421,43 @@ function getTimetable(callback) {
       throw err;
     }
     return callback(meetings);
+  });
+}
+
+// Gets timetable in form [{coach: coachName, startup: startupName, time: time, duration: duration}]
+// Removes null meetings and saves the rest to the database
+function setTimetable(timetable, date) {
+  const meetings = [];
+  getUserMap((keys) => {
+    for (const element in timetable) { //eslint-disable-line
+      const meeting = timetable[element];
+      if (meeting.startup !== null) {
+        meetings.push({
+          coach: keys[meeting.coach],
+          startup: keys[meeting.startup],
+          time: meeting.time,
+          duration: meeting.duration,
+        });
+      }
+    }
+    const query = `
+    DELETE FROM Meetings WHERE Date = ?;`;
+    db.run(query, [date], (err) => {
+      if (err) throw err;
+      if (meetings.length > 0) {
+        var query2 = `
+        INSERT INTO Meetings (coach_id, startup_id, date, time, duration)
+        VALUES`;
+        for (const element in meetings) { //eslint-disable-line
+          const meeting = meetings[element];
+          query2 = query2 + ' (' + meeting.coach + ', ' + meeting.startup + ', ' + date + ', ' + meeting.time + ', ' + meeting.duration + '),';
+        }
+        query2.replace(/.$/, ';');
+        db.run(query2, [], (err2) => {
+          if (err2) throw err2;
+        });
+      }
+    });
   });
 }
 
@@ -426,4 +532,9 @@ module.exports = {
   getComingMeetingDays,
   insertAvailability,
   getTimetable,
+  setTimetable,
+  getUserMap,
+  getComingDates,
+  getComingTimeslots,
+  getGivenFeedbacks,
 };

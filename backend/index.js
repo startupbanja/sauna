@@ -144,41 +144,122 @@ app.get('/profile', (req, res) => {
   });
 });
 
-// TODO coach names
 app.get('/meetings', (req, res) => {
   const allMeetings = [];
-  database.getTimetable((meetings) => {
-    database.getTimeslots((timeslots) => {
-      const dur = meetings[0].duration;
-      for (const timeslot in timeslots) { // eslint-disable-line
-        const id = timeslot;
-        var remaining = timeslots[id].duration;
-        const time = new Date('2000-01-01T' + timeslots[id].starttime);
-        while (remaining > 0) {
-          allMeetings.push({
-            coach: id.toString(),
-            startup: null,
-            time: ('0' + (time.getHours())).slice(-2) + ':' + ('0' + time.getMinutes()).slice(-2) + ':' + ('0' + time.getSeconds()).slice(-2),
-            duration: dur,
-          });
-          time.setMinutes(time.getMinutes() + dur);
-          remaining -= dur;
+  database.getUserMap((keys) => {
+    database.getTimetable((meetings) => {
+      database.getTimeslots((timeslots) => {
+        const dur = meetings[0].duration;
+        for (const timeslot in timeslots) { // eslint-disable-line
+          const id = timeslot;
+          var remaining = timeslots[id].duration;
+          const time = new Date('2000-10-10T' + timeslots[id].starttime);
+          while (remaining > 0) {
+            allMeetings.push({
+              coach: id.toString(),
+              startup: null,
+              time: ('0' + (time.getHours())).slice(-2) + ':' + ('0' + time.getMinutes()).slice(-2) + ':' + ('0' + time.getSeconds()).slice(-2),
+              duration: dur,
+            });
+            time.setMinutes(time.getMinutes() + dur);
+            remaining -= dur;
+          }
         }
-      }
-      for (var meeting in meetings) { //eslint-disable-line
-        meeting = meetings[meeting];
-        const index = allMeetings.findIndex(element => (element.coach === meeting.coach_id && element.time === meeting.time));
-        if (index !== -1) {
-          allMeetings[index] = {
-            coach: meeting.coach_id,
-            startup: meeting.startup,
-            time: meeting.time,
-            duration: meeting.duration,
-          };
+        for (var meeting in meetings) { //eslint-disable-line
+          meeting = meetings[meeting];
+          const index = allMeetings.findIndex(element => (element.coach === meeting.coach && element.time === meeting.time));
+          if (index !== -1) {
+            allMeetings[index] = {
+              coach: meeting.coach,
+              startup: meeting.startup,
+              time: meeting.time,
+              duration: meeting.duration,
+            };
+          }
         }
-      }
-      res.json({ schedule: allMeetings });
+        for (var meeting in allMeetings) {
+          allMeetings[meeting].coach = keys[allMeetings[meeting].coach];
+        }
+        res.json({ schedule: allMeetings });
+      });
     });
+  });
+});
+
+app.get('/comingTimeslots', (req, res) => {
+  const timeslots = {};
+  // Result is in form [{name:"coachname",date:"dateString",time:"timestring",duration:null}]
+  database.getComingTimeslots((result) => {
+    for (const index in result) { //eslint-disable-line
+      const element = result[index];
+      if (timeslots[element.date] === undefined) {
+        timeslots[element.date] = {};
+      }
+      if (element.duration === null) {
+        timeslots[element.date][element.name] = null;
+      } else {
+        const time = new Date('2000-01-01T' + element.time);
+        time.setMinutes(time.getMinutes() + element.duration);
+        timeslots[element.date][element.name] = element.time + '-' + ('0' + (time.getHours())).slice(-2) + ':' + ('0' + time.getMinutes()).slice(-2) + ':' + ('0' + time.getSeconds()).slice(-2);
+      }
+    }
+    res.json(timeslots);
+  });
+});
+
+app.get('/numberOfTimeslots', (req, res) => {
+  const timeslots = {};
+  // Result is in form [{name:"coachname",date:"dateString",time:"timestring",duration:null}]
+  database.getComingTimeslots((result) => {
+    for (const index in result) { //eslint-disable-line
+      const element = result[index];
+      if (timeslots[element.date] === undefined) {
+        timeslots[element.date] = { total: 0, done: 0 };
+      }
+      if (element.duration !== null) {
+        timeslots[element.date].done += 1;
+      }
+      timeslots[element.date].total += 1;
+    }
+    res.json(timeslots);
+  });
+});
+
+app.get('/givenFeedbacks', (req, res) => {
+  const givenFeedbacks = {
+    startups: {},
+    coaches: {},
+    startupTotal: 0,
+    startupDone: 0,
+    coachTotal: 0,
+    coachDone: 0
+  };
+  // Result is in form [{type: type, name: name, startup_rating: rating, coach_rating: rating}]
+  // Type 1 => Coach, Type 2 => Startup
+  database.getGivenFeedbacks((result) => {
+    for (const index in result) { //eslint-disable-line
+      const element = result[index];
+      if (element.type === 1) {
+        if (element.coach_rating !== null) {
+          givenFeedbacks.coaches[element.name] = true;
+        } else if (givenFeedbacks.coaches[element.name] === undefined) {
+          givenFeedbacks.coaches[element.name] = false;
+        }
+      } else if (element.startup_rating !== null) {
+        givenFeedbacks.startups[element.name] = true;
+      } else if (givenFeedbacks.startups[element.name] === undefined) {
+        givenFeedbacks.startups[element.name] = false;
+      }
+    }
+    for (const index in givenFeedbacks.startups) {//eslint-disable-line
+      givenFeedbacks.startupTotal += 1;
+      if (givenFeedbacks.startups[index] === true) givenFeedbacks.startupDone += 1;
+    }
+    for (const index in givenFeedbacks.coaches) {//eslint-disable-line
+      givenFeedbacks.coachTotal += 1;
+      if (givenFeedbacks.coaches[index] === true) givenFeedbacks.coachDone += 1;
+    }
+    res.json(givenFeedbacks);
   });
 });
 
