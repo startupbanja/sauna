@@ -6,15 +6,9 @@ import { Link } from 'react-router-dom';
 /* eslint-disable jsx-a11y/anchor-is-valid */ // disable complaining from Link
 
 
-// React Component for the schedule view for admins.
+// Show a list of meetings with information about which coaches have given feedback,
+// and buttons to open detail view, timetable and running matchmaking
 export default class MeetingListView extends React.Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = { dateAvailabilities: {} };
-  //   this.getNextDate = this.getNextDate.bind(this);
-  // }
-
-
   render() {
     const list = Object.entries(this.props.nOfAvailabilities).map((arr) => {
       const date = arr[0];
@@ -46,6 +40,7 @@ export default class MeetingListView extends React.Component {
           >
             View timetable
           </Link>
+          {/* TODO ONLY ALLOW RUNNING ALGORITHM ONCE */}
           <button
             className="btn btn-danger"
             onClick={() => this.props.runMatchmaking(date)}

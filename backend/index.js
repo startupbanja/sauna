@@ -277,7 +277,7 @@ app.post('/createMeetingDay', (req, res) => {
 });
 
 // Run algorithm with given date and save to database and create a .csv file
-function runAlgorithm(date, callback) {
+function runAlgorithm(date, callback, commit = true) {
   database.getTimeslots(date, (timeslots) => {
     database.getRatings((ratings) => {
       database.getStartups((startupdata) => {
@@ -286,10 +286,23 @@ function runAlgorithm(date, callback) {
           availabilities: timeslots,
           startups: startupdata,
         };
+        if (!(ratings && timeslots && startupdata)) {
+          callback(false);
+        }
         const batch = 1;
         database.getMapping(batch, (mapping) => {
           const dataWithMapping = { data, mapping };
-          matchmaking.run(dataWithMapping, rdy => callback(rdy));
+          matchmaking.run(dataWithMapping, (result) => {
+            if (result) {
+              if (commit) {
+                database.saveMatchmaking(result, date, () => callback(true));
+              } else {
+                callback(true);
+              }
+            } else {
+              callback(false);
+            }
+          });
         });
       });
     });
@@ -299,9 +312,7 @@ function runAlgorithm(date, callback) {
 // TODO sanitize date;
 app.post('/runMatchmaking', (req, res) => {
   if (req.body.date) {
-    runAlgorithm(req.body.date, (data) => {
-      database.saveMatchmaking(data, req.params.date, () => res.json({ success: true }));
-    });
+    runAlgorithm(req.body.date, result => res.json({ success: result }));
   } else {
     res.json({ success: false });
   }
@@ -347,14 +358,6 @@ rl.on('line', (input) => {
   switch (input) {
     case ('exit'):
       closeServer();
-      break;
-    case ('run'):
-      runAlgorithm(() => null);
-      break;
-    case ('run -s'):
-      runAlgorithm((data) => { // TODO placeholder date
-        database.saveMatchmaking(data, '2018-01-01', () => console.log('saved'));
-      });
       break;
     default:
       break;

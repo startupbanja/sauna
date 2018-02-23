@@ -4,6 +4,7 @@ import MeetingDetailView from './MeetingDetailView';
 import MeetingListView from './MeetingListView';
 import pageContent from './pageContent';
 
+// Send a request to backend to run the matchmaking algorithm
 function runMatchmaking(date) {
   pageContent.fetchData('/runMatchmaking', 'POST', { date })
     .then(res => console.log(res.success));
@@ -86,8 +87,8 @@ export default class MeetingView extends React.Component {
   }
 }
 MeetingView.propTypes = {
-  date: PropTypes.string,
-  detail: PropTypes.bool,
+  date: PropTypes.string, // only relevant for detail view
+  detail: PropTypes.bool, // This determines if we show the detail view or list view
 };
 
 MeetingView.defaultProps = {
