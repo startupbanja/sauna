@@ -10,6 +10,8 @@ import App from './App';
 import MeetingDaysView from './admin_manage/MeetingDaysView';
 import TimeslotView from './timeslot/TimeslotView';
 import AdminSchedules from './AdminSchedules';
+// import MeetingListView from './MeetingListView';
+import MeetingView from './MeetingView';
 
 const feedbackQuestions = {
   coach: [{
@@ -138,9 +140,22 @@ const adminContent = (
     />
     <Route path="/meetingDays" component={MeetingDaysView} />
     <Route
-      path="/timetable"
+      path="/timetable/:date"
+      render={({ match }) => (
+        <AdminSchedules date={match.params.date}/>
+      )}
+    />
+    <Route
+      exact
+      path="/meetings/"
       render={() => (
-        <AdminSchedules />
+        <MeetingView />
+      )}
+    />
+    <Route
+      path="/meetings/:date/"
+      render={({ match }) => (
+        <MeetingView detail={true} date={match.params.date} />
       )}
     />
   </Switch>

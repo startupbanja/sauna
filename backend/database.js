@@ -31,23 +31,6 @@ WHERE Profiles.user_id IN (
   WHERE type = ? AND batch = ? AND active = 1
 );`;
 
-const timeslotQuery = `
-SELECT user_id, date, time, duration
-FROM Timeslots
-WHERE date IN (
-SELECT MAX(date)
-FROM Timeslots
-);`;
-
-const ratingQuery = `
-SELECT coach_id, startup_id, coach_rating, startup_rating
-FROM Ratings
-INNER JOIN Users
-ON Ratings.startup_id=Users.id
-WHERE type=2 AND active=1 AND batch IN (
-SELECT MAX(id)
-FROM Batches
-);`;
 
 const startupQuery = `
 SELECT id
@@ -299,9 +282,18 @@ function getStartups(callback) {
 }
 
 function getRatings(callback) {
+  const q = `
+  SELECT coach_id, startup_id, coach_rating, startup_rating
+  FROM Ratings
+  INNER JOIN Users
+  ON Ratings.startup_id=Users.id
+  WHERE type=2 AND active=1 AND batch IN (
+  SELECT MAX(id)
+  FROM Batches
+  );`;
   const ratings = [];
   // (sql, params, callback for each row, callback on complete)
-  db.each(ratingQuery, [], (err, row) => {
+  db.each(q, [], (err, row) => {
     if (err) {
       throw err;
     }
@@ -345,9 +337,13 @@ function getUserMap(callback) {
   });
 }
 
-function getTimeslots(callback) {
+function getTimeslots(date, callback) {
+  const q = `
+  SELECT user_id, date, time, duration
+  FROM Timeslots
+  WHERE date = ? ;`;
   const timeslots = {};
-  db.each(timeslotQuery, [], (err, row) => {
+  db.each(q, [date], (err, row) => {
     if (err) {
       throw err;
     }

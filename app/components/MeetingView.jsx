@@ -1,54 +1,89 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import MeetingDetailView from './MeetingDetailView';
+import MeetingListView from './MeetingListView';
 import pageContent from './pageContent';
-// React Component for the schedule view for admins.
+
+// This component will be used to fetch data related to meetings and then
+// render either a list or detail view of meetings
 export default class MeetingView extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { currentDate: this.getClosestDate(), availabilities: {} };
-    this.getNextDate = this.getNextDate.bind(this);
+    this.state = { availabilities: {}, feedbacks: {}, nOfAvail: {} };
+    // this.getNextDate = this.getNextDate.bind(this);
+    this.fetchTimeslots();
+    this.fetchFeedbacks();
   }
 
-  // getClosestDate() {
-  //   return '2018-01-01';
-  // }
-  /*
-  { dates: [dateString, dateString, ... ] }
-  */
-//   fetchDates() {
-// // /meetingDates
-  // }
 
-  /*
-  {
-    availabilities: [{coach: timeString}, {coach: null}, ...]
+  componentWillUnmount() {
+    console.log('UNMOUNTING');
   }
+
+  // {
+  //   availabilities: [{coach: timeString}, {coach: null}, ...]
+  // }
   // timeString can be empty if answered but not available
+  /*
+  nOfAvail: {date: {total, done}}
   */
   fetchTimeslots() {
     pageContent.fetchData('/comingTimeslots', 'GET', { })
       .then((response) => {
         this.setState({ availabilities: response });
       });
+    pageContent.fetchData('/numberOfTimeslots', 'GET', { })
+      .then((response) => {
+        this.setState({ nOfAvail: response });
+      });
   }
+
+
   /*
+  RESPONSE FORMAT:
   {
-    coaches: [{ name: true/false }, ...],
-    startups: [{ name: true/false }, ...]
+  startups: {startup_name: true/false},
+  coaches: {coach_name: true/false},
+  startupTotal: int,
+  startupDone: int,
+  coachTotal: int,
+  coachDone: int
   }
-  */
+
+*/
+  fetchFeedbacks() {
+    pageContent.fetchData('/givenFeedbacks', 'GET', { })
+      .then((response) => {
+        this.setState({ feedbacks: response });
+      });
+  }
 
 
   render() {
+    const content = this.props.detail ?
+      (<MeetingDetailView
+        availabilities={this.state.availabilities}
+        date={this.props.date}
+      />)
+      :
+      (<MeetingListView
+        feedbacks={this.state.feedbacks}
+        nOfAvailabilities={this.state.nOfAvail}
+      />);
+
     return (
       <div>
-        <h1>{this.state.current}</h1>
-        <MeetingDetailView
-          date={this.state.current}
-          availabilities={this.state.availabilities[this.state.currentDate]}
-        />
+        {content}
       </div>
     );
   }
 }
+MeetingView.propTypes = {
+  date: PropTypes.string,
+  detail: PropTypes.bool,
+};
+
+MeetingView.defaultProps = {
+  date: '',
+  detail: false,
+};

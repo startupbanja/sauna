@@ -83,8 +83,8 @@ app.get('/api', (req, res) => {
   }
 });
 
-function runAlgorithm(callback) {
-  database.getTimeslots((timeslots) => {
+function runAlgorithm(date, callback) {
+  database.getTimeslots(date, (timeslots) => {
     database.getRatings((ratings) => {
       database.getStartups((startupdata) => {
         const data = {
@@ -297,6 +297,9 @@ app.post('/createMeetingDay', (req, res) => {
   });
 });
 
+app.post('/runMatchmaking', (req, res) => {
+  runAlgorithm();
+})
 /* gets the still to come meeting days with given availabilities for a specific user */
 app.get('/getComingMeetingDays', (req, res) => {
   database.getComingMeetingDays(req.session.userID, (result) => {

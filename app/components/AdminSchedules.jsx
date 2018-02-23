@@ -1,20 +1,19 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import AdminScheduleTable from './AdminScheduleTable';
 import pageContent from './pageContent';
 // React Component for the schedule view for admins.
 export default class AdminSchedules extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { date: 'TODO DATE', schedule: [], firstColumn: 'coach' };
+    this.state = { date: this.props.date , schedule: [], firstColumn: 'coach' };
     this.getTimetable = this.getTimetable.bind(this);
     this.toggle = this.toggle.bind(this);
     this.getTimetable();
   }
 
   getTimetable() {
-    pageContent.fetchData('/meetings', 'GET', {}).then((response) => {
-      console.log(response);
+    pageContent.fetchData('/meetings', 'GET', { date: this.props.date }).then((response) => {
       this.setState({ schedule: response.schedule });
     });
   }
@@ -55,4 +54,8 @@ export default class AdminSchedules extends React.Component {
       </div>
     );
   }
+}
+
+AdminSchedules.propTypes = {
+  date: PropTypes.string.isRequired,
 }

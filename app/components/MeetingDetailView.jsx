@@ -1,20 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import pageContent from './pageContent';
 
 export default class MeetingDetailView extends React.Component {
   // constructor(props) {
   //   super(props);
-  //   this.state = { };
-  //   this.runMatchmaking = this.runMatchmaking.bind(this);
+  //   this.state = { date: '' };
+  //   // this.getNextDate = this.getNextDate.bind(this);
   // }
-
   render() {
-    const availabilityList = this.props.availabilities.entries.map((name, filled) => (
-      <li key={name}>
-        {name}: {filled || '-'}
-      </li>
-    ));
+    const list = this.props.availabilities[this.props.date] ?
+      Object.entries(this.props.availabilities[this.props.date]) : [];
+    const availabilityList = list.map((arr) => {
+      const name = arr[0];
+      const filled = arr[1];
+      return (
+        <li key={name}>
+          <p>
+            {name}: {filled || '-'}
+          </p>
+        </li>
+      );
+    });
 
     return (
       <div>
@@ -34,5 +40,5 @@ export default class MeetingDetailView extends React.Component {
 
 MeetingDetailView.propTypes = {
   date: PropTypes.string.isRequired,
-  availabilities: PropTypes.arrayOf(PropTypes.objectOf(PropTypes.string)).isRequired,
+  availabilities: PropTypes.objectOf(PropTypes.objectOf(PropTypes.string)).isRequired,
 };
