@@ -67,11 +67,16 @@ class MeetingDaysView extends Component {
 
   renderMeetingDay(index) {
     if (this.state.days.length > index) {
+      const dateOptions = {
+        day: 'numeric',
+        month: 'numeric',
+        year: 'numeric',
+      };
       const date = this.state.days[index].date; // eslint-disable-line
       const { total, done } = this.state.availabilities[date] || { total: null, done: null };
       return (
         <div className="meeting-day-container" key={index}>
-          <p className="meeting-date">{date}</p>
+          <p className="meeting-date">{new Date(date).toLocaleDateString('en-GB', dateOptions).replace(/\//g, '.')}</p>
           {(total !== null && done !== null) &&
             <p>{`${done}/${total} Coaches' availabilities`}</p>}
         </div>
@@ -89,7 +94,7 @@ class MeetingDaysView extends Component {
           <div className="btn-container">
             <button
               type="button"
-              className="btn btn-red"
+              className="btn btn-minor"
               data-toggle="modal"
               data-target="#newMeetingDayModal"
             >Set more
@@ -118,6 +123,7 @@ class MeetingDaysView extends Component {
           {((this.state.feedbacks.startupTotal && this.state.feedbacks.startupDone !== undefined)
             || undefined) &&
             <p>{`${this.state.feedbacks.startupDone}/${this.state.feedbacks.startupTotal} Startups' feedbacks`}</p>}
+          <button className="btn btn-minor">Run Algorithm</button>
         </div>
 
         <hr />

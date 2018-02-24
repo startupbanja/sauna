@@ -122,7 +122,7 @@ class Timeslot extends React.Component {
               tabIndex={0}
               onKeyDown={this.props.onMoveToPrev}
             />}
-          <button onClick={this.submitAvailability} className="btn btn-lg btn-red">Submit</button>
+          <button onClick={this.submitAvailability} className="btn btn-lg btn-major">Submit</button>
           {((this.props.onMoveToNext !== undefined) || undefined)
             && <span
               className="glyphicon glyphicon-triangle-right"

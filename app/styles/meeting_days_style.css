@@ -10,7 +10,7 @@
 .banner p {
   display: inline-block;
   font-size: 1.5em;
-  color: white;
+  color: var(--light-gray);
   flex-grow: 2;
   text-align: center;
 }
