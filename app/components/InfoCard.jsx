@@ -5,9 +5,9 @@ export default class InfoCard extends React.Component {
   render() {
     return (
       <div>
-        <h2>{this.props.info.name}</h2>
-        <div className="row">
-          <div className="col-xs-5">
+        <h2 className="feedback-header" >{this.props.info.name}</h2>
+        <div>
+          <div>
             <img className="img-responsive cardImage" src={this.props.info.image_src} alt="coach" />
           </div>
           <div className="feedback-info">

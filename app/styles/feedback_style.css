@@ -18,19 +18,25 @@
 }
 
 .cardImage {
-  max-height: 30vh;
-  margin-left: 5%;
+  max-height: 50%;
+  max-width: 50%;
+  padding-right: 5%;
 }
 
 .feedback-info {
   font-size: 22px;
+  position: absolute;
+  left: 50%;
+  top: 20%;
+  padding: 5px;
 }
 
 .feedback-nro {
   font-size: 22px;
   position: fixed;
   bottom: 30%;
-  color: #545454;
+  margin-left: 40%;
+  color: var(--dark-gray);
 }
 
 .feedback-question {
@@ -40,12 +46,21 @@
   margin-left: 2%;
 }
 
+.feedback-header {
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  padding: 10px;
+  color:var(--primary-color);
+}
+
 .feedback-btn {
   font-size: 30px;
   position: fixed;
   bottom: 30%;
-  margin-left:5%;
-  background: #545454;
-  color: #A3A3A3;
+  margin-left: 27%;
+  margin-right: 50%;
+  background: var(--dark-gray);
+  color: var(--light-gray);
   border: none;
 }

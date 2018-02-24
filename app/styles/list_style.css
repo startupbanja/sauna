@@ -5,8 +5,6 @@
   float: left;
   border-bottom: 10px solid #252525;
   margin-left: 5%;
-  /*margin-top: 5%;*/
-  /* padding: 2%; */
 }
 
 div.text-style {
@@ -15,11 +13,11 @@ div.text-style {
 
 .list-text-style {
  font-size: 25px;
- color: #A3A3A3 ;
+ color: var(--light-gray);
  font-family: 'Vinkel,sans-serif';
  float: right;
 }
 
 .list-header {
-  color: #E45336;
+  color: var(--primary-color);
 }

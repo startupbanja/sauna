@@ -35,13 +35,10 @@ export default class FeedbackForm extends React.Component {
       ));
     return (
       <div className="container-fluid">
-        <h1>Give Feedback</h1>
         <InfoCard info={this.props.info} />
         <form className="feedback-question">
           {radioInputs}
         </form>
-        { // <Button className="btn btn-lg ffbutton-red" onClick={this.handleSubmit} text="Done" />
-        }
       </div>
     );
   }

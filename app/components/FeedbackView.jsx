@@ -74,8 +74,8 @@ export default class FeedbackView extends React.Component {
           onSubmit={this.submitCurrentForm}
           questions={this.props.questions[this.state.userType]}
         />
-        <div className="row">
-          <div className="col-xs-5">
+        <div>
+          <div>
             <Button
               className="feedback-btn"
               text="<"
