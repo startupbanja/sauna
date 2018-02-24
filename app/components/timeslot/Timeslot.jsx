@@ -4,7 +4,7 @@ import TimeslotDrag from './TimeslotDrag';
 import TimeslotInput from './TimeslotInput';
 
 export function parseMinutes(timeString) {
-  if (!timeString.match(/^([0-1]?\d|2[0-3]):[0-5]\d$/)) return false;
+  if (!timeString.match(/^([0-1]?\d|2[0-3]):[0-5]\d(:|$)/)) return false;
   const pieces = timeString.split(':');
   return (parseInt(pieces[0], 10) * 60) + parseInt(pieces[1], 10);
 }
@@ -93,8 +93,15 @@ class Timeslot extends React.Component {
   }
 
   render() {
+    const dateOptions = {
+      weekday: 'short',
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+    };
     return (
-      <div className="container">
+      <div className="container timeslot-container">
+        <p className="date">{this.props.date.toLocaleDateString('en-GB', dateOptions).replace(/\//g, '.')}</p>
         <TimeslotDrag
           start={this.state.start}
           end={this.state.end}
@@ -106,13 +113,32 @@ class Timeslot extends React.Component {
           available={this.state.available}
           onChange={this.handleChange}
         />
-        <button onClick={this.submitAvailability} className="btn btn-lg btn-red">Submit</button>
+        <div className="navigation-container">
+          {((this.props.onMoveToPrev !== undefined) || undefined)
+            && <span
+              className="glyphicon glyphicon-triangle-left"
+              onClick={this.props.onMoveToPrev}
+              role="button"
+              tabIndex={0}
+              onKeyDown={this.props.onMoveToPrev}
+            />}
+          <button onClick={this.submitAvailability} className="btn btn-lg btn-major">Submit</button>
+          {((this.props.onMoveToNext !== undefined) || undefined)
+            && <span
+              className="glyphicon glyphicon-triangle-right"
+              onClick={this.props.onMoveToNext}
+              role="button"
+              tabIndex={0}
+              onKeyDown={this.props.onMoveToNext}
+            />}
+        </div>
       </div>
     );
   }
 }
 
 Timeslot.propTypes = {
+  date: PropTypes.objectOf(Date).isRequired,
   start: PropTypes.number.isRequired,
   end: PropTypes.number.isRequired,
   available: PropTypes.shape({
@@ -121,6 +147,13 @@ Timeslot.propTypes = {
   }).isRequired,
   split: PropTypes.number.isRequired,
   onSubmit: PropTypes.func.isRequired,
+  onMoveToPrev: PropTypes.func,
+  onMoveToNext: PropTypes.func,
+};
+
+Timeslot.defaultProps = {
+  onMoveToNext: undefined,
+  onMoveToPrev: undefined,
 };
 
 export default Timeslot;
