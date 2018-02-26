@@ -1,0 +1,37 @@
+.meeting-days-view {
+  margin-top: 10px;
+}
+
+.banner {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.banner p {
+  display: inline-block;
+  font-size: 1.5em;
+  color: var(--light-gray);
+  flex-grow: 2;
+  text-align: center;
+}
+
+.banner .btn-container {
+  flex-grow: 1;
+}
+
+.banner p span.number {
+  color: var(--primary-color);
+}
+
+.meeting-days-view hr {
+  border-color: var(--light-gray);
+}
+
+p.meeting-date {
+  color: var(--primary-color);
+  font-size: 1.5em;
+}
+
+div.next-day-container {
+  text-align: center;
+}

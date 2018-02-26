@@ -166,7 +166,6 @@ const adminLabels = {
   '/coaches': 'Coaches',
   '/startups': 'Startups',
   '/meetingDays': 'Meeting days',
-  '/meetings/': 'Meeting info',
 };
 // TODO change this to something better later
 function getContent(userType) {

@@ -71,7 +71,7 @@ function translate(data, times, firstColumn) {
       }
       const name = x.name ? x.name : '-';
       const cn = x.name ? 'full-cell' : 'empty-cell';
-      return <td className={cn} key={`${key}-${name}-${i}`}>{name} {x.time}</td>;
+      return <td className={cn} key={`${key}-${name}-${i}`}>{name}</td>;
     });
     return (
       <tr key={`row-${key}`}>

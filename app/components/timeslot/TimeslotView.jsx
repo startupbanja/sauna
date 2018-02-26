@@ -7,7 +7,8 @@ class TimeslotView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      date: new Date(),
+      index: 0,
+      data: [],
     };
     this.renderTimeslot = this.renderTimeslot.bind(this);
     this.fetchData = this.fetchData.bind(this);
@@ -21,42 +22,71 @@ class TimeslotView extends Component {
   fetchData() {
     pageContents.fetchData('/getComingMeetingDays', 'GET', {})
       .then((result) => {
-        const start = parseMinutes(new Date(`${result.date}T${result.startTime}`).toTimeString().substr(0, 5));
-        const end = parseMinutes(new Date(`${result.date}T${result.endTime}`).toTimeString().substr(0, 5));
-        this.setState({
-          date: new Date(result.date),
-          start,
-          end,
-          split: result.split,
-          available: {
-            start: (result.time === null) ? start : parseMinutes(result.time),
-            end: (result.duration === null) ? end : parseMinutes(result.time) + result.duration,
-          },
+        const newData = [];
+        result.forEach((day) => {
+          const start = parseMinutes(new Date(`${day.date}T${day.startTime}`).toTimeString().substr(0, 5));
+          const end = parseMinutes(new Date(`${day.date}T${day.endTime}`).toTimeString().substr(0, 5));
+          newData.push({
+            date: new Date(day.date),
+            start,
+            end,
+            split: day.split,
+            available: {
+              start: (day.time === null) ? start : parseMinutes(day.time),
+              end: (day.duration === null) ? end : parseMinutes(day.time) + day.duration,
+            },
+          });
         });
+        this.setState({ data: newData });
       });
   }
 
   submitAvailability(startAvail, endAvail) {
-    let startTime = Math.ceil((startAvail - this.state.start) / this.state.split);
-    startTime = (startTime * this.state.split) + this.state.start;
-    let endTime = Math.floor((endAvail - this.state.start) / this.state.split);
-    endTime = (endTime * this.state.split) + this.state.start;
+    const meetingDay = this.state.data[this.state.index];
+    let startTime = Math.ceil((startAvail - meetingDay.start) / meetingDay.split);
+    startTime = (startTime * meetingDay.split) + meetingDay.start;
+    let endTime = Math.floor((endAvail - meetingDay.start) / meetingDay.split);
+    endTime = (endTime * meetingDay.split) + meetingDay.start;
     pageContents.fetchData('/insertAvailability', 'POST', {
-      date: this.state.date.toISOString().substr(0, 10),
+      date: meetingDay.date.toISOString().substr(0, 10),
       start: parseTimeStamp(startTime),
       end: parseTimeStamp(endTime),
+    }).then((result) => {
+      if (result.status === 'success') {
+        const oldData = this.state.data;
+        oldData[this.state.index].available = {
+          start: startTime,
+          end: endTime,
+        };
+        this.setState({
+          data: oldData,
+        });
+        this.changeDate(1);
+      }
+    });
+  }
+
+  changeDate(diff) {
+    this.setState({
+      index: Math.min(this.state.data.length - 1, Math.max(0, this.state.index + diff)),
     });
   }
 
   renderTimeslot() {
-    if (this.state.start !== undefined) {
+    if (this.state.data.length > 0) {
+      const day = this.state.data[this.state.index];
       return (
         <Timeslot
-          start={this.state.start}
-          end={this.state.end}
-          split={this.state.split}
-          available={this.state.available}
+          key={day.date}
+          start={day.start}
+          end={day.end}
+          split={day.split}
+          available={day.available}
+          date={day.date}
           onSubmit={this.submitAvailability}
+          onMoveToPrev={((this.state.index > 0) || undefined) && (() => this.changeDate(-1))}
+          onMoveToNext={((this.state.index < this.state.data.length - 1) || undefined)
+            && (() => this.changeDate(1))}
         />
       );
     }
@@ -64,17 +94,11 @@ class TimeslotView extends Component {
   }
 
   render() {
-    const dateOptions = {
-      weekday: 'short',
-      day: 'numeric',
-      month: 'numeric',
-      year: 'numeric',
-    };
     return (
       <div className="timeslot-picker">
         <link rel="stylesheet" type="text/css" href="app/styles/timeslot_style.css" />
-        <p className="date">{this.state.date.toLocaleDateString('en-GB', dateOptions).replace(/\//g, '.')}</p>
         {this.renderTimeslot()}
+
       </div>
     );
   }
