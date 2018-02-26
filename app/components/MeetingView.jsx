@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import MeetingDetailView from './MeetingDetailView';
+import MeetingDetailView from './admin_manage/MeetingDetailView';
 import MeetingListView from './MeetingListView';
 import pageContent from './pageContent';
 

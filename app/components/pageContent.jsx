@@ -11,7 +11,7 @@ import MeetingDaysView from './admin_manage/MeetingDaysView';
 import TimeslotView from './timeslot/TimeslotView';
 import AdminSchedules from './AdminSchedules';
 // import MeetingListView from './MeetingListView';
-import MeetingView from './MeetingView';
+import MeetingDetailView from './admin_manage/MeetingDetailView';
 
 const feedbackQuestions = {
   coach: [{
@@ -146,16 +146,9 @@ const adminContent = (
       )}
     />
     <Route
-      exact
-      path="/meetings/"
-      render={() => (
-        <MeetingView />
-      )}
-    />
-    <Route
       path="/meetings/:date/"
       render={({ match }) => (
-        <MeetingView detail date={match.params.date} />
+        <MeetingDetailView date={match.params.date} />
       )}
     />
   </Switch>

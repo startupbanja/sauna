@@ -95,6 +95,7 @@ class MeetingDaysView extends Component {
 
   render() {
     if (!(this.state.days && this.state.feedbacks && this.state.availabilities)) {
+      // TODO
       return (<h1> LOADING </h1>);
     }
     return (
