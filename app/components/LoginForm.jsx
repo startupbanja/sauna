@@ -35,9 +35,10 @@ export default class LoginForm extends React.Component {
           <img
             src="../app/imgs/Startupsaunatext_white.svg"
             alt="Startup Sauna"
+            className="login-logo"
           />
           <input
-            className="form-control"
+            className="form-control login-item"
             onChange={this.usernameChanged}
             name="username"
             placeholder="Username"
@@ -45,7 +46,7 @@ export default class LoginForm extends React.Component {
             type="email"
           />
           <input
-            className="form-control"
+            className="form-control login-item"
             onChange={this.pwdChanged}
             name="password"
             placeholder="Password"
@@ -54,11 +55,14 @@ export default class LoginForm extends React.Component {
           />
         </form>
         <button
-          className="btn btn-lg btn-primary btn-block"
+          className="btn btn-lg btn-block login-button"
           onClick={this.handleSubmit}
         >
             Sign in
         </button>
+        <div className="login-error">
+          {this.props.errorMessage}
+        </div>
       </div>
 
     );
