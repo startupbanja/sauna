@@ -6,11 +6,6 @@ import NewMeetingDayBlock from './NewMeetingDayBlock';
 /* eslint-disable jsx-a11y/anchor-is-valid */ // disable complaining from Link
 
 
-function runMatchmaking(date) {
-  pageContent.fetchData('/runMatchmaking', 'POST', { date })
-    .then(res => console.log(res.success));
-}
-
 /* Component to display all upcoming meeting days */
 class MeetingDaysView extends Component {
   constructor(props) {
@@ -24,6 +19,7 @@ class MeetingDaysView extends Component {
       days: null,
       availabilities: null,
       feedbacks: null,
+      canRunMatchmaking: false,
     };
   }
 
@@ -33,17 +29,28 @@ class MeetingDaysView extends Component {
     this.fetchGivenFeedbacks();
   }
 
+  runMatchmaking(date) {
+    this.setState({ canRunMatchmaking: false });
+    pageContent.fetchData('/runMatchmaking', 'POST', { date })
+      .then(() => undefined);
+  }
+
   fetchScheduledDays() {
     pageContent.fetchData('/getComingMeetingDays', 'GET', {})
       .then((result) => {
         const arr = result;
+        // sort by date
         arr.sort((a, b) => {
           if (a.date < b.date) return -1;
           if (a.date > b.date) return 1;
           return 0;
         });
+        const first = arr[0];
+        // convert to boolean
+        const canRun = first.matchmakingDone === 0;
         this.setState({
           days: arr,
+          canRunMatchmaking: canRun,
         });
       });
   }
@@ -122,12 +129,13 @@ class MeetingDaysView extends Component {
               >
                 View timetable
               </Link>
-              {/* TODO ONLY ALLOW RUNNING ALGORITHM ONCE */}
-              <button
-                className="btn btn-major"
-                onClick={() => runMatchmaking(this.state.days[index].date)}
-              > Run Matchmaking
-              </button>
+              {this.state.canRunMatchmaking &&
+                <button
+                  className="btn btn-major"
+                  onClick={() => this.runMatchmaking(this.state.days[index].date)}
+                > Run Matchmaking
+                </button>
+              }
             </span>
           )}
 

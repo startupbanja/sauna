@@ -151,16 +151,18 @@ function giveFeedback(meetingId, rating, field, callback) {
 
 
 function createMeetingDay(date, start, end, split, callback) {
-  const query = `INSERT INTO MeetingDays(date, startTime, endTime, split)
-    VALUES (?, ?, ?, ?)`;
+  const query = `INSERT INTO MeetingDays(date, startTime, endTime, split, matchmakingDone)
+    VALUES (?, ?, ?, ?, 0)`;
   db.run(query, [date, start, end, split], (err) => {
     if (err) throw err;
     callback({ status: 'success' });
   });
 }
 
+// get all meetingdays in the future together with a flag indicating if matchmaking was run
+// on them
 function getComingMeetingDays(userId, callback) {
-  const query = `SELECT MeetingDays.date, startTime, endTime, split, time, duration
+  const query = `SELECT MeetingDays.date, startTime, endTime, split, time, duration, matchmakingDone
     FROM Users
     LEFT OUTER JOIN MeetingDays
     LEFT OUTER JOIN Timeslots on Timeslots.date = MeetingDays.date AND Timeslots.user_id = Users.id
@@ -204,7 +206,7 @@ function getComingTimeslots(callback) {
     callback(result);
   });
 }
-
+// get the latest past meetingday
 function getLastMeetingday(callback) {
   const q = 'SELECT MAX(Date) AS Date FROM MeetingDays WHERE Date < date("now");';
   db.get(q, [], (err, result) => {
@@ -381,23 +383,39 @@ function getTimeslots(date, callback) {
 }
 
 
-const saveMatchmakingQuery = `
-INSERT INTO Meetings(coach_id, startup_id, date, time, duration, coach_rating, startup_rating)
-VALUES
-`;
 // jsonData is in array(parsed) form
+// save the result of matchmaking algorithm
 function saveMatchmaking(jsonData, dateString, callback) {
-  // filter nulls
-  const data = jsonData.filter(obj => obj.startup !== null);
-
-  const strings = data.map((row) => {
-    const {
-      coach, startup, duration, time,
-    } = row;
-    return `( ${coach}, ${startup}, '${dateString}', '${time}', ${duration}, -1, -1)`;
+  function save() {
+    const saveMatchmakingQuery = `
+    INSERT INTO Meetings(coach_id, startup_id, date, time, duration, coach_rating, startup_rating)
+    VALUES
+    `;
+    // filter nulls
+    const data = jsonData.filter(obj => obj.startup !== null);
+    const strings = data.map((row) => {
+      const {
+        coach, startup, duration, time,
+      } = row;
+      return `( ${coach}, ${startup}, '${dateString}', '${time}', ${duration}, -1, -1)`;
+    });
+    const query = `${saveMatchmakingQuery}${strings.join(',\n')};`;
+    db.run(query, () => {
+      const q = 'UPDATE MeetingDays SET matchmakingDone = 1 WHERE date = ?';
+      db.run(q, dateString, () => {
+        db.parallelize();
+        callback();
+      });
+    });
+  }
+  db.serialize(); // serialize here to make into pseudo transaction, FIXME
+  // first check if algorithm has already been run on this date
+  const checkQuery = 'SELECT matchmakingDone FROM MeetingDays WHERE date = ?';
+  db.get(checkQuery, dateString, (err, result) => {
+    if (err) return callback(err);
+    if (!result.matchmakingDone) save();
+    return undefined;
   });
-  const query = `${saveMatchmakingQuery}${strings.join(',\n')};`;
-  db.run(query, () => callback());
 }
 
 function getTimetable(callback) {

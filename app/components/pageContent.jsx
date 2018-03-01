@@ -150,7 +150,7 @@ const adminContent = (
       render={({ match }) => (
         <MeetingDetailView date={match.params.date} renderFeedbacks />
       )}
-      />
+    />
     <Route
       path="/meetings/:date/"
       render={({ match }) => (

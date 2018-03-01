@@ -92,7 +92,8 @@ CREATE TABLE MeetingDays(
 	date DATE PRIMARY KEY,
 	startTime TIME NOT NULL,
 	endTime TIME NOT NULL,
-	split INT NOT NULL
+	split INT NOT NULL,
+	matchmakingDone INT NOT NULL
 );
 
 CREATE TABLE Ratings(
@@ -282,9 +283,9 @@ INSERT INTO StartupProfiles (user_id, name, description, email, website) VALUES
 	(12, 'Yealloh', 'Startup Description', 'startup12@ssauna.com', 'www.startup12.com'),
 	(13, '2MEU', 'Startup Description', 'startup13@ssauna.com', 'www.startup13.com');
 
-INSERT INTO MeetingDays (date, startTime, endTime, split) VALUES
-	('2017-10-03', '10:00:00', '16:00:00', 40),
-	('2017-10-10', '10:00:00', '16:00:00', 40);
+INSERT INTO MeetingDays (date, startTime, endTime, split, matchmakingDone) VALUES
+	('2017-10-03', '10:00:00', '16:00:00', 40, 0),
+	('2017-10-10', '10:00:00', '16:00:00', 40, 0);
 
 INSERT INTO Meetings (coach_id, startup_id, date, time, duration, coach_rating, startup_rating) VALUES
 	(15, 7, '2017-10-03', '12:00:00', 40, 0, 1),

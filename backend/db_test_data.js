@@ -6,7 +6,7 @@ function dateToString(date) {
 }
 
 function addMeetingDays(firstDate, amount, db) {
-  const query = 'INSERT INTO MeetingDays (date, startTime, endTime, split) VALUES';
+  const query = 'INSERT INTO MeetingDays (date, startTime, endTime, split, matchmakingDone) VALUES';
   const date = new Date(firstDate.getTime());
 
   const rows = [];
@@ -14,7 +14,7 @@ function addMeetingDays(firstDate, amount, db) {
     const duration = 40;
     const startTime = '10:00:00';
     const endTime = '16:00:00';
-    const rowQ = `('${dateToString(date)}', '${startTime}', '${endTime}', ${duration})`;
+    const rowQ = `('${dateToString(date)}', '${startTime}', '${endTime}', ${duration}, 0)`;
     date.setDate(date.getDate() + 7);
     rows.push(rowQ);
   }
