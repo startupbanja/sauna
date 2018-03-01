@@ -70,7 +70,6 @@ class ComingUpCarousel extends Component {
             type="meeting"
             time={scheduleItemData.time}
             coach={scheduleItemData.coach}
-            table={scheduleItemData.table}
           />);
         } else {
           scheduleItem = <ScheduleItem type="break" time={scheduleItemData.time} />;
