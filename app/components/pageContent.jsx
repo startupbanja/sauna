@@ -10,6 +10,7 @@ import App from './App';
 import AdminManagePage from './admin_manage/AdminManagePage';
 import TimeslotView from './timeslot/TimeslotView';
 import AdminSchedules from './AdminSchedules';
+import UserHandlingView from './admin_manage/UserHandlingView';
 
 const feedbackQuestions = {
   coach: [{
@@ -143,6 +144,7 @@ const adminContent = (
         <AdminSchedules />
       )}
     />
+    <Route path="/users" component={UserHandlingView} />
   </Switch>
 );
 
@@ -151,6 +153,7 @@ const adminLabels = {
   '/coaches': 'Coaches',
   '/startups': 'Startups',
   '/manage': 'Manage',
+  '/users': 'Users',
 };
 // TODO change this to something better later
 function getContent(userType) {
