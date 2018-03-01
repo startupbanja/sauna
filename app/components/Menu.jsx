@@ -6,8 +6,7 @@ import $ from 'jquery';
 // import Button from './Button';
 
 export default class Menu extends React.Component {
-
-  collapseNav() {
+  collapseNav() { // eslint-disable-line
     $('.navbar-collapse').collapse('hide');
   }
 
