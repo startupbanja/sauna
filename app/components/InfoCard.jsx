@@ -6,12 +6,12 @@ export default class InfoCard extends React.Component {
     return (
       <div>
         <h2 className="feedback-header" >{this.props.info.name}</h2>
-        <div>
-          <div>
+        <div className="row">
+          <div className="form-group col-xs-2">
             <img className="img-responsive cardImage" src={this.props.info.image_src} alt="coach" />
           </div>
-          <div className="feedback-info">
-            <p>{this.props.info.description}</p>
+          <div className="form-group col-xs-3 feedback-info">
+            {this.props.info.description}
           </div>
         </div>
       </div>
