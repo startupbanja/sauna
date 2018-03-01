@@ -209,6 +209,14 @@ app.post('/giveFeedback', (req, res) => {
   });
 });
 
+app.post('/setActiveStatus', (req, res) => {
+  const id = req.body.id;
+  const active = req.body.active;
+  database.setActiveStatus(id, active, (result) => {
+    res.json(result);
+  });
+});
+
 app.post('/createMeetingDay', (req, res) => {
   if (!requireAdmin(req, res)) return;
   const date = req.body.date;

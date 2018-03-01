@@ -121,6 +121,17 @@ function getActiveStatuses(callback) {
   });
 }
 
+function setActiveStatus(id, active, callback) {
+  const query = `
+  UPDATE Users
+  SET active = ?
+  WHERE id = ?;`;
+  db.run(query, [active, id], (err) => {
+    if (err) throw err;
+    callback({ status: 'success' });
+  });
+}
+
 
 function getProfile(id, callback) {
   const info = {};
@@ -467,4 +478,5 @@ module.exports = {
   insertAvailability,
   getTimetable,
   getActiveStatuses,
+  setActiveStatus,
 };
