@@ -3,7 +3,6 @@
   max-width: 40%;
   display: block;
   float: left;
-  margin-bottom: 5%;
   margin-left: 5%;
   margin-right: 3%;
 }
@@ -13,14 +12,15 @@ div.text-style {
 }
 
 .list-text-style {
- font-size: 140%;
+ font-size: 1.4em;
  color: var(--light-gray);
  font-family: 'Vinkel,sans-serif';
  float: right;
+ margin-top: 5%;
 }
 
 .list-header {
   color: var(--primary-color);
   font-weight: bold;
-  font-size: 120%;
+  font-size: 1.2em;
 }
