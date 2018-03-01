@@ -1,0 +1,33 @@
+.pretty-checkbox {
+  height: 20px;
+  width: 20px;
+  display: inline-block;
+  padding: 10px;
+  vertical-align: middle;
+}
+
+.pretty-checkbox.checked {
+  background: var(--primary-color);
+}
+.pretty-checkbox.checked:hover {
+  background: var(--dark-primary-color);
+}
+
+.pretty-checkbox.unchecked {
+  background: var(--dark-gray);
+}
+.pretty-checkbox.unchecked:hover {
+  background: var(--darker-gray);
+}
+
+.pretty-checkbox-container .checkbox-label {
+  display: inline;
+  padding: 10px;
+  font-size: 20px;
+  vertical-align: middle;
+}
+
+.pretty-checkbox-container {
+  margin: 5px;
+  display: table;
+}
