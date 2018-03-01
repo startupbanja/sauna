@@ -25,7 +25,7 @@ function closeDatabase(callback) {
 function getUsers(type, batch, includeId, callback) {
   const users = {};
   const query = `
-  aSELECT Profiles.user_id, name, description, email, linkedin, Credentials.company, Credentials.title
+  SELECT Profiles.user_id, name, description, email, linkedin, Credentials.company, Credentials.title
   FROM Profiles
   LEFT OUTER JOIN Credentials ON Profiles.user_id = Credentials.user_id
   WHERE Profiles.user_id IN (
@@ -35,9 +35,7 @@ function getUsers(type, batch, includeId, callback) {
   );`;
   // (sql, params, callback for each row, callback on complete)
   db.each(query, [type, batch], (err, row) => {
-    if (err) {
-      return callback(err);
-    }
+    if (err) return callback(err);
     // if already read one line with the name
     if (users[row.name] !== undefined) {
       users[row.name].credentials.push([row.company, row.title]);
@@ -70,9 +68,7 @@ function getProfile(id, callback) {
                  WHERE Profiles.user_id = ?;`;
 
   db.all(query, [Number(id)], (err, rows) => {
-    if (err) {
-      return callback(err);
-    }
+    if (err) return callback(err);
     rows.forEach((row) => {
       if (info.name === undefined) {
         info.name = row.name;
@@ -157,8 +153,8 @@ function getComingMeetingDays(userId, callback) {
     LEFT OUTER JOIN Timeslots on Timeslots.date = MeetingDays.date AND Timeslots.user_id = Users.id
     WHERE Users.id = ? AND MeetingDays.date >= date("now")`;
   db.all(query, [userId], (err, result) => {
-    if (err) throw err;
-    callback(result);
+    if (err) return callback(err);
+    return callback(err, result);
   });
 }
 
@@ -186,8 +182,8 @@ function getComingTimeslots(callback) {
     LEFT OUTER JOIN Timeslots ON MeetingDays.date = Timeslots.date AND Timeslots.user_id = Users.id
     WHERE MeetingDays.date >= date("now") AND Users.active = 1 AND Users.type = 1`;
   db.all(query, [], (err, result) => {
-    if (err) throw err;
-    callback(result);
+    if (err) return callback(err);
+    return callback(err, result);
   });
 }
 
@@ -198,8 +194,8 @@ function getGivenFeedbacks(callback) {
     LEFT OUTER JOIN Meetings ON Users.id = Meetings.coach_id OR Users.id = Meetings.startup_id
     WHERE Meetings.date = (SELECT MAX(Date) FROM MeetingDays WHERE Date < date("now"))`;
   db.all(query, [], (err, result) => {
-    if (err) throw err;
-    callback(result);
+    if (err) return callback(err);
+    return callback(err, result);
   });
 }
 
@@ -313,18 +309,13 @@ function getUserMap(callback) {
   const keys = {};
   // (sql, params, callback for each row, callback on complete)
   db.each(q, [], (err, row) => {
-    if (err) {
-      throw err;
-    }
+    if (err) return callback(err);
     keys[row.name] = row.user_id.toString();
     keys[row.user_id.toString()] = row.name;
     return null;
   }, (err) => {
-    if (err) {
-      // return console.error(err.message);
-      throw err;
-    }
-    return callback(keys);
+    if (err) return callback(err);
+    return callback(err, keys);
   });
 }
 
@@ -379,9 +370,7 @@ function getTimetable(callback) {
     `;
   const meetings = [];
   db.each(query, [], (err, row) => {
-    if (err) {
-      return callback(err);
-    }
+    if (err) return callback(err);
     const meeting = {
       coach: row.coach_id.toString(),
       startup: row.startup,
