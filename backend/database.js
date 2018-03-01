@@ -21,46 +21,20 @@ function closeDatabase(callback) {
     return callback();
   });
 }
-const userQuery = `
-SELECT Profiles.user_id, name, description, email, linkedin, Credentials.company, Credentials.title
-FROM Profiles
-LEFT OUTER JOIN Credentials ON Profiles.user_id = Credentials.user_id
-WHERE Profiles.user_id IN (
-  SELECT id
-  FROM USERS
-  WHERE type = ? AND batch = ? AND active = 1
-);`;
-
-const timeslotQuery = `
-SELECT user_id, date, time, duration
-FROM Timeslots
-WHERE date IN (
-SELECT MAX(date)
-FROM Timeslots
-);`;
-
-const ratingQuery = `
-SELECT coach_id, startup_id, coach_rating, startup_rating
-FROM Ratings
-INNER JOIN Users
-ON Ratings.startup_id=Users.id
-WHERE type=2 AND active=1 AND batch IN (
-SELECT MAX(id)
-FROM Batches
-);`;
-
-const startupQuery = `
-SELECT id
-FROM USERS
-WHERE type=2 AND batch IN (
-SELECT MAX(id)
-FROM Batches
-);`;
 
 function getUsers(type, batch, includeId, callback) {
   const users = {};
+  const query = `
+  SELECT Profiles.user_id, name, description, email, linkedin, Credentials.company, Credentials.title
+  FROM Profiles
+  LEFT OUTER JOIN Credentials ON Profiles.user_id = Credentials.user_id
+  WHERE Profiles.user_id IN (
+    SELECT id
+    FROM USERS
+    WHERE type = ? AND batch = ? AND active = 1
+  );`;
   // (sql, params, callback for each row, callback on complete)
-  db.each(userQuery, [type, batch], (err, row) => {
+  db.each(query, [type, batch], (err, row) => {
     if (err) {
       throw err;
     }
@@ -243,8 +217,15 @@ function verifyIdentity(username, password, callback) {
 
 function getStartups(callback) {
   const startups = [];
+  const query = `
+  SELECT id
+  FROM USERS
+  WHERE type=2 AND batch IN (
+  SELECT MAX(id)
+  FROM Batches
+  );`;
   // (sql, params, callback for each row, callback on complete)
-  db.each(startupQuery, [], (err, row) => {
+  db.each(query, [], (err, row) => {
     if (err) {
       throw err;
     }
@@ -261,8 +242,17 @@ function getStartups(callback) {
 
 function getRatings(callback) {
   const ratings = [];
+  const query = `
+  SELECT coach_id, startup_id, coach_rating, startup_rating
+  FROM Ratings
+  INNER JOIN Users
+  ON Ratings.startup_id=Users.id
+  WHERE type=2 AND active=1 AND batch IN (
+  SELECT MAX(id)
+  FROM Batches
+  );`;
   // (sql, params, callback for each row, callback on complete)
-  db.each(ratingQuery, [], (err, row) => {
+  db.each(query, [], (err, row) => {
     if (err) {
       throw err;
     }
@@ -284,7 +274,14 @@ function getRatings(callback) {
 
 function getTimeslots(callback) {
   const timeslots = {};
-  db.each(timeslotQuery, [], (err, row) => {
+  const query = `
+  SELECT user_id, date, time, duration
+  FROM Timeslots
+  WHERE date IN (
+  SELECT MAX(date)
+  FROM Timeslots
+  );`;
+  db.each(query, [], (err, row) => {
     if (err) {
       throw err;
     }
