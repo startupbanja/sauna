@@ -6,31 +6,25 @@ class EditUserProfile extends Component {
     return (
       <div className="editProfileContainer container">
         <form>
-          <p>
-            Name:<br />
-            <input id="name" type="text" value={this.props.name} />
-          </p>
-          <p>
-            LinkedIn:<br />
-            <input id="linkedIn" type="text" value={this.props.linkedIn} />
-          </p>
-          <p>
-            Description:<br />
-            <textarea id="description">
-              {this.props.description}
-            </textarea>
-          </p>
+          <div className="edit-para">Name:</div>
+          <input className="edit-text" id="name" type="text" value={this.props.name} />
+          <div className="edit-para">LinkedIn:</div>
+          <input className="edit-text" id="linkedIn" type="text" value={this.props.linkedIn} />
+          <div className="edit-para">Description:</div>
+          <textarea className="edit-text" id="description">
+            {this.props.description}
+          </textarea>
           <div>
-            <p>Titles:</p>
-            {this.props.titles.map(value => <input key={`title${value.id}`} type="text" value={value} />)}
+            <div className="edit-para">Titles:</div>
+            {this.props.titles.map(value => <input className="edit-text" key={`title${value.id}`} type="text" value={value} />)}
           </div>
           <div>
-            <p>Credentials:</p>
+            <div className="edit-para">Credentials:</div>
             {this.props.credentials.map(value =>
               (
                 <div key={`cred${value.id}`}>
-                  <input key={`company${value.id}`} type="text" value={value.company} />
-                  <input key={`position${value.id}`} type="text" value={value.position} />
+                  <input className="edit-text" key={`company${value.id}`} type="text" value={value.company} />
+                  <input className="edit-text" key={`position${value.id}`} type="text" value={value.position} />
                 </div>
               ))
             }

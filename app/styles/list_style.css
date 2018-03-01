@@ -1,10 +1,11 @@
 .list-avatar {
-  max-height: 30%;
-  max-width: 30%;
+  max-height: 40%;
+  max-width: 40%;
   display: block;
   float: left;
-  border-bottom: 10px solid #252525;
+  margin-bottom: 5%;
   margin-left: 5%;
+  margin-right: 3%;
 }
 
 div.text-style {
@@ -12,7 +13,7 @@ div.text-style {
 }
 
 .list-text-style {
- font-size: 25px;
+ font-size: 140%;
  color: var(--light-gray);
  font-family: 'Vinkel,sans-serif';
  float: right;
@@ -20,4 +21,6 @@ div.text-style {
 
 .list-header {
   color: var(--primary-color);
+  font-weight: bold;
+  font-size: 120%;
 }
