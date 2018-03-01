@@ -1,5 +1,7 @@
-var HTMLWebpackPlugin = require('html-webpack-plugin');
-var HTMLWebpackPluginConfig = new HTMLWebpackPlugin({
+/* eslint-disable */
+var webpack = require('webpack');
+const HTMLWebpackPlugin = require('html-webpack-plugin');
+const HTMLWebpackPluginConfig = new HTMLWebpackPlugin({
     template: __dirname + '/app/index.html',
     filename: 'index.html',
     inject: 'body'
@@ -10,7 +12,7 @@ module.exports = {
     module: {
         loaders: [
             {
-                test: /\.js$/,
+                test: /\.jsx?$/,
                 exclude: /node_modules/,
                 loader: 'babel-loader'
             }
@@ -18,7 +20,21 @@ module.exports = {
     },
     output: {
         filename: 'transformed.js',
-        path: __dirname + '/build'
+        path: __dirname + '/build/',
+        publicPath: '/'
     },
-    plugins: [HTMLWebpackPluginConfig]
+    resolve: {
+        extensions: ['.js', '.jsx']
+    },
+    plugins: [
+      HTMLWebpackPluginConfig,
+      new webpack.ProvidePlugin({
+        $: 'jquery',
+        jQuery: 'jquery'
+      })
+    ],
+    devServer: {
+        historyApiFallback: true,
+    }
 };
+/* eslint-enable */

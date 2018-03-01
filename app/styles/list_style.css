@@ -1,0 +1,23 @@
+.list-avatar {
+  max-height: 30%;
+  max-width: 30%;
+  display: block;
+  float: left;
+  border-bottom: 10px solid #252525;
+  margin-left: 5%;
+}
+
+div.text-style {
+  display: inline-block;
+}
+
+.list-text-style {
+ font-size: 25px;
+ color: var(--light-gray);
+ font-family: 'Vinkel,sans-serif';
+ float: right;
+}
+
+.list-header {
+  color: var(--primary-color);
+}

@@ -1,0 +1,33 @@
+.schedule-list-avatar {
+  max-height: 30%;
+  max-width: 30%;
+  display: block;
+  float: left;
+  margin-left: 5%;
+  padding: 2%;
+}
+
+.schedule-text-style {
+  font-size: 25px;
+  color: #A1A19A;
+  font-family: 'Vinkel,sans-serif';
+}
+
+.schedule-name-style {
+  color: #E55234;
+  font-weight: bold;
+}
+
+.schedule-divider {
+  width: 80%;
+  height: 5px;
+  margin-left: 10%;
+  margin-right: 10%;
+}
+
+.schedule-header-style {
+  font-size: 25px;
+  color: #A1A19A;
+  font-family: 'Vinkel,sans-serif';
+  text-align: center;
+}

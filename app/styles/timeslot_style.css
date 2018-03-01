@@ -1,0 +1,74 @@
+.dragableContainer p {
+  position: absolute;
+  right: 5px;
+  margin: 0px;
+  color: white;
+}
+.dragableContainer.unavailable p{
+  color: var(--light-gray);
+}
+
+.dragableContainer.unavailable hr{
+  position: relative;
+  border: dashed 1px;
+  margin: 0px;
+}
+
+.dragableContainer {
+  background: var(--primary-color);
+  position: absolute;
+  width: 100%;
+}
+.dragableContainer.unavailable {
+  background: var(--dark-gray);
+  position: absolute;
+  width: 100%;
+}
+
+.timeslot-dragball {
+  transform: rotate(45deg);
+  background: black;
+  position: absolute;
+  left: 50%;
+  cursor: pointer;
+}
+
+.timeslot-input {
+  font-size: x-large;
+  text-align: center;
+  color: var(--light-gray);
+  margin-top: 20px;
+}
+
+.timeslot-input p {
+  display: inline-block;
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+.timeslot-input input {
+  display: inline-block;
+  width: 70px;
+  color: black;
+  text-align: center;
+  margin: 10px;
+  border: none;
+}
+
+.timeslot-picker .date {
+  color: var(--primary-color);
+  text-align: center;
+  font-size: 25px;
+  /* margin-bottom: 20px; */
+  margin-top: 5px;
+}
+
+.timeslot-container .navigation-container {
+  text-align: center;
+  margin: 20px;
+}
+
+.timeslot-container .navigation-container span.glyphicon {
+  transform: scale(2);
+  margin: 0px 20px;
+}
