@@ -152,7 +152,8 @@ app.get('/profile', (req, res, next) => {
 
 app.get('/meetings', (req, res, next) => {
   const allMeetings = [];
-  database.getUserMap((keys) => {
+  database.getUserMap((err, keys) => {
+    if (err) return next(err);
     database.getTimetable((err2, meetings) => {
       if (err2) return next(err2);
       database.getTimeslots((err3, timeslots) => {
@@ -193,13 +194,15 @@ app.get('/meetings', (req, res, next) => {
       });
       return undefined;
     });
+    return undefined;
   });
 });
 
-app.get('/comingTimeslots', (req, res) => {
+app.get('/comingTimeslots', (req, res, next) => {
   const timeslots = {};
   // Result is in form [{name:"coachname",date:"dateString",time:"timestring",duration:null}]
-  database.getComingTimeslots((result) => {
+  database.getComingTimeslots((err, result) => {
+    if (err) return next(err);
     for (const index in result) { //eslint-disable-line
       const element = result[index];
       if (timeslots[element.date] === undefined) {
@@ -214,6 +217,7 @@ app.get('/comingTimeslots', (req, res) => {
       }
     }
     res.json(timeslots);
+    return undefined;
   });
 });
 
@@ -235,7 +239,7 @@ app.get('/numberOfTimeslots', (req, res) => {
   });
 });
 
-app.get('/givenFeedbacks', (req, res) => {
+app.get('/givenFeedbacks', (req, res, next) => {
   const givenFeedbacks = {
     startups: {},
     coaches: {},
@@ -246,7 +250,8 @@ app.get('/givenFeedbacks', (req, res) => {
   };
   // Result is in form [{type: type, name: name, startup_rating: rating, coach_rating: rating}]
   // Type 1 => Coach, Type 2 => Startup
-  database.getGivenFeedbacks((result) => {
+  database.getGivenFeedbacks((err, result) => {
+    if (err) return next(err);
     for (const index in result) { //eslint-disable-line
       const element = result[index];
       if (element.type === 1) {
@@ -270,6 +275,7 @@ app.get('/givenFeedbacks', (req, res) => {
       if (givenFeedbacks.coaches[index] === true) givenFeedbacks.coachDone += 1;
     }
     res.json(givenFeedbacks);
+    return undefined;
   });
 });
 
@@ -314,8 +320,8 @@ app.post('/createMeetingDay', (req, res, next) => {
 });
 
 /* gets the still to come meeting days with given availabilities for a specific user */
-app.get('/getComingMeetingDay', (req, res, next) => {
-  database.getComingMeetingDay(req.session.userID, (err, result) => {
+app.get('/getComingMeetingDays', (req, res, next) => {
+  database.getComingMeetingDays(req.session.userID, (err, result) => {
     if (err) return next(err);
     res.json(result);
     return undefined;
