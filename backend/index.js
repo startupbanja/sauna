@@ -221,10 +221,11 @@ app.get('/comingTimeslots', (req, res, next) => {
   });
 });
 
-app.get('/numberOfTimeslots', (req, res) => {
+app.get('/numberOfTimeslots', (req, res, next) => {
   const timeslots = {};
   // Result is in form [{name:"coachname",date:"dateString",time:"timestring",duration:null}]
-  database.getComingTimeslots((result) => {
+  database.getComingTimeslots((err, result) => {
+    if (err) return next(err);
     for (const index in result) { //eslint-disable-line
       const element = result[index];
       if (timeslots[element.date] === undefined) {
@@ -236,6 +237,7 @@ app.get('/numberOfTimeslots', (req, res) => {
       timeslots[element.date].total += 1;
     }
     res.json(timeslots);
+    return undefined;
   });
 });
 
