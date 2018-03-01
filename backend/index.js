@@ -140,6 +140,17 @@ app.get('/profile', (req, res) => {
   });
 });
 
+// Returns id, name and active status for all coaches and startups in form
+// {
+// coaches: [{name, id, active}]
+// startups: [{name, id, active}]
+// }
+app.get('/activeStatuses', (req, res) => {
+  database.getActiveStatuses((data) => {
+    res.json(data);
+  });
+});
+
 // TODO coach names
 app.get('/meetings', (req, res) => {
   const allMeetings = [];
