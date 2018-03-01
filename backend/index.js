@@ -210,14 +210,19 @@ app.get('/givenFeedbacks', (req, res) => {
     startupDone: 0,
     coachTotal: 0,
     coachDone: 0,
+    date: '',
   };
-  // Result is in form [{type: type, name: name, startup_rating: rating, coach_rating: rating, date}]
+  // Result is in form
+  // [{type: type, name: name, startup_rating: rating, coach_rating: rating, date}]
   // Type 1 => Coach, Type 2 => Startup
   // filter out feedbacks which are -1 which means not given
-  database.getGivenFeedbacks((result) => {
+  // console.log(element);
+  database.getGivenFeedbacks((fbresult) => {
+    const { result } = fbresult;
+    givenFeedbacks.date = fbresult.date;
+
     for (const index in result) { //eslint-disable-line
       const element = result[index];
-      if (!givenFeedbacks.date) givenFeedbacks.date = element.date;
       if (element.type === 1) {
         if (element.coach_rating !== -1) {
           givenFeedbacks.coaches[element.name] = true;

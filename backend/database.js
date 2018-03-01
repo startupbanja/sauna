@@ -3,6 +3,7 @@
 const sqlite = require('sqlite3').verbose();
 const fs = require('fs');
 const bcrypt = require('bcrypt');
+const testData = require('./db_test_data.js');
 
 const db = new sqlite.Database(':memory:', (err) => {
   if (err) {
@@ -115,7 +116,7 @@ function getFeedback(id, callback) {
           END rating
         FROM Meetings
         WHERE (coach_id = ? OR startup_id = ?) AND date =
-          (SELECT MAX(date) FROM Meetings WHERE (coach_id = ? OR startup_id = ?) AND date < date("now"))) 
+          (SELECT MAX(date) FROM Meetings WHERE (coach_id = ? OR startup_id = ?) AND date < date("now")))
       NATURAL JOIN Profiles`;
   db.all(query, [id, id, id, id, id, id, id, id], (err, rows) => {
     if (err) throw err;
@@ -204,17 +205,29 @@ function getComingTimeslots(callback) {
   });
 }
 
+function getLastMeetingday(callback) {
+  const q = 'SELECT MAX(Date) AS Date FROM MeetingDays WHERE Date < date("now");';
+  db.get(q, [], (err, result) => {
+    if (err) return callback(err);
+    return callback(null, result.Date);
+  });
+}
+
 // Get given feedbacks  from latest meeting using the closest date in the past
 // Also returns the date
+// return value: { date, result }
 function getGivenFeedbacks(callback) {
-  const query = `SELECT Users.type, Profiles.name, Meetings.startup_rating, Meetings.coach_rating, Meetings.date
-    FROM Users
-    LEFT OUTER JOIN Profiles ON Users.id = Profiles.user_id
-    LEFT OUTER JOIN Meetings ON Users.id = Meetings.coach_id OR Users.id = Meetings.startup_id
-    WHERE Meetings.date = (SELECT MAX(Date) FROM MeetingDays WHERE Date < date("now"))`;
-  db.all(query, [], (err, result) => {
-    if (err) throw err;
-    callback(result);
+  getLastMeetingday((err, date) => {
+    // TODO handle err
+    const query = `SELECT Users.type, Profiles.name, Meetings.startup_rating, Meetings.coach_rating, Meetings.date
+      FROM Users
+      LEFT OUTER JOIN Profiles ON Users.id = Profiles.user_id
+      LEFT OUTER JOIN Meetings ON Users.id = Meetings.coach_id OR Users.id = Meetings.startup_id
+      WHERE Meetings.date = ?;`;
+    db.all(query, [date], (err2, result) => {
+      if (err2) throw err2;
+      callback({ date, result });
+    });
   });
 }
 
@@ -384,7 +397,6 @@ function saveMatchmaking(jsonData, dateString, callback) {
     return `( ${coach}, ${startup}, '${dateString}', '${time}', ${duration}, -1, -1)`;
   });
   const query = `${saveMatchmakingQuery}${strings.join(',\n')};`;
-  // console.log(query);
   db.run(query, () => callback());
 }
 
@@ -455,30 +467,33 @@ function setTimetable(timetable, date) {
   });
 }
 
+function initDB() {
+  fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
+    if (err) {
+      return console.log(err);
+    }
+    // split data into statements
+    const arr = data.split(';');
 
-fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
-  if (err) {
-    return console.log(err);
-  }
-  // split data into statements
-  const arr = data.split(';');
-
-  // ensure it is running in serialized mode
-  db.serialize(() => {
-    arr.forEach((statement) => {
-      if (statement.trim()) {
-        db.run(statement, [], (err2) => {
-          if (err2) {
-            throw err2;
-          }
-          return null;
-        });
-      }
+    // ensure it is running in serialized mode
+    db.serialize(() => {
+      arr.forEach((statement) => {
+        if (statement.trim()) {
+          db.run(statement, [], (err2) => {
+            if (err2) {
+              throw err2;
+            }
+            return null;
+          });
+        }
+      });
+      testData.insertData(db, 4);
+      console.log('Data loaded');
     });
-    console.log('Data loaded');
+    return null;
   });
-  return null;
-});
+}
+initDB();
 // Get an object mapping all ids from startups and coaches of the current batch and map them to their names.
 // Currently returns all coaches with any branch number
 // Checks for active = 1 for all rows
@@ -531,4 +546,5 @@ module.exports = {
   getComingDates,
   getComingTimeslots,
   getGivenFeedbacks,
+  db,
 };

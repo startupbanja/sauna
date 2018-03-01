@@ -36,8 +36,14 @@ class MeetingDaysView extends Component {
   fetchScheduledDays() {
     pageContent.fetchData('/getComingMeetingDays', 'GET', {})
       .then((result) => {
+        const arr = result;
+        arr.sort((a, b) => {
+          if (a.date < b.date) return -1;
+          if (a.date > b.date) return 1;
+          return 0;
+        });
         this.setState({
-          days: result,
+          days: arr,
         });
       });
   }
@@ -52,6 +58,7 @@ class MeetingDaysView extends Component {
   fetchGivenFeedbacks() {
     pageContent.fetchData('/givenFeedbacks', 'GET', {})
       .then((result) => {
+        console.log(result);
         this.setState({
           feedbacks: {
             startupTotal: result.startupTotal,
@@ -87,6 +94,43 @@ class MeetingDaysView extends Component {
           <p className="meeting-date">{new Date(date).toLocaleDateString('en-GB', dateOptions).replace(/\//g, '.')}</p>
           {(total !== null && done !== null) &&
             <p>{`${done}/${total} Coaches' availabilities`}</p>}
+          {index === 0 && (
+            <div>
+              {((this.state.feedbacks.coachTotal &&
+                 this.state.feedbacks.coachDone !== undefined)
+                || undefined) &&
+                <p>{`${this.state.feedbacks.coachDone}/${this.state.feedbacks.coachTotal} Coaches' feedbacks`}</p>}
+              {((this.state.feedbacks.startupTotal &&
+                 this.state.feedbacks.startupDone !== undefined)
+                || undefined) &&
+                <p>{`${this.state.feedbacks.startupDone}/${this.state.feedbacks.startupTotal} Startups' feedbacks`}</p>}
+            </div>
+          )}
+          {/* link to details page, the first item has modified link */}
+          <Link
+            className="btn btn-minor"
+            to={`/meetings/${!index ? 'recent/' : ''}${this.state.days[index].date}/`}
+          >
+            View details
+          </Link>
+
+          {index === 0 && (
+            <span>
+              <Link
+                className="btn btn-minor"
+                to={`/timetable/${this.state.days[index].date}/`}
+              >
+                View timetable
+              </Link>
+              {/* TODO ONLY ALLOW RUNNING ALGORITHM ONCE */}
+              <button
+                className="btn btn-major"
+                onClick={() => runMatchmaking(this.state.days[index].date)}
+              > Run Matchmaking
+              </button>
+            </span>
+          )}
+
         </div>
       );
     }
@@ -129,31 +173,6 @@ class MeetingDaysView extends Component {
 
         <div className="next-day-container">
           {this.renderMeetingDay(0)}
-          {((this.state.feedbacks.coachTotal && this.state.feedbacks.coachDone !== undefined)
-            || undefined) &&
-            <p>{`${this.state.feedbacks.coachDone}/${this.state.feedbacks.coachTotal} Coaches' feedbacks`}</p>}
-          {((this.state.feedbacks.startupTotal && this.state.feedbacks.startupDone !== undefined)
-            || undefined) &&
-            <p>{`${this.state.feedbacks.startupDone}/${this.state.feedbacks.startupTotal} Startups' feedbacks`}</p>}
-
-          <Link
-            className="btn btn-primary"
-            to={`/meetings/${this.state.days[0].date}/`}
-          >
-            View details
-          </Link>
-          <Link
-            className="btn btn-primary"
-            to={`/timetable/${this.state.days[0].date}/`}
-          >
-            View timetable
-          </Link>
-          {/* TODO ONLY ALLOW RUNNING ALGORITHM ONCE */}
-          <button
-            className="btn btn-danger"
-            onClick={() => runMatchmaking(this.state.days[0].date)}
-          > Run Matchmaking
-          </button>
 
         </div>
 

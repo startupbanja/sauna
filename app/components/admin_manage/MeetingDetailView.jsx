@@ -5,10 +5,14 @@ import pageContent from '../pageContent';
 
 /* eslint-disable jsx-a11y/anchor-is-valid */ // disable complaining from Link
 
+// Component to view info about a meeting, including coach availability status
+// and previous feedback status if applicable.
 export default class MeetingDetailView extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { availabilities: null, feedbacks: null };
+    // feedbacks is first either true or false, then when fetched, contains feedback data
+    // if props.renferFeedbacks
+    this.state = { availabilities: null, feedbacks: !this.props.renderFeedbacks };
     this.fetchTimeslots();
     this.fetchFeedbacks();
   }
@@ -28,7 +32,8 @@ export default class MeetingDetailView extends React.Component {
   startupTotal: int,
   startupDone: int,
   coachTotal: int,
-  coachDone: int
+  coachDone: int,
+  date: string
   }
   get the feedbacks from the most recent passed meeting
   */
@@ -60,30 +65,34 @@ export default class MeetingDetailView extends React.Component {
         availabilities.notGiven.push(<li key={name}>{name}</li>);
       }
     });
+
+    // make feedbacks list from state into renderable components if renderFeedbacks
+    // is true
     const feedbacks = {
       coaches: { given: [], notGiven: [] },
       startups: { given: [], notGiven: [] },
     };
-    // TODO RIGHT DATE?
 
-    const keys = ['startups', 'coaches'];
-    keys.forEach((key) => {
-      Object.entries(this.state.feedbacks[key]).forEach((arr) => {
-        const name = arr[0];
-        const filled = arr[1];
-        if (filled) {
-          feedbacks[key].given.push((
-            <li key={`${name}-fb`}>
-              {name}: <span className="glyphicon glyphicon-ok" aria-hidden="true" />
-            </li>));
-        } else {
-          feedbacks[key].notGiven.push((
-            <li key={`${name}-fb`}>
-              {name}: <span className="glyphicon glyphicon-remove" aria-hidden="true" />
-            </li>));
-        }
+    if (this.props.renderFeedbacks) {
+      const keys = ['startups', 'coaches'];
+      keys.forEach((key) => {
+        Object.entries(this.state.feedbacks[key]).forEach((arr) => {
+          const name = arr[0];
+          const filled = arr[1];
+          if (filled) {
+            feedbacks[key].given.push((
+              <li key={`${name}-fb`}>
+                {name}: <span className="glyphicon glyphicon-ok" aria-hidden="true" />
+              </li>));
+          } else {
+            feedbacks[key].notGiven.push((
+              <li key={`${name}-fb`}>
+                {name}: <span className="glyphicon glyphicon-remove" aria-hidden="true" />
+              </li>));
+          }
+        });
       });
-    });
+    }
 
     return (
       <div className="container">
@@ -99,10 +108,12 @@ export default class MeetingDetailView extends React.Component {
             <h3>Availabilities for this meeting:</h3>
             <button className="btn btn-major"> Send reminder</button>
           </div>
-          <div className="col-md-6">
-            <h3>Feedbacks from last meeting:</h3>
-            <button className="btn btn-major"> Send reminder</button>
-          </div>
+          {this.props.renderFeedbacks && (
+            <div className="col-md-6 feedbacks-header">
+              <h3>Feedbacks from last meeting:</h3>
+              <button className="btn btn-major"> Send reminder</button>
+            </div>)
+          }
         </div>
         <div className="row">
           <div className="listDiv col-md-3">
@@ -119,20 +130,24 @@ export default class MeetingDetailView extends React.Component {
               {availabilities.notGiven}
             </ul>
           </div>
-          <div className="listDiv col-md-3">
-            <ul>
-              <h3>Coaches:</h3>
-              {feedbacks.coaches.notGiven}
-              {feedbacks.coaches.given}
-            </ul>
-          </div>
-          <div className="listDiv col-md-3">
-            <ul>
-              <h3>Startups:</h3>
-              {feedbacks.startups.notGiven}
-              {feedbacks.startups.given}
-            </ul>
-          </div>
+          {this.props.renderFeedbacks &&
+            <div className="feedbackBlock">
+              <div className="listDiv col-md-3">
+                <ul>
+                  <h3>Coaches:</h3>
+                  {feedbacks.coaches.notGiven}
+                  {feedbacks.coaches.given}
+                </ul>
+              </div>
+              <div className="listDiv col-md-3">
+                <ul>
+                  <h3>Startups:</h3>
+                  {feedbacks.startups.notGiven}
+                  {feedbacks.startups.given}
+                </ul>
+              </div>
+            </div>
+          }
         </div>
       </div>
     );
@@ -141,4 +156,5 @@ export default class MeetingDetailView extends React.Component {
 
 MeetingDetailView.propTypes = {
   date: PropTypes.string.isRequired,
+  renderFeedbacks: PropTypes.bool.isRequired,
 };

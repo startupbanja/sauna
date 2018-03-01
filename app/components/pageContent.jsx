@@ -140,15 +140,21 @@ const adminContent = (
     />
     <Route path="/meetingDays" component={MeetingDaysView} />
     <Route
-      path="/timetable/:date"
+      path="/timetable/:date/"
       render={({ match }) => (
         <AdminSchedules date={match.params.date} />
       )}
     />
     <Route
+      path="/meetings/recent/:date/"
+      render={({ match }) => (
+        <MeetingDetailView date={match.params.date} renderFeedbacks />
+      )}
+      />
+    <Route
       path="/meetings/:date/"
       render={({ match }) => (
-        <MeetingDetailView date={match.params.date} />
+        <MeetingDetailView date={match.params.date} renderFeedbacks={false} />
       )}
     />
   </Switch>
