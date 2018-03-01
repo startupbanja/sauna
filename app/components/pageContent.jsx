@@ -7,7 +7,7 @@ import UserProfilePage from './UserProfilePage';
 import UserSchedule from './UserSchedule';
 import UserList from './UserList';
 import App from './App';
-import AdminManagePage from './admin_manage/AdminManagePage';
+import MeetingDaysView from './admin_manage/MeetingDaysView';
 import TimeslotView from './timeslot/TimeslotView';
 import AdminSchedules from './AdminSchedules';
 import UserHandlingView from './admin_manage/UserHandlingView';
@@ -64,7 +64,7 @@ const userContent = (
       path="/startups"
       render={({ match }) => <UserList match={match} type="Startups" />}
     />
-    <Route path="/main" render={() => <div><h1>Home</h1><LandingPage /></div>} />
+    <Route path="/main" render={() => <div><LandingPage /></div>} />
     <Route path="/timetable" render={() => <UserSchedule schedule={schedule} />} />
     <Route path="/user" component={UserProfilePage} />
     <Route path="/feedback" render={() => <FeedbackView questions={feedbackQuestions} />} />
@@ -137,7 +137,7 @@ const adminContent = (
       path="/startups"
       render={({ match }) => <UserList match={match} type="Startups" />}
     />
-    <Route path="/manage" component={AdminManagePage} />
+    <Route path="/meetingDays" component={MeetingDaysView} />
     <Route
       path="/timetable"
       render={() => (
@@ -152,8 +152,8 @@ const adminLabels = {
   '/main': 'Home',
   '/coaches': 'Coaches',
   '/startups': 'Startups',
-  '/manage': 'Manage',
   '/users': 'Users',
+  '/meetingDays': 'Meeting days',
 };
 // TODO change this to something better later
 function getContent(userType) {
