@@ -34,10 +34,10 @@ app.use((req, res, next) => {
   res.append('Access-Control-Allow-Origin', req.get('origin'));
   res.append('Access-Control-Allow-Credentials', 'true');
 
-  if (!req.session.userID && req.path !== '/login') {
+  /*if (!req.session.userID && req.path !== '/login') {
     res.sendStatus(401);
     return;
-  }
+  }*/
 
   next();
 });
@@ -72,20 +72,22 @@ app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/index.html`);
 });
 
-app.get('/api', (req, res) => {
+app.get('/api', (req, res, next) => {
   if (req.query.hasOwnProperty('q')) {
     res.json({ message: req.query.q });
   } else {
-    database.getUsers(1, 0, false, (data) => {
+    database.getUsers(1, 0, false, (err, data) => {
+      if (err) return next(err);
       res.json(data);
+      return undefined;
     });
   }
 });
 
 function runAlgorithm(callback) {
-  database.getTimeslots((timeslots) => {
-    database.getRatings((ratings) => {
-      database.getStartups((startupdata) => {
+  database.getTimeslots((err, timeslots) => {
+    database.getRatings((err2, ratings) => {
+      database.getStartups((err3, startupdata) => {
         const data = {
           feedbacks: ratings,
           availabilities: timeslots,
@@ -105,13 +107,14 @@ app.get('/timeslots', (req, res) => {
   runAlgorithm(result => res.json({ schedule: result }));
 });
 
-app.get('/users', (req, res) => {
+app.get('/users', (req, res, next) => {
   let type = req.query.type;
   const batch = 1;
   if (type === 'Startups') type = 2;
   else type = 1;
 
-  database.getUsers(type, batch, true, (userList) => {
+  database.getUsers(type, batch, true, (err, userList) => {
+    if (err) return next(err);
     const userArray = [];
     for (const user in userList) {
       const userData = userList[user];
@@ -124,27 +127,32 @@ app.get('/users', (req, res) => {
       userArray.push(userObj);
     }
     res.json({ users: userArray });
+    return undefined;
   });
 });
 
-app.get('/profile', (req, res) => {
+app.get('/profile', (req, res, next) => {
   let id;
   if (typeof req.query.userId !== 'undefined') id = req.query.userId;
   else id = req.session.userID;
 
-  database.getProfile(id, (result) => {
+  database.getProfile(id, (err, result) => {
+    if (err) return next(err);
     if (req.session.userID == id || req.session.userID === 82) {
       Object.assign(result, { canModify: true });
     }
     res.json(result);
+    return undefined;
   });
 });
 
 // TODO coach names
-app.get('/meetings', (req, res) => {
+app.get('/meetings', (req, res, next) => {
   const allMeetings = [];
-  database.getTimetable((meetings) => {
-    database.getTimeslots((timeslots) => {
+  database.getTimetable((err, meetings) => {
+    if (err) return next(err);
+    database.getTimeslots((err2, timeslots) => {
+      if (err2) return next(err2);
       const dur = meetings[0].duration;
       for (const timeslot in timeslots) { // eslint-disable-line
         const id = timeslot;
@@ -174,56 +182,74 @@ app.get('/meetings', (req, res) => {
         }
       }
       res.json({ schedule: allMeetings });
+      return undefined;
     });
+    return undefined;
   });
 });
 
-app.get('/feedback', (req, res) => {
+app.get('/feedback', (req, res, next) => {
   const id = req.session.userID;
-  database.getFeedback(id, (result) => {
+  database.getFeedback(id, (err, result) => {
+    if (err) return next(err);
     res.json({
       data: result,
       userType: req.session.userType,
     });
+    return undefined;
   });
 });
 
-app.post('/giveFeedback', (req, res) => {
+app.post('/giveFeedback', (req, res, next) => {
   const userType = req.session.userType;
   const meetingId = req.body.meetingId;
   const rating = req.body.rating;
 
-  database.giveFeedback(meetingId, rating, (userType === 'coach') ? 'coach_rating' : 'startup_rating', (result) => {
+  database.giveFeedback(meetingId, rating, (userType === 'coach') ? 'coach_rating' : 'startup_rating', (err, result) => {
+    if (err) return next(err);
     res.json({ status: result });
+    return undefined;
   });
 });
 
-app.post('/createMeetingDay', (req, res) => {
+app.post('/createMeetingDay', (req, res, next) => {
   if (!requireAdmin(req, res)) return;
   const date = req.body.date;
   const start = req.body.start;
   const end = req.body.end;
   const split = req.body.split;
-  database.createMeetingDay(date, start, end, split, (result) => {
+  database.createMeetingDay(date, start, end, split, (err, result) => {
+    if (err) return next(err);
     res.json(result);
+    return undefined;
   });
 });
 
-app.get('/getComingMeetingDay', (req, res) => {
-  database.getComingMeetingDay(req.session.userID, (result) => {
+app.get('/getComingMeetingDay', (req, res, next) => {
+  database.getComingMeetingDay(req.session.userID, (err, result) => {
+    if (err) return next(err);
     res.json(result);
+    return undefined;
   });
 });
 
-app.post('/insertAvailability', (req, res) => {
+app.post('/insertAvailability', (req, res, next) => {
   const userId = req.session.userID;
   const date = req.body.date;
   const startTime = req.body.start;
   let duration = (new Date(`${date}T${req.body.end}`).getTime() - new Date(`${date}T${startTime}`).getTime());
   duration = parseInt(duration / 60000, 10);
-  database.insertAvailability(userId, date, startTime, duration, (result) => {
+  database.insertAvailability(userId, date, startTime, duration, (err, result) => {
+    if (err) return next(err);
     res.json(result);
+    return undefined;
   });
+});
+
+// Error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send({ error: 'An error has occured!' });
 });
 
 const server = app.listen(port);
