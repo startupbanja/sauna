@@ -6,15 +6,16 @@ import $ from 'jquery';
 // import Button from './Button';
 
 export default class Menu extends React.Component {
-
-  collapseNav() {
+  collapseNav() { // eslint-disable-line
     $('.navbar-collapse').collapse('hide');
   }
 
   render() {
     const list = Object.keys(this.props.content).map(name => (
       <li key={name} className="nav-item menuListItem" >
-        <Link className="nav-link" to={name} onClick={this.collapseNav} >{this.props.content[name]}</Link>
+        <Link className="nav-link" to={name} onClick={this.collapseNav} >
+          {this.props.content[name]}
+        </Link>
       </li>
     ), this);
     /* TODO: nav className=navbar-fixed-top tähän myöhemmin, ei
