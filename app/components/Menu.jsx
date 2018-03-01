@@ -14,7 +14,9 @@ export default class Menu extends React.Component {
   render() {
     const list = Object.keys(this.props.content).map(name => (
       <li key={name} className="nav-item menuListItem" >
-        <Link className="nav-link" to={name} onClick={this.collapseNav} >{this.props.content[name]}</Link>
+        <Link className="nav-link" to={name} onClick={this.collapseNav} >
+          {this.props.content[name]}
+        </Link>
       </li>
     ), this);
     /* TODO: nav className=navbar-fixed-top tähän myöhemmin, ei
