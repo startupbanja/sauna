@@ -13,6 +13,8 @@ ShallowWrapper {
     }
     date={2018-05-27T21:00:00.000Z}
     end={720}
+    onMoveToNext={undefined}
+    onMoveToPrev={undefined}
     onSubmit={[Function]}
     split={40}
     start={600}
@@ -30,6 +32,11 @@ ShallowWrapper {
     "nodeType": "host",
     "props": Object {
       "children": Array [
+        <p
+          className="date"
+        >
+          Mon, 5.28.2018
+        </p>,
         <TimeslotDrag
           available={
             Object {
@@ -51,17 +58,33 @@ ShallowWrapper {
           }
           onChange={[Function]}
         />,
-        <button
-          className="btn btn-lg btn-red"
-          onClick={[Function]}
+        <div
+          className="navigation-container"
         >
-          Submit
-        </button>,
+          <button
+            className="btn btn-lg btn-major"
+            onClick={[Function]}
+          >
+            Submit
+          </button>
+        </div>,
       ],
-      "className": "container",
+      "className": "container timeslot-container",
     },
     "ref": null,
     "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": "Mon, 5.28.2018",
+          "className": "date",
+        },
+        "ref": null,
+        "rendered": "Mon, 5.28.2018",
+        "type": "p",
+      },
       Object {
         "instance": null,
         "key": undefined,
@@ -100,13 +123,37 @@ ShallowWrapper {
         "key": undefined,
         "nodeType": "host",
         "props": Object {
-          "children": "Submit",
-          "className": "btn btn-lg btn-red",
-          "onClick": [Function],
+          "children": Array [
+            undefined,
+            <button
+              className="btn btn-lg btn-major"
+              onClick={[Function]}
+            >
+              Submit
+            </button>,
+            undefined,
+          ],
+          "className": "navigation-container",
         },
         "ref": null,
-        "rendered": "Submit",
-        "type": "button",
+        "rendered": Array [
+          undefined,
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": "Submit",
+              "className": "btn btn-lg btn-major",
+              "onClick": [Function],
+            },
+            "ref": null,
+            "rendered": "Submit",
+            "type": "button",
+          },
+          undefined,
+        ],
+        "type": "div",
       },
     ],
     "type": "div",
@@ -118,6 +165,11 @@ ShallowWrapper {
       "nodeType": "host",
       "props": Object {
         "children": Array [
+          <p
+            className="date"
+          >
+            Mon, 5.28.2018
+          </p>,
           <TimeslotDrag
             available={
               Object {
@@ -139,17 +191,33 @@ ShallowWrapper {
             }
             onChange={[Function]}
           />,
-          <button
-            className="btn btn-lg btn-red"
-            onClick={[Function]}
+          <div
+            className="navigation-container"
           >
-            Submit
-          </button>,
+            <button
+              className="btn btn-lg btn-major"
+              onClick={[Function]}
+            >
+              Submit
+            </button>
+          </div>,
         ],
-        "className": "container",
+        "className": "container timeslot-container",
       },
       "ref": null,
       "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": "Mon, 5.28.2018",
+            "className": "date",
+          },
+          "ref": null,
+          "rendered": "Mon, 5.28.2018",
+          "type": "p",
+        },
         Object {
           "instance": null,
           "key": undefined,
@@ -188,13 +256,37 @@ ShallowWrapper {
           "key": undefined,
           "nodeType": "host",
           "props": Object {
-            "children": "Submit",
-            "className": "btn btn-lg btn-red",
-            "onClick": [Function],
+            "children": Array [
+              undefined,
+              <button
+                className="btn btn-lg btn-major"
+                onClick={[Function]}
+              >
+                Submit
+              </button>,
+              undefined,
+            ],
+            "className": "navigation-container",
           },
           "ref": null,
-          "rendered": "Submit",
-          "type": "button",
+          "rendered": Array [
+            undefined,
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": "Submit",
+                "className": "btn btn-lg btn-major",
+                "onClick": [Function],
+              },
+              "ref": null,
+              "rendered": "Submit",
+              "type": "button",
+            },
+            undefined,
+          ],
+          "type": "div",
         },
       ],
       "type": "div",
@@ -223,6 +315,8 @@ ShallowWrapper {
     }
     date={2018-05-27T21:00:00.000Z}
     end={720}
+    onMoveToNext={undefined}
+    onMoveToPrev={undefined}
     onSubmit={[Function]}
     split={40}
     start={600}
@@ -240,6 +334,11 @@ ShallowWrapper {
     "nodeType": "host",
     "props": Object {
       "children": Array [
+        <p
+          className="date"
+        >
+          Mon, 5.28.2018
+        </p>,
         <TimeslotDrag
           available={
             Object {
@@ -261,17 +360,33 @@ ShallowWrapper {
           }
           onChange={[Function]}
         />,
-        <button
-          className="btn btn-lg btn-red"
-          onClick={[Function]}
+        <div
+          className="navigation-container"
         >
-          Submit
-        </button>,
+          <button
+            className="btn btn-lg btn-major"
+            onClick={[Function]}
+          >
+            Submit
+          </button>
+        </div>,
       ],
-      "className": "container",
+      "className": "container timeslot-container",
     },
     "ref": null,
     "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": "Mon, 5.28.2018",
+          "className": "date",
+        },
+        "ref": null,
+        "rendered": "Mon, 5.28.2018",
+        "type": "p",
+      },
       Object {
         "instance": null,
         "key": undefined,
@@ -310,13 +425,37 @@ ShallowWrapper {
         "key": undefined,
         "nodeType": "host",
         "props": Object {
-          "children": "Submit",
-          "className": "btn btn-lg btn-red",
-          "onClick": [Function],
+          "children": Array [
+            undefined,
+            <button
+              className="btn btn-lg btn-major"
+              onClick={[Function]}
+            >
+              Submit
+            </button>,
+            undefined,
+          ],
+          "className": "navigation-container",
         },
         "ref": null,
-        "rendered": "Submit",
-        "type": "button",
+        "rendered": Array [
+          undefined,
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": "Submit",
+              "className": "btn btn-lg btn-major",
+              "onClick": [Function],
+            },
+            "ref": null,
+            "rendered": "Submit",
+            "type": "button",
+          },
+          undefined,
+        ],
+        "type": "div",
       },
     ],
     "type": "div",
@@ -328,6 +467,11 @@ ShallowWrapper {
       "nodeType": "host",
       "props": Object {
         "children": Array [
+          <p
+            className="date"
+          >
+            Mon, 5.28.2018
+          </p>,
           <TimeslotDrag
             available={
               Object {
@@ -349,17 +493,33 @@ ShallowWrapper {
             }
             onChange={[Function]}
           />,
-          <button
-            className="btn btn-lg btn-red"
-            onClick={[Function]}
+          <div
+            className="navigation-container"
           >
-            Submit
-          </button>,
+            <button
+              className="btn btn-lg btn-major"
+              onClick={[Function]}
+            >
+              Submit
+            </button>
+          </div>,
         ],
-        "className": "container",
+        "className": "container timeslot-container",
       },
       "ref": null,
       "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": "Mon, 5.28.2018",
+            "className": "date",
+          },
+          "ref": null,
+          "rendered": "Mon, 5.28.2018",
+          "type": "p",
+        },
         Object {
           "instance": null,
           "key": undefined,
@@ -398,13 +558,37 @@ ShallowWrapper {
           "key": undefined,
           "nodeType": "host",
           "props": Object {
-            "children": "Submit",
-            "className": "btn btn-lg btn-red",
-            "onClick": [Function],
+            "children": Array [
+              undefined,
+              <button
+                className="btn btn-lg btn-major"
+                onClick={[Function]}
+              >
+                Submit
+              </button>,
+              undefined,
+            ],
+            "className": "navigation-container",
           },
           "ref": null,
-          "rendered": "Submit",
-          "type": "button",
+          "rendered": Array [
+            undefined,
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": "Submit",
+                "className": "btn btn-lg btn-major",
+                "onClick": [Function],
+              },
+              "ref": null,
+              "rendered": "Submit",
+              "type": "button",
+            },
+            undefined,
+          ],
+          "type": "div",
         },
       ],
       "type": "div",
@@ -422,8 +606,13 @@ ShallowWrapper {
 
 exports[`Timeslot initializes correctly 1`] = `
 <div
-  className="container"
+  className="container timeslot-container"
 >
+  <p
+    className="date"
+  >
+    Mon, 5.28.2018
+  </p>
   <div
     className="dragContainer"
     style={
@@ -579,19 +768,28 @@ exports[`Timeslot initializes correctly 1`] = `
       />
     </div>
   </div>
-  <button
-    className="btn btn-lg btn-red"
-    onClick={[Function]}
+  <div
+    className="navigation-container"
   >
-    Submit
-  </button>
+    <button
+      className="btn btn-lg btn-major"
+      onClick={[Function]}
+    >
+      Submit
+    </button>
+  </div>
 </div>
 `;
 
 exports[`Timeslot initializes correctly 2`] = `
 <div
-  className="container"
+  className="container timeslot-container"
 >
+  <p
+    className="date"
+  >
+    Wed, 2.1.2017
+  </p>
   <div
     className="dragContainer"
     style={
@@ -880,11 +1078,15 @@ exports[`Timeslot initializes correctly 2`] = `
       />
     </div>
   </div>
-  <button
-    className="btn btn-lg btn-red"
-    onClick={[Function]}
+  <div
+    className="navigation-container"
   >
-    Submit
-  </button>
+    <button
+      className="btn btn-lg btn-major"
+      onClick={[Function]}
+    >
+      Submit
+    </button>
+  </div>
 </div>
 `;
