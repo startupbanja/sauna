@@ -11,6 +11,7 @@ import MeetingDaysView from './admin_manage/MeetingDaysView';
 import TimeslotView from './timeslot/TimeslotView';
 import AdminSchedules from './AdminSchedules';
 import UserHandlingView from './admin_manage/UserHandlingView';
+import MeetingDetailView from './admin_manage/MeetingDetailView';
 
 const feedbackQuestions = {
   coach: [{
@@ -139,9 +140,21 @@ const adminContent = (
     />
     <Route path="/meetingDays" component={MeetingDaysView} />
     <Route
-      path="/timetable"
-      render={() => (
-        <AdminSchedules />
+      path="/timetable/:date/"
+      render={({ match }) => (
+        <AdminSchedules date={match.params.date} />
+      )}
+    />
+    <Route
+      path="/meetings/recent/:date/"
+      render={({ match }) => (
+        <MeetingDetailView date={match.params.date} renderFeedbacks />
+      )}
+    />
+    <Route
+      path="/meetings/:date/"
+      render={({ match }) => (
+        <MeetingDetailView date={match.params.date} renderFeedbacks={false} />
       )}
     />
     <Route path="/users" component={UserHandlingView} />

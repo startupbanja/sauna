@@ -83,3 +83,9 @@
   color: #000;
   background: #E55234;
 }
+
+/* For meeting detail view*/
+.listDiv ul {
+  padding-left:0;
+  list-style:none;
+}
