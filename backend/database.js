@@ -21,49 +21,21 @@ function closeDatabase(callback) {
     return callback();
   });
 }
-const userQuery = `
-SELECT Profiles.user_id, name, description, email, linkedin, Credentials.company, Credentials.title
-FROM Profiles
-LEFT OUTER JOIN Credentials ON Profiles.user_id = Credentials.user_id
-WHERE Profiles.user_id IN (
-  SELECT id
-  FROM USERS
-  WHERE type = ? AND batch = ? AND active = 1
-);`;
-
-const timeslotQuery = `
-SELECT user_id, date, time, duration
-FROM Timeslots
-WHERE date IN (
-SELECT MAX(date)
-FROM Timeslots
-);`;
-
-const ratingQuery = `
-SELECT coach_id, startup_id, coach_rating, startup_rating
-FROM Ratings
-INNER JOIN Users
-ON Ratings.startup_id=Users.id
-WHERE type=2 AND active=1 AND batch IN (
-SELECT MAX(id)
-FROM Batches
-);`;
-
-const startupQuery = `
-SELECT id
-FROM USERS
-WHERE type=2 AND batch IN (
-SELECT MAX(id)
-FROM Batches
-);`;
 
 function getUsers(type, batch, includeId, callback) {
   const users = {};
+  const query = `
+  SELECT Profiles.user_id, name, description, email, linkedin, Credentials.company, Credentials.title
+  FROM Profiles
+  LEFT OUTER JOIN Credentials ON Profiles.user_id = Credentials.user_id
+  WHERE Profiles.user_id IN (
+    SELECT id
+    FROM USERS
+    WHERE type = ? AND batch = ? AND active = 1
+  );`;
   // (sql, params, callback for each row, callback on complete)
-  db.each(userQuery, [type, batch], (err, row) => {
-    if (err) {
-      throw err;
-    }
+  db.each(query, [type, batch], (err, row) => {
+    if (err) return callback(err);
     // if already read one line with the name
     if (users[row.name] !== undefined) {
       users[row.name].credentials.push([row.company, row.title]);
@@ -81,10 +53,9 @@ function getUsers(type, batch, includeId, callback) {
     return null;
   }, (err) => {
     if (err) {
-      // return console.error(err.message);
-      throw err;
+      return callback(err);
     }
-    return callback(users);
+    return callback(err, users);
   });
 }
 
@@ -141,9 +112,7 @@ function getProfile(id, callback) {
                  WHERE Profiles.user_id = ?;`;
 
   db.all(query, [Number(id)], (err, rows) => {
-    if (err) {
-      throw err;
-    }
+    if (err) return callback(err);
     rows.forEach((row) => {
       if (info.name === undefined) {
         info.name = row.name;
@@ -156,7 +125,7 @@ function getProfile(id, callback) {
         info.credentials.push({ company: row.company, position: row.title });
       }
     });
-    callback(info);
+    return callback(err, info);
   });
 }
 
@@ -179,8 +148,8 @@ function getFeedback(id, callback) {
           (SELECT MAX(date) FROM Meetings WHERE coach_id = ? OR startup_id = ?))
       NATURAL JOIN Profiles`;
   db.all(query, [id, id, id, id, id, id, id, id], (err, rows) => {
-    if (err) throw err;
-    callback(rows);
+    if (err) return callback(err);
+    return callback(err, rows);
   });
 }
 
@@ -190,22 +159,24 @@ function giveFeedback(meetingId, rating, field, callback) {
   SET ${field} = ?
   WHERE id = ?;`;
   db.run(query, [rating, meetingId], (err) => {
-    if (err) throw err;
+    if (err) return callback(err);
     const query2 = `
     SELECT startup_id, coach_id
     FROM Meetings
     WHERE id = ?`;
-    db.get(query2, [meetingId], (err3, row) => {
-      if (err3) throw err3;
+    db.get(query2, [meetingId], (err2, row) => {
+      if (err2) return callback(err2);
       const query3 = `
       UPDATE Ratings
       SET ${field} = ?
       WHERE startup_id = ? AND coach_id = ?`;
-      db.run(query3, [rating, row.startup_id, row.coach_id], (error) => {
-        if (error) throw error;
-        callback('success');
+      db.run(query3, [rating, row.startup_id, row.coach_id], (err3) => {
+        if (err3) return callback(err3);
+        return callback(err3, 'success');
       });
+      return undefined;
     });
+    return undefined;
   });
 }
 
@@ -214,8 +185,8 @@ function createMeetingDay(date, start, end, split, callback) {
   const query = `INSERT INTO MeetingDays(date, startTime, endTime, split)
     VALUES (?, ?, ?, ?)`;
   db.run(query, [date, start, end, split], (err) => {
-    if (err) throw err;
-    callback({ status: 'success' });
+    if (err) return callback(err);
+    return callback(err, { status: 'success' });
   });
 }
 
@@ -226,8 +197,8 @@ function getComingMeetingDays(userId, callback) {
     LEFT OUTER JOIN Timeslots on Timeslots.date = MeetingDays.date AND Timeslots.user_id = Users.id
     WHERE Users.id = ? AND MeetingDays.date >= date("now")`;
   db.all(query, [userId], (err, result) => {
-    if (err) throw err;
-    callback(result);
+    if (err) return callback(err);
+    return callback(err, result);
   });
 }
 
@@ -237,17 +208,12 @@ function getComingDates(callback) {
     FROM MeetingDays
     WHERE MeetingDays.date >= date("now")`;
   db.each(query, [], (err, row) => {
-    if (err) {
-      throw err;
-    }
+    if (err) return callback(err);
     dates.push(row.date);
     return null;
   }, (err) => {
-    if (err) {
-      // return console.error(err.message);
-      throw err;
-    }
-    return callback(dates);
+    if (err) return callback(err);
+    return callback(err, dates);
   });
 }
 
@@ -260,8 +226,8 @@ function getComingTimeslots(callback) {
     LEFT OUTER JOIN Timeslots ON MeetingDays.date = Timeslots.date AND Timeslots.user_id = Users.id
     WHERE MeetingDays.date >= date("now") AND Users.active = 1 AND Users.type = 1`;
   db.all(query, [], (err, result) => {
-    if (err) throw err;
-    callback(result);
+    if (err) return callback(err);
+    return callback(err, result);
   });
 }
 
@@ -272,8 +238,8 @@ function getGivenFeedbacks(callback) {
     LEFT OUTER JOIN Meetings ON Users.id = Meetings.coach_id OR Users.id = Meetings.startup_id
     WHERE Meetings.date = (SELECT MAX(Date) FROM MeetingDays WHERE Date < date("now"))`;
   db.all(query, [], (err, result) => {
-    if (err) throw err;
-    callback(result);
+    if (err) return callback(err);
+    return callback(err, result);
   });
 }
 
@@ -281,8 +247,8 @@ function insertAvailability(userId, date, startTime, duration, callback) {
   const query = `INSERT INTO Timeslots(user_id, date, time, duration)
     VALUES (?, ?, ?, ?)`;
   db.run(query, [userId, date, startTime, duration], (err) => {
-    if (err) throw err;
-    callback({ status: 'success' });
+    if (err) return callback(err);
+    return callback(err, { status: 'success' });
   });
 }
 
@@ -327,29 +293,42 @@ function verifyIdentity(username, password, callback) {
 
 function getStartups(callback) {
   const startups = [];
+  const query = `
+  SELECT id
+  FROM USERS
+  WHERE type=2 AND batch IN (
+  SELECT MAX(id)
+  FROM Batches
+  );`;
   // (sql, params, callback for each row, callback on complete)
-  db.each(startupQuery, [], (err, row) => {
+  db.each(query, [], (err, row) => {
     if (err) {
-      throw err;
+      return callback(err);
     }
     startups.push(row.id.toString());
     return null;
   }, (err) => {
     if (err) {
-      // return console.error(err.message);
-      throw err;
+      return callback(err);
     }
-    return callback(startups);
+    return callback(err, startups);
   });
 }
 
 function getRatings(callback) {
   const ratings = [];
+  const query = `
+  SELECT coach_id, startup_id, coach_rating, startup_rating
+  FROM Ratings
+  INNER JOIN Users
+  ON Ratings.startup_id=Users.id
+  WHERE type=2 AND active=1 AND batch IN (
+  SELECT MAX(id)
+  FROM Batches
+  );`;
   // (sql, params, callback for each row, callback on complete)
-  db.each(ratingQuery, [], (err, row) => {
-    if (err) {
-      throw err;
-    }
+  db.each(query, [], (err, row) => {
+    if (err) return callback(err);
     ratings.push({
       coach: row.coach_id.toString(),
       startup: row.startup_id.toString(),
@@ -359,10 +338,9 @@ function getRatings(callback) {
     return null;
   }, (err) => {
     if (err) {
-      // return console.error(err.message);
-      throw err;
+      return callback(err);
     }
-    return callback(ratings);
+    return callback(err, ratings);
   });
 }
 
@@ -375,59 +353,46 @@ function getUserMap(callback) {
   const keys = {};
   // (sql, params, callback for each row, callback on complete)
   db.each(q, [], (err, row) => {
-    if (err) {
-      throw err;
-    }
+    if (err) return callback(err);
     keys[row.name] = row.user_id.toString();
     keys[row.user_id.toString()] = row.name;
     return null;
   }, (err) => {
-    if (err) {
-      // return console.error(err.message);
-      throw err;
-    }
-    return callback(keys);
+    if (err) return callback(err);
+    return callback(err, keys);
   });
 }
 
 function getTimeslots(callback) {
   const timeslots = {};
-  db.each(timeslotQuery, [], (err, row) => {
-    if (err) {
-      throw err;
-    }
+  const query = `
+  SELECT user_id, date, time, duration
+  FROM Timeslots
+  WHERE date IN (
+  SELECT MAX(date)
+  FROM Timeslots
+  );`;
+  db.each(query, [], (err, row) => {
+    if (err) return callback(err);
     timeslots[row.user_id] = {
       starttime: row.time,
       duration: row.duration,
     };
     return null;
   }, (err) => {
-    if (err) {
-      // return console.error(err.message);
-      throw err;
-    }
-    return callback(timeslots);
+    if (err) return callback(err);
+    return callback(err, timeslots);
   });
 }
 
-// function check() {
-//   db.all("SELECT * FROM Meetings WHERE date = '2018-01-01'", [], (err, rows) => {
-//     if (err) console.log(err);
-//     console.log('success?');
-//     rows.forEach(row => console.log(row));
-//   });
-// }
-
-
-const saveMatchmakingQuery = `
-INSERT INTO Meetings(coach_id, startup_id, date, time, duration, coach_rating, startup_rating)
-VALUES
-`;
 // jsonData is in array(parsed) form
 function saveMatchmaking(jsonData, dateString, callback) {
   // filter nulls
   const data = jsonData.filter(obj => obj.startup !== null);
-
+  const saveMatchmakingQuery = `
+  INSERT INTO Meetings(coach_id, startup_id, date, time, duration, coach_rating, startup_rating)
+  VALUES
+  `;
   const strings = data.map((row) => {
     const {
       coach, startup, duration, time,
@@ -449,9 +414,7 @@ function getTimetable(callback) {
     `;
   const meetings = [];
   db.each(query, [], (err, row) => {
-    if (err) {
-      throw err;
-    }
+    if (err) return callback(err);
     const meeting = {
       coach: row.coach_id.toString(),
       startup: row.startup,
@@ -461,11 +424,8 @@ function getTimetable(callback) {
     meetings.push(meeting);
     return null;
   }, (err) => {
-    if (err) {
-      // return console.error(err.message);
-      throw err;
-    }
-    return callback(meetings);
+    if (err) return callback(err);
+    return callback(err, meetings);
   });
 }
 
@@ -548,15 +508,16 @@ function getMapping(batch, callback) {
   WHERE active = 1 AND ((Users.type = ? AND Users.batch = ?)
   OR Users.type = ?);`;
   db.each(q, [startupType, batch, coachType], (err, row) => {
-    if (err) throw err;
+    if (err) return callback(err);
     if (row.type === startupType) {
       result.startups[row.id] = row.name;
     } else if (row.type === coachType) {
       result.coaches[row.id] = row.name;
     }
+    return null;
   }, (err) => {
-    if (err) throw err;
-    callback(result);
+    if (err) return callback(err);
+    return callback(err, result);
   });
 }
 

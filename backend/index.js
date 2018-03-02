@@ -73,20 +73,22 @@ app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/index.html`);
 });
 
-app.get('/api', (req, res) => {
+app.get('/api', (req, res, next) => {
   if (req.query.hasOwnProperty('q')) {
     res.json({ message: req.query.q });
   } else {
-    database.getUsers(1, 0, false, (data) => {
+    database.getUsers(1, 0, false, (err, data) => {
+      if (err) return next(err);
       res.json(data);
+      return undefined;
     });
   }
 });
 
 function runAlgorithm(callback) {
-  database.getTimeslots((timeslots) => {
-    database.getRatings((ratings) => {
-      database.getStartups((startupdata) => {
+  database.getTimeslots((err, timeslots) => {
+    database.getRatings((err2, ratings) => {
+      database.getStartups((err3, startupdata) => {
         const data = {
           feedbacks: ratings,
           availabilities: timeslots,
@@ -106,14 +108,15 @@ app.get('/timeslots', (req, res) => {
   runAlgorithm(result => res.json({ schedule: result }));
 });
 
-/* gets the initail data from all the coaches or startups */
-app.get('/users', (req, res) => {
+/* gets the initial data from all the coaches or startups */
+app.get('/users', (req, res, next) => {
   let type = req.query.type;
   const batch = 1;
   if (type === 'Startups') type = 2;
   else type = 1;
 
-  database.getUsers(type, batch, true, (userList) => {
+  database.getUsers(type, batch, true, (err, userList) => {
+    if (err) return next(err);
     const userArray = [];
     for (const user in userList) {
       const userData = userList[user];
@@ -126,21 +129,24 @@ app.get('/users', (req, res) => {
       userArray.push(userObj);
     }
     res.json({ users: userArray });
+    return undefined;
   });
 });
 
 /* gets a profile data for a defined user or
   for the requesting user if no requested id is provided */
-app.get('/profile', (req, res) => {
+app.get('/profile', (req, res, next) => {
   let id;
   if (typeof req.query.userId !== 'undefined') id = req.query.userId;
   else id = req.session.userID;
 
-  database.getProfile(id, (result) => {
+  database.getProfile(id, (err, result) => {
+    if (err) return next(err);
     if (req.session.userID == id || req.session.userID === 82) {
       Object.assign(result, { canModify: true });
     }
     res.json(result);
+    return undefined;
   });
 });
 
@@ -156,11 +162,14 @@ app.get('/activeStatuses', (req, res) => {
 });
 
 // TODO coach names
-app.get('/meetings', (req, res) => {
+app.get('/meetings', (req, res, next) => {
   const allMeetings = [];
-  database.getUserMap((keys) => {
-    database.getTimetable((meetings) => {
-      database.getTimeslots((timeslots) => {
+  database.getUserMap((err, keys) => {
+    if (err) return next(err);
+    database.getTimetable((err2, meetings) => {
+      if (err2) return next(err2);
+      database.getTimeslots((err3, timeslots) => {
+        if (err3) return next(err3);
         const dur = meetings[0].duration;
         for (const timeslot in timeslots) { // eslint-disable-line
           const id = timeslot;
@@ -193,15 +202,19 @@ app.get('/meetings', (req, res) => {
           allMeetings[meeting].coach = keys[allMeetings[meeting].coach];
         }
         res.json({ schedule: allMeetings });
+        return undefined;
       });
+      return undefined;
     });
+    return undefined;
   });
 });
 
-app.get('/comingTimeslots', (req, res) => {
+app.get('/comingTimeslots', (req, res, next) => {
   const timeslots = {};
   // Result is in form [{name:"coachname",date:"dateString",time:"timestring",duration:null}]
-  database.getComingTimeslots((result) => {
+  database.getComingTimeslots((err, result) => {
+    if (err) return next(err);
     for (const index in result) { //eslint-disable-line
       const element = result[index];
       if (timeslots[element.date] === undefined) {
@@ -216,13 +229,15 @@ app.get('/comingTimeslots', (req, res) => {
       }
     }
     res.json(timeslots);
+    return undefined;
   });
 });
 
-app.get('/numberOfTimeslots', (req, res) => {
+app.get('/numberOfTimeslots', (req, res, next) => {
   const timeslots = {};
   // Result is in form [{name:"coachname",date:"dateString",time:"timestring",duration:null}]
-  database.getComingTimeslots((result) => {
+  database.getComingTimeslots((err, result) => {
+    if (err) return next(err);
     for (const index in result) { //eslint-disable-line
       const element = result[index];
       if (timeslots[element.date] === undefined) {
@@ -234,10 +249,11 @@ app.get('/numberOfTimeslots', (req, res) => {
       timeslots[element.date].total += 1;
     }
     res.json(timeslots);
+    return undefined;
   });
 });
 
-app.get('/givenFeedbacks', (req, res) => {
+app.get('/givenFeedbacks', (req, res, next) => {
   const givenFeedbacks = {
     startups: {},
     coaches: {},
@@ -248,7 +264,8 @@ app.get('/givenFeedbacks', (req, res) => {
   };
   // Result is in form [{type: type, name: name, startup_rating: rating, coach_rating: rating}]
   // Type 1 => Coach, Type 2 => Startup
-  database.getGivenFeedbacks((result) => {
+  database.getGivenFeedbacks((err, result) => {
+    if (err) return next(err);
     for (const index in result) { //eslint-disable-line
       const element = result[index];
       if (element.type === 1) {
@@ -272,28 +289,33 @@ app.get('/givenFeedbacks', (req, res) => {
       if (givenFeedbacks.coaches[index] === true) givenFeedbacks.coachDone += 1;
     }
     res.json(givenFeedbacks);
+    return undefined;
   });
 });
 
 /* gets the pending feedbacks from last meeting for a specific user */
-app.get('/feedback', (req, res) => {
+app.get('/feedback', (req, res, next) => {
   const id = req.session.userID;
-  database.getFeedback(id, (result) => {
+  database.getFeedback(id, (err, result) => {
+    if (err) return next(err);
     res.json({
       data: result,
       userType: req.session.userType,
     });
+    return undefined;
   });
 });
 
 /* sets either coach_rating or startup_rating for a specific meeting */
-app.post('/giveFeedback', (req, res) => {
+app.post('/giveFeedback', (req, res, next) => {
   const userType = req.session.userType;
   const meetingId = req.body.meetingId;
   const rating = req.body.rating;
 
-  database.giveFeedback(meetingId, rating, (userType === 'coach') ? 'coach_rating' : 'startup_rating', (result) => {
+  database.giveFeedback(meetingId, rating, (userType === 'coach') ? 'coach_rating' : 'startup_rating', (err, result) => {
+    if (err) return next(err);
     res.json({ status: result });
+    return undefined;
   });
 });
 
@@ -306,34 +328,46 @@ app.post('/setActiveStatus', (req, res) => {
 });
 
 /* adds a new meeting day */
-app.post('/createMeetingDay', (req, res) => {
+app.post('/createMeetingDay', (req, res, next) => {
   if (!requireAdmin(req, res)) return;
   const date = req.body.date;
   const start = req.body.start;
   const end = req.body.end;
   const split = req.body.split;
-  database.createMeetingDay(date, start, end, split, (result) => {
+  database.createMeetingDay(date, start, end, split, (err, result) => {
+    if (err) return next(err);
     res.json(result);
+    return undefined;
   });
 });
 
 /* gets the still to come meeting days with given availabilities for a specific user */
-app.get('/getComingMeetingDays', (req, res) => {
-  database.getComingMeetingDays(req.session.userID, (result) => {
+app.get('/getComingMeetingDays', (req, res, next) => {
+  database.getComingMeetingDays(req.session.userID, (err, result) => {
+    if (err) return next(err);
     res.json(result);
+    return undefined;
   });
 });
 
 /* Sets the users availability for a specific day */
-app.post('/insertAvailability', (req, res) => {
+app.post('/insertAvailability', (req, res, next) => {
   const userId = req.session.userID;
   const date = req.body.date;
   const startTime = req.body.start;
   let duration = (new Date(`${date}T${req.body.end}`).getTime() - new Date(`${date}T${startTime}`).getTime());
   duration = parseInt(duration / 60000, 10);
-  database.insertAvailability(userId, date, startTime, duration, (result) => {
+  database.insertAvailability(userId, date, startTime, duration, (err, result) => {
+    if (err) return next(err);
     res.json(result);
+    return undefined;
   });
+});
+
+// Error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send({ error: 'An error has occured!' });
 });
 
 const server = app.listen(port);
