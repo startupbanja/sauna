@@ -119,7 +119,7 @@ app.get('/profile', (req, res, next) => {
 
   database.getProfile(id, (err, result) => {
     if (err) return next(err);
-    if (req.session.userID == id || req.session.userID === 82) {
+    if (req.session.userID === id || req.session.userID === 82) {
       Object.assign(result, { canModify: true });
     }
     res.json(result);
@@ -134,7 +134,7 @@ app.get('/profile', (req, res, next) => {
 // }
 app.get('/activeStatuses', (req, res, next) => {
   database.getActiveStatuses((err, data) => {
-    if (err) return next(data);
+    if (err) return next(err);
     return res.json(data);
   });
 });

@@ -89,3 +89,10 @@
   padding-left:0;
   list-style:none;
 }
+
+.btn-dropdown {
+  margin-left:6%;
+  padding-left:40%;
+  /*background: transparent;*/
+  color:#676767;
+}

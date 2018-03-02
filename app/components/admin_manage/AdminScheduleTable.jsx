@@ -1,11 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
+import DropdownList from './DropdownList';
 // translate the schedule from json to a jsx table
 // firstColumn is either 'startup' or 'coach'
-function translate(data, times, firstColumn) {
+function translate(data, times, firstColumn, editable, editfunc, allUsers) {
   // set cellType to be the other one thatn firstColumn
   const cellType = firstColumn === 'coach' ? 'startup' : 'coach';
+  const coachList = allUsers.coaches;
+  const startupList = allUsers.startups;
   // transform the parameter data into an array of {'coach': [[startup, time], ...]}
   const result = {};
   data.forEach((obj) => {
@@ -63,6 +65,8 @@ function translate(data, times, firstColumn) {
   }
 
   let i = 0;
+  // result is array of {coach: [{name, time}, ...]}
+  // key is either coach or startup, which one is on the leftmost column
   const table = Object.keys(result).map((key) => {
     const meetings = result[key].map((x) => {
       i += 1;
@@ -71,7 +75,20 @@ function translate(data, times, firstColumn) {
       }
       const name = x.name ? x.name : '-';
       const cn = x.name ? 'full-cell' : 'empty-cell';
-      return <td className={cn} key={`${key}-${name}-${i}`}>{name}</td>;
+      const list = firstColumn === 'coach' ? startupList : coachList;
+      const keys = { leftColumn: key, cellValue: name, time: x.time };
+      return (
+        <td
+          className={cn}
+          key={`${key}-${name}-${i}`}
+        >{name}
+          {editable &&
+            <DropdownList
+              onChoice={editfunc}
+              choices={list}
+              keys={keys}
+            />}
+        </td>);
     });
     return (
       <tr key={`row-${key}`}>
@@ -89,13 +106,12 @@ function getTimes(data) {
 
 // React Component for the table in the admin schedule.
 export default class AdminScheduleTable extends React.Component {
-  // The traditional render method.
   render() {
     // Handles the case where schedules are not available.
     if (!this.props.schedule) {
       return (
         <div>
-          <h3>No schedules available for coaches. </h3>
+          <h3>No schedules available. </h3>
         </div>);
     }
     // Handles the case where schedules are available.
@@ -108,7 +124,14 @@ export default class AdminScheduleTable extends React.Component {
           </tr>
         </thead>
         <tbody>
-          {translate(this.props.schedule, times, this.props.firstColumn)}
+          {translate(
+            this.props.schedule,
+            times,
+            this.props.firstColumn,
+            this.props.editable,
+            this.props.onEdit,
+            this.props.allUsers,
+          )}
         </tbody>
       </table>);
   }
@@ -121,5 +144,16 @@ AdminScheduleTable.propTypes = {
     time: PropTypes.string,
     duration: PropTypes.number,
   })).isRequired,
+  allUsers: PropTypes.shape({
+    startups: PropTypes.arrayOf(PropTypes.string),
+    coaches: PropTypes.arrayOf(PropTypes.string),
+  }).isRequired,
   firstColumn: PropTypes.oneOf(['startup', 'coach']).isRequired,
+  editable: PropTypes.bool,
+  onEdit: PropTypes.func,
+};
+
+AdminScheduleTable.defaultProps = {
+  editable: false,
+  onEdit: () => undefined,
 };
