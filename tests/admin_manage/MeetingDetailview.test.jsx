@@ -11,7 +11,6 @@ class TestComponent extends MeetingDetailView {
 }
 
 describe('When loading MeetingDetailView...', () => {
-
   test('fetchFeedbacks is called when we pass renderFeedbacks = true', () => {
     const component = ReactTestUtils
       .renderIntoDocument(<TestComponent date="2018-01-01" renderFeedbacks />);
