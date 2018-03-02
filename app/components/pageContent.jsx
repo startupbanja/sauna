@@ -65,7 +65,7 @@ const userContent = (
       path="/startups"
       render={({ match }) => <UserList match={match} type="Startups" />}
     />
-    <Route path="/main" render={() => <div><h1>Home</h1><LandingPage /></div>} />
+    <Route path="/main" render={() => <div><LandingPage /></div>} />
     <Route path="/timetable" render={() => <UserSchedule schedule={schedule} />} />
     <Route path="/user" component={UserProfilePage} />
     <Route path="/feedback" render={() => <FeedbackView questions={feedbackQuestions} />} />

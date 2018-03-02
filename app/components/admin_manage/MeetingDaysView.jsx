@@ -65,7 +65,6 @@ class MeetingDaysView extends Component {
   fetchGivenFeedbacks() {
     pageContent.fetchData('/givenFeedbacks', 'GET', {})
       .then((result) => {
-        console.log(result);
         this.setState({
           feedbacks: {
             startupTotal: result.startupTotal,

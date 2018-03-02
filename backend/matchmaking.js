@@ -22,11 +22,9 @@ function runMatchmaking(jsonData, callback) {
   newProcess.stdout.on('end', () => {
     try {
       const parsed = JSON.parse(storage.toString());
-      callback(parsed);
+      callback(null, parsed);
     } catch (e) {
-      console.log('Error handling output from python process:');
-      console.log(e);
-      callback(null);
+      callback(e);
     }
   });
   newProcess.stderr.on('data', (data) => {

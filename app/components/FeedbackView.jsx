@@ -55,7 +55,6 @@ export default class FeedbackView extends React.Component {
           data: newData,
         };
       });
-      this.changeForm(this.state.index + 1);
     });
   }
 
@@ -75,21 +74,21 @@ export default class FeedbackView extends React.Component {
           onSubmit={this.submitCurrentForm}
           questions={this.props.questions[this.state.userType]}
         />
-        <div className="row">
-          <div className="col-xs-5">
+        <div>
+          <div>
             <Button
-              className="btn"
-              text="prev"
+              className="feedback-btn"
+              text="<"
               onClick={() => { this.changeForm(this.state.index - 1); }}
             />
           </div>
           <div className="col-xs-4" >
-            <p>{`${this.state.index + 1} / ${this.state.data.length}`}</p>
+            <p className="feedback-nro">{`${this.state.index + 1} / ${this.state.data.length}`}</p>
           </div>
           <div className="col-xs-3">
             <Button
-              className="btn"
-              text="next"
+              className="feedback-btn"
+              text=">"
               onClick={() => { this.changeForm(this.state.index + 1); }}
             />
           </div>
