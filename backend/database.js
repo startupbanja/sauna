@@ -61,6 +61,50 @@ function getUsers(type, batch, includeId, callback) {
   });
 }
 
+// Returns id, name and active status for all coaches and startups in form
+// {
+// coaches: [{name, id, active}]
+// startups: [{name, id, active}]
+// }
+function getActiveStatuses(callback) {
+  const data = { coaches: [], startups: [] };
+  const query = `SELECT user_id, name, type, active
+                 FROM Users
+                 LEFT OUTER JOIN Profiles ON Users.id = Profiles.user_id;`;
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      return callback(err);
+    }
+    rows.forEach((row) => {
+      if (row.type === 1) {
+        data.coaches.push({
+          id: row.user_id,
+          name: row.name,
+          active: row.active,
+        });
+      } else if (row.type === 2) {
+        data.startups.push({
+          id: row.user_id,
+          name: row.name,
+          active: row.active,
+        });
+      }
+    });
+    return callback(null, data);
+  });
+}
+
+function setActiveStatus(id, active, callback) {
+  const query = `
+  UPDATE Users
+  SET active = ?
+  WHERE id = ?;`;
+  db.run(query, [active, id], (err) => {
+    if (err) return callback(err);
+    return callback(null, { status: 'success' });
+  });
+}
+
 
 function getProfile(id, callback) {
   const info = {};
@@ -536,10 +580,12 @@ module.exports = {
   getComingMeetingDays,
   insertAvailability,
   getTimetable,
+  getActiveStatuses,
   setTimetable,
   getUserMap,
   getComingDates,
   getComingTimeslots,
   getGivenFeedbacks,
+  setActiveStatus,
   db,
 };

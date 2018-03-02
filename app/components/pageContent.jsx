@@ -10,7 +10,7 @@ import App from './App';
 import MeetingDaysView from './admin_manage/MeetingDaysView';
 import TimeslotView from './timeslot/TimeslotView';
 import AdminSchedules from './AdminSchedules';
-// import MeetingListView from './MeetingListView';
+import UserHandlingView from './admin_manage/UserHandlingView';
 import MeetingDetailView from './admin_manage/MeetingDetailView';
 
 const feedbackQuestions = {
@@ -157,6 +157,7 @@ const adminContent = (
         <MeetingDetailView date={match.params.date} renderFeedbacks={false} />
       )}
     />
+    <Route path="/users" component={UserHandlingView} />
   </Switch>
 );
 
@@ -164,6 +165,7 @@ const adminLabels = {
   '/main': 'Home',
   '/coaches': 'Coaches',
   '/startups': 'Startups',
+  '/users': 'Users',
   '/meetingDays': 'Meeting days',
 };
 // TODO change this to something better later

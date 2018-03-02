@@ -127,6 +127,19 @@ app.get('/profile', (req, res, next) => {
   });
 });
 
+// Returns id, name and active status for all coaches and startups in form
+// {
+// coaches: [{name, id, active}]
+// startups: [{name, id, active}]
+// }
+app.get('/activeStatuses', (req, res, next) => {
+  database.getActiveStatuses((err, data) => {
+    if (err) return next(data);
+    return res.json(data);
+  });
+});
+
+// TODO coach names
 app.get('/meetings', (req, res, next) => {
   const allMeetings = [];
   database.getUserMap((err, keys) => {
@@ -286,6 +299,15 @@ app.post('/giveFeedback', (req, res, next) => {
     if (err) return next(err);
     res.json({ status: result });
     return undefined;
+  });
+});
+
+app.post('/setActiveStatus', (req, res, next) => {
+  const id = req.body.id;
+  const active = req.body.active;
+  database.setActiveStatus(id, active, (err, result) => {
+    if (err) return next(err);
+    return res.json(result);
   });
 });
 
