@@ -1,8 +1,7 @@
 
 
 function dateToString(date) {
-  const day = date.getDate();
-  return `${date.getFullYear()}-${date.getMonth() + 1}-${day < 10 ? 0 : ''}${day}`;
+  return date.toISOString().substr(0, 10);
 }
 
 function addMeetingDays(firstDate, amount, db) {
