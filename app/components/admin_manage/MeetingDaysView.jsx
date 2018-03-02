@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import $ from 'jquery';
 import pageContent from '../pageContent';
 import NewMeetingDayBlock from './NewMeetingDayBlock';
+/* eslint-disable jsx-a11y/anchor-is-valid */ // disable complaining from Link
+
 
 /* Component to display all upcoming meeting days */
 class MeetingDaysView extends Component {
@@ -13,9 +16,10 @@ class MeetingDaysView extends Component {
     this.handleNewMeetingDaySubmit = this.handleNewMeetingDaySubmit.bind(this);
     this.renderMeetingDay = this.renderMeetingDay.bind(this);
     this.state = {
-      days: [],
-      availabilities: {},
-      feedbacks: {},
+      days: null,
+      availabilities: null,
+      feedbacks: null,
+      canRunMatchmaking: false,
     };
   }
 
@@ -25,11 +29,28 @@ class MeetingDaysView extends Component {
     this.fetchGivenFeedbacks();
   }
 
+  runMatchmaking(date) {
+    this.setState({ canRunMatchmaking: false });
+    pageContent.fetchData('/runMatchmaking', 'POST', { date })
+      .then(() => undefined);
+  }
+
   fetchScheduledDays() {
     pageContent.fetchData('/getComingMeetingDays', 'GET', {})
       .then((result) => {
+        const arr = result;
+        // sort by date
+        arr.sort((a, b) => {
+          if (a.date < b.date) return -1;
+          if (a.date > b.date) return 1;
+          return 0;
+        });
+        const first = arr[0];
+        // convert to boolean
+        const canRun = first.matchmakingDone === 0;
         this.setState({
-          days: result,
+          days: arr,
+          canRunMatchmaking: canRun,
         });
       });
   }
@@ -79,6 +100,44 @@ class MeetingDaysView extends Component {
           <p className="meeting-date">{new Date(date).toLocaleDateString('en-GB', dateOptions).replace(/\//g, '.')}</p>
           {(total !== null && done !== null) &&
             <p>{`${done}/${total} Coaches' availabilities`}</p>}
+          {index === 0 && (
+            <div>
+              {((this.state.feedbacks.coachTotal &&
+                 this.state.feedbacks.coachDone !== undefined)
+                || undefined) &&
+                <p>{`${this.state.feedbacks.coachDone}/${this.state.feedbacks.coachTotal} Coaches' feedbacks`}</p>}
+              {((this.state.feedbacks.startupTotal &&
+                 this.state.feedbacks.startupDone !== undefined)
+                || undefined) &&
+                <p>{`${this.state.feedbacks.startupDone}/${this.state.feedbacks.startupTotal} Startups' feedbacks`}</p>}
+            </div>
+          )}
+          {/* link to details page, the first item has modified link */}
+          <Link
+            className="btn btn-minor"
+            to={`/meetings/${!index ? 'recent/' : ''}${this.state.days[index].date}/`}
+          >
+            View details
+          </Link>
+
+          {index === 0 && (
+            <span>
+              <Link
+                className="btn btn-minor"
+                to={`/timetable/${this.state.days[index].date}/`}
+              >
+                View timetable
+              </Link>
+              {this.state.canRunMatchmaking &&
+                <button
+                  className="btn btn-major"
+                  onClick={() => this.runMatchmaking(this.state.days[index].date)}
+                > Run Matchmaking
+                </button>
+              }
+            </span>
+          )}
+
         </div>
       );
     }
@@ -86,6 +145,10 @@ class MeetingDaysView extends Component {
   }
 
   render() {
+    if (!(this.state.days && this.state.feedbacks && this.state.availabilities)) {
+      // TODO
+      return (<h1> LOADING </h1>);
+    }
     return (
       <div className="meeting-days-view container">
         <link rel="stylesheet" href="/app/styles/meeting_days_style.css" />
@@ -117,13 +180,7 @@ class MeetingDaysView extends Component {
 
         <div className="next-day-container">
           {this.renderMeetingDay(0)}
-          {((this.state.feedbacks.coachTotal && this.state.feedbacks.coachDone !== undefined)
-            || undefined) &&
-            <p>{`${this.state.feedbacks.coachDone}/${this.state.feedbacks.coachTotal} Coaches' feedbacks`}</p>}
-          {((this.state.feedbacks.startupTotal && this.state.feedbacks.startupDone !== undefined)
-            || undefined) &&
-            <p>{`${this.state.feedbacks.startupDone}/${this.state.feedbacks.startupTotal} Startups' feedbacks`}</p>}
-          <button className="btn btn-minor">Run Algorithm</button>
+
         </div>
 
         <hr />

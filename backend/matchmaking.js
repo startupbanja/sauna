@@ -20,8 +20,12 @@ function runMatchmaking(jsonData, callback) {
     storage += data;
   });
   newProcess.stdout.on('end', () => {
-    const parsed = JSON.parse(storage.toString());
-    callback(parsed);
+    try {
+      const parsed = JSON.parse(storage.toString());
+      callback(null, parsed);
+    } catch (e) {
+      callback(e);
+    }
   });
   newProcess.stderr.on('data', (data) => {
     console.log(data.toString());

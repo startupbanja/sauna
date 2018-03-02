@@ -3,6 +3,7 @@
 const sqlite = require('sqlite3').verbose();
 const fs = require('fs');
 const bcrypt = require('bcrypt');
+const testData = require('./db_test_data.js');
 
 const db = new sqlite.Database(':memory:', (err) => {
   if (err) {
@@ -21,6 +22,7 @@ function closeDatabase(callback) {
     return callback();
   });
 }
+
 
 function getUsers(type, batch, includeId, callback) {
   const users = {};
@@ -101,7 +103,7 @@ function getFeedback(id, callback) {
           END rating
         FROM Meetings
         WHERE (coach_id = ? OR startup_id = ?) AND date =
-          (SELECT MAX(date) FROM Meetings WHERE coach_id = ? OR startup_id = ?))
+          (SELECT MAX(date) FROM Meetings WHERE (coach_id = ? OR startup_id = ?) AND date < date("now")))
       NATURAL JOIN Profiles`;
   db.all(query, [id, id, id, id, id, id, id, id], (err, rows) => {
     if (err) return callback(err);
@@ -138,16 +140,18 @@ function giveFeedback(meetingId, rating, field, callback) {
 
 
 function createMeetingDay(date, start, end, split, callback) {
-  const query = `INSERT INTO MeetingDays(date, startTime, endTime, split)
-    VALUES (?, ?, ?, ?)`;
+  const query = `INSERT INTO MeetingDays(date, startTime, endTime, split, matchmakingDone)
+    VALUES (?, ?, ?, ?, 0)`;
   db.run(query, [date, start, end, split], (err) => {
     if (err) return callback(err);
     return callback(err, { status: 'success' });
   });
 }
 
+// get all meetingdays in the future together with a flag indicating if matchmaking was run
+// on them
 function getComingMeetingDays(userId, callback) {
-  const query = `SELECT MeetingDays.date, startTime, endTime, split, time, duration
+  const query = `SELECT MeetingDays.date, startTime, endTime, split, time, duration, matchmakingDone
     FROM Users
     LEFT OUTER JOIN MeetingDays
     LEFT OUTER JOIN Timeslots on Timeslots.date = MeetingDays.date AND Timeslots.user_id = Users.id
@@ -186,16 +190,31 @@ function getComingTimeslots(callback) {
     return callback(err, result);
   });
 }
-
-function getGivenFeedbacks(callback) {
-  const query = `SELECT Users.type, Profiles.name, Meetings.startup_rating, Meetings.coach_rating
-    FROM Users
-    LEFT OUTER JOIN Profiles ON Users.id = Profiles.user_id
-    LEFT OUTER JOIN Meetings ON Users.id = Meetings.coach_id OR Users.id = Meetings.startup_id
-    WHERE Meetings.date = (SELECT MAX(Date) FROM MeetingDays WHERE Date < date("now"))`;
-  db.all(query, [], (err, result) => {
+// get the latest past meetingday
+function getLastMeetingday(callback) {
+  const q = 'SELECT MAX(Date) AS Date FROM MeetingDays WHERE Date < date("now");';
+  db.get(q, [], (err, result) => {
     if (err) return callback(err);
-    return callback(err, result);
+    return callback(null, result.Date);
+  });
+}
+
+// Get given feedbacks  from latest meeting using the closest date in the past
+// Also returns the date
+// return value: { date, result }
+function getGivenFeedbacks(callback) {
+  getLastMeetingday((err, date) => {
+    if (err) return callback(err);
+    const query = `SELECT Users.type, Profiles.name, Meetings.startup_rating, Meetings.coach_rating, Meetings.date
+      FROM Users
+      LEFT OUTER JOIN Profiles ON Users.id = Profiles.user_id
+      LEFT OUTER JOIN Meetings ON Users.id = Meetings.coach_id OR Users.id = Meetings.startup_id
+      WHERE Meetings.date = ?;`;
+    db.all(query, date, (err2, result) => {
+      if (err2) return callback(err2);
+      return callback(err, { date, result });
+    });
+    return undefined;
   });
 }
 
@@ -271,6 +290,8 @@ function getStartups(callback) {
   });
 }
 
+// return an array of {coach, startup, coachfeedback, startupfeedback}
+// Currently uses newest batch number TODO
 function getRatings(callback) {
   const ratings = [];
   const query = `
@@ -319,16 +340,14 @@ function getUserMap(callback) {
   });
 }
 
-function getTimeslots(callback) {
-  const timeslots = {};
-  const query = `
+// Get coach timeslot info for a given date
+function getTimeslots(date, callback) {
+  const q = `
   SELECT user_id, date, time, duration
   FROM Timeslots
-  WHERE date IN (
-  SELECT MAX(date)
-  FROM Timeslots
-  );`;
-  db.each(query, [], (err, row) => {
+  WHERE date = ? ;`;
+  const timeslots = {};
+  db.each(q, [date], (err, row) => {
     if (err) return callback(err);
     timeslots[row.user_id] = {
       starttime: row.time,
@@ -342,22 +361,41 @@ function getTimeslots(callback) {
 }
 
 // jsonData is in array(parsed) form
+// save the result of matchmaking algorithm
 function saveMatchmaking(jsonData, dateString, callback) {
-  // filter nulls
-  const data = jsonData.filter(obj => obj.startup !== null);
-  const saveMatchmakingQuery = `
-  INSERT INTO Meetings(coach_id, startup_id, date, time, duration, coach_rating, startup_rating)
-  VALUES
-  `;
-  const strings = data.map((row) => {
-    const {
-      coach, startup, duration, time,
-    } = row;
-    return `( ${coach}, ${startup}, '${dateString}', '${time}', ${duration}, -1, -1)`;
+  function save() {
+    const saveMatchmakingQuery = `
+    INSERT INTO Meetings(coach_id, startup_id, date, time, duration, coach_rating, startup_rating)
+    VALUES
+    `;
+    // filter nulls
+    const data = jsonData.filter(obj => obj.startup !== null);
+    const strings = data.map((row) => {
+      const {
+        coach, startup, duration, time,
+      } = row;
+      return `( ${coach}, ${startup}, '${dateString}', '${time}', ${duration}, -1, -1)`;
+    });
+    const query = `${saveMatchmakingQuery}${strings.join(',\n')};`;
+    db.run(query, (err) => {
+      if (err) return callback(err);
+      const q = 'UPDATE MeetingDays SET matchmakingDone = 1 WHERE date = ?';
+      db.run(q, dateString, (err2) => {
+        if (err2) return callback(err2);
+        db.parallelize();
+        return callback(null);
+      });
+      return undefined;
+    });
+  }
+  db.serialize(); // serialize here to make into pseudo transaction, FIXME
+  // first check if algorithm has already been run on this date
+  const checkQuery = 'SELECT matchmakingDone FROM MeetingDays WHERE date = ?';
+  db.get(checkQuery, dateString, (err, result) => {
+    if (err) return callback(err);
+    if (!result.matchmakingDone) save();
+    return undefined;
   });
-  const query = `${saveMatchmakingQuery}${strings.join(',\n')};`;
-  // console.log(query);
-  db.run(query, () => callback());
 }
 
 function getTimetable(callback) {
@@ -422,30 +460,34 @@ function setTimetable(timetable, date) {
   });
 }
 
+function initDB() {
+  fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
+    if (err) {
+      //TODO do something here
+      return console.log(err);
+    }
+    // split data into statements
+    const arr = data.split(';');
 
-fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
-  if (err) {
-    return console.log(err);
-  }
-  // split data into statements
-  const arr = data.split(';');
-
-  // ensure it is running in serialized mode
-  db.serialize(() => {
-    arr.forEach((statement) => {
-      if (statement.trim()) {
-        db.run(statement, [], (err2) => {
-          if (err2) {
-            throw err2;
-          }
-          return null;
-        });
-      }
+    // ensure it is running in serialized mode
+    db.serialize(() => {
+      arr.forEach((statement) => {
+        if (statement.trim()) {
+          db.run(statement, [], (err2) => {
+            if (err2) {
+              throw err2;
+            }
+            return null;
+          });
+        }
+      });
+      testData.insertData(db, 4);
+      console.log('Data loaded');
     });
-    console.log('Data loaded');
+    return null;
   });
-  return null;
-});
+}
+initDB();
 // Get an object mapping all ids from startups and coaches of the current batch and map them to their names.
 // Currently returns all coaches with any branch number
 // Checks for active = 1 for all rows
@@ -499,4 +541,5 @@ module.exports = {
   getComingDates,
   getComingTimeslots,
   getGivenFeedbacks,
+  db,
 };

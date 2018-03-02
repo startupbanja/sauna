@@ -28,7 +28,6 @@ app.use(session({
 const port = process.env.PORT || 3000;
 
 app.use((req, res, next) => {
-  console.log('Something is happening.');
 
   // Allow frontend to send cookies
   res.append('Access-Control-Allow-Origin', req.get('origin'));
@@ -85,28 +84,6 @@ app.get('/api', (req, res, next) => {
   }
 });
 
-function runAlgorithm(callback) {
-  database.getTimeslots((err, timeslots) => {
-    database.getRatings((err2, ratings) => {
-      database.getStartups((err3, startupdata) => {
-        const data = {
-          feedbacks: ratings,
-          availabilities: timeslots,
-          startups: startupdata,
-        };
-        const batch = 1;
-        database.getMapping(batch, (mapping) => {
-          const dataWithMapping = { data, mapping };
-          matchmaking.run(dataWithMapping, rdy => callback(rdy));
-        });
-      });
-    });
-  });
-}
-
-app.get('/timeslots', (req, res) => {
-  runAlgorithm(result => res.json({ schedule: result }));
-});
 
 /* gets the initial data from all the coaches or startups */
 app.get('/users', (req, res, next) => {
@@ -156,12 +133,12 @@ app.get('/meetings', (req, res, next) => {
     if (err) return next(err);
     database.getTimetable((err2, meetings) => {
       if (err2) return next(err2);
-      database.getTimeslots((err3, timeslots) => {
+      database.getTimeslots(req.query.date, (err3, timeslots) => {
         if (err3) return next(err3);
         const dur = meetings[0].duration;
         for (const timeslot in timeslots) { // eslint-disable-line
           const id = timeslot;
-          var remaining = timeslots[id].duration;
+          let remaining = timeslots[id].duration;
           const time = new Date('2000-10-10T' + timeslots[id].starttime);
           while (remaining > 0) {
             allMeetings.push({
@@ -241,7 +218,7 @@ app.get('/numberOfTimeslots', (req, res, next) => {
   });
 });
 
-app.get('/givenFeedbacks', (req, res, next) => {
+app.get('/givenFeedbacks/', (req, res, next) => {
   const givenFeedbacks = {
     startups: {},
     coaches: {},
@@ -249,20 +226,25 @@ app.get('/givenFeedbacks', (req, res, next) => {
     startupDone: 0,
     coachTotal: 0,
     coachDone: 0,
+    date: '',
   };
-  // Result is in form [{type: type, name: name, startup_rating: rating, coach_rating: rating}]
+  // Result is in form
+  // [{type: type, name: name, startup_rating: rating, coach_rating: rating, date}]
   // Type 1 => Coach, Type 2 => Startup
-  database.getGivenFeedbacks((err, result) => {
+  // filter out feedbacks which are -1 which means not given
+  database.getGivenFeedbacks((err, fbresult) => {
     if (err) return next(err);
+    const { result } = fbresult;
+    givenFeedbacks.date = fbresult.date;
     for (const index in result) { //eslint-disable-line
       const element = result[index];
       if (element.type === 1) {
-        if (element.coach_rating !== null) {
+        if (element.coach_rating !== -1) {
           givenFeedbacks.coaches[element.name] = true;
         } else if (givenFeedbacks.coaches[element.name] === undefined) {
           givenFeedbacks.coaches[element.name] = false;
         }
-      } else if (element.startup_rating !== null) {
+      } else if (element.startup_rating !== -1) {
         givenFeedbacks.startups[element.name] = true;
       } else if (givenFeedbacks.startups[element.name] === undefined) {
         givenFeedbacks.startups[element.name] = false;
@@ -321,6 +303,64 @@ app.post('/createMeetingDay', (req, res, next) => {
   });
 });
 
+// Run algorithm with given date and save to database and create a .csv file
+// TODO these errors are a bit confusing... is this right?
+// FIXME those return undefineds and the bracket pyramid...
+// callback is called with either err or null as only argument
+function runAlgorithm(date, callback, commit = true) {
+  // Get coach timeslots/availabilities
+  database.getTimeslots(date, (err, timeslots) => {
+    if (err) return callback(err);
+    // Get most recent feedback ratings from all coaches, startups
+    database.getRatings((err2, ratings) => {
+      if (err2) return callback(err2);
+      // Get list of all startups
+      database.getStartups((err3, startupdata) => {
+        if (err3) return callback(err3);
+        const data = {
+          feedbacks: ratings,
+          availabilities: timeslots,
+          startups: startupdata,
+        };
+        if (!(ratings && timeslots && startupdata)) {
+          callback(false);
+        }
+        const batch = 1;
+        // This getMapping is only needed because we are converting the result
+        // to .csv in python, TODO remove later
+        database.getMapping(batch, (mapErr, mapping) => {
+          if (mapErr) return callback(mapErr);
+          console.log(mapping);
+          const dataWithMapping = { data, mapping };
+          matchmaking.run(dataWithMapping, (runErr, result) => {
+            if (runErr) return callback(runErr);
+            if (commit) {
+              database.saveMatchmaking(result, date, (saveErr) => {
+                if (saveErr) return callback(saveErr);
+                return callback(null);
+              });
+              return undefined;
+            }
+            return callback(null);
+          });
+          return undefined;
+        });
+        return undefined;
+      });
+      return undefined;
+    });
+    return undefined;
+  });
+}
+
+// TODO sanitize date;
+app.post('/runMatchmaking', (req, res) => {
+  if (req.body.date) {
+    runAlgorithm(req.body.date, result => res.json({ success: result }));
+  } else {
+    res.json({ success: false });
+  }
+});
 /* gets the still to come meeting days with given availabilities for a specific user */
 app.get('/getComingMeetingDays', (req, res, next) => {
   database.getComingMeetingDays(req.session.userID, (err, result) => {
@@ -372,14 +412,6 @@ rl.on('line', (input) => {
   switch (input) {
     case ('exit'):
       closeServer();
-      break;
-    case ('run'):
-      runAlgorithm(() => null);
-      break;
-    case ('run -s'):
-      runAlgorithm((data) => { // TODO placeholder date
-        database.saveMatchmaking(data, '2018-01-01', () => console.log('saved'));
-      });
       break;
     default:
       break;
