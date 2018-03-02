@@ -13,8 +13,13 @@ export default class MeetingDetailView extends React.Component {
     // feedbacks is first either true or false, then when fetched, contains feedback data
     // if props.renferFeedbacks
     this.state = { availabilities: null, feedbacks: !this.props.renderFeedbacks };
+    this.fetchTimeslots = this.fetchTimeslots.bind(this);
+    this.fetchFeedbacks = this.fetchFeedbacks.bind(this);
+  }
+
+  componentDidMount() {
     this.fetchTimeslots();
-    this.fetchFeedbacks();
+    if (this.props.renderFeedbacks) this.fetchFeedbacks();
   }
 
   fetchTimeslots() {
