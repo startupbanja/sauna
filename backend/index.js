@@ -290,6 +290,7 @@ app.get('/feedback', (req, res, next) => {
 });
 
 app.get('/userMeetings', (req, res, next) => {
+  let meetingDate;
   const id = req.session.userID;
   const type = req.session.userType;
   database.getUserMeetings(id, type, (err, result) => {
@@ -297,6 +298,7 @@ app.get('/userMeetings', (req, res, next) => {
     const meetingArray = [];
     for (var row in result) { // eslint-disable-line
       row = result[row];
+      meetingDate = row.date;
       const end = new Date('2000-01-01T' + row.time);
       end.setMinutes(end.getMinutes() + row.duration);
       meetingArray.push({
@@ -307,6 +309,7 @@ app.get('/userMeetings', (req, res, next) => {
     }
     meetingArray.sort((a, b) => new Date('2000-01-01T' + a.startTime) - new Date('2000-01-01T' + b.startTime));
     res.json({
+      date: meetingDate,
       meetings: meetingArray,
     });
     return undefined;

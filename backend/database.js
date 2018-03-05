@@ -515,7 +515,7 @@ function getUserMeetings(userID, userType, callback) {
     WHERE Meetings.coach_id = ? AND date = (SELECT MAX(date) FROM Meetings);`;
   } else {
     query = `
-    SELECT name, time, duration
+    SELECT name, time, duration, date
     FROM Meetings
     LEFT OUTER JOIN Profiles ON Profiles.user_id = Meetings.coach_id
     WHERE Meetings.startup_id = ? AND date = (SELECT MAX(date) FROM Meetings);`;
