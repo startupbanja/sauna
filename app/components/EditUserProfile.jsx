@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from './Button';
+import pageContent from './pageContent';
 
 class EditUserProfile extends Component {
   constructor(props) {
@@ -56,15 +57,8 @@ class EditUserProfile extends Component {
   }
   handleSubmit() {
     const input = this.getInputData();
-    fetch('http://localhost:3000/updateProfile', {
-      method: 'POST',
-      credentials: 'include',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(Object.assign(input, { uid: this.props.id })),
-    }).then(response => console.log(response));
+    const dataToPass = { data: JSON.stringify(Object.assign(input, { uid: this.props.id })) };
+    pageContent.fetchData('/updateProfile', 'POST', dataToPass).then(res => console.log(res));
   }
 
   render() {
@@ -78,13 +72,11 @@ class EditUserProfile extends Component {
           </p>
           <p>
             Description:<br />
-            <textarea id="description">
-              {this.props.description}
-            </textarea>
+            <textarea id="description" defaultValue={this.props.description} />
           </p>
           <div>
             <p>Titles:</p>
-            {this.props.titles.map(value => <input key={`title${value.id}`} type="text" value={value} />)}
+            {this.props.titles.map(value => <input className="title" key={`title${value.id}`} type="text" defaultValue={value} />)}
           </div>
           <div>
             <p>Credentials:</p>
@@ -99,17 +91,17 @@ class EditUserProfile extends Component {
                 ))
               }
             </div>
-            <button onClick={() => this.addCredential()}>
-              <span className="glyphicon glyphicon-plus-sign" />
-              Add a credential.
-            </button>
           </div>
-          <Button
-            className="btn btn-lg ffbutton-red"
-            onClick={() => this.handleSubmit()}
-            text="Save"
-          />
         </form>
+        <button onClick={() => this.addCredential()} style={{ display: 'block' }}>
+          <span className="glyphicon glyphicon-plus-sign" />
+          Add a credential.
+        </button>
+        <Button
+          className="btn btn-lg ffbutton-red"
+          onClick={() => this.handleSubmit()}
+          text="Save"
+        />
       </div>
     );
   }

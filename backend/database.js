@@ -278,57 +278,74 @@ function insertAvailability(userId, date, startTime, duration, callback) {
 }
 
 // Updates the credentials for given user (based on UID).
-function updateCredentials(uid, credentials) {
+function updateCredentials(uid, credentials, callback) {
   const deleteSQL = 'DELETE FROM Credentials WHERE user_id = ? AND company = ? AND title = ?';
   const insertSQL = 'INSERT INTO Credentials(user_id, company, title) VALUES(?,?,?);';
 
   // Fetches all credentials for the given uid and processes them.
   db.all('SELECT company, title FROM Credentials WHERE user_id = ?', [uid], (err, rows) => {
-    throwErr(err);
-    const rowsAsJSON = rows.map(x => JSON.stringify(x));
-    const credentialsAsJSON = credentials.map(x => JSON.stringify(x));
-    const toBeInserted = []; // holds the credentials to be inserted into the db.
-    const toBeRemoved = []; // holds the credentials that should be deleted.
+    if (!err) {
+      const rowsAsJSON = rows.map(x => JSON.stringify(x));
+      const credentialsAsJSON = credentials.map(x => JSON.stringify(x));
+      const toBeInserted = []; // holds the credentials to be inserted into the db.
+      const toBeRemoved = []; // holds the credentials that should be deleted.
+      const response = {}; // object to be sent in the response.
 
-    // If new credentials do not contain a row, add it to deleted creds.
-    rowsAsJSON.forEach((row) => {
-      if (!credentialsAsJSON.includes(row)) {
-        const obj = JSON.parse(row);
-        toBeRemoved.push({ company: obj.company, position: obj.title });
-      }
-    });
-
-    // If new credentials contain an entry that is not yet present, add it.
-    credentialsAsJSON.forEach((cred) => {
-      if (!rowsAsJSON.includes(cred)) {
-        const obj = JSON.parse(cred);
-        toBeInserted.push({ company: obj.company, position: obj.position });
-      }
-    });
-
-    // Deletes the obsolete credentials.
-    toBeRemoved.forEach((cred) => {
-      db.run(deleteSQL, [uid, cred.company, cred.position], (error) => {
-        throwErr(error);
+      // If new credentials do not contain a row, add it to deleted creds.
+      rowsAsJSON.forEach((row) => {
+        if (!credentialsAsJSON.includes(row)) {
+          const obj = JSON.parse(row);
+          toBeRemoved.push({ company: obj.company, position: obj.title });
+        }
       });
-    });
 
-    // Inserts the new credentials.
-    toBeInserted.forEach((cred) => {
-      db.run(insertSQL, [uid, cred.company, cred.position], (error) => {
-        throwErr(error);
+      // If new credentials contain an entry that is not yet present, add it.
+      credentialsAsJSON.forEach((cred) => {
+        if (!rowsAsJSON.includes(cred)) {
+          const obj = JSON.parse(cred);
+          toBeInserted.push({ company: obj.company, position: obj.position });
+        }
       });
-    });
+
+      // Deletes the obsolete credentials.
+      toBeRemoved.forEach((cred) => {
+        db.run(deleteSQL, [uid, cred.company, cred.position], (error) => {
+          if (error) {
+            response.status = 'ERROR';
+            response.message = 'Profile could not be updated due to technical problems!';
+          }
+        });
+      });
+
+      // Inserts the new credentials.
+      toBeInserted.forEach((cred) => {
+        db.run(insertSQL, [uid, cred.company, cred.position], (error) => {
+          if (error) {
+            response.status = 'ERROR';
+            response.message = 'Profile could not be updated due to technical problems!';
+          }
+        });
+      });
+
+      if (response.status === undefined) {
+        response.status = 'SUCCESS';
+        response.messsage = 'Profile was updated successfully!';
+      }
+      callback(response);
+    } else {
+      callback({ status: 'ERROR', message: 'Could not update profile due to technical issues.' });
+    }
   });
 }
 
-function updateProfile(uid, linkedIn, description, title, credentials) {
+function updateProfile(uid, linkedIn, description, title, credentials, callback) {
   const query = 'UPDATE Profiles SET linkedIn = ?, description = ?, company = ? WHERE user_id = ?';
   db.run(query, [linkedIn, description, title, uid], (err) => {
-    if (err) {
-      throw err;
+    if (!err) {
+      updateCredentials(uid, credentials, callback);
+    } else {
+      callback({ status: 'ERROR', message: 'Profile could not be updated due to technical problems!' });
     }
-    updateCredentials(uid, credentials);
   });
 }
 
@@ -649,4 +666,5 @@ module.exports = {
   getGivenFeedbacks,
   setActiveStatus,
   db,
+  updateProfile,
 };
