@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 
 export default class DropdownList extends React.Component {
   render() {
-    const choices = this.props.choices.map((name) => {
-      return (
+    const choices = this.props.choices.map(name =>
+      (
         <li key={`choice-${name}`}>
           <button
             className="btn btn-dropdown"
@@ -12,8 +12,7 @@ export default class DropdownList extends React.Component {
             onClick={() => this.props.onChoice(name, this.props.keys)}
           >{name}
           </button>
-        </li>);
-    });
+        </li>));
 
     return (
       <div className="dropdown">

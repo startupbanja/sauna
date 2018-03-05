@@ -62,15 +62,23 @@ export default class AdminSchedules extends React.Component {
 
       const oldI = oldSchedule.findIndex(o =>
         o.startup === oldStartup && o.coach === oldCoach && o.time === cellKeys.time);
-      if (oldI < 0) return undefined;
       const newCoach = c ? oldCoach : newValue;
       const newStartup = c ? newValue : oldStartup;
-      oldSchedule[oldI] = {
-        time: cellKeys.time,
-        coach: newCoach,
-        startup: newStartup,
-        duration: oldSchedule[oldI].duration,
-      };
+      if (oldI < 0) {
+        oldSchedule.push({
+          time: cellKeys.time,
+          coach: newCoach,
+          startup: newStartup,
+          duration: oldSchedule[0].duration, // This assumes all have same duration
+        });
+      } else {
+        oldSchedule[oldI] = {
+          time: cellKeys.time,
+          coach: newCoach,
+          startup: newStartup,
+          duration: oldSchedule[oldI].duration,
+        };
+      }
       return { schedule: oldSchedule };
     });
   }

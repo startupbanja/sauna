@@ -14,17 +14,20 @@
   color:white;
   border: 2px solid black;
   text-align: center;
+  padding: 0;
 }
-
-#adminTable td.full-cell {
+#adminTable td div {
+  padding: 5px;
+}
+#adminTable td .full-cell {
   background:#E55234;
 }
 
-#adminTable td.empty-cell {
+#adminTable td .empty-cell {
   background:#676767;
 }
 
-#adminTable td.unavailable-cell {
+#adminTable td .unavailable-cell {
   background:#252525;
 }
 
