@@ -86,9 +86,14 @@
   font-size: 1.6em;
   margin-left: 2%;
   margin-top: 2%;
-  color: var(--light-gray);
+  color: var(--primary-color);
 }
 
 .edit-text:focus {
   outline: 1px solid var(--primary-color);
+}
+
+.glyphicon-cog:before {
+  content: "\e019";
+  font-size: 1.6em;
 }

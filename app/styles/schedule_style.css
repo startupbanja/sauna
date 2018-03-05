@@ -8,14 +8,14 @@
 }
 
 .schedule-text-style {
-  font-size: 25px;
-  color: #A1A19A;
-  font-family: 'Vinkel,sans-serif';
+  font-size: 2em;
+  color: var(--light-gray);
 }
 
 .schedule-name-style {
-  color: #E55234;
+  color: var(--primary-color);
   font-weight: bold;
+  font-family: 'Vinkel,sans-serif';
 }
 
 .schedule-divider {
@@ -27,7 +27,6 @@
 
 .schedule-header-style {
   font-size: 25px;
-  color: #A1A19A;
-  font-family: 'Vinkel,sans-serif';
+  color: var(--light-gray);
   text-align: center;
 }
