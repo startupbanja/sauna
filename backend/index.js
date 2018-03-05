@@ -289,6 +289,30 @@ app.get('/feedback', (req, res, next) => {
   });
 });
 
+app.get('/userMeetings', (req, res, next) => {
+  const id = req.session.userID;
+  const type = req.session.userType;
+  database.getUserMeetings(id, type, (err, result) => {
+    if (err) return next(err);
+    const meetingArray = [];
+    for (var row in result) { // eslint-disable-line
+      row = result[row];
+      const end = new Date('2000-01-01T' + row.time);
+      end.setMinutes(end.getMinutes() + row.duration);
+      meetingArray.push({
+        name: row.name,
+        startTime: row.time,
+        endTime: ('0' + (end.getHours())).slice(-2) + ':' + ('0' + end.getMinutes()).slice(-2) + ':' + ('0' + end.getSeconds()).slice(-2),
+      });
+    }
+    meetingArray.sort((a, b) => new Date('2000-01-01T' + a.startTime) - new Date('2000-01-01T' + b.startTime));
+    res.json({
+      meetings: meetingArray,
+    });
+    return undefined;
+  });
+});
+
 /* sets either coach_rating or startup_rating for a specific meeting */
 app.post('/giveFeedback', (req, res, next) => {
   const userType = req.session.userType;
