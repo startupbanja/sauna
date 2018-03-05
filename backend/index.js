@@ -440,18 +440,18 @@ app.use((err, req, res, next) => {
   res.status(500).send({ error: 'An error has occured!' });
 
 app.post('/updateProfile', (req, res) => {
-
   // Create a JSON object from request body.
-  const JSONObject = req.body;
-  const uid = JSONObject.uid;
+  const JSONObject = JSON.parse(req.body.data);
+  const uid = req.session.userID;
   const linkedIn = JSONObject.linkedIn;
   const description = JSONObject.description;
-  const titles = JSONObject.titles;
+  const title = JSONObject.titles[0];
   const credentials = JSONObject.credentials;
-  
-  database.updateProfile(uid, linkedIn, description, titles[0], credentials);
-  // TODO: implement database functionality.
-  res.json();
+
+  // Perform insertion to database using the information specified above.
+  database.updateProfile(uid, linkedIn, description, title, credentials, (response) => {
+    res.json(response);
+  });
 });
 
 const server = app.listen(port);

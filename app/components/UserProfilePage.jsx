@@ -39,7 +39,7 @@ class UserProfilePage extends Component {
         this.setState({
           name: responseJSON.name,
           description: responseJSON.description,
-          linkedIn: 'http://'.concat('', responseJSON.linkedIn),
+          linkedIn: responseJSON.linkedIn,
           credentials: responseJSON.credentials,
           canModify: responseJSON.canModify,
           titles: [responseJSON.company],
