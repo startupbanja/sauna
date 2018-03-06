@@ -1,78 +1,45 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 import ScheduleItem from './ScheduleItem';
 
-const data = {
-  schedule: [
-    {
-      time: {
-        start: new Date(2017, 11, 8, 14, 0),
-        end: new Date(2017, 11, 8, 14, 20),
-      },
-      coach: 'Ilkka Paananen',
-      table: 'table 6',
-    },
-    {
-      time: {
-        start: new Date(2017, 11, 8, 14, 20),
-        end: new Date(2017, 11, 8, 14, 40),
-      },
-      coach: 'Juha Ruohonen',
-      table: 'table 5',
-    },
-    {
-      time: {
-        start: new Date(2017, 11, 8, 14, 40),
-        end: new Date(2017, 11, 8, 15, 0),
-      },
-      coach: 'Timo Ahopelto',
-      table: 'table 5',
-    },
-    {
-      time: {
-        start: new Date(2017, 11, 8, 15, 0),
-        end: new Date(2017, 11, 8, 15, 20),
-      },
-    },
-    {
-      time: {
-        start: new Date(2017, 11, 8, 15, 20),
-        end: new Date(2017, 11, 8, 15, 40),
-      },
-      coach: 'Moaffak Ahmed',
-      table: 'table 2',
-    },
-  ],
-};
-
+/* Component to display carousel of upcoming timetable */
 class ComingUpCarousel extends Component {
   render() {
     const indicators = [];
     const items = [];
 
-    for (let i = 0; i < data.schedule.length; i += 1) {
+    for (let i = 0; i < this.props.timetable.length; i += 1) {
       let className = '';
       if (i === 0) className = 'active';
       const indicator = (<li
         key={`carouselIndicator${i}`}
         data-target="#theComingUpCarousel"
-        data-slide-to={Math.min(i, data.schedule.length - 3)}
+        data-slide-to={Math.min(i, this.props.timetable.length - 3)}
         className={className}
       />);
       indicators.push(indicator);
-      if (i > data.schedule.length - 3) continue; // eslint-disable-line
+      if (i > this.props.timetable.length - 3) continue; // eslint-disable-line
       const scheduleItemContainers = [];
       for (let j = 0; j < 3; j += 1) {
-        const scheduleItemData = data.schedule[i + j];
+        const scheduleItemData = this.props.timetable[i + j];
         let scheduleItem;
-        if (typeof scheduleItemData.coach !== 'undefined' && typeof scheduleItemData.table !== 'undefined') {
+        if (scheduleItemData.name) {
           scheduleItem = (<ScheduleItem
             type="meeting"
-            time={scheduleItemData.time}
-            coach={scheduleItemData.coach}
+            time={{
+              start: new Date(`${this.props.date}T${scheduleItemData.startTime}`),
+              end: new Date(`${this.props.date}T${scheduleItemData.endTime}`),
+            }}
+            name={scheduleItemData.name}
           />);
         } else {
-          scheduleItem = <ScheduleItem type="break" time={scheduleItemData.time} />;
+          scheduleItem = (<ScheduleItem
+            type="break"
+            time={{
+              start: new Date(`${this.props.date}T${scheduleItemData.startTime}`),
+              end: new Date(`${this.props.date}T${scheduleItemData.endTime}`),
+            }}
+          />);
         }
         scheduleItemContainers.push(<div key={`carouselItemItem${i + j}`} className="col-xs-4">{scheduleItem}</div>);
       }
@@ -105,7 +72,12 @@ class ComingUpCarousel extends Component {
 }
 
 ComingUpCarousel.propTypes = {
-
+  timetable: PropTypes.arrayOf(PropTypes.shape({
+    name: PropTypes.string,
+    startTime: PropTypes.string,
+    endTime: PropTypes.string,
+  })).isRequired,
+  date: PropTypes.string.isRequired,
 };
 
 export default ComingUpCarousel;

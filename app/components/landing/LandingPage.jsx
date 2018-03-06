@@ -1,14 +1,39 @@
 import React, { Component } from 'react';
-// import PropTypes from 'prop-types';
-import BlockHeader from './BlockHeader';
+import BlockHeader from '../BlockHeader';
 import ComingUpCarousel from './ComingUpCarousel';
+import pageContent from '../pageContent';
 
+/* Component for displaying landing page for users */
 class LandingPage extends Component {
+  constructor(props) {
+    super(props);
+    this.fetchTimetable = this.fetchTimetable.bind(this);
+    this.state = {
+      timetable: undefined,
+      date: undefined,
+    };
+  }
+
+  componentDidMount() {
+    this.fetchTimetable();
+  }
+
+  fetchTimetable() {
+    pageContent.fetchData('/userMeetings', 'GET', {})
+      .then((response) => {
+        this.setState({
+          timetable: response.meetings,
+          date: response.date,
+        });
+      });
+  }
+
   render() {
     return (
       <div className="container" >
         <h3 className="text-center" style={{ fontWeight: 'bold' }}>Coming up</h3>
-        <ComingUpCarousel />
+        {((this.state.timetable && this.state.date) || undefined) &&
+          <ComingUpCarousel timetable={this.state.timetable} date={this.state.date} />}
         <BlockHeader text="Mind these:" />
         <div className="row">
           <div className="col-sm-6 col-xs-12" style={{ padding: '10px' }}>
@@ -32,9 +57,5 @@ class LandingPage extends Component {
     );
   }
 }
-
-LandingPage.propTypes = {
-
-};
 
 export default LandingPage;

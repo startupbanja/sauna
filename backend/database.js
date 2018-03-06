@@ -509,7 +509,7 @@ function getUserMeetings(userID, userType, callback) {
   let query;
   if (userType === 'coach') {
     query = `
-    SELECT name, time, duration
+    SELECT name, time, duration, date
     FROM Meetings
     LEFT OUTER JOIN Profiles ON Profiles.user_id = Meetings.startup_id
     WHERE Meetings.coach_id = ? AND date = (SELECT MAX(date) FROM Meetings);`;

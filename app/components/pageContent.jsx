@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 /* import Image from './Image'; */
 import FeedbackView from './FeedbackView';
-import LandingPage from './LandingPage';
+import LandingPage from './landing/LandingPage';
 import UserProfilePage from './UserProfilePage';
 import UserSchedule from './UserSchedule';
 import UserList from './UserList';
