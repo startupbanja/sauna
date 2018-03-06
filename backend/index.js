@@ -438,18 +438,22 @@ app.post('/insertAvailability', (req, res, next) => {
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send({ error: 'An error has occured!' });
+});
 
 app.post('/updateProfile', (req, res) => {
+  let userType = req.session.userType;
+  userType = userType.replace(userType[0], userType[0].toUpperCase()); 
   // Create a JSON object from request body.
   const JSONObject = JSON.parse(req.body.data);
+  console.log(JSONObject);
   const uid = req.session.userID;
-  const linkedIn = JSONObject.linkedIn;
+  const site = JSONObject.site;
   const description = JSONObject.description;
   const title = JSONObject.titles[0];
   const credentials = JSONObject.credentials;
 
   // Perform insertion to database using the information specified above.
-  database.updateProfile(uid, linkedIn, description, title, credentials, (response) => {
+  database.updateProfile(uid, userType, site, description, title, credentials, (response) => {
     res.json(response);
   });
 });

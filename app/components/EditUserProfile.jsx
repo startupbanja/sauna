@@ -32,8 +32,8 @@ class EditUserProfile extends Component {
       const children = elem.children;
       if (children[0].value !== '' && children[1].value !== '') {
         credentials.push({
-          company: children[0].value,
-          position: children[1].value,
+          title: children[0].value,
+          content: children[1].value,
         });
       }
     });
@@ -43,7 +43,7 @@ class EditUserProfile extends Component {
   /* eslint-enable */
   getInputData() {
     return {
-      linkedIn: this.getValueOfField('linkedIn'),
+      site: this.getValueOfField('linkedIn'),
       description: this.getValueOfField('description'),
       titles: this.getTitles(),
       credentials: this.getCredentials(),
@@ -78,15 +78,14 @@ class EditUserProfile extends Component {
             {this.props.titles.map(value => <input className="edit-text" key={`title${value.id}`} type="text" value={value} />)}
           </div>
           <div>
-
             <p>Credentials:</p>
             <p><b>NOTE:</b>To remove a credential, just leave it blank.</p>
             <div id="credentialFieldsContainer">
               {this.state.credentials.map(value =>
                 (
                   <div key={`cred${value.id}`} className="credentialField">
-                    <input key={`company${value.id}`} type="text" defaultValue={value.company} />
-                    <input key={`position${value.id}`} type="text" defaultValue={value.position} />
+                    <input key={`company${value}`} type="text" defaultValue={value.company} />
+                    <input key={`position${value}`} type="text" defaultValue={value.position} />
                   </div>
                 ))
               }
@@ -95,7 +94,7 @@ class EditUserProfile extends Component {
         </form>
         <button onClick={() => this.addCredential()} style={{ display: 'block' }}>
           <span className="glyphicon glyphicon-plus-sign" />
-          Add a credential.
+          Add a credential
         </button>
         <Button
           className="btn btn-lg ffbutton-red"
