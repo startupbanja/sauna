@@ -32,8 +32,8 @@ class EditUserProfile extends Component {
       const children = elem.children;
       if (children[0].value !== '' && children[1].value !== '') {
         credentials.push({
-          company: children[0].value,
-          position: children[1].value,
+          title: children[0].value,
+          content: children[1].value,
         });
       }
     });
@@ -43,7 +43,7 @@ class EditUserProfile extends Component {
   /* eslint-enable */
   getInputData() {
     return {
-      linkedIn: this.getValueOfField('linkedIn'),
+      site: this.getValueOfField('linkedIn'),
       description: this.getValueOfField('description'),
       titles: this.getTitles(),
       credentials: this.getCredentials(),
@@ -68,7 +68,7 @@ class EditUserProfile extends Component {
           <h4>{this.props.name}</h4>
           <p>
             LinkedIn:<br />
-            <input id="linkedIn" type="text" value={this.props.linkedIn} />
+            <input id="linkedIn" type="text" defaultValue={this.props.linkedIn} />
           </p>
           <p>
             Description:<br />
@@ -76,7 +76,7 @@ class EditUserProfile extends Component {
           </p>
           <div>
             <p>Titles:</p>
-            {this.props.titles.map(value => <input className="title" key={`title${value.id}`} type="text" defaultValue={value} />)}
+            {this.props.titles.map(value => <input className="title" key={`title${value}`} type="text" defaultValue={value} />)}
           </div>
           <div>
             <p>Credentials:</p>
@@ -85,8 +85,8 @@ class EditUserProfile extends Component {
               {this.state.credentials.map(value =>
                 (
                   <div key={`cred${value.id}`} className="credentialField">
-                    <input key={`company${value.id}`} type="text" defaultValue={value.company} />
-                    <input key={`position${value.id}`} type="text" defaultValue={value.position} />
+                    <input key={`company${value}`} type="text" defaultValue={value.company} />
+                    <input key={`position${value}`} type="text" defaultValue={value.position} />
                   </div>
                 ))
               }
@@ -95,7 +95,7 @@ class EditUserProfile extends Component {
         </form>
         <button onClick={() => this.addCredential()} style={{ display: 'block' }}>
           <span className="glyphicon glyphicon-plus-sign" />
-          Add a credential.
+          Add a credential
         </button>
         <Button
           className="btn btn-lg ffbutton-red"

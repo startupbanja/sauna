@@ -114,9 +114,9 @@ function setActiveStatus(id, active, callback) {
 
 function getProfile(id, callback) {
   const info = {};
-  const query = `SELECT name, description, Profiles.company AS currentCompany, email, linkedin, Credentials.company, Credentials.title
+  const query = `SELECT name, description, Profiles.company AS currentCompany, email, linkedin, CredentialsListEntries.title, CredentialsListEntries.content
                  FROM Profiles
-                 LEFT OUTER JOIN Credentials ON Profiles.user_id = Credentials.user_id
+                 LEFT OUTER JOIN CredentialsListEntries ON Profiles.user_id = CredentialsListEntries.uid
                  WHERE Profiles.user_id = ?;`;
 
   db.all(query, [Number(id)], (err, rows) => {
@@ -128,9 +128,9 @@ function getProfile(id, callback) {
         info.email = row.email;
         info.linkedIn = row.linkedin;
         info.company = row.currentCompany;
-        info.credentials = [{ company: row.company, position: row.title }];
+        info.credentials = [{ company: row.title, position: row.content }];
       } else {
-        info.credentials.push({ company: row.company, position: row.title });
+        info.credentials.push({ company: row.title, position: row.content });
       }
     });
     return callback(err, info);
@@ -283,7 +283,7 @@ function updateCredentials(uid, credentials, callback) {
   const insertSQL = 'INSERT INTO Credentials(user_id, company, title) VALUES(?,?,?);';
 
   // Fetches all credentials for the given uid and processes them.
-  db.all('SELECT company, title FROM Credentials WHERE user_id = ?', [uid], (err, rows) => {
+  db.all('SELECT title, content FROM CredentialsListEntries WHERE uid = ?', [uid], (err, rows) => {
     if (!err) {
       const rowsAsJSON = rows.map(x => JSON.stringify(x));
       const credentialsAsJSON = credentials.map(x => JSON.stringify(x));
@@ -295,7 +295,7 @@ function updateCredentials(uid, credentials, callback) {
       rowsAsJSON.forEach((row) => {
         if (!credentialsAsJSON.includes(row)) {
           const obj = JSON.parse(row);
-          toBeRemoved.push({ company: obj.company, position: obj.title });
+          toBeRemoved.push({ company: obj.title, position: obj.content });
         }
       });
 
@@ -303,7 +303,7 @@ function updateCredentials(uid, credentials, callback) {
       credentialsAsJSON.forEach((cred) => {
         if (!rowsAsJSON.includes(cred)) {
           const obj = JSON.parse(cred);
-          toBeInserted.push({ company: obj.company, position: obj.position });
+          toBeInserted.push({ company: obj.title, position: obj.content });
         }
       });
 
@@ -322,7 +322,7 @@ function updateCredentials(uid, credentials, callback) {
         db.run(insertSQL, [uid, cred.company, cred.position], (error) => {
           if (error) {
             response.status = 'ERROR';
-            response.message = 'Profile could not be updated due to technical problems!';
+            response.message = 'Profile could not be updated due to technical problems! (updateCredentials)';
           }
         });
       });
@@ -338,13 +338,70 @@ function updateCredentials(uid, credentials, callback) {
   });
 }
 
-function updateProfile(uid, linkedIn, description, title, credentials, callback) {
-  const query = 'UPDATE Profiles SET linkedIn = ?, description = ?, company = ? WHERE user_id = ?';
-  db.run(query, [linkedIn, description, title, uid], (err) => {
+function updateTeamMembers(uid, members, callback) {
+  // Arrays to hold values.
+  const toBeRemoved = [];
+  const toBeInserted = [];
+
+  db.all('SELECT title, content FROM CredentialsListEntries WHERE uid = ?', [uid], (err, rows) => {
+    const rowsJSON = rows.map(x => JSON.stringify(x));
+    const membersJSON = members.map(x => JSON.stringify(x));
+
+    membersJSON.forEach((member) => {
+      if (!rowsJSON.includes(JSON.stringify(member))) {
+        toBeInserted.push(JSON.parse(member));
+      }
+    });
+
+    rowsJSON.forEach((member) => {
+      if (!membersJSON.includes(JSON.stringify(member))) {
+        toBeRemoved.push(JSON.parse(member));
+      }
+    });
+
+    const response = {};
+
+    toBeRemoved.forEach((member) => {
+      db.run('DELETE FROM TeamMembers WHERE uid = ? AND name = ? AND title = ?', [uid, member.title, member.content], (error) => {
+        if (error) {
+          response.status = 'ERROR';
+          response.message = 'Profile could not be updated due to technical problems!';
+        }
+      });
+    });
+
+    toBeInserted.forEach((member) => {
+      db.run('INSERT INTO TeamMembers(startup_id, name, title) VALUES(?,?,?)', [uid, member.title, member.content], (error) => {
+        if (error) {
+          response.status = 'ERROR';
+          response.message = 'Profile could not be updated due to technical problems!';
+        }
+      });
+    });
+
+    if (response.status !== 'ERROR') {
+      response.status = 'SUCCESS';
+      response.message = 'Profile was updated successfully!';
+    }
+    callback(response);
+  });
+}
+
+function updateProfile(uid, userType, site, description, title, credentials, callback) {
+  const siteAttr = userType === 'Coach' ? 'linkedin' : 'website';
+  const company = userType === 'Coach' ? ', company = ?' : '';
+  const queryParams = userType === 'Coach' ? [site, description, title, uid] : [site, description, uid];
+  const query = `UPDATE ${userType}Profiles SET ${siteAttr} = ?, description = ?${company} WHERE user_id = ?`;
+
+  db.run(query, queryParams, (err) => {
     if (!err) {
-      updateCredentials(uid, credentials, callback);
+      if (userType === 'Coach') {
+        updateCredentials(uid, credentials, callback);
+      } else if (userType === 'Startup') {
+        updateTeamMembers(uid, credentials, callback);
+      }
     } else {
-      callback({ status: 'ERROR', message: 'Profile could not be updated due to technical problems!' });
+      callback({ status: 'ERROR', message: 'Profile could not be updated due to technical problems! (updateProfile)' });
     }
   });
 }
