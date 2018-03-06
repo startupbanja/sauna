@@ -37,6 +37,11 @@ ShallowWrapper {
         >
           Mon, 5.28.2018
         </p>,
+        <p
+          className="help-text help-text-center"
+        >
+          Drag from the arrow to set your availability...
+        </p>,
         <TimeslotDrag
           available={
             Object {
@@ -49,6 +54,11 @@ ShallowWrapper {
           split={40}
           start={600}
         />,
+        <p
+          className="help-text help-text-center"
+        >
+          ...or type in manually
+        </p>,
         <TimeslotInput
           available={
             Object {
@@ -61,12 +71,26 @@ ShallowWrapper {
         <div
           className="navigation-container"
         >
+          <span
+            className="glyphicon glyphicon-triangle-left invisible"
+            onClick={undefined}
+            onKeyDown={undefined}
+            role="button"
+            tabIndex={0}
+          />
           <button
             className="btn btn-lg btn-major"
             onClick={[Function]}
           >
             Submit
           </button>
+          <span
+            className="glyphicon glyphicon-triangle-right invisible"
+            onClick={undefined}
+            onKeyDown={undefined}
+            role="button"
+            tabIndex={0}
+          />
         </div>,
       ],
       "className": "container timeslot-container",
@@ -83,6 +107,18 @@ ShallowWrapper {
         },
         "ref": null,
         "rendered": "Mon, 5.28.2018",
+        "type": "p",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": "Drag from the arrow to set your availability...",
+          "className": "help-text help-text-center",
+        },
+        "ref": null,
+        "rendered": "Drag from the arrow to set your availability...",
         "type": "p",
       },
       Object {
@@ -106,6 +142,18 @@ ShallowWrapper {
       Object {
         "instance": null,
         "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": "...or type in manually",
+          "className": "help-text help-text-center",
+        },
+        "ref": null,
+        "rendered": "...or type in manually",
+        "type": "p",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
         "nodeType": "class",
         "props": Object {
           "available": Object {
@@ -124,20 +172,46 @@ ShallowWrapper {
         "nodeType": "host",
         "props": Object {
           "children": Array [
-            undefined,
+            <span
+              className="glyphicon glyphicon-triangle-left invisible"
+              onClick={undefined}
+              onKeyDown={undefined}
+              role="button"
+              tabIndex={0}
+            />,
             <button
               className="btn btn-lg btn-major"
               onClick={[Function]}
             >
               Submit
             </button>,
-            undefined,
+            <span
+              className="glyphicon glyphicon-triangle-right invisible"
+              onClick={undefined}
+              onKeyDown={undefined}
+              role="button"
+              tabIndex={0}
+            />,
           ],
           "className": "navigation-container",
         },
         "ref": null,
         "rendered": Array [
-          undefined,
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "className": "glyphicon glyphicon-triangle-left invisible",
+              "onClick": undefined,
+              "onKeyDown": undefined,
+              "role": "button",
+              "tabIndex": 0,
+            },
+            "ref": null,
+            "rendered": null,
+            "type": "span",
+          },
           Object {
             "instance": null,
             "key": undefined,
@@ -151,7 +225,21 @@ ShallowWrapper {
             "rendered": "Submit",
             "type": "button",
           },
-          undefined,
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "className": "glyphicon glyphicon-triangle-right invisible",
+              "onClick": undefined,
+              "onKeyDown": undefined,
+              "role": "button",
+              "tabIndex": 0,
+            },
+            "ref": null,
+            "rendered": null,
+            "type": "span",
+          },
         ],
         "type": "div",
       },
@@ -170,6 +258,11 @@ ShallowWrapper {
           >
             Mon, 5.28.2018
           </p>,
+          <p
+            className="help-text help-text-center"
+          >
+            Drag from the arrow to set your availability...
+          </p>,
           <TimeslotDrag
             available={
               Object {
@@ -182,6 +275,11 @@ ShallowWrapper {
             split={40}
             start={600}
           />,
+          <p
+            className="help-text help-text-center"
+          >
+            ...or type in manually
+          </p>,
           <TimeslotInput
             available={
               Object {
@@ -194,12 +292,26 @@ ShallowWrapper {
           <div
             className="navigation-container"
           >
+            <span
+              className="glyphicon glyphicon-triangle-left invisible"
+              onClick={undefined}
+              onKeyDown={undefined}
+              role="button"
+              tabIndex={0}
+            />
             <button
               className="btn btn-lg btn-major"
               onClick={[Function]}
             >
               Submit
             </button>
+            <span
+              className="glyphicon glyphicon-triangle-right invisible"
+              onClick={undefined}
+              onKeyDown={undefined}
+              role="button"
+              tabIndex={0}
+            />
           </div>,
         ],
         "className": "container timeslot-container",
@@ -216,6 +328,18 @@ ShallowWrapper {
           },
           "ref": null,
           "rendered": "Mon, 5.28.2018",
+          "type": "p",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": "Drag from the arrow to set your availability...",
+            "className": "help-text help-text-center",
+          },
+          "ref": null,
+          "rendered": "Drag from the arrow to set your availability...",
           "type": "p",
         },
         Object {
@@ -239,6 +363,18 @@ ShallowWrapper {
         Object {
           "instance": null,
           "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": "...or type in manually",
+            "className": "help-text help-text-center",
+          },
+          "ref": null,
+          "rendered": "...or type in manually",
+          "type": "p",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
           "nodeType": "class",
           "props": Object {
             "available": Object {
@@ -257,20 +393,46 @@ ShallowWrapper {
           "nodeType": "host",
           "props": Object {
             "children": Array [
-              undefined,
+              <span
+                className="glyphicon glyphicon-triangle-left invisible"
+                onClick={undefined}
+                onKeyDown={undefined}
+                role="button"
+                tabIndex={0}
+              />,
               <button
                 className="btn btn-lg btn-major"
                 onClick={[Function]}
               >
                 Submit
               </button>,
-              undefined,
+              <span
+                className="glyphicon glyphicon-triangle-right invisible"
+                onClick={undefined}
+                onKeyDown={undefined}
+                role="button"
+                tabIndex={0}
+              />,
             ],
             "className": "navigation-container",
           },
           "ref": null,
           "rendered": Array [
-            undefined,
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "className": "glyphicon glyphicon-triangle-left invisible",
+                "onClick": undefined,
+                "onKeyDown": undefined,
+                "role": "button",
+                "tabIndex": 0,
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "span",
+            },
             Object {
               "instance": null,
               "key": undefined,
@@ -284,7 +446,21 @@ ShallowWrapper {
               "rendered": "Submit",
               "type": "button",
             },
-            undefined,
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "className": "glyphicon glyphicon-triangle-right invisible",
+                "onClick": undefined,
+                "onKeyDown": undefined,
+                "role": "button",
+                "tabIndex": 0,
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "span",
+            },
           ],
           "type": "div",
         },
@@ -339,6 +515,11 @@ ShallowWrapper {
         >
           Mon, 5.28.2018
         </p>,
+        <p
+          className="help-text help-text-center"
+        >
+          Drag from the arrow to set your availability...
+        </p>,
         <TimeslotDrag
           available={
             Object {
@@ -351,6 +532,11 @@ ShallowWrapper {
           split={40}
           start={600}
         />,
+        <p
+          className="help-text help-text-center"
+        >
+          ...or type in manually
+        </p>,
         <TimeslotInput
           available={
             Object {
@@ -363,12 +549,26 @@ ShallowWrapper {
         <div
           className="navigation-container"
         >
+          <span
+            className="glyphicon glyphicon-triangle-left invisible"
+            onClick={undefined}
+            onKeyDown={undefined}
+            role="button"
+            tabIndex={0}
+          />
           <button
             className="btn btn-lg btn-major"
             onClick={[Function]}
           >
             Submit
           </button>
+          <span
+            className="glyphicon glyphicon-triangle-right invisible"
+            onClick={undefined}
+            onKeyDown={undefined}
+            role="button"
+            tabIndex={0}
+          />
         </div>,
       ],
       "className": "container timeslot-container",
@@ -385,6 +585,18 @@ ShallowWrapper {
         },
         "ref": null,
         "rendered": "Mon, 5.28.2018",
+        "type": "p",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": "Drag from the arrow to set your availability...",
+          "className": "help-text help-text-center",
+        },
+        "ref": null,
+        "rendered": "Drag from the arrow to set your availability...",
         "type": "p",
       },
       Object {
@@ -408,6 +620,18 @@ ShallowWrapper {
       Object {
         "instance": null,
         "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": "...or type in manually",
+          "className": "help-text help-text-center",
+        },
+        "ref": null,
+        "rendered": "...or type in manually",
+        "type": "p",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
         "nodeType": "class",
         "props": Object {
           "available": Object {
@@ -426,20 +650,46 @@ ShallowWrapper {
         "nodeType": "host",
         "props": Object {
           "children": Array [
-            undefined,
+            <span
+              className="glyphicon glyphicon-triangle-left invisible"
+              onClick={undefined}
+              onKeyDown={undefined}
+              role="button"
+              tabIndex={0}
+            />,
             <button
               className="btn btn-lg btn-major"
               onClick={[Function]}
             >
               Submit
             </button>,
-            undefined,
+            <span
+              className="glyphicon glyphicon-triangle-right invisible"
+              onClick={undefined}
+              onKeyDown={undefined}
+              role="button"
+              tabIndex={0}
+            />,
           ],
           "className": "navigation-container",
         },
         "ref": null,
         "rendered": Array [
-          undefined,
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "className": "glyphicon glyphicon-triangle-left invisible",
+              "onClick": undefined,
+              "onKeyDown": undefined,
+              "role": "button",
+              "tabIndex": 0,
+            },
+            "ref": null,
+            "rendered": null,
+            "type": "span",
+          },
           Object {
             "instance": null,
             "key": undefined,
@@ -453,7 +703,21 @@ ShallowWrapper {
             "rendered": "Submit",
             "type": "button",
           },
-          undefined,
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "className": "glyphicon glyphicon-triangle-right invisible",
+              "onClick": undefined,
+              "onKeyDown": undefined,
+              "role": "button",
+              "tabIndex": 0,
+            },
+            "ref": null,
+            "rendered": null,
+            "type": "span",
+          },
         ],
         "type": "div",
       },
@@ -472,6 +736,11 @@ ShallowWrapper {
           >
             Mon, 5.28.2018
           </p>,
+          <p
+            className="help-text help-text-center"
+          >
+            Drag from the arrow to set your availability...
+          </p>,
           <TimeslotDrag
             available={
               Object {
@@ -484,6 +753,11 @@ ShallowWrapper {
             split={40}
             start={600}
           />,
+          <p
+            className="help-text help-text-center"
+          >
+            ...or type in manually
+          </p>,
           <TimeslotInput
             available={
               Object {
@@ -496,12 +770,26 @@ ShallowWrapper {
           <div
             className="navigation-container"
           >
+            <span
+              className="glyphicon glyphicon-triangle-left invisible"
+              onClick={undefined}
+              onKeyDown={undefined}
+              role="button"
+              tabIndex={0}
+            />
             <button
               className="btn btn-lg btn-major"
               onClick={[Function]}
             >
               Submit
             </button>
+            <span
+              className="glyphicon glyphicon-triangle-right invisible"
+              onClick={undefined}
+              onKeyDown={undefined}
+              role="button"
+              tabIndex={0}
+            />
           </div>,
         ],
         "className": "container timeslot-container",
@@ -518,6 +806,18 @@ ShallowWrapper {
           },
           "ref": null,
           "rendered": "Mon, 5.28.2018",
+          "type": "p",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": "Drag from the arrow to set your availability...",
+            "className": "help-text help-text-center",
+          },
+          "ref": null,
+          "rendered": "Drag from the arrow to set your availability...",
           "type": "p",
         },
         Object {
@@ -541,6 +841,18 @@ ShallowWrapper {
         Object {
           "instance": null,
           "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": "...or type in manually",
+            "className": "help-text help-text-center",
+          },
+          "ref": null,
+          "rendered": "...or type in manually",
+          "type": "p",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
           "nodeType": "class",
           "props": Object {
             "available": Object {
@@ -559,20 +871,46 @@ ShallowWrapper {
           "nodeType": "host",
           "props": Object {
             "children": Array [
-              undefined,
+              <span
+                className="glyphicon glyphicon-triangle-left invisible"
+                onClick={undefined}
+                onKeyDown={undefined}
+                role="button"
+                tabIndex={0}
+              />,
               <button
                 className="btn btn-lg btn-major"
                 onClick={[Function]}
               >
                 Submit
               </button>,
-              undefined,
+              <span
+                className="glyphicon glyphicon-triangle-right invisible"
+                onClick={undefined}
+                onKeyDown={undefined}
+                role="button"
+                tabIndex={0}
+              />,
             ],
             "className": "navigation-container",
           },
           "ref": null,
           "rendered": Array [
-            undefined,
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "className": "glyphicon glyphicon-triangle-left invisible",
+                "onClick": undefined,
+                "onKeyDown": undefined,
+                "role": "button",
+                "tabIndex": 0,
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "span",
+            },
             Object {
               "instance": null,
               "key": undefined,
@@ -586,7 +924,21 @@ ShallowWrapper {
               "rendered": "Submit",
               "type": "button",
             },
-            undefined,
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "className": "glyphicon glyphicon-triangle-right invisible",
+                "onClick": undefined,
+                "onKeyDown": undefined,
+                "role": "button",
+                "tabIndex": 0,
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "span",
+            },
           ],
           "type": "div",
         },
@@ -613,11 +965,16 @@ exports[`Timeslot initializes correctly 1`] = `
   >
     Mon, 5.28.2018
   </p>
+  <p
+    className="help-text help-text-center"
+  >
+    Drag from the arrow to set your availability...
+  </p>
   <div
     className="dragContainer"
     style={
       Object {
-        "height": 400,
+        "height": 300,
         "overflow": "hidden",
         "position": "relative",
       }
@@ -627,7 +984,7 @@ exports[`Timeslot initializes correctly 1`] = `
       className="dragableContainer unavailable"
       style={
         Object {
-          "height": 400,
+          "height": 300,
           "top": 0,
         }
       }
@@ -644,35 +1001,35 @@ exports[`Timeslot initializes correctly 1`] = `
       <hr
         style={
           Object {
-            "top": 65.66666666666667,
+            "top": 49,
           }
         }
       />
       <hr
         style={
           Object {
-            "top": 130.33333333333334,
+            "top": 97,
           }
         }
       />
       <hr
         style={
           Object {
-            "top": 195,
+            "top": 145,
           }
         }
       />
       <hr
         style={
           Object {
-            "top": 259.6666666666667,
+            "top": 193,
           }
         }
       />
       <hr
         style={
           Object {
-            "top": 324.33333333333337,
+            "top": 241,
           }
         }
       />
@@ -690,7 +1047,7 @@ exports[`Timeslot initializes correctly 1`] = `
       className="dragableContainer"
       style={
         Object {
-          "height": 400,
+          "height": 300,
           "top": 0,
         }
       }
@@ -714,37 +1071,28 @@ exports[`Timeslot initializes correctly 1`] = `
         12:00
       </p>
       <div
-        className="timeslot-dragball"
+        className="timeslot-dragball top"
         draggable="true"
         onDrag={[Function]}
         onDragEnd={[Function]}
         onDragStart={[Function]}
         onTouchMove={[Function]}
-        style={
-          Object {
-            "height": 12,
-            "top": -6,
-            "width": 12,
-          }
-        }
       />
       <div
-        className="timeslot-dragball"
+        className="timeslot-dragball bottom"
         draggable="true"
         onDrag={[Function]}
         onDragEnd={[Function]}
         onDragStart={[Function]}
         onTouchMove={[Function]}
-        style={
-          Object {
-            "bottom": -6,
-            "height": 12,
-            "width": 12,
-          }
-        }
       />
     </div>
   </div>
+  <p
+    className="help-text help-text-center"
+  >
+    ...or type in manually
+  </p>
   <div>
     <div
       className="timeslot-input"
@@ -766,17 +1114,36 @@ exports[`Timeslot initializes correctly 1`] = `
         type="text"
         value="12:00"
       />
+      <p
+        className="unavailable-text invisible"
+      >
+        unavailable
+      </p>
     </div>
   </div>
   <div
     className="navigation-container"
   >
+    <span
+      className="glyphicon glyphicon-triangle-left invisible"
+      onClick={undefined}
+      onKeyDown={undefined}
+      role="button"
+      tabIndex={0}
+    />
     <button
       className="btn btn-lg btn-major"
       onClick={[Function]}
     >
       Submit
     </button>
+    <span
+      className="glyphicon glyphicon-triangle-right invisible"
+      onClick={undefined}
+      onKeyDown={undefined}
+      role="button"
+      tabIndex={0}
+    />
   </div>
 </div>
 `;
@@ -790,11 +1157,16 @@ exports[`Timeslot initializes correctly 2`] = `
   >
     Wed, 2.1.2017
   </p>
+  <p
+    className="help-text help-text-center"
+  >
+    Drag from the arrow to set your availability...
+  </p>
   <div
     className="dragContainer"
     style={
       Object {
-        "height": 400,
+        "height": 300,
         "overflow": "hidden",
         "position": "relative",
       }
@@ -804,7 +1176,7 @@ exports[`Timeslot initializes correctly 2`] = `
       className="dragableContainer unavailable"
       style={
         Object {
-          "height": 400,
+          "height": 300,
           "top": 0,
         }
       }
@@ -821,28 +1193,42 @@ exports[`Timeslot initializes correctly 2`] = `
       <hr
         style={
           Object {
-            "top": 15,
+            "top": 11,
           }
         }
       />
       <hr
         style={
           Object {
-            "top": 29,
+            "top": 21,
           }
         }
       />
       <hr
         style={
           Object {
-            "top": 43,
+            "top": 31,
           }
         }
       />
       <hr
         style={
           Object {
-            "top": 57,
+            "top": 41,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 51,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 61,
           }
         }
       />
@@ -856,28 +1242,42 @@ exports[`Timeslot initializes correctly 2`] = `
       <hr
         style={
           Object {
-            "top": 85,
+            "top": 81,
           }
         }
       />
       <hr
         style={
           Object {
-            "top": 99,
+            "top": 91,
           }
         }
       />
       <hr
         style={
           Object {
-            "top": 113,
+            "top": 101,
           }
         }
       />
       <hr
         style={
           Object {
-            "top": 127,
+            "top": 111,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 121,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 131,
           }
         }
       />
@@ -891,28 +1291,42 @@ exports[`Timeslot initializes correctly 2`] = `
       <hr
         style={
           Object {
-            "top": 155,
+            "top": 151,
           }
         }
       />
       <hr
         style={
           Object {
-            "top": 169,
+            "top": 161,
           }
         }
       />
       <hr
         style={
           Object {
-            "top": 183,
+            "top": 171,
           }
         }
       />
       <hr
         style={
           Object {
-            "top": 197,
+            "top": 181,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 191,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 201,
           }
         }
       />
@@ -926,63 +1340,21 @@ exports[`Timeslot initializes correctly 2`] = `
       <hr
         style={
           Object {
-            "top": 225,
+            "top": 221,
           }
         }
       />
       <hr
         style={
           Object {
-            "top": 239,
+            "top": 231,
           }
         }
       />
       <hr
         style={
           Object {
-            "top": 253,
-          }
-        }
-      />
-      <hr
-        style={
-          Object {
-            "top": 267,
-          }
-        }
-      />
-      <hr
-        style={
-          Object {
-            "top": 281,
-          }
-        }
-      />
-      <hr
-        style={
-          Object {
-            "top": 295,
-          }
-        }
-      />
-      <hr
-        style={
-          Object {
-            "top": 309,
-          }
-        }
-      />
-      <hr
-        style={
-          Object {
-            "top": 323,
-          }
-        }
-      />
-      <hr
-        style={
-          Object {
-            "top": 337,
+            "top": 241,
           }
         }
       />
@@ -1000,8 +1372,8 @@ exports[`Timeslot initializes correctly 2`] = `
       className="dragableContainer"
       style={
         Object {
-          "height": 192,
-          "top": 96,
+          "height": 144,
+          "top": 72,
         }
       }
     >
@@ -1024,37 +1396,28 @@ exports[`Timeslot initializes correctly 2`] = `
         18:20
       </p>
       <div
-        className="timeslot-dragball"
+        className="timeslot-dragball top"
         draggable="true"
         onDrag={[Function]}
         onDragEnd={[Function]}
         onDragStart={[Function]}
         onTouchMove={[Function]}
-        style={
-          Object {
-            "height": 12,
-            "top": -6,
-            "width": 12,
-          }
-        }
       />
       <div
-        className="timeslot-dragball"
+        className="timeslot-dragball bottom"
         draggable="true"
         onDrag={[Function]}
         onDragEnd={[Function]}
         onDragStart={[Function]}
         onTouchMove={[Function]}
-        style={
-          Object {
-            "bottom": -6,
-            "height": 12,
-            "width": 12,
-          }
-        }
       />
     </div>
   </div>
+  <p
+    className="help-text help-text-center"
+  >
+    ...or type in manually
+  </p>
   <div>
     <div
       className="timeslot-input"
@@ -1076,17 +1439,36 @@ exports[`Timeslot initializes correctly 2`] = `
         type="text"
         value="18:20"
       />
+      <p
+        className="unavailable-text invisible"
+      >
+        unavailable
+      </p>
     </div>
   </div>
   <div
     className="navigation-container"
   >
+    <span
+      className="glyphicon glyphicon-triangle-left invisible"
+      onClick={undefined}
+      onKeyDown={undefined}
+      role="button"
+      tabIndex={0}
+    />
     <button
       className="btn btn-lg btn-major"
       onClick={[Function]}
     >
       Submit
     </button>
+    <span
+      className="glyphicon glyphicon-triangle-right invisible"
+      onClick={undefined}
+      onKeyDown={undefined}
+      role="button"
+      tabIndex={0}
+    />
   </div>
 </div>
 `;

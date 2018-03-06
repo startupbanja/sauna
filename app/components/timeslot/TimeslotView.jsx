@@ -33,7 +33,7 @@ class TimeslotView extends Component {
             split: day.split,
             available: {
               start: (day.time === null) ? start : parseMinutes(day.time),
-              end: (day.duration === null) ? end : parseMinutes(day.time) + day.duration,
+              end: (day.duration === null) ? start : parseMinutes(day.time) + day.duration,
             },
           });
         });
@@ -61,7 +61,6 @@ class TimeslotView extends Component {
         this.setState({
           data: oldData,
         });
-        this.changeDate(1);
       }
     });
   }
