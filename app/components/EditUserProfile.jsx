@@ -92,6 +92,11 @@ class EditUserProfile extends Component {
               }
             </div>
           </div>
+          <Button
+            className="btn btn-lg ffbutton-red"
+            onClick={() => this.handleSubmit()}
+            text="Save"
+          />
         </form>
         <button onClick={() => this.addCredential()} style={{ display: 'block' }}>
           <span className="glyphicon glyphicon-plus-sign" />
