@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
+import $ from 'jquery';
 import BlockHeader from '../BlockHeader';
 import ComingUpCarousel from './ComingUpCarousel';
 import pageContent from '../pageContent';
+/* eslint-disable jsx-a11y/anchor-is-valid */ // disable complaining from Link
 
 /* Component for displaying landing page for users */
 class LandingPage extends Component {
@@ -37,19 +40,23 @@ class LandingPage extends Component {
         <BlockHeader text="Mind these:" />
         <div className="row">
           <div className="col-sm-6 col-xs-12" style={{ padding: '10px' }}>
-            <button type="button" className=" btn btn-lg btn-major col-xs-12">View feedback</button>
+            <Link className="btn btn-lg btn-major col-xs-12" to="/feedback">
+              Give Feedback
+            </Link>
           </div>
           <div className="col-sm-6 col-xs-12" style={{ padding: '10px' }}>
-            <button type="button" className="btn btn-lg btn-major col-xs-12">View Coaches</button>
+            <Link className="btn btn-lg btn-major col-xs-12" to="/availability">
+              Set Availabilities
+            </Link>
           </div>
         </div>
         <BlockHeader text="Problems?" />
         <div className="row">
           <div className="col-sm-3" />
           <div className="col-sm-6 col-xs-12" style={{ padding: '10px' }}>
-            <button type="button" className="btn btn-lg btn-minor col-xs-12">
+            <a href="mailto:contact@startupsauna.com" className="btn btn-lg btn-minor col-xs-12">
               Email an admin
-            </button>
+            </a>
           </div>
           <div className="col-sm-3" />
         </div>
