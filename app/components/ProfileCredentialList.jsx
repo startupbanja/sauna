@@ -44,7 +44,7 @@ export default class ProfileCredentialList extends React.Component {
 
     return (
       <div className="credentials">
-        <BlockHeader text="Credentials" color="#363636" />
+        <BlockHeader text="Credentials" color="var(--dark-gray)" />
         {credentialList}
       </div>
     );
