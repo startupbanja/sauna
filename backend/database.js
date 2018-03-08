@@ -315,10 +315,7 @@ function getStartups(callback) {
   const query = `
   SELECT id
   FROM USERS
-  WHERE type=2 AND batch IN (
-  SELECT MAX(id)
-  FROM Batches
-  );`;
+  WHERE type=2 AND active=1;`;
   // (sql, params, callback for each row, callback on complete)
   db.each(query, [], (err, row) => {
     if (err) {
