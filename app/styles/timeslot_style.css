@@ -72,3 +72,9 @@
   transform: scale(2);
   margin: 0px 20px;
 }
+
+.empty-content-text {
+  text-align: center;
+  font-size: 28px;
+  margin: 10%;
+}

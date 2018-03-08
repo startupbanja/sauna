@@ -6,13 +6,13 @@ import Timeslot, { parseMinutes, parseTimeStamp } from './Timeslot';
 class TimeslotView extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      index: 0,
-      data: [],
-    };
     this.renderTimeslot = this.renderTimeslot.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.submitAvailability = this.submitAvailability.bind(this);
+    this.state = {
+      index: 0,
+      data: undefined,
+    };
   }
 
   componentDidMount() {
@@ -73,24 +73,23 @@ class TimeslotView extends Component {
   }
 
   renderTimeslot() {
-    if (this.state.data.length > 0) {
-      const day = this.state.data[this.state.index];
-      return (
-        <Timeslot
-          key={day.date}
-          start={day.start}
-          end={day.end}
-          split={day.split}
-          available={day.available}
-          date={day.date}
-          onSubmit={this.submitAvailability}
-          onMoveToPrev={((this.state.index > 0) || undefined) && (() => this.changeDate(-1))}
-          onMoveToNext={((this.state.index < this.state.data.length - 1) || undefined)
-            && (() => this.changeDate(1))}
-        />
-      );
-    }
-    return undefined;
+    if (!this.state.data) return null;
+    if (this.state.data.length === 0) return <p className="empty-content-text">No upcoming days</p>;
+    const day = this.state.data[this.state.index];
+    return (
+      <Timeslot
+        key={day.date}
+        start={day.start}
+        end={day.end}
+        split={day.split}
+        available={day.available}
+        date={day.date}
+        onSubmit={this.submitAvailability}
+        onMoveToPrev={((this.state.index > 0) || undefined) && (() => this.changeDate(-1))}
+        onMoveToNext={((this.state.index < this.state.data.length - 1) || undefined)
+          && (() => this.changeDate(1))}
+      />
+    );
   }
 
   render() {
@@ -98,7 +97,6 @@ class TimeslotView extends Component {
       <div className="timeslot-picker">
         <link rel="stylesheet" type="text/css" href="app/styles/timeslot_style.css" />
         {this.renderTimeslot()}
-
       </div>
     );
   }

@@ -100,7 +100,7 @@ export default class MeetingDetailView extends React.Component {
     }
 
     return (
-      <div className="container">
+      <div className="container full-viewport">
         <h1>Details {this.props.date}</h1>
         <Link
           className="btn btn-major"

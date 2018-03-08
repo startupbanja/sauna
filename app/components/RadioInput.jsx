@@ -8,39 +8,28 @@ jsx-a11y/no-noninteractive-element-to-interactive-role: "warn"
 */
 // TODO make the activeness of buttons change here, not based on bootstrap jquery stuff
 export default class RadioInput extends React.Component {
-  constructor(props) {
-    super(props);
-    this.componentDidUpdate = this.componentDidUpdate.bind(this);
-  }
-
-  componentDidUpdate() {
-    const { rating } = this.props;
-    $('.radiobutton').each(function doSmth() {
-      if ($(this).attr('value') === rating.toString()) $(this).addClass('active');
-      else $(this).removeClass('active');
-    });
-  }
-
   render() {
-    const choices = this.props.options.map(option =>
-      (
+    const choices = this.props.options.map((option) => {
+      const activeClass = (this.props.rating === option.value) ? ' active' : '';
+      return (
         <label
-          key={`option_${option}`}
-          className="btn btn-secondary radiobutton"
+          key={`option_${option.value}`}
+          className={`btn btn-secondary radiobutton${activeClass}`}
           role="button"
-          htmlFor={`${this.props.id}_${option}`}
-          value={option}
-          onClick={() => { this.props.onChange(this.props.index, option); }}
+          htmlFor={`${this.props.id}_${option.value}`}
+          value={option.value}
+          onClick={() => { this.props.onChange(this.props.index, option.value); }}
         >
           <input
-            id={`${this.props.id}_${option}`}
+            id={`${this.props.id}_${option.value}`}
             type="radio"
             name={this.props.name}
             autoComplete="off"
           />
-          {option}
+          <p><span className="option-desc">{option.desc}</span>{option.value}</p>
         </label>
-      ));
+      );
+    });
 
     return (
       <div className="row">
@@ -58,7 +47,10 @@ export default class RadioInput extends React.Component {
 RadioInput.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  options: PropTypes.arrayOf(PropTypes.number).isRequired,
+  options: PropTypes.arrayOf(PropTypes.shape({
+    desc: PropTypes.string,
+    value: PropTypes.number,
+  })).isRequired,
   question: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
   rating: PropTypes.number,

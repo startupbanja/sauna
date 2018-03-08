@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Button from './Button';
 import RadioInput from './RadioInput';
 import InfoCard from './InfoCard';
 
@@ -56,9 +55,9 @@ FeedbackForm.propTypes = {
   questions: PropTypes.arrayOf(PropTypes.shape({
     index: PropTypes.number,
     question: PropTypes.string,
-    options: PropTypes.arrayOf(PropTypes.number),
+    options: PropTypes.arrayOf(PropTypes.shape({
+      desc: PropTypes.string,
+      value: PropTypes.number,
+    })),
   })).isRequired,
-  // handleReset: PropTypes.func.isRequired,
-  // handleChange: PropTypes.func.isRequired,
-  // activeChoices: PropTypes.arrayOf(PropTypes.number).isRequired,
 };
