@@ -28,7 +28,7 @@ export default class UserProfile extends React.Component {
             {this.props.description}
           </p>
         </div>
-        <ProfileCredentialList credentials={this.props.credentials} />
+        <ProfileCredentialList type={this.props.type} credentials={this.props.credentials} />
       </div>
     );
   }
@@ -36,6 +36,7 @@ export default class UserProfile extends React.Component {
 
 
 UserProfile.propTypes = {
+  type: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   linkedIn: PropTypes.string,
   imgSrc: PropTypes.string,

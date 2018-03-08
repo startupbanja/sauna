@@ -62,6 +62,9 @@ class EditUserProfile extends Component {
   }
 
   render() {
+    const siteName = this.props.type === 'coach' ? 'LinkedIn:' : 'Website:';
+    const credentialsHeader = this.props.type === 'coach' ? 'Credentials:' : 'Team Members:';
+    const removeText = this.props.type === 'coach' ? 'credential' : 'team member';
     return (
       <div className="editProfileContainer container">
         <form>
@@ -78,8 +81,8 @@ class EditUserProfile extends Component {
             {this.props.titles.map(value => <input className="edit-text" key={`title${value.id}`} type="text" value={value} />)}
           </div>
           <div>
-            <p>Credentials:</p>
-            <p><b>NOTE:</b>To remove a credential, just leave it blank.</p>
+            <p>{credentialsHeader}</p>
+            <p><b>NOTE:</b>To remove a {removeText}, just leave the fields blank.</p>
             <div id="credentialFieldsContainer">
               {this.state.credentials.map(value =>
                 (
@@ -107,6 +110,7 @@ class EditUserProfile extends Component {
 }
 
 EditUserProfile.propTypes = {
+  type: PropTypes.string.isRequired,
   id: PropTypes.number, // eslint-disable-line react/no-unused-prop-types
   name: PropTypes.string.isRequired,
   linkedIn: PropTypes.string,

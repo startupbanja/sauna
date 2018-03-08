@@ -23,6 +23,7 @@ function closeDatabase(callback) {
   });
 }
 
+<<<<<<< HEAD
 
 function throwErr(err) {
   if (err) {
@@ -30,6 +31,8 @@ function throwErr(err) {
   }
 }
 
+=======
+>>>>>>> Added a type to UserProfile so the texts can now be customized for coaches and startups
 function getUsers(type, batch, includeId, callback) {
   const users = {};
   const query = `
@@ -133,7 +136,13 @@ function getProfile(id, callback) {
         info.credentials.push({ company: row.title, position: row.content });
       }
     });
-    return callback(err, info);
+
+    db.get('SELECT type FROM Users WHERE id = ?', [id], (error, row) => {
+      if (err) return callback(error);
+      info.type = row.type === 1 ? 'coach' : 'startup';
+      return callback(err, info);
+    });
+    return '';
   });
 }
 
@@ -386,6 +395,7 @@ function updateTeamMembers(uid, members, callback) {
     callback(response);
   });
 }
+
 
 function updateProfile(uid, userType, site, description, title, credentials, callback) {
   const siteAttr = userType === 'Coach' ? 'linkedin' : 'website';

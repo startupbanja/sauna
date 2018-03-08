@@ -442,10 +442,9 @@ app.use((err, req, res, next) => {
 
 app.post('/updateProfile', (req, res) => {
   let userType = req.session.userType;
-  userType = userType.replace(userType[0], userType[0].toUpperCase()); 
+  userType = userType.replace(userType[0], userType[0].toUpperCase());
   // Create a JSON object from request body.
   const JSONObject = JSON.parse(req.body.data);
-  console.log(JSONObject);
   const uid = req.session.userID;
   const site = JSONObject.site;
   const description = JSONObject.description;

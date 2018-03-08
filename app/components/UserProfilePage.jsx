@@ -12,6 +12,7 @@ class UserProfilePage extends Component {
 
     // Initialize the state as empty.
     this.state = {
+      userType: '',
       name: '',
       description: '',
       linkedIn: '',
@@ -36,7 +37,9 @@ class UserProfilePage extends Component {
     if (typeof this.props.id !== 'undefined') params = { userId: this.props.id };
     pageContent.fetchData('/profile', 'get', params)
       .then((responseJSON) => {
+        console.log(responseJSON);
         this.setState({
+          userType: responseJSON.type,
           name: responseJSON.name,
           description: responseJSON.description,
           linkedIn: responseJSON.linkedIn,
@@ -55,6 +58,7 @@ class UserProfilePage extends Component {
     if (this.state.modifying) {
       return (
         <EditUserProfile
+          type={this.state.userType}
           id={this.props.id}
           name={this.state.name}
           description={this.state.description}
@@ -67,6 +71,7 @@ class UserProfilePage extends Component {
     return (
       <div>
         <UserProfile
+          type={this.state.userType}
           name={this.state.name}
           description={this.state.description}
           linkedIn={this.state.linkedIn}
