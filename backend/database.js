@@ -504,6 +504,28 @@ function setTimetable(timetable, date) {
   });
 }
 
+// Returns next meetingday's schedule for a user
+function getUserMeetings(userID, userType, callback) {
+  let query;
+  if (userType === 'coach') {
+    query = `
+    SELECT name, time, duration, date
+    FROM Meetings
+    LEFT OUTER JOIN Profiles ON Profiles.user_id = Meetings.startup_id
+    WHERE Meetings.coach_id = ? AND date = (SELECT MAX(date) FROM Meetings);`;
+  } else {
+    query = `
+    SELECT name, time, duration, date
+    FROM Meetings
+    LEFT OUTER JOIN Profiles ON Profiles.user_id = Meetings.coach_id
+    WHERE Meetings.startup_id = ? AND date = (SELECT MAX(date) FROM Meetings);`;
+  }
+  db.all(query, [userID], (err, result) => {
+    if (err) return callback(err);
+    return callback(err, result);
+  });
+}
+
 function initDB() {
   fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
     if (err) {
@@ -587,5 +609,6 @@ module.exports = {
   getComingTimeslots,
   getGivenFeedbacks,
   setActiveStatus,
+  getUserMeetings,
   db,
 };
