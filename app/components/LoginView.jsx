@@ -9,6 +9,7 @@ export default class LoginView extends React.Component {
     super(props);
     this.state = {
       handle: LoginHandler,
+      errorMessage: '',
     };
     this.handleInput = this.handleInput.bind(this);
   }
@@ -20,7 +21,7 @@ export default class LoginView extends React.Component {
         document.cookie = `ssaunaloggedin=${authResult}`;
         this.props.login(authResult);
       } else {
-        // handleError
+        this.setState({ errorMessage: 'Invalid username or password' });
       }
     });
   }
@@ -28,7 +29,7 @@ export default class LoginView extends React.Component {
   render() {
     // logoViewHandler
     return (
-      <LoginForm onSubmit={this.handleInput} />
+      <LoginForm onSubmit={this.handleInput} errorMessage={this.state.errorMessage} />
     );
   }
 }

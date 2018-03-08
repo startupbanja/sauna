@@ -1,0 +1,26 @@
+.login-logo {
+  margin: 50px;
+}
+
+.login-item {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  padding: 20px;
+}
+
+.login-button {
+  background: var(--primary-color);
+  color: white;
+}
+
+.login-button:hover {
+  color: white !important;
+}
+
+.login-error {
+  text-align: center;
+  color: var(--primary-color);
+  padding-top: 20px;
+  font-size: 20px;
+  font-weight: bold;
+}

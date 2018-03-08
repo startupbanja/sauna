@@ -28,7 +28,6 @@ app.use(session({
 const port = process.env.PORT || 3000;
 
 app.use((req, res, next) => {
-  console.log('Something is happening.');
 
   // Allow frontend to send cookies
   res.append('Access-Control-Allow-Origin', req.get('origin'));
@@ -73,47 +72,28 @@ app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/index.html`);
 });
 
-app.get('/api', (req, res) => {
+app.get('/api', (req, res, next) => {
   if (req.query.hasOwnProperty('q')) {
     res.json({ message: req.query.q });
   } else {
-    database.getUsers(1, 0, false, (data) => {
+    database.getUsers(1, 0, false, (err, data) => {
+      if (err) return next(err);
       res.json(data);
+      return undefined;
     });
   }
 });
 
-function runAlgorithm(callback) {
-  database.getTimeslots((timeslots) => {
-    database.getRatings((ratings) => {
-      database.getStartups((startupdata) => {
-        const data = {
-          feedbacks: ratings,
-          availabilities: timeslots,
-          startups: startupdata,
-        };
-        const batch = 1;
-        database.getMapping(batch, (mapping) => {
-          const dataWithMapping = { data, mapping };
-          matchmaking.run(dataWithMapping, rdy => callback(rdy));
-        });
-      });
-    });
-  });
-}
 
-app.get('/timeslots', (req, res) => {
-  runAlgorithm(result => res.json({ schedule: result }));
-});
-
-/* gets the initail data from all the coaches or startups */
-app.get('/users', (req, res) => {
+/* gets the initial data from all the coaches or startups */
+app.get('/users', (req, res, next) => {
   let type = req.query.type;
   const batch = 1;
   if (type === 'Startups') type = 2;
   else type = 1;
 
-  database.getUsers(type, batch, true, (userList) => {
+  database.getUsers(type, batch, true, (err, userList) => {
+    if (err) return next(err);
     const userArray = [];
     for (const user in userList) {
       const userData = userList[user];
@@ -126,33 +106,52 @@ app.get('/users', (req, res) => {
       userArray.push(userObj);
     }
     res.json({ users: userArray });
+    return undefined;
   });
 });
 
 /* gets a profile data for a defined user or
   for the requesting user if no requested id is provided */
-app.get('/profile', (req, res) => {
+app.get('/profile', (req, res, next) => {
   let id;
   if (typeof req.query.userId !== 'undefined') id = req.query.userId;
   else id = req.session.userID;
 
-  database.getProfile(id, (result) => {
+  database.getProfile(id, (err, result) => {
+    if (err) return next(err);
     if (req.session.userID == id || req.session.userID === 82) {
       Object.assign(result, { canModify: true });
     }
     res.json(result);
+    return undefined;
   });
 });
 
-app.get('/meetings', (req, res) => {
+// Returns id, name and active status for all coaches and startups in form
+// {
+// coaches: [{name, id, active}]
+// startups: [{name, id, active}]
+// }
+app.get('/activeStatuses', (req, res, next) => {
+  database.getActiveStatuses((err, data) => {
+    if (err) return next(data);
+    return res.json(data);
+  });
+});
+
+// TODO coach names
+app.get('/meetings', (req, res, next) => {
   const allMeetings = [];
-  database.getUserMap((keys) => {
-    database.getTimetable((meetings) => {
-      database.getTimeslots((timeslots) => {
+  database.getUserMap((err, keys) => {
+    if (err) return next(err);
+    database.getTimetable((err2, meetings) => {
+      if (err2) return next(err2);
+      database.getTimeslots(req.query.date, (err3, timeslots) => {
+        if (err3) return next(err3);
         const dur = meetings[0].duration;
         for (const timeslot in timeslots) { // eslint-disable-line
           const id = timeslot;
-          var remaining = timeslots[id].duration;
+          let remaining = timeslots[id].duration;
           const time = new Date('2000-10-10T' + timeslots[id].starttime);
           while (remaining > 0) {
             allMeetings.push({
@@ -181,15 +180,19 @@ app.get('/meetings', (req, res) => {
           allMeetings[meeting].coach = keys[allMeetings[meeting].coach];
         }
         res.json({ schedule: allMeetings });
+        return undefined;
       });
+      return undefined;
     });
+    return undefined;
   });
 });
 
-app.get('/comingTimeslots', (req, res) => {
+app.get('/comingTimeslots', (req, res, next) => {
   const timeslots = {};
   // Result is in form [{name:"coachname",date:"dateString",time:"timestring",duration:null}]
-  database.getComingTimeslots((result) => {
+  database.getComingTimeslots((err, result) => {
+    if (err) return next(err);
     for (const index in result) { //eslint-disable-line
       const element = result[index];
       if (timeslots[element.date] === undefined) {
@@ -204,13 +207,15 @@ app.get('/comingTimeslots', (req, res) => {
       }
     }
     res.json(timeslots);
+    return undefined;
   });
 });
 
-app.get('/numberOfTimeslots', (req, res) => {
+app.get('/numberOfTimeslots', (req, res, next) => {
   const timeslots = {};
   // Result is in form [{name:"coachname",date:"dateString",time:"timestring",duration:null}]
-  database.getComingTimeslots((result) => {
+  database.getComingTimeslots((err, result) => {
+    if (err) return next(err);
     for (const index in result) { //eslint-disable-line
       const element = result[index];
       if (timeslots[element.date] === undefined) {
@@ -222,10 +227,11 @@ app.get('/numberOfTimeslots', (req, res) => {
       timeslots[element.date].total += 1;
     }
     res.json(timeslots);
+    return undefined;
   });
 });
 
-app.get('/givenFeedbacks', (req, res) => {
+app.get('/givenFeedbacks/', (req, res, next) => {
   const givenFeedbacks = {
     startups: {},
     coaches: {},
@@ -233,19 +239,25 @@ app.get('/givenFeedbacks', (req, res) => {
     startupDone: 0,
     coachTotal: 0,
     coachDone: 0,
+    date: '',
   };
-  // Result is in form [{type: type, name: name, startup_rating: rating, coach_rating: rating}]
+  // Result is in form
+  // [{type: type, name: name, startup_rating: rating, coach_rating: rating, date}]
   // Type 1 => Coach, Type 2 => Startup
-  database.getGivenFeedbacks((result) => {
+  // filter out feedbacks which are -1 which means not given
+  database.getGivenFeedbacks((err, fbresult) => {
+    if (err) return next(err);
+    const { result } = fbresult;
+    givenFeedbacks.date = fbresult.date;
     for (const index in result) { //eslint-disable-line
       const element = result[index];
       if (element.type === 1) {
-        if (element.coach_rating !== null) {
+        if (element.coach_rating !== -1) {
           givenFeedbacks.coaches[element.name] = true;
         } else if (givenFeedbacks.coaches[element.name] === undefined) {
           givenFeedbacks.coaches[element.name] = false;
         }
-      } else if (element.startup_rating !== null) {
+      } else if (element.startup_rating !== -1) {
         givenFeedbacks.startups[element.name] = true;
       } else if (givenFeedbacks.startups[element.name] === undefined) {
         givenFeedbacks.startups[element.name] = false;
@@ -260,60 +272,144 @@ app.get('/givenFeedbacks', (req, res) => {
       if (givenFeedbacks.coaches[index] === true) givenFeedbacks.coachDone += 1;
     }
     res.json(givenFeedbacks);
+    return undefined;
   });
 });
 
 /* gets the pending feedbacks from last meeting for a specific user */
-app.get('/feedback', (req, res) => {
+app.get('/feedback', (req, res, next) => {
   const id = req.session.userID;
-  database.getFeedback(id, (result) => {
+  database.getFeedback(id, (err, result) => {
+    if (err) return next(err);
     res.json({
       data: result,
       userType: req.session.userType,
     });
+    return undefined;
   });
 });
 
 /* sets either coach_rating or startup_rating for a specific meeting */
-app.post('/giveFeedback', (req, res) => {
+app.post('/giveFeedback', (req, res, next) => {
   const userType = req.session.userType;
   const meetingId = req.body.meetingId;
   const rating = req.body.rating;
 
-  database.giveFeedback(meetingId, rating, (userType === 'coach') ? 'coach_rating' : 'startup_rating', (result) => {
+  database.giveFeedback(meetingId, rating, (userType === 'coach') ? 'coach_rating' : 'startup_rating', (err, result) => {
+    if (err) return next(err);
     res.json({ status: result });
+    return undefined;
+  });
+});
+
+app.post('/setActiveStatus', (req, res, next) => {
+  const id = req.body.id;
+  const active = req.body.active;
+  database.setActiveStatus(id, active, (err, result) => {
+    if (err) return next(err);
+    return res.json(result);
   });
 });
 
 /* adds a new meeting day */
-app.post('/createMeetingDay', (req, res) => {
+app.post('/createMeetingDay', (req, res, next) => {
   if (!requireAdmin(req, res)) return;
   const date = req.body.date;
   const start = req.body.start;
   const end = req.body.end;
   const split = req.body.split;
-  database.createMeetingDay(date, start, end, split, (result) => {
+  database.createMeetingDay(date, start, end, split, (err, result) => {
+    if (err) return next(err);
     res.json(result);
+    return undefined;
   });
 });
 
+// Run algorithm with given date and save to database and create a .csv file
+// TODO these errors are a bit confusing... is this right?
+// FIXME those return undefineds and the bracket pyramid...
+// callback is called with either err or null as only argument
+function runAlgorithm(date, callback, commit = true) {
+  // Get coach timeslots/availabilities
+  database.getTimeslots(date, (err, timeslots) => {
+    if (err) return callback(err);
+    // Get most recent feedback ratings from all coaches, startups
+    database.getRatings((err2, ratings) => {
+      if (err2) return callback(err2);
+      // Get list of all startups
+      database.getStartups((err3, startupdata) => {
+        if (err3) return callback(err3);
+        const data = {
+          feedbacks: ratings,
+          availabilities: timeslots,
+          startups: startupdata,
+        };
+        if (!(ratings && timeslots && startupdata)) {
+          callback(false);
+        }
+        const batch = 1;
+        // This getMapping is only needed because we are converting the result
+        // to .csv in python, TODO remove later
+        database.getMapping(batch, (mapErr, mapping) => {
+          if (mapErr) return callback(mapErr);
+          console.log(mapping);
+          const dataWithMapping = { data, mapping };
+          matchmaking.run(dataWithMapping, (runErr, result) => {
+            if (runErr) return callback(runErr);
+            if (commit) {
+              database.saveMatchmaking(result, date, (saveErr) => {
+                if (saveErr) return callback(saveErr);
+                return callback(null);
+              });
+              return undefined;
+            }
+            return callback(null);
+          });
+          return undefined;
+        });
+        return undefined;
+      });
+      return undefined;
+    });
+    return undefined;
+  });
+}
+
+// TODO sanitize date;
+app.post('/runMatchmaking', (req, res) => {
+  if (req.body.date) {
+    runAlgorithm(req.body.date, result => res.json({ success: result }));
+  } else {
+    res.json({ success: false });
+  }
+});
 /* gets the still to come meeting days with given availabilities for a specific user */
-app.get('/getComingMeetingDays', (req, res) => {
-  database.getComingMeetingDays(req.session.userID, (result) => {
+app.get('/getComingMeetingDays', (req, res, next) => {
+  database.getComingMeetingDays(req.session.userID, (err, result) => {
+    if (err) return next(err);
     res.json(result);
+    return undefined;
   });
 });
 
 /* Sets the users availability for a specific day */
-app.post('/insertAvailability', (req, res) => {
+app.post('/insertAvailability', (req, res, next) => {
   const userId = req.session.userID;
   const date = req.body.date;
   const startTime = req.body.start;
   let duration = (new Date(`${date}T${req.body.end}`).getTime() - new Date(`${date}T${startTime}`).getTime());
   duration = parseInt(duration / 60000, 10);
-  database.insertAvailability(userId, date, startTime, duration, (result) => {
+  database.insertAvailability(userId, date, startTime, duration, (err, result) => {
+    if (err) return next(err);
     res.json(result);
+    return undefined;
   });
+});
+
+// Error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send({ error: 'An error has occured!' });
 });
 
 const server = app.listen(port);
@@ -338,14 +434,6 @@ rl.on('line', (input) => {
   switch (input) {
     case ('exit'):
       closeServer();
-      break;
-    case ('run'):
-      runAlgorithm(() => null);
-      break;
-    case ('run -s'):
-      runAlgorithm((data) => { // TODO placeholder date
-        database.saveMatchmaking(data, '2018-01-01', () => console.log('saved'));
-      });
       break;
     default:
       break;
