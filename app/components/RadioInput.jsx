@@ -10,7 +10,7 @@ jsx-a11y/no-noninteractive-element-to-interactive-role: "warn"
 export default class RadioInput extends React.Component {
   render() {
     const choices = this.props.options.map((option) => {
-      const activeClass = (this.props.rating === option.value) ? ' active' : '';
+      const activeClass = (this.props.rating === option.value) ? ' active' : ' inactive';
       return (
         <label
           key={`option_${option.value}`}

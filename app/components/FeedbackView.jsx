@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import FeedbackForm from './FeedbackForm';
 import Button from './Button';
 import pageContent from './pageContent';
+import StatusMessage from './StatusMessage';
 
 
 // This is the class that shows the whole page content after login
@@ -16,6 +17,7 @@ export default class FeedbackView extends React.Component {
       data: undefined,
       userType: 'coach',
       index: 0,
+      message: undefined,
     };
     this.changeForm = this.changeForm.bind(this);
   }
@@ -40,13 +42,22 @@ export default class FeedbackView extends React.Component {
       meetingId: this.state.data[this.state.index].meetingId,
       rating: newRating,
     }).then((result) => {
-      this.setState((oldState) => {
-        const newData = oldState.data.slice();
-        newData[this.state.index].rating = newRating;
-        return {
-          data: newData,
-        };
-      });
+      if (result.status === 'success') {
+        this.setState((oldState) => {
+          const newData = oldState.data.slice();
+          newData[this.state.index].rating = newRating;
+          return {
+            data: newData,
+          };
+        });
+      } else {
+        this.setState({
+          message: {
+            text: 'Error when saving the feedback',
+            type: 'error',
+          },
+        });
+      }
     });
   }
 
@@ -65,6 +76,7 @@ export default class FeedbackView extends React.Component {
     }
     return (
       <div>
+        <StatusMessage message={this.state.message} />
         <FeedbackForm
           info={this.state.data[this.state.index]}
           onSubmit={this.submitCurrentForm}
