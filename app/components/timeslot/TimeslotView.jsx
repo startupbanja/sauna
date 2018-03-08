@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import pageContents from '../pageContent';
 import Timeslot, { parseMinutes, parseTimeStamp } from './Timeslot';
+import StatusMessage from '../StatusMessage';
 
 /* Component to handle availability data between backend and Timeslot */
 class TimeslotView extends Component {
@@ -9,6 +10,7 @@ class TimeslotView extends Component {
     this.state = {
       index: 0,
       data: [],
+      message: undefined,
     };
     this.renderTimeslot = this.renderTimeslot.bind(this);
     this.fetchData = this.fetchData.bind(this);
@@ -60,6 +62,17 @@ class TimeslotView extends Component {
         };
         this.setState({
           data: oldData,
+          message: {
+            text: 'Saved',
+            type: 'success',
+          },
+        });
+      } else {
+        this.setState({
+          message: {
+            text: 'Error when saving availability',
+            type: 'error',
+          },
         });
       }
     });
@@ -86,6 +99,7 @@ class TimeslotView extends Component {
           onMoveToPrev={((this.state.index > 0) || undefined) && (() => this.changeDate(-1))}
           onMoveToNext={((this.state.index < this.state.data.length - 1) || undefined)
             && (() => this.changeDate(1))}
+          statusMessage={this.state.message}
         />
       );
     }
@@ -96,8 +110,8 @@ class TimeslotView extends Component {
     return (
       <div className="timeslot-picker">
         <link rel="stylesheet" type="text/css" href="app/styles/timeslot_style.css" />
+        <StatusMessage message={this.state.message} />
         {this.renderTimeslot()}
-
       </div>
     );
   }
