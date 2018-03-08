@@ -25,10 +25,16 @@ export default class AdminSchedules extends React.Component {
     this.fetchTimetable();
     this.fetchUsers();
   }
-  // TODO we need to fetch a list of all active users
+
   fetchTimetable() {
     pageContent.fetchData('/meetings', 'GET', { date: this.props.date }).then((response) => {
       this.setState({ schedule: response.schedule });
+    });
+  }
+
+  saveTimetable() {
+    pageContent.fetchData('/timetable', 'POST', { date: this.props.date, schedule: this.state.schedule }).then((response) => {
+      console.log(response);
     });
   }
 

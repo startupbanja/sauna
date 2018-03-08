@@ -32,55 +32,43 @@ function translate(data, times, firstColumn, editable, editfunc, allUsers) {
   Object.keys(result).forEach((key) => {
     result[key].sort((a, b) => a.time.localeCompare(b.time));
   });
-  // pad with empty cells with non-available rows from left and right to align with header row
-  // run this only if we have coach as first column
-  // name: undefined -> coach availability not given
-  // TODO
-  if (firstColumn === 'coach') {
-    Object.keys(result).forEach((key) => {
-      const arr = result[key];
-      const leftPad = times.indexOf(arr[0].time);
-      const rightPad = times.length - 1 - times.indexOf(arr[arr.length - 1].time);
-      result[key] = Array(leftPad).fill(null)
-        .map((val, i) => ({ name: undefined, time: times[i] }))
-        .concat(arr)
-        .concat(Array(rightPad).fill(null)
-          .map((val, i) => ({ name: undefined, time: times[leftPad + arr.length + i] })));
-    });
-  }
-  // if firstColumn is startup, pad from left and right with {name: null} to indicate
-  // slot that could still be filled
-  // also pads in the middle if there are missing slots
-  // TODO these could be done in one while loop?
-  if (firstColumn === 'startup') {
-    Object.keys(result).forEach((key) => {
-      let arr = result[key];
-      // pad left
-      const leftPad = times.indexOf(arr[0].time);
-      // result[key] = Array(leftPad).fill({ name: null })
-      //   .concat(arr);
-      result[key] = Array(leftPad).fill(null)
-        .map((val, index) => ({ name: null, time: times[index] }))
-        .concat(arr);
-      arr = result[key];
-      // pad middle
-      let i = 0;
-      while (i < result[key].length) {
-        if (times.indexOf(result[key][i].time) > i) {
-          result[key].splice(i, 0, { name: null, time: times[i] });
-        }
-        i += 1;
+  /*
+    Pad the time rows with empty cells where times are missing.
+    When the leftmost column is coaches,
+    we already have blank "empty" cells with the data and we must pad with "unavailable" cells.
+    When the leftmost column is startups, we need to pad with "empty" cells
+    name: undefined -> unavailable cell
+    name: null -> empty cell
+  */
+  const nameValue = firstColumn === 'coach' ? undefined : null;
+  Object.keys(result).forEach((key) => {
+    const arr = result[key];
+    let i = 0;
+    // pad left and middle
+    while (i < times.length) {
+      if (i >= arr.length) {
+        arr.push({ name: nameValue, time: times[i] });
+      } else if (times.indexOf(arr[i].time) > i) {
+        arr.splice(i, 0, { name: nameValue, time: times[i] });
       }
-      // pad right
-      const rightPad = times.length - 1 - times.indexOf(arr[arr.length - 1].time);
-      // result[key] = arr.concat(Array(rightPad)
-      //   .fill({ name: null }));
-      result[key] = arr.concat(Array(rightPad).fill(null)
-        .map((val, index) => ({ name: null, time: times[arr.length + index] })));
-    });
-  }
+      i += 1;
+    }
+    // pad right
+    // const rightPad = times.length - 1 - times.indexOf(arr[arr.length - 1].time);
+    // result[key] = arr.concat(Array(rightPad).fill(null)
+    //   .map((val, idx) => ({ name: nameValue, time: times[arr.length + idx] })));
+  });
+
   // combine cells with same leftColumn key and time into one arr index
-  // result is array of {coach: [{name, time}, ...]}
+  // aka meetings where one coach/startup had 2 meetings at the same time.
+  /*
+    timesCombined is of form:
+    [
+    [coach, [ [{name, time}, {name, time}], [{name, time}] ],
+    [coach, [], ...]],
+    ]
+    This way meetings with same time, coach, startup can be shown in same cell
+  */
   const timesCombined = Object.keys(result).map((key) => {
     const oldArr = result[key];
     const newArr = [];
@@ -94,25 +82,14 @@ function translate(data, times, firstColumn, editable, editfunc, allUsers) {
     }
     return [key, newArr];
   });
-  // console.log(timesCombined);
-  /*
-  timesCombined is of form:
-  [
-    [coach, [ [{name, time}, {name, time}], [{name, time}] ],
-    [coach, [], ...]],
-  ]
-  This way meetings with same time, coach, startup can be shown in same cell
-  */
   let i = 0;
-  // key is either coach or startup, which one is on the leftmost column
+  // map the data into jsx elements
   const table = timesCombined.map((arr, index) => {
+    // key is either coach or startup, which one is on the leftmost column
     const key = arr[0];
     const meetings = timesCombined[index][1].map((row, idx) => {
       const combinedCell = row.map((x) => {
         i += 1;
-        // if (x === null) {
-        //   return <td className="unavailable-cell" key={`${key}-unavailable-${i}`} />;
-        // }
         let name;
         let cn;
         if (x.name === undefined) { // coach not available
@@ -125,7 +102,8 @@ function translate(data, times, firstColumn, editable, editfunc, allUsers) {
           name = x.name; // eslint-disable-line
           cn = 'full-cell';
         }
-        const list = firstColumn === 'coach' ? startupList : coachList;
+        const choiceList = firstColumn === 'coach' ? startupList : coachList;
+        // keys is used to identify the cell when editing
         const keys = { leftColumn: key, cellValue: name, time: x.time };
         return ( // This is the cell that is returned
           <div
@@ -134,9 +112,8 @@ function translate(data, times, firstColumn, editable, editfunc, allUsers) {
           >{name} {x.time}
             {editable &&
               <DropdownList
-                onChoice={editfunc}
-                choices={list}
-                keys={keys}
+                onChoice={newValue => editfunc(newValue, keys)}
+                choices={choiceList}
               />}
           </div>);
       });

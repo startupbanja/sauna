@@ -9,7 +9,7 @@ export default class DropdownList extends React.Component {
           <button
             className="btn btn-dropdown"
             type="button"
-            onClick={() => this.props.onChoice(name, this.props.keys)}
+            onClick={() => this.props.onChoice(name)}
           >{name}
           </button>
         </li>));
@@ -34,7 +34,7 @@ export default class DropdownList extends React.Component {
             <button
               className="btn btn-dropdown"
               type="button"
-              onClick={() => this.props.onChoice(null, this.props.keys)}
+              onClick={() => this.props.onChoice(null)}
             >None
             </button>
           </li>
@@ -46,11 +46,6 @@ export default class DropdownList extends React.Component {
 }
 // keys is used as a key for registering change in the parent component
 DropdownList.propTypes = {
-  onChoice: PropTypes.func.isRequired,
+  onChoice: PropTypes.func.isRequired, // takes as parameter new value of cell
   choices: PropTypes.arrayOf(PropTypes.string).isRequired,
-  keys: PropTypes.shape({
-    leftColumn: PropTypes.string,
-    cellValue: PropTypes.string,
-    time: PropTypes.string,
-  }).isRequired,
 };
