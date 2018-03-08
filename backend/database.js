@@ -134,9 +134,9 @@ function getProfile(id, callback) {
 function getFeedback(id, callback) {
   const feedbacks = [];
   const query = `
-    SELECT id AS meetingId, user_id, name, description, rating, "/app/imgs/coach_placeholder.png" AS image_src
+    SELECT date, time, id AS meetingId, user_id, name, description, rating, "/app/imgs/coach_placeholder.png" AS image_src
     FROM
-      (SELECT id,
+      (SELECT date, time, id,
           CASE
             WHEN coach_id = ? THEN startup_id
             WHEN startup_id = ? THEN coach_id

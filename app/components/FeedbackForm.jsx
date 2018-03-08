@@ -46,6 +46,8 @@ export default class FeedbackForm extends React.Component {
 FeedbackForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   info: PropTypes.shape({
+    date: PropTypes.string,
+    time: PropTypes.string,
     name: PropTypes.string,
     image_src: PropTypes.string,
     description: PropTypes.string,
