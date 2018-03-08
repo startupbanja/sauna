@@ -469,7 +469,7 @@ function getTimetable(callback) {
 
 // Gets timetable in form [{coach: coachName, startup: startupName, time: time, duration: duration}]
 // Removes null meetings and saves the rest to the database
-function setTimetable(timetable, date) {
+function setTimetable(timetable, date, errCallback) {
   const meetings = [];
   getUserMap((keys) => {
     for (const element in timetable) { //eslint-disable-line
@@ -486,7 +486,7 @@ function setTimetable(timetable, date) {
     const query = `
     DELETE FROM Meetings WHERE Date = ?;`;
     db.run(query, [date], (err) => {
-      if (err) throw err;
+      if (err) return errCallback(err);
       if (meetings.length > 0) {
         var query2 = `
         INSERT INTO Meetings (coach_id, startup_id, date, time, duration)
@@ -497,9 +497,11 @@ function setTimetable(timetable, date) {
         }
         query2.replace(/.$/, ';');
         db.run(query2, [], (err2) => {
-          if (err2) throw err2;
+          if (err2) return errCallback(err);
+          return undefined;
         });
       }
+      return undefined;
     });
   });
 }

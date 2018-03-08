@@ -188,6 +188,13 @@ app.get('/meetings', (req, res, next) => {
   });
 });
 
+app.post('/timetable', (req, res, next) => {
+  database.setTimetable(req.body.schedule, req.body.date, (err) => {
+    if (err) return next(err);
+    return undefined;
+  });
+});
+
 app.get('/comingTimeslots', (req, res, next) => {
   const timeslots = {};
   // Result is in form [{name:"coachname",date:"dateString",time:"timestring",duration:null}]
