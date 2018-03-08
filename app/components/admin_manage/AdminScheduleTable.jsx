@@ -136,14 +136,6 @@ function getTimes(data) {
 // React Component for the table in the admin schedule.
 export default class AdminScheduleTable extends React.Component {
   render() {
-    // Handles the case where schedules are not available.
-    if (!this.props.schedule) {
-      return (
-        <div>
-          <h3>No schedules available. </h3>
-        </div>);
-    }
-    // Handles the case where schedules are available.
     const times = getTimes(this.props.schedule);
     return (
       <table className="table" id="adminTable">

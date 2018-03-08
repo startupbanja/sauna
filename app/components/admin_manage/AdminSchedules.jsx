@@ -19,6 +19,7 @@ export default class AdminSchedules extends React.Component {
     this.toggle = this.toggle.bind(this);
     this.updateValue = this.updateValue.bind(this);
     this.toggleEditable = this.toggleEditable.bind(this);
+    this.handleSaveClick = this.handleSaveClick.bind(this);
   }
 
   componentDidMount() {
@@ -27,15 +28,20 @@ export default class AdminSchedules extends React.Component {
   }
 
   fetchTimetable() {
-    pageContent.fetchData('/meetings', 'GET', { date: this.props.date }).then((response) => {
+    pageContent.fetchData('/timetable', 'GET', { date: this.props.date }).then((response) => {
       this.setState({ schedule: response.schedule });
     });
   }
 
   saveTimetable() {
-    pageContent.fetchData('/timetable', 'POST', { date: this.props.date, schedule: this.state.schedule }).then((response) => {
+    pageContent.fetchData('/timetable', 'POST', { date: this.props.date, schedule: JSON.stringify(this.state.schedule) }).then((response) => {
       console.log(response);
     });
+  }
+
+  handleSaveClick() {
+    this.toggleEditable(false);
+    this.saveTimetable();
   }
 
   toggleEditable(value) {
@@ -93,7 +99,7 @@ export default class AdminSchedules extends React.Component {
     const editButton = this.state.editable ? (
       <button
         className="btn btn-major"
-        onClick={() => this.toggleEditable(false)}
+        onClick={this.handleSaveClick}
       >Save changes
       </button>)
       : (

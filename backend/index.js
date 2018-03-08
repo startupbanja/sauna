@@ -139,13 +139,17 @@ app.get('/activeStatuses', (req, res, next) => {
   });
 });
 
-// TODO coach names
-app.get('/meetings', (req, res, next) => {
+
+app.get('/timetable', (req, res, next) => {
   const allMeetings = [];
   database.getUserMap((err, keys) => {
     if (err) return next(err);
-    database.getTimetable((err2, meetings) => {
+    database.getTimetable(req.query.date, (err2, meetings) => {
       if (err2) return next(err2);
+      // if meetings not found, return empty response
+      if (meetings.length === 0) {
+        return res.json({ schedule: null });
+      }
       database.getTimeslots(req.query.date, (err3, timeslots) => {
         if (err3) return next(err3);
         const dur = meetings[0].duration;
@@ -164,8 +168,8 @@ app.get('/meetings', (req, res, next) => {
             remaining -= dur;
           }
         }
-        for (var meeting in meetings) { //eslint-disable-line
-          meeting = meetings[meeting];
+        for (var i in meetings) { //eslint-disable-line
+          const meeting = meetings[i];
           const index = allMeetings.findIndex(element => (element.coach === meeting.coach && element.time === meeting.time));
           if (index !== -1) {
             allMeetings[index] = {
@@ -174,6 +178,13 @@ app.get('/meetings', (req, res, next) => {
               time: meeting.time,
               duration: meeting.duration,
             };
+          } else {
+            allMeetings.push({
+              coach: meeting.coach,
+              startup: meeting.startup,
+              time: meeting.time,
+              duration: meeting.duration,
+            });
           }
         }
         for (var meeting in allMeetings) {
@@ -189,7 +200,8 @@ app.get('/meetings', (req, res, next) => {
 });
 
 app.post('/timetable', (req, res, next) => {
-  database.setTimetable(req.body.schedule, req.body.date, (err) => {
+  const schedule = JSON.parse(req.body.schedule);
+  database.updateTimetable(schedule, req.body.date, (err) => {
     if (err) return next(err);
     return undefined;
   });
@@ -364,7 +376,7 @@ function runAlgorithm(date, callback, commit = true) {
           matchmaking.run(dataWithMapping, (runErr, result) => {
             if (runErr) return callback(runErr);
             if (commit) {
-              database.saveMatchmaking(result, date, (saveErr) => {
+              database.saveMatchmakingResult(result, date, (saveErr) => {
                 if (saveErr) return callback(saveErr);
                 return callback(null);
               });
