@@ -414,10 +414,9 @@ app.use((err, req, res, next) => {
 
 app.post('/updateProfile', (req, res) => {
   let userType = req.session.userType;
-  userType = userType.replace(userType[0], userType[0].toUpperCase()); 
+  userType = userType.replace(userType[0], userType[0].toUpperCase());
   // Create a JSON object from request body.
   const JSONObject = JSON.parse(req.body.data);
-  console.log(JSONObject);
   const uid = req.session.userID;
   const site = JSONObject.site;
   const description = JSONObject.description;
@@ -428,21 +427,6 @@ app.post('/updateProfile', (req, res) => {
   database.updateProfile(uid, userType, site, description, title, credentials, (response) => {
     res.json(response);
   });
-});
-
-app.post('/updateProfile', (req, res) => {
-
-  // Create a JSON object from request body.
-  const JSONObject = req.body;
-  const uid = JSONObject.uid;
-  const linkedIn = JSONObject.linkedIn;
-  const description = JSONObject.description;
-  const titles = JSONObject.titles;
-  const credentials = JSONObject.credentials;
-  
-  database.updateProfile(uid, linkedIn, description, titles[0], credentials);
-  // TODO: implement database functionality.
-  res.json();
 });
 
 const server = app.listen(port);

@@ -62,12 +62,15 @@ class EditUserProfile extends Component {
   }
 
   render() {
+    const siteName = this.props.type === 'coach' ? 'LinkedIn:' : 'Website:';
+    const credentialsHeader = this.props.type === 'coach' ? 'Credentials:' : 'Team Members:';
+    const removeText = this.props.type === 'coach' ? 'credential' : 'team member';
     return (
       <div className="editProfileContainer container">
         <form>
           <h4>{this.props.name}</h4>
           <p>
-            LinkedIn:<br />
+            {siteName}<br />
             <input id="linkedIn" type="text" defaultValue={this.props.linkedIn} />
           </p>
           <p>
@@ -79,8 +82,8 @@ class EditUserProfile extends Component {
             {this.props.titles.map(value => <input className="title" key={`title${value}`} type="text" defaultValue={value} />)}
           </div>
           <div>
-            <p>Credentials:</p>
-            <p><b>NOTE:</b>To remove a credential, just leave it blank.</p>
+            <p>{credentialsHeader}</p>
+            <p><b>NOTE:</b>To remove a {removeText}, just leave the fields blank.</p>
             <div id="credentialFieldsContainer">
               {this.state.credentials.map(value =>
                 (
@@ -92,11 +95,6 @@ class EditUserProfile extends Component {
               }
             </div>
           </div>
-          <Button
-            className="btn btn-lg ffbutton-red"
-            onClick={() => this.handleSubmit()}
-            text="Save"
-          />
         </form>
         <button onClick={() => this.addCredential()} style={{ display: 'block' }}>
           <span className="glyphicon glyphicon-plus-sign" />
@@ -113,6 +111,7 @@ class EditUserProfile extends Component {
 }
 
 EditUserProfile.propTypes = {
+  type: PropTypes.string.isRequired,
   id: PropTypes.number, // eslint-disable-line react/no-unused-prop-types
   name: PropTypes.string.isRequired,
   linkedIn: PropTypes.string,
