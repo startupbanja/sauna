@@ -15,15 +15,6 @@ export default class UserList extends React.Component {
     };
   }
 
-  /*
-  componentWillReceiveProps(newProps) {
-    this.setState({
-      users: newProps.users,
-      type: newProps.type,
-    });
-  }
-  */
-
   componentDidMount() {
     this.fetchAndUpdate();
   }
@@ -46,7 +37,6 @@ export default class UserList extends React.Component {
   render() {
     return (
       <div>
-        <h1>List of {this.props.type}</h1>
         {this.state.users.map(user =>
           (
             <Link
@@ -69,11 +59,6 @@ export default class UserList extends React.Component {
 }
 
 UserList.propTypes = {
-  /* users: PropTypes.arrayOf(PropTypes.shape({
-    name: PropTypes.string,
-    description: PropTypes.string,
-    img: PropTypes.string,
-  })).isRequired, */
   type: PropTypes.string.isRequired,
   // handleClick: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
