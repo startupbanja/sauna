@@ -88,11 +88,10 @@ app.get('/api', (req, res, next) => {
 /* gets the initial data from all the coaches or startups */
 app.get('/users', (req, res, next) => {
   let type = req.query.type;
-  const batch = 1;
   if (type === 'Startups') type = 2;
   else type = 1;
 
-  database.getUsers(type, batch, true, (err, userList) => {
+  database.getUsers(type, true, (err, userList) => {
     if (err) return next(err);
     const userArray = [];
     for (const user in userList) {
