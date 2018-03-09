@@ -345,56 +345,6 @@ function updateCredentialsListEntries(uid, list, userType, callback) {
   });
 }
 
-function updateTeamMembers(uid, members, callback) {
-  // Arrays to hold values.
-  const toBeRemoved = [];
-  const toBeInserted = [];
-
-  db.all('SELECT title, content FROM CredentialsListEntries WHERE uid = ?', [uid], (err, rows) => {
-    const rowsJSON = rows.map(x => JSON.stringify(x));
-    const membersJSON = members.map(x => JSON.stringify(x));
-
-    membersJSON.forEach((member) => {
-      if (!rowsJSON.includes(JSON.stringify(member))) {
-        toBeInserted.push(JSON.parse(member));
-      }
-    });
-
-    rowsJSON.forEach((member) => {
-      if (!membersJSON.includes(JSON.stringify(member))) {
-        toBeRemoved.push(JSON.parse(member));
-      }
-    });
-
-    const response = {};
-
-    toBeRemoved.forEach((member) => {
-      db.run('DELETE FROM TeamMembers WHERE uid = ? AND name = ? AND title = ?', [uid, member.title, member.content], (error) => {
-        if (error) {
-          response.status = 'ERROR';
-          response.message = 'Profile could not be updated due to technical problems!';
-        }
-      });
-    });
-
-    toBeInserted.forEach((member) => {
-      db.run('INSERT INTO TeamMembers(startup_id, name, title) VALUES(?,?,?)', [uid, member.title, member.content], (error) => {
-        if (error) {
-          response.status = 'ERROR';
-          response.message = 'Profile could not be updated due to technical problems!';
-        }
-      });
-    });
-
-    if (response.status !== 'ERROR') {
-      response.status = 'SUCCESS';
-      response.message = 'Profile was updated successfully!';
-    }
-    callback(response);
-  });
-}
-
-
 function updateProfile(uid, userType, site, description, title, credentials, callback) {
   const siteAttr = userType === 'Coach' ? 'linkedin' : 'website';
   const company = userType === 'Coach' ? ', company = ?' : '';
