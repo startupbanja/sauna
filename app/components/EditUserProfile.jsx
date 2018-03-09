@@ -62,33 +62,35 @@ class EditUserProfile extends Component {
   }
 
   render() {
-    const siteName = this.props.type === 'coach' ? 'LinkedIn:' : 'Website:';
+    const siteName = this.props.type === 'coach' ? 'LinkedIn' : 'Website';
     const credentialsHeader = this.props.type === 'coach' ? 'Credentials:' : 'Team Members:';
     const removeText = this.props.type === 'coach' ? 'credential' : 'team member';
     return (
       <div className="editProfileContainer container">
         <form>
-          <div className="edit-para">Name:</div>
-          <input className="edit-text" id="name" type="text" value={this.props.name} />
-          <div className="edit-para">LinkedIn:</div>
-          <input className="edit-text" id="linkedIn" type="text" value={this.props.linkedIn} />
+          <h4>{this.props.name} </h4>
+          <div className="edit-para">{siteName}:</div>
+          <input
+            className="edit-text"
+            id="linkedIn"
+            type="text"
+            defaultValue={this.props.linkedIn}
+          />
           <div className="edit-para">Description:</div>
-          <textarea className="edit-text" id="description">
-            {this.props.description}
-          </textarea>
+          <textarea className="edit-text" id="description" defaultValue={this.props.description} />
           <div>
             <div className="edit-para">Titles:</div>
-            {this.props.titles.map(value => <input className="edit-text" key={`title${value.id}`} type="text" value={value} />)}
+            {this.props.titles.map(value => <input className="edit-text title" key={`title${value}`} type="text" defaultValue={value} />)}
           </div>
           <div>
-            <p>{credentialsHeader}</p>
+            <div className="edit-para">{credentialsHeader}</div>
             <p><b>NOTE:</b>To remove a {removeText}, just leave the fields blank.</p>
             <div id="credentialFieldsContainer">
               {this.state.credentials.map(value =>
                 (
-                  <div key={`cred${value.id}`} className="credentialField">
-                    <input key={`company${value}`} type="text" defaultValue={value.company} />
-                    <input key={`position${value}`} type="text" defaultValue={value.position} />
+                  <div key={`cred${value}`} className="credentialField">
+                    <input className="edit-text" key={`company${value}`} type="text" defaultValue={value.company} />
+                    <input className="edit-text" key={`position${value}`} type="text" defaultValue={value.position} />
                   </div>
                 ))
               }
@@ -97,7 +99,7 @@ class EditUserProfile extends Component {
         </form>
         <button onClick={() => this.addCredential()} style={{ display: 'block' }}>
           <span className="glyphicon glyphicon-plus-sign" />
-          Add a credential
+          Add a {removeText}
         </button>
         <Button
           className="btn btn-lg ffbutton-red"

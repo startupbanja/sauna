@@ -231,7 +231,6 @@ app.get('/numberOfTimeslots', (req, res, next) => {
   });
 });
 
-<<<<<<< HEAD
 app.get('/givenFeedbacks/', (req, res, next) => {
   const givenFeedbacks = {
     startups: {},

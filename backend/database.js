@@ -23,16 +23,6 @@ function closeDatabase(callback) {
   });
 }
 
-<<<<<<< HEAD
-
-function throwErr(err) {
-  if (err) {
-    throw err;
-  }
-}
-
-=======
->>>>>>> Added a type to UserProfile so the texts can now be customized for coaches and startups
 function getUsers(type, batch, includeId, callback) {
   const users = {};
   const query = `
@@ -286,39 +276,46 @@ function insertAvailability(userId, date, startTime, duration, callback) {
   });
 }
 
-// Updates the credentials for given user (based on UID).
-function updateCredentials(uid, credentials, callback) {
-  const deleteSQL = 'DELETE FROM Credentials WHERE user_id = ? AND company = ? AND title = ?';
-  const insertSQL = 'INSERT INTO Credentials(user_id, company, title) VALUES(?,?,?);';
+/** Updates the credentials or team members for given user (based on UID)
+ *  Parameters:
+ *  uid - the id of the user (in DB)
+ *  list - an array containing either the credentials or team members of given user
+ *  userType - either Coach or Startup (does not throw error if something else if provided)
+ *  callback - a function to call with the status message object as parameter.
+ */
+function updateCredentialsListEntries(uid, list, userType, callback) {
+  const table = userType === 'Coach' ? 'Credentials' : 'TeamMembers';
+  const columns = userType === 'Coach' ? ['user_id', 'company', 'title'] : ['startup_id', 'name', 'title'];
+  const deleteSQL = `DELETE FROM ${table} WHERE ${columns[0]} = ? AND ${columns[1]} = ? AND ${columns[2]} = ?`;
+  const insertSQL = `INSERT INTO ${table}(${columns[0]}, ${columns[1]}, ${columns[2]}) VALUES(?,?,?);`;
 
   // Fetches all credentials for the given uid and processes them.
   db.all('SELECT title, content FROM CredentialsListEntries WHERE uid = ?', [uid], (err, rows) => {
     if (!err) {
+      // We are converting the objects into JSON format for easy comparison.
       const rowsAsJSON = rows.map(x => JSON.stringify(x));
-      const credentialsAsJSON = credentials.map(x => JSON.stringify(x));
+      const listAsJSON = list.map(x => JSON.stringify(x));
       const toBeInserted = []; // holds the credentials to be inserted into the db.
       const toBeRemoved = []; // holds the credentials that should be deleted.
       const response = {}; // object to be sent in the response.
 
       // If new credentials do not contain a row, add it to deleted creds.
       rowsAsJSON.forEach((row) => {
-        if (!credentialsAsJSON.includes(row)) {
-          const obj = JSON.parse(row);
-          toBeRemoved.push({ company: obj.title, position: obj.content });
+        if (!listAsJSON.includes(row)) {
+          toBeRemoved.push(JSON.parse(row));
         }
       });
 
       // If new credentials contain an entry that is not yet present, add it.
-      credentialsAsJSON.forEach((cred) => {
-        if (!rowsAsJSON.includes(cred)) {
-          const obj = JSON.parse(cred);
-          toBeInserted.push({ company: obj.title, position: obj.content });
+      listAsJSON.forEach((item) => {
+        if (!rowsAsJSON.includes(item)) {
+          toBeInserted.push(JSON.parse(item));
         }
       });
 
       // Deletes the obsolete credentials.
-      toBeRemoved.forEach((cred) => {
-        db.run(deleteSQL, [uid, cred.company, cred.position], (error) => {
+      toBeRemoved.forEach((item) => {
+        db.run(deleteSQL, [uid, item.title, item.content], (error) => {
           if (error) {
             response.status = 'ERROR';
             response.message = 'Profile could not be updated due to technical problems!';
@@ -327,8 +324,8 @@ function updateCredentials(uid, credentials, callback) {
       });
 
       // Inserts the new credentials.
-      toBeInserted.forEach((cred) => {
-        db.run(insertSQL, [uid, cred.company, cred.position], (error) => {
+      toBeInserted.forEach((item) => {
+        db.run(insertSQL, [uid, item.title, item.content], (error) => {
           if (error) {
             response.status = 'ERROR';
             response.message = 'Profile could not be updated due to technical problems! (updateCredentials)';
@@ -347,55 +344,6 @@ function updateCredentials(uid, credentials, callback) {
   });
 }
 
-function updateTeamMembers(uid, members, callback) {
-  // Arrays to hold values.
-  const toBeRemoved = [];
-  const toBeInserted = [];
-
-  db.all('SELECT title, content FROM CredentialsListEntries WHERE uid = ?', [uid], (err, rows) => {
-    const rowsJSON = rows.map(x => JSON.stringify(x));
-    const membersJSON = members.map(x => JSON.stringify(x));
-
-    membersJSON.forEach((member) => {
-      if (!rowsJSON.includes(JSON.stringify(member))) {
-        toBeInserted.push(JSON.parse(member));
-      }
-    });
-
-    rowsJSON.forEach((member) => {
-      if (!membersJSON.includes(JSON.stringify(member))) {
-        toBeRemoved.push(JSON.parse(member));
-      }
-    });
-
-    const response = {};
-
-    toBeRemoved.forEach((member) => {
-      db.run('DELETE FROM TeamMembers WHERE uid = ? AND name = ? AND title = ?', [uid, member.title, member.content], (error) => {
-        if (error) {
-          response.status = 'ERROR';
-          response.message = 'Profile could not be updated due to technical problems!';
-        }
-      });
-    });
-
-    toBeInserted.forEach((member) => {
-      db.run('INSERT INTO TeamMembers(startup_id, name, title) VALUES(?,?,?)', [uid, member.title, member.content], (error) => {
-        if (error) {
-          response.status = 'ERROR';
-          response.message = 'Profile could not be updated due to technical problems!';
-        }
-      });
-    });
-
-    if (response.status !== 'ERROR') {
-      response.status = 'SUCCESS';
-      response.message = 'Profile was updated successfully!';
-    }
-    callback(response);
-  });
-}
-
 
 function updateProfile(uid, userType, site, description, title, credentials, callback) {
   const siteAttr = userType === 'Coach' ? 'linkedin' : 'website';
@@ -405,11 +353,7 @@ function updateProfile(uid, userType, site, description, title, credentials, cal
 
   db.run(query, queryParams, (err) => {
     if (!err) {
-      if (userType === 'Coach') {
-        updateCredentials(uid, credentials, callback);
-      } else if (userType === 'Startup') {
-        updateTeamMembers(uid, credentials, callback);
-      }
+      updateCredentialsListEntries(uid, credentials, userType, callback);
     } else {
       callback({ status: 'ERROR', message: 'Profile could not be updated due to technical problems! (updateProfile)' });
     }
