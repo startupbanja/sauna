@@ -58,7 +58,7 @@ class EditUserProfile extends Component {
   handleSubmit() {
     const input = this.getInputData();
     const dataToPass = { data: JSON.stringify(Object.assign(input, { uid: this.props.id })) };
-    pageContent.fetchData('/updateProfile', 'POST', dataToPass).then(res => console.log(res));
+    this.props.handleSubmit(dataToPass);
   }
 
   render() {
@@ -123,6 +123,7 @@ EditUserProfile.propTypes = {
     company: PropTypes.string.isRequired,
     position: PropTypes.string.isRequired,
   })),
+  handleSubmit: PropTypes.func.isRequired,
 };
 
 EditUserProfile.defaultProps = {

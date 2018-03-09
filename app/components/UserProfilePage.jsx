@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import UserProfile from './UserProfile';
 import EditUserProfile from './EditUserProfile';
+import StatusMessage from './StatusMessage';
 import pageContent from './pageContent';
 
 class UserProfilePage extends Component {
@@ -9,7 +10,7 @@ class UserProfilePage extends Component {
     super(props);
     this.fetchData = this.fetchData.bind(this);
     this.handleModifyClick = this.handleModifyClick.bind(this);
-
+    this.handleSubmit = this.handleSubmit.bind(this);
     // Initialize the state as empty.
     this.state = {
       userType: '',
@@ -50,6 +51,18 @@ class UserProfilePage extends Component {
       });
   }
 
+  handleSubmit(data) {
+    pageContent.fetchData('/updateProfile', 'POST', data).then((res) => {
+      console.log(res);
+      this.setState({
+        message: {
+          type: res.status.toLowerCase(),
+          text: res.message,
+        },
+      });
+    });
+  }
+
   handleModifyClick() {
     this.setState({ modifying: true });
   }
@@ -57,16 +70,19 @@ class UserProfilePage extends Component {
   render() {
     if (this.state.modifying) {
       return (
-        <EditUserProfile
-          type={this.state.userType}
-          id={this.props.id}
-          name={this.state.name}
-          description={this.state.description}
-          linkedIn={this.state.linkedIn}
-          credentials={this.state.credentials}
-          titles={this.state.titles}
-        />
-      );
+        <div>
+          <StatusMessage message={this.state.message} />
+          <EditUserProfile
+            type={this.state.userType}
+            id={this.props.id}
+            name={this.state.name}
+            description={this.state.description}
+            linkedIn={this.state.linkedIn}
+            credentials={this.state.credentials}
+            titles={this.state.titles}
+            handleSubmit={this.handleSubmit}
+          />
+        </div>);
     }
     return (
       <div>

@@ -335,7 +335,7 @@ function updateCredentialsListEntries(uid, list, userType, callback) {
 
       if (response.status === undefined) {
         response.status = 'SUCCESS';
-        response.messsage = 'Profile was updated successfully!';
+        response.message = 'Profile was updated successfully!';
       }
       callback(response);
     } else {
