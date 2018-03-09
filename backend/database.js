@@ -107,7 +107,7 @@ function setActiveStatus(id, active, callback) {
 
 function getProfile(id, callback) {
   const info = {};
-  const query = `SELECT name, description, Profiles.company AS currentCompany, email, linkedin, CredentialsListEntries.title, CredentialsListEntries.content
+  const query = `SELECT name, description, Profiles.company AS currentCompany, email, linkedin, website, CredentialsListEntries.title, CredentialsListEntries.content
                  FROM Profiles
                  LEFT OUTER JOIN CredentialsListEntries ON Profiles.user_id = CredentialsListEntries.uid
                  WHERE Profiles.user_id = ?;`;
@@ -119,7 +119,7 @@ function getProfile(id, callback) {
         info.name = row.name;
         info.description = row.description;
         info.email = row.email;
-        info.linkedIn = row.linkedin;
+        info.linkedIn = row.linkedin !== null ? row.linkedin : row.website;
         info.company = row.currentCompany;
         info.credentials = [{ company: row.title, position: row.content }];
       } else {

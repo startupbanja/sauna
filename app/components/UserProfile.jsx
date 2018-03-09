@@ -7,6 +7,7 @@ import ProfileInfoHeader from './ProfileInfoHeader';
 // React Component for a user's profile page.
 export default class UserProfile extends React.Component {
   render() {
+    const siteName = this.props.type === 'Coach' ? 'LinkedIn' : 'Website';
     return (
       <div className="profileContainer container">
         <link rel="stylesheet" type="text/css" href="/app/styles/user_profile_style.css" />
@@ -19,7 +20,7 @@ export default class UserProfile extends React.Component {
         />
         <ul className="profileLinks">
           <li>
-              LinkedIn: <a href={this.props.linkedIn}>linkedin.com</a>
+            {siteName}: <a href={this.props.linkedIn}>{this.props.linkedIn}</a>
           </li>
         </ul>
         <hr />
