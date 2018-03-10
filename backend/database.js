@@ -310,6 +310,39 @@ function verifyIdentity(username, password, callback) {
   });
 }
 
+/**
+ * Changes the given user's (UID) password if possible
+ * and calls callback with response message object.
+ */
+function changePassword(uid, oldPassword, newPassword, callback) {
+  const response = { status: 'ERROR', message: 'Password could not be changed due to technical problems.' };
+
+  db.get('SELECT password FROM Users WHERE id = ?', [uid], (err, row) => {
+    if (!err) {
+      const oldPass = row.pass; // hashed version of the current password.
+      const newHash = bcrypt.hashSync(newPassword, 10);
+      const oldHash = bcrypt.hashSync(oldPassword, 10);
+
+      bcrypt.compare(oldPass, oldHash, (e, success) => {
+        if (!success) {
+          response.message = 'The current password was incorrect!';
+        } else {
+          db.run('UPDATE Users SET password = ? WHERE id = ?', [newHash, uid], (error) => {
+            if (!error) {
+              response.status = 'SUCCESS';
+              response.message = 'Password was successfully changed!';
+            }
+            callback(response);
+          });
+        }
+        callback(response);
+      });
+    } else {
+      callback(response);
+    }
+  });
+}
+
 function getStartups(callback) {
   const startups = [];
   const query = `

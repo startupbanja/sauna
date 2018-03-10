@@ -58,6 +58,25 @@ app.post('/login', (req, res) => {
   });
 });
 
+/**
+ * Handles the requests to change password.
+ */
+app.post('/changePassword', (req, res) => {
+  const JSONObject = JSON.parse(req.body.data);
+  const currentPassword = JSONObject.current;
+  const newPassword = JSONObject.newPassword;
+  const repeatedPassword = JSONObject.repeatedPassword;
+
+  if (newPassword === repeatedPassword) {
+    database.changePassword(req.session.userID, newPassword);
+  } else {
+    res.json({
+      status: 'ERROR',
+      message: 'The new passwords did not match!',
+    });
+  }
+});
+
 // Use when admin is required to allow access
 function requireAdmin(req, res) {
   if (req.session.userType !== 'admin') {
