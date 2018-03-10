@@ -12,6 +12,7 @@ import TimeslotView from './timeslot/TimeslotView';
 import AdminSchedules from './AdminSchedules';
 import UserHandlingView from './admin_manage/UserHandlingView';
 import MeetingDetailView from './admin_manage/MeetingDetailView';
+import PasswordChange from './PasswordChange';
 
 const feedbackQuestions = {
   coach: [{
@@ -70,6 +71,7 @@ const userContent = (
     <Route path="/user" component={UserProfilePage} />
     <Route path="/feedback" render={() => <FeedbackView questions={feedbackQuestions} />} />
     <Route path="/availability" component={TimeslotView} />
+    <Route path="/change_password" component={PasswordChange} />
   </Switch>
 );
 
@@ -81,6 +83,7 @@ const userLabels = {
   '/coaches': 'Coaches',
   '/startups': 'Startups',
   '/availability': 'Availability',
+  '/change_password': 'Change password',
 };
 /* eslint-disable */
 const testSchedule = [

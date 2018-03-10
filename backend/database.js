@@ -317,17 +317,19 @@ function verifyIdentity(username, password, callback) {
 function changePassword(uid, oldPassword, newPassword, callback) {
   const response = { status: 'ERROR', message: 'Password could not be changed due to technical problems.' };
 
+  // Fetch the hash of the current password.
   db.get('SELECT password FROM Users WHERE id = ?', [uid], (err, row) => {
     if (!err) {
-      const oldPass = row.pass; // hashed version of the current password.
-      const newHash = bcrypt.hashSync(newPassword, 10);
+      const oldPass = row.password; // hashed version of the current password.
       const oldHash = bcrypt.hashSync(oldPassword, 10);
 
-      bcrypt.compare(oldPass, oldHash, (e, success) => {
-        if (!success) {
+      bcrypt.compare(oldPassword, oldPass, (e, same) => {
+        if (!same) {
           response.message = 'The current password was incorrect!';
+          callback(response);
         } else {
-          db.run('UPDATE Users SET password = ? WHERE id = ?', [newHash, uid], (error) => {
+          const newHashed = bcrypt.hashSync(newPassword, 10);
+          db.run('UPDATE Users SET password = ? WHERE id = ?', [newHashed, uid], (error) => {
             if (!error) {
               response.status = 'SUCCESS';
               response.message = 'Password was successfully changed!';
@@ -335,7 +337,6 @@ function changePassword(uid, oldPassword, newPassword, callback) {
             callback(response);
           });
         }
-        callback(response);
       });
     } else {
       callback(response);
@@ -623,6 +624,7 @@ module.exports = {
   closeDatabase,
   getUsers,
   verifyIdentity,
+  changePassword,
   getProfile,
   getRatings,
   getTimeslots,

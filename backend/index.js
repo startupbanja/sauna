@@ -63,12 +63,17 @@ app.post('/login', (req, res) => {
  */
 app.post('/changePassword', (req, res) => {
   const JSONObject = JSON.parse(req.body.data);
-  const currentPassword = JSONObject.current;
+  const currentPassword = JSONObject.currentPassword;
   const newPassword = JSONObject.newPassword;
   const repeatedPassword = JSONObject.repeatedPassword;
 
   if (newPassword === repeatedPassword) {
-    database.changePassword(req.session.userID, newPassword);
+    database.changePassword(
+      req.session.userID,
+      currentPassword,
+      newPassword,
+      response => res.json(response),
+    );
   } else {
     res.json({
       status: 'ERROR',
