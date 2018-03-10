@@ -43,7 +43,7 @@ class PasswordChange extends Component {
 
   render() {
     return (
-      <div>
+      <div className="container">
         <StatusMessage message={this.state.message} />
         <h2>Change your password</h2>
         <form>
