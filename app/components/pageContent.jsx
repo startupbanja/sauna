@@ -18,12 +18,20 @@ const feedbackQuestions = {
   coach: [{
     index: 0,
     question: 'Would you like to meet again?',
-    options: [0, 1, 2],
+    options: [
+      { desc: 'No', value: 0 },
+      { desc: 'Maybe', value: 1 },
+      { desc: 'Yes', value: 2 },
+    ],
   }],
   startup: [{
     index: 0,
     question: 'Would you like to meet again?',
-    options: [0, 1, 3],
+    options: [
+      { desc: 'No', value: 0 },
+      { desc: 'Maybe', value: 1 },
+      { desc: 'Yes', value: 3 },
+    ],
   }],
 };
 
