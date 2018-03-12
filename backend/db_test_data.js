@@ -4,7 +4,7 @@ function dateToString(date) {
   return date.toISOString().substr(0, 10);
 }
 
-function addMeetingDays(firstDate, amount, db) {
+function addMeetingDays(firstDate, amount, db, callback) {
   const query = 'INSERT INTO MeetingDays (date, startTime, endTime, split, matchmakingDone) VALUES';
   const date = new Date(firstDate.getTime());
 
@@ -17,10 +17,10 @@ function addMeetingDays(firstDate, amount, db) {
     date.setDate(date.getDate() + 7);
     rows.push(rowQ);
   }
-  db.run(query.concat(rows.join(',')), [], err => err && console.log(err));
+  db.run(query.concat(rows.join(',')), [], callback);
 }
 
-function addTimeslots(date, db) {
+function addTimeslots(date, db, callback) {
   const query = `INSERT INTO Timeslots (user_id, date, time, duration) VALUES
     (38, $date, '13:00:00', 240),
     (22, $date, '13:00:00', 240),
@@ -40,14 +40,16 @@ function addTimeslots(date, db) {
     (55, $date, '13:40:00', 120),
     (32, $date, '13:00:00', 160),
     (46, $date, '13:00:00', 200);`;
-  db.run(query, { $date: dateToString(date) }, err => err && console.log(err));
+  db.run(query, { $date: dateToString(date) }, callback);
 }
 
-function insertData(db, days) {
+function insertData(db, days, callback) {
   const date = new Date(); //
   date.setDate(date.getDate() + 1);
-  addMeetingDays(date, days, db);
-  addTimeslots(date, db);
+  addMeetingDays(date, days, db, (err) => {
+    if (err) return callback(err);
+    return addTimeslots(date, db, (err2, data) => callback(err2));
+  });
 }
 
 module.exports = { insertData };

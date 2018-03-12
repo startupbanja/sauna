@@ -10,6 +10,10 @@ const matchmaking = require('./matchmaking.js');
 
 const app = express();
 
+database.createDatabase((err) => {
+  if (err) console.log(err);
+  console.log('Data loaded');
+});
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -467,6 +471,7 @@ console.log(`Magic happens on port ${port}`);
 
 function closeServer() {
   database.closeDatabase(() => {
+    console.log('Database closed')
     server.close(() => {
       console.log('HTTP Server closed.\nExiting...');
       process.exit();

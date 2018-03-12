@@ -5,20 +5,51 @@ const fs = require('fs');
 const bcrypt = require('bcrypt');
 const testData = require('./db_test_data.js');
 
-const db = new sqlite.Database(':memory:', (err) => {
-  if (err) {
-    return console.error(err.message);
-  }
-  console.log('Connected to the in-memory SQlite database.');
-  return null;
-});
+let db = null;
+
+function initDB(callback) {
+  fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
+    if (err) {
+      return callback(err);
+    }
+    // split data into statements
+    const arr = data.split(';');
+
+    // ensure it is running in serialized mode
+    db.serialize(() => {
+      arr.forEach((statement) => {
+        if (statement.trim()) {
+          db.run(statement, [], (err2) => {
+            if (err2) {
+              throw err2;
+            }
+            return null;
+          });
+        }
+      });
+      testData.insertData(db, 4, callback);
+    });
+    return null;
+  });
+}
+
+function createDatabase(callback) {
+  db = new sqlite.Database(':memory:', (err) => {
+    if (err) {
+      return console.error(err.message);
+    }
+    // console.log('Connected to the in-memory SQlite database.');
+    return initDB(callback);
+  });
+  module.exports.db = db;
+}
 
 function closeDatabase(callback) {
   db.close((err) => {
     if (err) {
       return console.error(err.message);
     }
-    console.log('Database connection closed.');
+    // console.log('Database connection closed.');
     return callback();
   });
 }
@@ -576,34 +607,7 @@ function getUserMeetings(userID, userType, callback) {
   });
 }
 
-function initDB() {
-  fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
-    if (err) {
-      //TODO do something here
-      return console.log(err);
-    }
-    // split data into statements
-    const arr = data.split(';');
 
-    // ensure it is running in serialized mode
-    db.serialize(() => {
-      arr.forEach((statement) => {
-        if (statement.trim()) {
-          db.run(statement, [], (err2) => {
-            if (err2) {
-              throw err2;
-            }
-            return null;
-          });
-        }
-      });
-      testData.insertData(db, 4);
-      console.log('Data loaded');
-    });
-    return null;
-  });
-}
-initDB();
 // Get an object mapping all ids from startups and coaches of the current batch and map them to their names.
 // Currently returns all coaches with any branch number
 // Checks for active = 1 for all rows
@@ -662,5 +666,6 @@ module.exports = {
   setActiveStatus,
   getUserMeetings,
   getMeetingDuration,
+  createDatabase,
   db,
 };
