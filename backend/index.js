@@ -76,7 +76,7 @@ app.post('/changePassword', (req, res, next) => {
         if (!err) {
           res.json(response);
         } else return next(err);
-      },
+      }
     );
   } else {
     res.json({
