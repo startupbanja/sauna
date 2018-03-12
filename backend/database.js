@@ -339,7 +339,7 @@ function changePassword(uid, oldPassword, newPassword, callback) {
             return callback(error, response);
           });
         } else {
-          return callback(err, null);
+          return callback(e, null);
         }
       });
     } else {
