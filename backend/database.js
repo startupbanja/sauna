@@ -324,22 +324,26 @@ function changePassword(uid, oldPassword, newPassword, callback) {
       const oldHash = bcrypt.hashSync(oldPassword, 10);
 
       bcrypt.compare(oldPassword, oldPass, (e, same) => {
-        if (!same) {
-          response.message = 'The current password was incorrect!';
-          callback(response);
-        } else {
+        if (!e) {
+          if (!same) {
+            response.message = 'The current password was incorrect!';
+            return callback(null, response);
+          }
+
           const newHashed = bcrypt.hashSync(newPassword, 10);
           db.run('UPDATE Users SET password = ? WHERE id = ?', [newHashed, uid], (error) => {
             if (!error) {
               response.status = 'SUCCESS';
               response.message = 'Password was successfully changed!';
             }
-            callback(response);
+            return callback(error, response);
           });
+        } else {
+          return callback(err, null);
         }
       });
     } else {
-      callback(response);
+      return callback(err, null);
     }
   });
 }

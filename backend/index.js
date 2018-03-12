@@ -61,7 +61,7 @@ app.post('/login', (req, res) => {
 /**
  * Handles the requests to change password.
  */
-app.post('/changePassword', (req, res) => {
+app.post('/changePassword', (req, res, next) => {
   const JSONObject = JSON.parse(req.body.data);
   const currentPassword = JSONObject.currentPassword;
   const newPassword = JSONObject.newPassword;
@@ -72,7 +72,11 @@ app.post('/changePassword', (req, res) => {
       req.session.userID,
       currentPassword,
       newPassword,
-      response => res.json(response),
+      (err, response) => {
+        if (!err) {
+          res.json(response);
+        } else return next(err);
+      },
     );
   } else {
     res.json({
