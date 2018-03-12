@@ -110,6 +110,11 @@ class EditUserProfile extends Component {
           onClick={() => this.handleSubmit()}
           text="Save"
         />
+        <Button
+          className="btn btn-lg ffbutton-red"
+          text="Cancel"
+          onClick={() => this.props.cancel()}
+        />
       </div>
     );
   }
@@ -128,6 +133,7 @@ EditUserProfile.propTypes = {
     position: PropTypes.string.isRequired,
   })),
   handleSubmit: PropTypes.func.isRequired,
+  cancel: PropTypes.func.isRequired,
 };
 
 EditUserProfile.defaultProps = {

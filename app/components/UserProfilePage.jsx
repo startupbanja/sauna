@@ -9,8 +9,9 @@ class UserProfilePage extends Component {
   constructor(props) {
     super(props);
     this.fetchData = this.fetchData.bind(this);
-    this.handleModifyClick = this.handleModifyClick.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.toggleEdit = this.toggleEdit.bind(this);
+
     // Initialize the state as empty.
     this.state = {
       userType: '',
@@ -33,12 +34,17 @@ class UserProfilePage extends Component {
     this.fetchData();
   }
 
+  toggleEdit() {
+    this.setState({
+      modifying: !this.state.modifying,
+    });
+  }
+
   fetchData() {
     let params = {};
     if (typeof this.props.id !== 'undefined') params = { userId: this.props.id };
     pageContent.fetchData('/profile', 'get', params)
       .then((responseJSON) => {
-        console.log(responseJSON);
         this.setState({
           userType: responseJSON.type,
           name: responseJSON.name,
@@ -53,7 +59,6 @@ class UserProfilePage extends Component {
 
   handleSubmit(data) {
     pageContent.fetchData('/updateProfile', 'POST', data).then((res) => {
-      console.log(res);
       this.setState({
         message: {
           type: res.status.toLowerCase(),
@@ -61,10 +66,6 @@ class UserProfilePage extends Component {
         },
       });
     });
-  }
-
-  handleModifyClick() {
-    this.setState({ modifying: true });
   }
 
   render() {
@@ -81,6 +82,7 @@ class UserProfilePage extends Component {
             credentials={this.state.credentials}
             titles={this.state.titles}
             handleSubmit={this.handleSubmit}
+            cancel={this.toggleEdit}
           />
         </div>);
     }
@@ -94,7 +96,7 @@ class UserProfilePage extends Component {
           credentials={this.state.credentials}
           canModify={this.state.canModify}
           titles={this.state.titles}
-          onModifyClick={this.handleModifyClick}
+          onModifyClick={this.toggleEdit}
         />
       </div>
     );
