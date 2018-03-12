@@ -1,3 +1,7 @@
+.timeslot-container {
+  max-width: 500px;
+}
+
 .dragableContainer p {
   position: absolute;
   right: 5px;
@@ -26,18 +30,26 @@
 }
 
 .timeslot-dragball {
-  transform: rotate(45deg);
+  transform: translate(-50%, 0) rotate(45deg);
   background: black;
   position: absolute;
   left: 50%;
   cursor: pointer;
+  height: 20px;
+  width: 20px;
+}
+
+.timeslot-dragball.bottom {
+  bottom: -10px;
+}
+.timeslot-dragball.top {
+  top: -10px;
 }
 
 .timeslot-input {
   font-size: x-large;
   text-align: center;
   color: var(--light-gray);
-  margin-top: 20px;
 }
 
 .timeslot-input p {
@@ -59,13 +71,13 @@
   color: var(--primary-color);
   text-align: center;
   font-size: 25px;
-  /* margin-bottom: 20px; */
   margin-top: 5px;
 }
 
 .timeslot-container .navigation-container {
   text-align: center;
   margin: 20px;
+  margin-top: 5px;
 }
 
 .timeslot-container .navigation-container span.glyphicon {
@@ -77,4 +89,19 @@
   text-align: center;
   font-size: 28px;
   margin: 10%;
+}
+.invisible {
+  visibility: hidden;
+}
+
+.timeslot-container .help-text-center {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.unavailable-text {
+  display: block !important;
+  font-size: 13px;
+  color: var(--primary-color);
+  margin: 0px;
 }

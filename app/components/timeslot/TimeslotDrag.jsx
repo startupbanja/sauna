@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import TimeslotDragable from './TimeslotDragable';
 
-export const totalHeight = 400;
+export const totalHeight = 300;
 
 class TimeslotDrag extends Component {
   constructor(props) {
