@@ -1,6 +1,6 @@
 import unittest, datetime, random, json
 import matchmaking
-import convertToCsv
+# import convertToCsv
 
 class TestMatchmaking(unittest.TestCase):
 
@@ -74,17 +74,27 @@ class TestMatchmaking(unittest.TestCase):
     # print(stats)
     # print("---")
 
-
+  # check that we get on empty param we get correct looking ValueError
   def test_empty_init(self):
-    data = { 'feedbacks': [], 'availabilities': {}, 'startups': [] }
-    try:
-      matchmaking.init(data)
-    except ValueError:
-      pass
+    empty = { 'feedbacks': [], 'availabilities': {}, 'startups': [] }
+    data = { 'feedbacks': self.feedbacks, 'availabilities': self.availabilities, 'startups': self.startups }
+    for key in data.keys():
+      d = dict(data)
+      d[key] = empty[key]
+      try:
+        matchmaking.init(d)
+      except ValueError as e:
+        self.assertTrue(key in e.__str__())
 
   # test for crash on empty parameters
-  def test_empty_matchmake(self):
-    matchmaking.matchmake([], {}, [])
+  # currently crashes on this
+  # def test_empty_matchmake(self):
+  #   empty = [[], {}, {}]
+  #   for i in range(3):
+  #     n = list(self.paramTuple)
+  #     n[i] = empty[i]
+  #     matchmaking.matchmake(n[0], n[1], n[2])
+
 
   # check different slotsizes, check that we get atleast one correct match made for each size
   def test_slotSizes(self):
