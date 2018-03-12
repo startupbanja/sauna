@@ -19,7 +19,6 @@ class PasswordChange extends Component {
   }
 
   handleSubmit() {
-    console.log(this.state);
     if (this.state.current_pw !== undefined
         && this.state.new_pw !== undefined
         && this.state.new_pw_again !== undefined) {
@@ -28,16 +27,24 @@ class PasswordChange extends Component {
         newPassword: this.state.new_pw,
         repeatedPassword: this.state.new_pw_again,
       };
-
-      pageContent.fetchData('/changePassword', 'POST', { data: JSON.stringify(inputs) }).then((res) => {
-        console.log(res);
+      if (inputs.newPassword === inputs.repeatedPassword) {
+        pageContent.fetchData('/changePassword', 'POST', { data: JSON.stringify(inputs) }).then((res) => {
+          console.log(res);
+          this.setState({
+            message: {
+              type: res.status.toLowerCase(),
+              text: res.message,
+            },
+          });
+        });
+      } else {
         this.setState({
           message: {
-            type: res.status.toLowerCase(),
-            text: res.message,
+            type: 'error',
+            text: 'The new passwords did not match!',
           },
         });
-      });
+      }
     }
   }
 
