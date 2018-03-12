@@ -43,20 +43,34 @@ function translate(data, times, firstColumn, editable, editfunc, allUsers) {
   const nameValue = firstColumn === 'coach' ? undefined : null;
   Object.keys(result).forEach((key) => {
     const arr = result[key];
-    let i = 0;
-    // pad left and middle
-    while (i < times.length) {
-      if (i >= arr.length) {
-        arr.push({ name: nameValue, time: times[i] });
-      } else if (times.indexOf(arr[i].time) > i) {
-        arr.splice(i, 0, { name: nameValue, time: times[i] });
+    let i = 0; // index of times (header row)
+    let j = 0; // index of arr
+    // while (i < times.length) {
+    //   if (i >= arr.length) {
+    //     arr.push({ name: nameValue, time: times[i] });
+    //   } else if (arr[i].time > times[i]) {
+    //     arr.splice(i, 0, { name: nameValue, time: times[i] });
+    //   }
+    //   i += 1;
+    // }
+    let a = 0;
+    while (i < times.length && a < 100) {
+      const headerTime = times[i];
+      if (j >= arr.length) {
+        arr.push({ name: nameValue, time: headerTime });
+        i += 1;
+      } else if (arr[j].time > headerTime) {
+        arr.splice(j, 0, { name: nameValue, time: headerTime });
+        i += 1;
+      } else if (arr[j].time < headerTime) {
+        j += 1;
+      } else {
+        i += 1;
+        j += 1;
       }
-      i += 1;
+      a += 1;
     }
-    // pad right
-    // const rightPad = times.length - 1 - times.indexOf(arr[arr.length - 1].time);
-    // result[key] = arr.concat(Array(rightPad).fill(null)
-    //   .map((val, idx) => ({ name: nameValue, time: times[arr.length + idx] })));
+    if (a === 100) console.log('infinite loop');
   });
 
   // combine cells with same leftColumn key and time into one arr index
@@ -111,10 +125,18 @@ function translate(data, times, firstColumn, editable, editfunc, allUsers) {
             key={`${key}-${name}-${i}`}
           >{name} {x.time}
             {editable &&
-              <DropdownList
-                onChoice={newValue => editfunc(newValue, keys)}
-                choices={choiceList}
-              />}
+              <div>
+                <DropdownList
+                  text="Edit"
+                  onChoice={newValue => editfunc(newValue, keys, true)}
+                  choices={choiceList}
+                />
+                <DropdownList
+                  text="+"
+                  onChoice={newValue => editfunc(newValue, keys, false)}
+                  choices={choiceList}
+                />
+              </div>}
           </div>);
       });
       return (<td key={`${key}-${times[idx]}-combined`}>{combinedCell}</td>);

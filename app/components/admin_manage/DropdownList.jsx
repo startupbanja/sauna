@@ -24,7 +24,7 @@ export default class DropdownList extends React.Component {
           aria-haspopup="true"
           aria-expanded="true"
         >
-          Edit
+          {this.props.text}
           <span className="caret" />
         </button>
         <ul className="dropdown-menu" aria-labelledby="dropdownMenu1">
@@ -46,6 +46,7 @@ export default class DropdownList extends React.Component {
 }
 // keys is used as a key for registering change in the parent component
 DropdownList.propTypes = {
+  text: PropTypes.string.isRequired,
   onChoice: PropTypes.func.isRequired, // takes as parameter new value of cell
   choices: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
