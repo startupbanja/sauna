@@ -97,3 +97,7 @@
   content: "\e019";
   font-size: 1.6em;
 }
+
+.credentialField {
+  border-top:1px solid #aaa;
+}

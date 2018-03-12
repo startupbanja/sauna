@@ -85,7 +85,10 @@ class EditUserProfile extends Component {
           <div>
             <div className="edit-para">{credentialsHeader}</div>
 
-            <p><b>NOTE:</b>To remove a {removeText}, just leave the fields blank.</p>
+            <p>
+              <b>NOTE:</b>
+              To remove a {removeText}, just leave either (or both) of the fields blank.
+            </p>
             <div id="credentialFieldsContainer">
               {this.state.credentials.map(value =>
                 (
