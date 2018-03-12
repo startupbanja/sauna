@@ -48,6 +48,10 @@ export default class FeedbackView extends React.Component {
           newData[this.state.index].rating = newRating;
           return {
             data: newData,
+            message: {
+              text: 'Saved',
+              type: 'success',
+            },
           };
         });
       } else {
@@ -65,6 +69,7 @@ export default class FeedbackView extends React.Component {
     if (newI < 0 || newI > this.state.data.length - 1) return false;
     this.setState({
       index: newI,
+      message: undefined,
     });
     return true;
   }
