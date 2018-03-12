@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from './Button';
-import pageContent from './pageContent';
 
 class EditUserProfile extends Component {
   constructor(props) {
@@ -85,7 +84,7 @@ class EditUserProfile extends Component {
           <div>
             <div className="edit-para">{credentialsHeader}</div>
 
-            <p>
+            <p id="editProfileNote">
               <b>NOTE:</b>
               To remove a {removeText}, just leave either (or both) of the fields blank.
             </p>
