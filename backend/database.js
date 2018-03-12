@@ -348,6 +348,18 @@ function changePassword(uid, oldPassword, newPassword, callback) {
   });
 }
 
+function getMeetingDuration(date, callback) {
+  const q = 'SELECT split FROM MeetingDays WHERE date = ?';
+  db.get(q, date, (err, row) => {
+    if (err) return callback(err);
+    const duration = row.split;
+    if (!duration) {
+      return callback({ error: `Date ${date} not found in table MeetingDays in getMeetingDuration` });
+    }
+    return callback(null, duration);
+  });
+}
+
 function getStartups(callback) {
   const startups = [];
   const query = `
@@ -505,7 +517,7 @@ function getTimetable(callback) {
   });
 }
 
-// Gets timetable in form [{coach: coachName, startup: startupName, time: time, duration: duration}]
+// Param timetable in form [{coach: coachName, startup: startupName, time: time, duration: duration}]
 // Removes null meetings and saves the rest to the database
 function setTimetable(timetable, date) {
   const meetings = [];
@@ -649,5 +661,6 @@ module.exports = {
   getGivenFeedbacks,
   setActiveStatus,
   getUserMeetings,
+  getMeetingDuration,
   db,
 };

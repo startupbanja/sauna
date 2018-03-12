@@ -1,7 +1,5 @@
-import unittest
+import unittest, datetime, random, json
 import matchmaking
-import datetime
-import random
 import convertToCsv
 
 class TestMatchmaking(unittest.TestCase):
@@ -26,6 +24,7 @@ class TestMatchmaking(unittest.TestCase):
     self.startups = list(range(10))
     testData = {'feedbacks': self.feedbacks, 'availabilities': self.availabilities, 'startups': self.startups}
     self.paramTuple = matchmaking.init(testData)
+
     self.definedFeedbacks = [];
     userid = 0;
     for i in [-1,0,1,3]:
@@ -74,6 +73,26 @@ class TestMatchmaking(unittest.TestCase):
     # (result, stats) = matchmaking.matchmake(self.paramTuple[0], self.paramTuple[1], self.paramTuple[2])
     # print(stats)
     # print("---")
+
+
+  def test_empty_init(self):
+    data = { 'feedbacks': [], 'availabilities': {}, 'startups': [] }
+    try:
+      matchmaking.init(data)
+    except ValueError:
+      pass
+
+  # test for crash on empty parameters
+  def test_empty_matchmake(self):
+    matchmaking.matchmake([], {}, [])
+
+  # check different slotsizes, check that we get atleast one correct match made for each size
+  def test_slotSizes(self):
+    for size in range(1, 120):
+      result, stats = matchmaking.matchmake(self.paramTuple[0], self.paramTuple[1], self.paramTuple[2], size)
+      result = json.loads(result)
+      nonEmpty = [x for x in result if x['startup'] != None]
+      self.assertTrue(len(nonEmpty) != 0)
 
   def test_cmpByFeedback(self):
     def test(i1,i2):
@@ -131,9 +150,6 @@ class TestMatchmaking(unittest.TestCase):
     # Sum of feedbacks is 2 or less
     self.assertEqual(matchmaking.filterFeedbacks({'startup': 1,'startupfeedback':1,'coach':1,'coachfeedback':1}, self.definedAvailabilities),False)
 
-  def test_csvconversion(self):
-    (data, stats) = matchmaking.matchmake(self.paramTuple[0], self.paramTuple[1], self.paramTuple[2])
-    convertToCsv.convert(data, "unittest_data.csv")
 
 if __name__ == '__main__':
     unittest.main()
