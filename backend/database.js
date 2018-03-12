@@ -509,13 +509,13 @@ function getUserMeetings(userID, userType, callback) {
   let query;
   if (userType === 'coach') {
     query = `
-    SELECT name, time, duration, date
+    SELECT name, time, duration, date, "/app/imgs/coach_placeholder.png" AS image_src
     FROM Meetings
     LEFT OUTER JOIN Profiles ON Profiles.user_id = Meetings.startup_id
     WHERE Meetings.coach_id = ? AND date = (SELECT MAX(date) FROM Meetings);`;
   } else {
     query = `
-    SELECT name, time, duration, date
+    SELECT name, time, duration, date, "/app/imgs/coach_placeholder.png" AS image_src
     FROM Meetings
     LEFT OUTER JOIN Profiles ON Profiles.user_id = Meetings.coach_id
     WHERE Meetings.startup_id = ? AND date = (SELECT MAX(date) FROM Meetings);`;
