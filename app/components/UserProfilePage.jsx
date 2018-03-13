@@ -59,12 +59,25 @@ class UserProfilePage extends Component {
 
   handleSubmit(data) {
     pageContent.fetchData('/updateProfile', 'POST', data).then((res) => {
-      this.setState({
-        message: {
-          type: res.status.toLowerCase(),
-          text: res.message,
-        },
-      });
+      console.log(res);
+      const statusType = res.status.toLowerCase();
+      if (statusType === 'success') {
+        this.setState({
+          message: {
+            type: statusType,
+            text: res.message,
+          },
+          modifying: false,
+        });
+        this.fetchData();
+      } else {
+        this.setState({
+          message: {
+            type: statusType,
+            text: res.message,
+          },
+        });
+      }
     });
   }
 
@@ -88,6 +101,7 @@ class UserProfilePage extends Component {
     }
     return (
       <div>
+        <StatusMessage message={this.state.message} />
         <UserProfile
           type={this.state.userType}
           name={this.state.name}
