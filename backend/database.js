@@ -299,7 +299,7 @@ function updateCredentialsListEntries(uid, list, userType, callback) {
       const toBeInserted = []; // holds the credentials to be inserted into the db.
       const toBeRemoved = []; // holds the credentials that should be deleted.
       const response = {}; // object to be sent in the response.
-
+      let thrownError;
       // If new credentials do not contain a row, add it to deleted creds.
       rowsAsJSON.forEach((row) => {
         if (!listAsJSON.includes(row)) {
@@ -318,29 +318,27 @@ function updateCredentialsListEntries(uid, list, userType, callback) {
       toBeRemoved.forEach((item) => {
         db.run(deleteSQL, [uid, item.title, item.content], (error) => {
           if (error) {
-            response.status = 'ERROR';
-            response.message = 'Profile could not be updated due to technical problems!';
+            thrownError = error;
           }
         });
       });
 
-      // Inserts the new credentials.
-      toBeInserted.forEach((item) => {
-        db.run(insertSQL, [uid, item.title, item.content], (error) => {
-          if (error) {
-            response.status = 'ERROR';
-            response.message = 'Profile could not be updated due to technical problems! (updateCredentials)';
-          }
+      if (!thrownError) {
+        // Inserts the new credentials.
+        toBeInserted.forEach((item) => {
+          db.run(insertSQL, [uid, item.title, item.content], (error) => {
+            thrownError = error;
+          });
         });
-      });
+      }
 
       if (response.status === undefined) {
         response.status = 'SUCCESS';
         response.message = 'Profile was updated successfully!';
       }
-      callback(response);
+      callback(thrownError, response);
     } else {
-      callback({ status: 'ERROR', message: 'Could not update profile due to technical issues.' });
+      return callback(err, null);
     }
   });
 }
@@ -350,13 +348,12 @@ function updateProfile(uid, userType, site, description, title, credentials, cal
   const company = userType === 'Coach' ? ', company = ?' : '';
   const queryParams = userType === 'Coach' ? [site, description, title, uid] : [site, description, uid];
   const query = `UPDATE ${userType}Profiles SET ${siteAttr} = ?, description = ?${company} WHERE user_id = ?`;
-
   db.run(query, queryParams, (err) => {
     if (!err) {
       updateCredentialsListEntries(uid, credentials, userType, callback);
-    } else {
-      callback({ status: 'ERROR', message: 'Profile could not be updated due to technical problems! (updateProfile)' });
+      return undefined;
     }
+    return callback(err);
   });
 }
 

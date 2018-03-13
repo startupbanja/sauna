@@ -119,7 +119,7 @@ app.get('/profile', (req, res, next) => {
 
   database.getProfile(id, (err, result) => {
     if (err) return next(err);
-    if (req.session.userID == id || req.session.userID === 82) {
+    if (req.session.userID == id || req.session.userID === 83) {
       Object.assign(result, { canModify: true });
     }
     res.json(result);
@@ -439,19 +439,22 @@ app.use((err, req, res, next) => {
   res.status(500).send({ error: 'An error has occured!' });
 });
 
-app.post('/updateProfile', (req, res) => {
-  let userType = req.session.userType;
-  userType = userType.replace(userType[0], userType[0].toUpperCase());
+app.post('/updateProfile', (req, res, next) => {
   // Create a JSON object from request body.
   const JSONObject = JSON.parse(req.body.data);
-  const uid = req.session.userID;
+  let userType = JSONObject.type;
+  userType = userType.replace(userType[0], userType[0].toUpperCase());
+  const uid = JSONObject.uid !== undefined ? JSONObject.uid : req.session.userID;
   const site = JSONObject.site;
   const description = JSONObject.description;
   const title = JSONObject.titles[0];
   const credentials = JSONObject.credentials;
 
   // Perform insertion to database using the information specified above.
-  database.updateProfile(uid, userType, site, description, title, credentials, (response) => {
+  database.updateProfile(uid, userType, site, description, title, credentials, (error, response) => {
+    if (error) {
+      return next(error);
+    }
     res.json(response);
   });
 });
