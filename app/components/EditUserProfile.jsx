@@ -56,7 +56,8 @@ class EditUserProfile extends Component {
   }
   handleSubmit() {
     const input = this.getInputData();
-    const dataToPass = { data: JSON.stringify(Object.assign(input, { uid: this.props.id })) };
+    const toBeAdded = { uid: this.props.id, type: this.props.type };
+    const dataToPass = { data: JSON.stringify(Object.assign(input, toBeAdded)) };
     this.props.handleSubmit(dataToPass);
   }
 

@@ -59,7 +59,6 @@ class UserProfilePage extends Component {
 
   handleSubmit(data) {
     pageContent.fetchData('/updateProfile', 'POST', data).then((res) => {
-      console.log(res);
       const statusType = res.status.toLowerCase();
       if (statusType === 'success') {
         this.setState({
