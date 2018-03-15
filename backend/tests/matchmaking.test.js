@@ -1,5 +1,5 @@
-const database = require('./database.js');
-const matchmaking = require('./matchmaking.js');
+const database = require('../database.js');
+const matchmaking = require('../matchmaking.js');
 // const index = require('./index.js');
 
 function dateToString(date) {
@@ -8,7 +8,6 @@ function dateToString(date) {
 
 /* eslint no-loop-func:0 */
 describe('Run matchmaking with database data with different durations...', () => {
-
   beforeEach((done) => {
     database.createDatabase((err) => {
       if (err) return console.log(err);
@@ -17,10 +16,10 @@ describe('Run matchmaking with database data with different durations...', () =>
   });
 
   afterEach(done => database.closeDatabase(done));
-  const durationList = [1, 5, 10, 15, 20, 25, 30, 35, 40, 50, 60, 90];
+
+  const durationList = [5, 10, 15, 20, 25, 30, 35, 40, 50, 60, 90];
   durationList.forEach((duration) => {
     test(`Try with duration = ${duration}`, (done) => {
-      // const duration = 40;
       let date = new Date();
       date.setDate(date.getDate() + 1)
       date = dateToString(date);
