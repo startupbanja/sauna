@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import ScheduleItem from './ScheduleItem';
+import '../../styles/carousel_style.css';
 
 /* Component to display carousel of upcoming timetable */
 class ComingUpCarousel extends Component {
@@ -74,7 +75,7 @@ class ComingUpCarousel extends Component {
       <div className="carousel-container">
         <p className="date">{date.toLocaleDateString('en-GB', dateOptions).replace(/\//g, '.')}</p>
         <div className="carousel slide multi-item-carousel" id="theComingUpCarousel">
-          <link rel="stylesheet" type="text/css" href="app/styles/carousel_style.css" />
+          {/* <link rel="stylesheet" type="text/css" href="app/styles/carousel_style.css" /> */}
           <ol className="carousel-indicators">
             {indicators}
           </ol>

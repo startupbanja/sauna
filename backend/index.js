@@ -151,7 +151,7 @@ app.get('/profile', (req, res, next) => {
 
   database.getProfile(id, (err, result) => {
     if (err) return next(err);
-    if (req.session.userID == id || req.session.userID === 82) {
+    if (req.session.userID == id || req.session.userType === 'admin') {
       Object.assign(result, { canModify: true });
     }
     res.json(result);
@@ -166,23 +166,28 @@ app.get('/profile', (req, res, next) => {
 // }
 app.get('/activeStatuses', (req, res, next) => {
   database.getActiveStatuses((err, data) => {
-    if (err) return next(data);
+    if (err) return next(err);
     return res.json(data);
   });
 });
 
-// TODO coach names
-app.get('/meetings', (req, res, next) => {
+
+app.get('/timetable', (req, res, next) => {
   const allMeetings = [];
   database.getUserMap((err, keys) => {
     if (err) return next(err);
-    database.getTimetable((err2, meetings) => {
+    database.getTimetable(req.query.date, (err2, meetings) => {
       if (err2) return next(err2);
+      // if meetings not found, return empty response
+      if (meetings.length === 0) {
+        return res.json({ schedule: null });
+      }
       database.getTimeslots(req.query.date, (err3, timeslots) => {
         if (err3) return next(err3);
         const dur = meetings[0].duration;
         for (const timeslot in timeslots) { // eslint-disable-line
           const id = timeslot;
+          // fill all avaialble slots with startup: null to get availability info to frontend
           let remaining = timeslots[id].duration;
           const time = new Date('2000-10-10T' + timeslots[id].starttime);
           while (remaining > 0) {
@@ -196,16 +201,34 @@ app.get('/meetings', (req, res, next) => {
             remaining -= dur;
           }
         }
-        for (var meeting in meetings) { //eslint-disable-line
-          meeting = meetings[meeting];
-          const index = allMeetings.findIndex(element => (element.coach === meeting.coach && element.time === meeting.time));
-          if (index !== -1) {
-            allMeetings[index] = {
+        for (var i in meetings) { //eslint-disable-line
+          const meeting = meetings[i];
+          const index = allMeetings.findIndex(element => (
+            element.coach === meeting.coach && element.time === meeting.time));
+
+          if (index !== -1) { // already exists..
+            if (allMeetings[index].startup !== null) { // we have a split, add new
+              allMeetings.push({
+                coach: meeting.coach,
+                startup: meeting.startup,
+                time: meeting.time,
+                duration: meeting.duration,
+              });
+            } else { // no split, just replace the startup: null
+              allMeetings[index] = {
+                coach: meeting.coach,
+                startup: meeting.startup,
+                time: meeting.time,
+                duration: meeting.duration,
+              };
+            }
+          } else {
+            allMeetings.push({
               coach: meeting.coach,
               startup: meeting.startup,
               time: meeting.time,
               duration: meeting.duration,
-            };
+            });
           }
         }
         for (var meeting in allMeetings) {
@@ -217,6 +240,17 @@ app.get('/meetings', (req, res, next) => {
       return undefined;
     });
     return undefined;
+  });
+});
+
+app.post('/timetable', (req, res, next) => {
+  const schedule = JSON.parse(req.body.schedule);
+  database.updateTimetable(schedule, req.body.date, (err) => {
+    if (err) {
+      next(err);
+      return res.json({ success: false });
+    }
+    return res.json({ success: true });
   });
 });
 
@@ -412,7 +446,7 @@ function runAlgorithm(date, callback, commit = true) {
           matchmaking.run(data, duration, (runErr, result) => {
             if (runErr) return callback(runErr);
             if (commit) {
-              return database.saveMatchmaking(result, date, (saveErr) => {
+              return database.saveMatchmakingResult(result, date, (saveErr) => {
                 if (saveErr) return callback(saveErr);
                 return callback(null);
               });
@@ -464,6 +498,26 @@ app.post('/insertAvailability', (req, res, next) => {
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send({ error: 'An error has occured!' });
+});
+
+app.post('/updateProfile', (req, res, next) => {
+  // Create a JSON object from request body.
+  const JSONObject = JSON.parse(req.body.data);
+  let userType = JSONObject.type;
+  userType = userType.replace(userType[0], userType[0].toUpperCase());
+  const uid = JSONObject.uid !== undefined ? JSONObject.uid : req.session.userID;
+  const site = JSONObject.site;
+  const description = JSONObject.description;
+  const title = JSONObject.titles[0];
+  const credentials = JSONObject.credentials;
+
+  // Perform insertion to database using the information specified above.
+  database.updateProfile(uid, userType, site, description, title, credentials, (error, response) => {
+    if (error) {
+      return next(error);
+    }
+    res.json(response);
+  });
 });
 
 const server = app.listen(port);

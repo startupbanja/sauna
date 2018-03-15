@@ -1,6 +1,17 @@
 import React from 'react';
 import LoginView from './LoginView';
 import MainView from './MainView';
+import '../styles/login_page.css';
+import '../styles/adminViews.css';
+import '../styles/main_style.css';
+import '../styles/feedback_style.css';
+import '../styles/schedule_style.css';
+import '../styles/list_style.css';
+import '../styles/user_profile_style.css';
+import '../styles/checkbox_style.css';
+import '../styles/statusMessage_style.css';
+import '../styles/admin_landing_style.css';
+import '../styles/block_header_style.css';
 
 export default class App extends React.Component {
   static logOff() {

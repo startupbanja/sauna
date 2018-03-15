@@ -9,10 +9,11 @@ import UserList from './UserList';
 import App from './App';
 import MeetingDaysView from './admin_manage/MeetingDaysView';
 import TimeslotView from './timeslot/TimeslotView';
-import AdminSchedules from './AdminSchedules';
+import AdminSchedules from './admin_manage/AdminSchedules';
 import UserHandlingView from './admin_manage/UserHandlingView';
 import MeetingDetailView from './admin_manage/MeetingDetailView';
 import PasswordChange from './PasswordChange';
+import AdminLandingPage from './AdminLandingPage';
 
 const feedbackQuestions = {
   coach: [{
@@ -74,7 +75,7 @@ const userContent = (
       path="/startups"
       render={({ match }) => <UserList match={match} type="Startups" />}
     />
-    <Route path="/main" render={() => <div><LandingPage /></div>} />
+    <Route exact path="/" component={LandingPage} />
     <Route path="/timetable" render={() => <UserSchedule schedule={schedule} />} />
     <Route path="/user" component={UserProfilePage} />
     <Route path="/feedback" render={() => <FeedbackView questions={feedbackQuestions} />} />
@@ -84,7 +85,7 @@ const userContent = (
 );
 
 const userLabels = {
-  '/main': 'Home',
+  '/': 'Home',
   '/timetable': 'Timetable',
   '/user': 'User Profile',
   '/feedback': 'Feedback',
@@ -136,7 +137,7 @@ const testSchedule = [
 
 const adminContent = (
   <Switch>
-    <Route path="/main" render={() => <div><h1>Home</h1><LandingPage /></div>} />
+    <Route exact path="/" component={AdminLandingPage} />
     <Route path="/coaches/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />
     <Route
       exact
@@ -173,7 +174,7 @@ const adminContent = (
 );
 
 const adminLabels = {
-  '/main': 'Home',
+  '/': 'Home',
   '/coaches': 'Coaches',
   '/startups': 'Startups',
   '/users': 'Users',
