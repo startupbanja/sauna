@@ -734,6 +734,9 @@ function addProfile(userInfo, callback) {
   let userType;
   let siteAttr; // linkedin or website
   let url; // the actual URL of the site
+  const imgURL = userInfo.img_url === undefined ? '' : 'img_url, ';
+  const values = userInfo.img_url === undefined ? '(?, ?, ?, ?, ?)' : '(?, ?, ?, ?, ?, ?)';
+
 
   switch (userInfo.type) {
     case 'coach':
@@ -749,26 +752,32 @@ function addProfile(userInfo, callback) {
     default:
   }
 
-  const insertSQL = `INSERT INTO ${userType}Profiles(user_id, name, img_url, description, email, ${siteAttr}) VALUES(?, ?, ?, ?, ?, ?)`;
+  const insertSQL = `INSERT INTO ${userType}Profiles(user_id, name, ${imgURL} description, email, ${siteAttr}) VALUES${values}`;
   db.get('SELECT id FROM Users WHERE username=?', [userInfo.email], (err, row) => {
     if (!err) {
       const uid = row.id;
+      const queryParams = [uid, userInfo.name];
+
+      if (userInfo.img_url !== undefined) {
+        queryParams.push(userInfo.img_url);
+      }
+      queryParams.push(userInfo.description, userInfo.email, url);
+
       db.run(
         insertSQL,
-        [uid, userInfo.name, userInfo.img_url, userInfo.description, userInfo.email, url],
+        queryParams,
         (error) => {
           const response = {};
           if (!error) {
             response.type = 'SUCCESS';
             response.message = 'User added successfully!';
           } else {
-            response.type = 'ERROR';
-            response.message = 'User could not be created!';
+            callback(error, null);
           }
-          callback(response);
+          callback(error, response);
         });
     } else {
-      callback({ type: 'ERROR', message: 'User could not be created!' });
+      callback(err, null);
     }
   });
 }
@@ -777,6 +786,10 @@ function addUser(userInfo, callback) {
   db.get('SELECT * FROM Users WHERE username=?', [userInfo.email], (err, row) => {
     if (row === undefined) {
       db.get('SELECT MAX(id) AS id FROM Batches;', [], (err2, row2) => {
+        if (err2) {
+          return callback(err2, null);
+        }
+
         const batchId = row2.id;
         const password = bcrypt.hashSync(userInfo.password, 10);
         let type;
@@ -796,12 +809,13 @@ function addUser(userInfo, callback) {
           if (!e) {
             addProfile(userInfo, callback);
           } else {
-            callback({ type: 'ERROR', message: 'An error occured while attempting to create new user!' });
+            callback(err, null);
           }
+          return undefined;
         });
       });
     } else {
-      callback({ type: 'ERROR', message: 'A user with that email already exists!' });
+      callback(err, { type: 'ERROR', message: 'A user with that email already exists!' });
     }
   });
 }

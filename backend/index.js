@@ -138,13 +138,19 @@ app.get('/users', (req, res, next) => {
   });
 });
 
-app.post('/create_user', (req, res) => {
+app.post('/create_user', (req, res, next) => {
   // Only admins can do this.
   if (req.session.userType === 'admin') {
     const userInfo = req.body;
-    database.addUser(userInfo, resp => res.json(resp));
+
+    database.addUser(userInfo, (err, resp) => {
+      if (!err) {
+        return res.json(resp);
+      }
+      return next(err);
+    });
   } else {
-    res.json({ type: 'ERROR' });
+    res.json({ type: 'ERROR', text: 'Unauthorized!' });
   }
 });
 
