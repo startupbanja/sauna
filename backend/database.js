@@ -5,20 +5,49 @@ const fs = require('fs');
 const bcrypt = require('bcrypt');
 const testData = require('./db_test_data.js');
 
-const db = new sqlite.Database(':memory:', (err) => {
-  if (err) {
-    return console.error(err.message);
-  }
-  console.log('Connected to the in-memory SQlite database.');
-  return null;
-});
+let db = null;
+
+function initDB(callback) {
+  fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
+    if (err) {
+      return callback(err);
+    }
+    // split data into statements
+    const arr = data.split(';');
+
+    // ensure it is running in serialized mode
+    db.serialize(() => {
+      arr.forEach((statement) => {
+        if (statement.trim()) {
+          db.run(statement, [], (err2) => {
+            if (err2) {
+              throw err2;
+            }
+            return null;
+          });
+        }
+      });
+      testData.insertData(db, 4, callback);
+    });
+    return null;
+  });
+}
+
+function createDatabase(callback) {
+  db = new sqlite.Database(':memory:', (err) => {
+    if (err) {
+      return console.error(err.message);
+    }
+    return initDB(callback);
+  });
+  module.exports.db = db;
+}
 
 function closeDatabase(callback) {
   db.close((err) => {
     if (err) {
       return console.error(err.message);
     }
-    console.log('Database connection closed.');
     return callback();
   });
 }
@@ -434,6 +463,18 @@ function changePassword(uid, oldPassword, newPassword, callback) {
   });
 }
 
+function getMeetingDuration(date, callback) {
+  const q = 'SELECT split FROM MeetingDays WHERE date = ?';
+  db.get(q, date, (err, row) => {
+    if (err) return callback(err);
+    const duration = row.split;
+    if (!duration) {
+      return callback({ error: `Date ${date} not found in table MeetingDays in getMeetingDuration` });
+    }
+    return callback(null, duration);
+  });
+}
+
 function getStartups(callback) {
   const startups = [];
   const query = `
@@ -530,7 +571,7 @@ function getTimeslots(date, callback) {
 
 // save a given schedule to database
 function saveTimetable(schedule, dateString, callback) {
-  const saveMatchmakingQuery = `
+  const queryStart = `
   INSERT INTO Meetings(coach_id, startup_id, date, time, duration, coach_rating, startup_rating)
   VALUES
   `;
@@ -540,10 +581,9 @@ function saveTimetable(schedule, dateString, callback) {
     const {
       coach, startup, duration, time,
     } = row;
-    console.log(row);
     return `( ${coach}, ${startup}, '${dateString}', '${time}', ${duration}, -1, -1)`;
   });
-  const query = `${saveMatchmakingQuery}${strings.join(',\n')};`;
+  const query = `${queryStart}${strings.join(',\n')};`;
   db.run(query, (err) => {
     callback(err);
   });
@@ -603,7 +643,7 @@ function getTimetable(date, callback) {
   });
 }
 
-// Gets timetable in form [{coach: coachName, startup: startupName, time: time, duration: duration}]
+// Param timetable in form [{coach: coachName, startup: startupName, time: time, duration: duration}]
 // Removes null meetings and saves the rest to the database
 function updateTimetable(timetable, date, errCallback) {
   const meetings = [];
@@ -624,24 +664,7 @@ function updateTimetable(timetable, date, errCallback) {
     DELETE FROM Meetings WHERE Date = ?;`;
     db.run(query, [date], (err2) => {
       if (err2) return errCallback(err2);
-      console.log(timetable);
       return saveTimetable(meetings, date, errCallback);
-    //   if (meetings.length > 0) {
-    //     let query2 = `
-    //     INSERT INTO Meetings (coach_id, startup_id, date, time, duration)
-    //     VALUES`;
-    //     for (const element in meetings) { //eslint-disable-line
-    //       const meeting = meetings[element];
-    //       query2 = query2 + ' (' + meeting.coach + ', ' + meeting.startup + ', ' + date + ", '" + meeting.time + "'," + meeting.duration + '),';
-    //     }
-    //     query2 = query2.slice(0, -1) + ';';
-    //     // console.log(query2);
-    //     db.run(query2, [], (err3) => {
-    //       if (err3) return errCallback(err3);
-    //       return undefined;
-    //     });
-    //   }
-    //   return undefined;
     });
     return undefined;
   });
@@ -669,34 +692,7 @@ function getUserMeetings(userID, userType, callback) {
   });
 }
 
-function initDB() {
-  fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
-    if (err) {
-      //TODO do something here
-      return console.log(err);
-    }
-    // split data into statements
-    const arr = data.split(';');
 
-    // ensure it is running in serialized mode
-    db.serialize(() => {
-      arr.forEach((statement) => {
-        if (statement.trim()) {
-          db.run(statement, [], (err2) => {
-            if (err2) {
-              throw err2;
-            }
-            return null;
-          });
-        }
-      });
-      testData.insertData(db, 4);
-      console.log('Data loaded');
-    });
-    return null;
-  });
-}
-initDB();
 // Get an object mapping all ids from startups and coaches of the current batch and map them to their names.
 // Currently returns all coaches with any branch number
 // Checks for active = 1 for all rows
@@ -754,6 +750,8 @@ module.exports = {
   getGivenFeedbacks,
   setActiveStatus,
   getUserMeetings,
+  getMeetingDuration,
+  createDatabase,
   db,
   updateProfile,
 };

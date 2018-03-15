@@ -10,6 +10,10 @@ const matchmaking = require('./matchmaking.js');
 
 const app = express();
 
+database.createDatabase((err) => {
+  if (err) console.log(err);
+  console.log('Data loaded');
+});
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -414,7 +418,6 @@ app.post('/createMeetingDay', (req, res, next) => {
 });
 
 // Run algorithm with given date and save to database and create a .csv file
-// TODO these errors are a bit confusing... is this right?
 // FIXME those return undefineds and the bracket pyramid...
 // callback is called with either err or null as only argument
 function runAlgorithm(date, callback, commit = true) {
@@ -433,22 +436,18 @@ function runAlgorithm(date, callback, commit = true) {
           startups: startupdata,
         };
         if (!(ratings && timeslots && startupdata)) {
-          callback(false);
+          return callback({ error: 'error fetching parameters for matchmaking algorithm' });
         }
-        const batch = 1;
-        // This getMapping is only needed because we are converting the result
-        // to .csv in python, TODO remove later
-        database.getMapping(batch, (mapErr, mapping) => {
-          if (mapErr) return callback(mapErr);
-          const dataWithMapping = { data, mapping };
-          matchmaking.run(dataWithMapping, (runErr, result) => {
+        // get duration of one meeting
+        database.getMeetingDuration(date, (durErr, duration) => {
+          if (durErr) return callback(durErr);
+          matchmaking.run(data, duration, (runErr, result) => {
             if (runErr) return callback(runErr);
             if (commit) {
-              database.saveMatchmakingResult(result, date, (saveErr) => {
+              return database.saveMatchmakingResult(result, date, (saveErr) => {
                 if (saveErr) return callback(saveErr);
                 return callback(null);
               });
-              return undefined;
             }
             return callback(null);
           });
@@ -524,6 +523,7 @@ console.log(`Magic happens on port ${port}`);
 
 function closeServer() {
   database.closeDatabase(() => {
+    console.log('Database closed')
     server.close(() => {
       console.log('HTTP Server closed.\nExiting...');
       process.exit();

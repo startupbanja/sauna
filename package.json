@@ -7,7 +7,7 @@
     "build": "webpack",
     "start": "npm run eslint && webpack-dev-server",
     "eslint": "eslint --ext .jsx --ext .js app/",
-    "test": "jest"
+    "test": "jest tests/*"
   },
   "repository": {
     "type": "git",
