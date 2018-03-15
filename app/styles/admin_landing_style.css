@@ -1,0 +1,33 @@
+.admin-landing {
+  font-size: 24px;
+}
+
+.admin-landing h2 {
+  text-align: center;
+}
+
+.admin-landing .block-header {
+  margin: 10px 0px;
+}
+
+.admin-landing > div > a {
+  margin: 0px 10px;
+}
+
+.admin-landing a:link,
+.admin-landing a:visited {
+  color: var(--light-gray);
+  text-decoration: none;
+  display: inline-block;
+}
+.admin-landing p:hover {
+  color: var(--primary-color);
+}
+
+.admin-landing .stats a:link,
+.admin-landing .stats a:visited {
+  color: white;
+}
+.admin-landing .stats p:hover {
+  color: var(--primary-color);
+}
