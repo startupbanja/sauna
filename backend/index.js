@@ -119,7 +119,7 @@ app.get('/profile', (req, res, next) => {
 
   database.getProfile(id, (err, result) => {
     if (err) return next(err);
-    if (req.session.userID == id || req.session.userID === 83) {
+    if (req.session.userID == id || req.session.userType === 'admin') {
       Object.assign(result, { canModify: true });
     }
     res.json(result);
