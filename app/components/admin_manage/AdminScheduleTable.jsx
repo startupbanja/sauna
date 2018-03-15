@@ -122,7 +122,7 @@ function translate(data, times, firstColumn, editable, editfunc, allUsers) {
         return ( // This is the cell that is returned
           <div
             className={cn}
-            key={`${key}-${name}-${i}`}
+            key={`${key}_${name}_${i}`}
           >{name} {x.time}
             {editable &&
               <div>
@@ -139,11 +139,11 @@ function translate(data, times, firstColumn, editable, editfunc, allUsers) {
               </div>}
           </div>);
       });
-      return (<td key={`${key}-${times[idx]}-combined`}>{combinedCell}</td>);
+      return (<td key={`${key}_${times[idx]}_combined`}>{combinedCell}</td>);
     });
     return (
-      <tr key={`row-${key}`}>
-        <td className="firstColumnCell">{key}</td>{meetings}
+      <tr key={`row_${key}`} className="body-row">
+        <td className="firstColumnCell" key="first">{key}</td>{meetings}
       </tr>
     );
   });
@@ -162,8 +162,8 @@ export default class AdminScheduleTable extends React.Component {
     return (
       <table className="table" id="adminTable">
         <thead>
-          <tr>
-            <th />{times.map(time => <th key={time}>{time}</th>)}
+          <tr className="header-row">
+            <th key="0" />{times.map(time => <th key={time}>{time}</th>)}
           </tr>
         </thead>
         <tbody>
