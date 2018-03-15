@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(session({
   cookie: {
-    domain: '127.0.0.1',
+    domain: '',
   },
   secret: '12saUna45',
   name: 'ssauna.sid',
@@ -28,7 +28,6 @@ app.use(session({
 const port = process.env.PORT || 3000;
 
 app.use((req, res, next) => {
-
   // Allow frontend to send cookies
   res.append('Access-Control-Allow-Origin', req.get('origin'));
   res.append('Access-Control-Allow-Credentials', 'true');
@@ -47,7 +46,6 @@ app.use((req, res, next) => {
 app.post('/login', (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
-
   // bcrypt.hash(password, 10, (err, hash) => console.log(hash));
   database.verifyIdentity(username, password, (type, userId) => {
     if (userId !== false) {
