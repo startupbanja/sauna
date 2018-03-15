@@ -1,4 +1,4 @@
-.schedule-list-avatar {
+.timetable-list-avatar {
   max-height: 30%;
   max-width: 30%;
   display: block;
@@ -7,27 +7,30 @@
   padding: 2%;
 }
 
-.schedule-text-style {
-  font-size: 25px;
-  color: #A1A19A;
-  font-family: 'Vinkel,sans-serif';
+.timetable-text-style {
+  font-size: 1.8em;
+  color: var(--light-gray);
+  margin-left: 37%;
 }
 
-.schedule-name-style {
-  color: #E55234;
+.timetable-name-style {
+  color: var(--primary-color);
   font-weight: bold;
+  font-family: 'Vinkel,sans-serif';
+  margin-left: 37%;
+  font-size: 2em;
 }
 
-.schedule-divider {
+.timetable-divider {
   width: 80%;
   height: 5px;
   margin-left: 10%;
   margin-right: 10%;
 }
 
-.schedule-header-style {
-  font-size: 25px;
-  color: #A1A19A;
-  font-family: 'Vinkel,sans-serif';
+.timetable-header-style {
+  font-size: 2.3em;
+  color: var(--primary-color);
   text-align: center;
+  font-weight: 800;
 }

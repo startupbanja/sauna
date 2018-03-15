@@ -44,7 +44,7 @@
     list-style:none;
 }
 
-.credentials h3 { 
+.credentials h3 {
     text-align:center;
     border-top: 3px solid #333;
     border-bottom: 3px solid #333;
@@ -83,11 +83,11 @@
         width:80%;
         left:10%;
     }
-    
+
     .profileLinks {
         clear:left;
     }
-    
+
     .credentials {
         width:80%;
         left:10%;

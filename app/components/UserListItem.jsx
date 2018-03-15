@@ -5,11 +5,11 @@ class UserListItem extends Component {
   render() {
     return (
       /* eslint-disable */
-      <div className="fullwidth text-style" >
+      <div className="fullwidth list-text-style" >
         <img className="list-avatar img-responsive" src={this.props.imageSrc} alt="" />
         <div>
           <div>
-            <span className="header">{this.props.name}</span>
+            <span className="list-header">{this.props.name}</span>
           </div>
           <div>
             <i>{this.props.description}</i>

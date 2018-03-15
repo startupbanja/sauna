@@ -2,7 +2,7 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 /* import Image from './Image'; */
 import FeedbackView from './FeedbackView';
-import LandingPage from './LandingPage';
+import LandingPage from './landing/LandingPage';
 import UserProfilePage from './UserProfilePage';
 import UserSchedule from './UserSchedule';
 import UserList from './UserList';
@@ -12,17 +12,26 @@ import TimeslotView from './timeslot/TimeslotView';
 import AdminSchedules from './admin_manage/AdminSchedules';
 import UserHandlingView from './admin_manage/UserHandlingView';
 import MeetingDetailView from './admin_manage/MeetingDetailView';
+import PasswordChange from './PasswordChange';
 
 const feedbackQuestions = {
   coach: [{
     index: 0,
     question: 'Would you like to meet again?',
-    options: [0, 1, 2],
+    options: [
+      { desc: 'No', value: 0 },
+      { desc: 'Maybe', value: 1 },
+      { desc: 'Yes', value: 2 },
+    ],
   }],
   startup: [{
     index: 0,
     question: 'Would you like to meet again?',
-    options: [0, 1, 3],
+    options: [
+      { desc: 'No', value: 0 },
+      { desc: 'Maybe', value: 1 },
+      { desc: 'Yes', value: 3 },
+    ],
   }],
 };
 
@@ -70,6 +79,7 @@ const userContent = (
     <Route path="/user" component={UserProfilePage} />
     <Route path="/feedback" render={() => <FeedbackView questions={feedbackQuestions} />} />
     <Route path="/availability" component={TimeslotView} />
+    <Route path="/change_password" component={PasswordChange} />
   </Switch>
 );
 
@@ -81,6 +91,7 @@ const userLabels = {
   '/coaches': 'Coaches',
   '/startups': 'Startups',
   '/availability': 'Availability',
+  '/change_password': 'Change password',
 };
 /* eslint-disable */
 const testSchedule = [

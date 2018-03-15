@@ -47,6 +47,13 @@ SELECT user_id, name, description, email, website, NULL AS company, NULL AS link
 	UNION ALL
 SELECT user_id, name, description, email, NULL AS website, company, linkedin FROM CoachProfiles;
 
+-- View that unifies the credentials and members.
+CREATE TEMP VIEW IF NOT EXISTS CredentialsListEntries AS
+SELECT user_id AS uid, company AS title, title AS content FROM Credentials
+	UNION ALL
+SELECT startup_id AS uid, name AS title, title AS content FROM TeamMembers;
+
+
 CREATE TABLE Credentials(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INT NOT NULL,
@@ -289,12 +296,12 @@ INSERT INTO MeetingDays (date, startTime, endTime, split, matchmakingDone) VALUE
 
 INSERT INTO Meetings (coach_id, startup_id, date, time, duration, coach_rating, startup_rating) VALUES
 	(15, 7, '2017-10-03', '12:00:00', 40, 0, 1),
-	(15, 8, '2017-10-03', '12:00:00', 40, 1, 3),
-	(15, 10, '2017-10-03', '12:00:00', 40, 0, 0),
+	(15, 8, '2017-10-03', '12:40:00', 40, 1, 3),
+	(15, 10, '2017-10-03', '13:20:00', 40, 0, 0),
 	(15, 3, '2017-10-10', '12:00:00', 40, 0, 3),
-	(15, 4, '2017-10-10', '12:00:00', 40, 0, 1),
-	(15, 5, '2017-10-10', '12:00:00', 40, 2, 3),
-	(15, 6, '2017-10-10', '12:00:00', 40, 0, 3),
+	(15, 4, '2017-10-10', '12:40:00', 40, 0, 1),
+	(15, 5, '2017-10-10', '13:20:00', 40, 2, 3),
+	(15, 6, '2017-10-10', '15:20:00', 40, 0, 3),
 	(15, 7, '2017-10-10', '12:00:00', 40, 0, 1),
 	(15, 8, '2017-10-10', '12:00:00', 40, 1, 3),
 	(15, 10, '2017-10-10', '12:00:00', 40, 0, 0),

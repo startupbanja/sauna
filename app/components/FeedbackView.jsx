@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import $ from 'jquery';
 import FeedbackForm from './FeedbackForm';
 import Button from './Button';
 import pageContent from './pageContent';
+import StatusMessage from './StatusMessage';
 
 
 // This is the class that shows the whole page content after login
@@ -14,16 +14,10 @@ export default class FeedbackView extends React.Component {
     this.getData = this.getData.bind(this);
     this.submitCurrentForm = this.submitCurrentForm.bind(this);
     this.state = {
-      data: [{
-        meetingId: null,
-        user_id: null,
-        name: '',
-        description: '',
-        image_src: '',
-        rating: null,
-      }],
+      data: undefined,
       userType: 'coach',
       index: 0,
+      message: undefined,
     };
     this.changeForm = this.changeForm.bind(this);
   }
@@ -33,7 +27,7 @@ export default class FeedbackView extends React.Component {
     this.getData();
   }
 
-  getData() { //eslint-disable-line
+  getData() {
     pageContent.fetchData('/feedback', 'get', {})
       .then((result) => {
         this.setState({
@@ -48,13 +42,26 @@ export default class FeedbackView extends React.Component {
       meetingId: this.state.data[this.state.index].meetingId,
       rating: newRating,
     }).then((result) => {
-      this.setState((oldState) => {
-        const newData = oldState.data.slice();
-        newData[this.state.index].rating = newRating;
-        return {
-          data: newData,
-        };
-      });
+      if (result.status === 'success') {
+        this.setState((oldState) => {
+          const newData = oldState.data.slice();
+          newData[this.state.index].rating = newRating;
+          return {
+            data: newData,
+            message: {
+              text: 'Saved',
+              type: 'success',
+            },
+          };
+        });
+      } else {
+        this.setState({
+          message: {
+            text: 'Error when saving the feedback',
+            type: 'error',
+          },
+        });
+      }
     });
   }
 
@@ -62,37 +69,36 @@ export default class FeedbackView extends React.Component {
     if (newI < 0 || newI > this.state.data.length - 1) return false;
     this.setState({
       index: newI,
+      message: undefined,
     });
     return true;
   }
 
   render() {
+    if (!this.state.data) return null;
+    if (this.state.data.length === 0) {
+      return <p className="empty-content-text">No feedbacks currently open</p>;
+    }
     return (
       <div>
+        <StatusMessage message={this.state.message} />
         <FeedbackForm
           info={this.state.data[this.state.index]}
           onSubmit={this.submitCurrentForm}
           questions={this.props.questions[this.state.userType]}
         />
-        <div>
-          <div>
-            <Button
-              className="feedback-btn"
-              text="<"
-              onClick={() => { this.changeForm(this.state.index - 1); }}
-            />
-          </div>
-          <div className="col-xs-4" >
-            <p className="feedback-nro">{`${this.state.index + 1} / ${this.state.data.length}`}</p>
-          </div>
-          <div className="col-xs-3">
-            <Button
-              className="feedback-btn"
-              text=">"
-              onClick={() => { this.changeForm(this.state.index + 1); }}
-            />
-          </div>
-
+        <div className="navigation-container">
+          <Button
+            className="feedback-btn"
+            text="<"
+            onClick={() => { this.changeForm(this.state.index - 1); }}
+          />
+          <p className="feedback-nro">{`${this.state.index + 1} / ${this.state.data.length}`}</p>
+          <Button
+            className="feedback-btn"
+            text=">"
+            onClick={() => { this.changeForm(this.state.index + 1); }}
+          />
         </div>
       </div>
     );
@@ -104,12 +110,18 @@ FeedbackView.propTypes = {
     coach: PropTypes.arrayOf(PropTypes.shape({
       index: PropTypes.number,
       question: PropTypes.string,
-      options: PropTypes.arrayOf(PropTypes.number),
+      options: PropTypes.arrayOf(PropTypes.shape({
+        desc: PropTypes.string,
+        value: PropTypes.number,
+      })),
     })),
     startup: PropTypes.arrayOf(PropTypes.shape({
       index: PropTypes.number,
       question: PropTypes.string,
-      options: PropTypes.arrayOf(PropTypes.number),
+      options: PropTypes.arrayOf(PropTypes.shape({
+        desc: PropTypes.string,
+        value: PropTypes.number,
+      })),
     })),
   }).isRequired,
 };

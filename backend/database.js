@@ -23,7 +23,6 @@ function closeDatabase(callback) {
   });
 }
 
-
 function getUsers(type, batch, includeId, callback) {
   const users = {};
   const query = `
@@ -108,9 +107,9 @@ function setActiveStatus(id, active, callback) {
 
 function getProfile(id, callback) {
   const info = {};
-  const query = `SELECT name, description, Profiles.company AS currentCompany, email, linkedin, Credentials.company, Credentials.title
+  const query = `SELECT name, description, Profiles.company AS currentCompany, email, linkedin, website, CredentialsListEntries.title, CredentialsListEntries.content
                  FROM Profiles
-                 LEFT OUTER JOIN Credentials ON Profiles.user_id = Credentials.user_id
+                 LEFT OUTER JOIN CredentialsListEntries ON Profiles.user_id = CredentialsListEntries.uid
                  WHERE Profiles.user_id = ?;`;
 
   db.all(query, [Number(id)], (err, rows) => {
@@ -120,23 +119,29 @@ function getProfile(id, callback) {
         info.name = row.name;
         info.description = row.description;
         info.email = row.email;
-        info.linkedIn = row.linkedin;
+        info.linkedIn = row.linkedin !== null ? row.linkedin : row.website;
         info.company = row.currentCompany;
-        info.credentials = [{ company: row.company, position: row.title }];
+        info.credentials = [{ company: row.title, position: row.content }];
       } else {
-        info.credentials.push({ company: row.company, position: row.title });
+        info.credentials.push({ company: row.title, position: row.content });
       }
     });
-    return callback(err, info);
+
+    db.get('SELECT type FROM Users WHERE id = ?', [id], (error, row) => {
+      if (err) return callback(error);
+      info.type = row.type === 1 ? 'coach' : 'startup';
+      return callback(err, info);
+    });
+    return '';
   });
 }
 
 function getFeedback(id, callback) {
   const feedbacks = [];
   const query = `
-    SELECT id AS meetingId, user_id, name, description, rating, "/app/imgs/coach_placeholder.png" AS image_src
+    SELECT date, time, id AS meetingId, user_id, name, description, rating, "/app/imgs/coach_placeholder.png" AS image_src
     FROM
-      (SELECT id,
+      (SELECT date, time, id,
           CASE
             WHEN coach_id = ? THEN startup_id
             WHEN startup_id = ? THEN coach_id
@@ -271,6 +276,87 @@ function insertAvailability(userId, date, startTime, duration, callback) {
   });
 }
 
+
+/** Updates the credentials or team members for given user (based on UID)
+ *  Parameters:
+ *  uid - the id of the user (in DB)
+ *  list - an array containing either the credentials or team members of given user
+ *  userType - either Coach or Startup (does not throw error if something else if provided)
+ *  callback - a function to call with the status message object as parameter.
+ */
+function updateCredentialsListEntries(uid, list, userType, callback) {
+  const table = userType === 'Coach' ? 'Credentials' : 'TeamMembers';
+  const columns = userType === 'Coach' ? ['user_id', 'company', 'title'] : ['startup_id', 'name', 'title'];
+  const deleteSQL = `DELETE FROM ${table} WHERE ${columns[0]} = ? AND ${columns[1]} = ? AND ${columns[2]} = ?`;
+  const insertSQL = `INSERT INTO ${table}(${columns[0]}, ${columns[1]}, ${columns[2]}) VALUES(?,?,?);`;
+
+  // Fetches all credentials for the given uid and processes them.
+  db.all('SELECT title, content FROM CredentialsListEntries WHERE uid = ?', [uid], (err, rows) => {
+    if (!err) {
+      // We are converting the objects into JSON format for easy comparison.
+      const rowsAsJSON = rows.map(x => JSON.stringify(x));
+      const listAsJSON = list.map(x => JSON.stringify(x));
+      const toBeInserted = []; // holds the credentials to be inserted into the db.
+      const toBeRemoved = []; // holds the credentials that should be deleted.
+      const response = {}; // object to be sent in the response.
+      let thrownError;
+      // If new credentials do not contain a row, add it to deleted creds.
+      rowsAsJSON.forEach((row) => {
+        if (!listAsJSON.includes(row)) {
+          toBeRemoved.push(JSON.parse(row));
+        }
+      });
+
+      // If new credentials contain an entry that is not yet present, add it.
+      listAsJSON.forEach((item) => {
+        if (!rowsAsJSON.includes(item)) {
+          toBeInserted.push(JSON.parse(item));
+        }
+      });
+
+      // Deletes the obsolete credentials.
+      toBeRemoved.forEach((item) => {
+        db.run(deleteSQL, [uid, item.title, item.content], (error) => {
+          if (error) {
+            thrownError = error;
+          }
+        });
+      });
+
+      if (!thrownError) {
+        // Inserts the new credentials.
+        toBeInserted.forEach((item) => {
+          db.run(insertSQL, [uid, item.title, item.content], (error) => {
+            thrownError = error;
+          });
+        });
+      }
+
+      if (response.status === undefined) {
+        response.status = 'SUCCESS';
+        response.message = 'Profile was updated successfully!';
+      }
+      callback(thrownError, response);
+    } else {
+      return callback(err, null);
+    }
+  });
+}
+
+function updateProfile(uid, userType, site, description, title, credentials, callback) {
+  const siteAttr = userType === 'Coach' ? 'linkedin' : 'website';
+  const company = userType === 'Coach' ? ', company = ?' : '';
+  const queryParams = userType === 'Coach' ? [site, description, title, uid] : [site, description, uid];
+  const query = `UPDATE ${userType}Profiles SET ${siteAttr} = ?, description = ?${company} WHERE user_id = ?`;
+  db.run(query, queryParams, (err) => {
+    if (!err) {
+      updateCredentialsListEntries(uid, credentials, userType, callback);
+      return undefined;
+    }
+    return callback(err);
+  });
+}
+
 function verifyIdentity(username, password, callback) {
   const query = 'SELECT id, type, password FROM Users WHERE username = ?';
   db.get(query, [username], (err, row) => {
@@ -307,6 +393,44 @@ function verifyIdentity(username, password, callback) {
       }
       callback(type, userId);
     });
+  });
+}
+
+/**
+ * Changes the given user's (UID) password if possible
+ * and calls callback with response message object.
+ */
+function changePassword(uid, oldPassword, newPassword, callback) {
+  const response = { status: 'ERROR', message: 'Password could not be changed due to technical problems.' };
+
+  // Fetch the hash of the current password.
+  db.get('SELECT password FROM Users WHERE id = ?', [uid], (err, row) => {
+    if (!err) {
+      const oldPass = row.password; // hashed version of the current password.
+      const oldHash = bcrypt.hashSync(oldPassword, 10);
+
+      bcrypt.compare(oldPassword, oldPass, (e, same) => {
+        if (!e) {
+          if (!same) {
+            response.message = 'The current password was incorrect!';
+            return callback(null, response);
+          }
+
+          const newHashed = bcrypt.hashSync(newPassword, 10);
+          db.run('UPDATE Users SET password = ? WHERE id = ?', [newHashed, uid], (error) => {
+            if (!error) {
+              response.status = 'SUCCESS';
+              response.message = 'Password was successfully changed!';
+            }
+            return callback(error, response);
+          });
+        } else {
+          return callback(e, null);
+        }
+      });
+    } else {
+      return callback(err, null);
+    }
   });
 }
 
@@ -523,6 +647,28 @@ function updateTimetable(timetable, date, errCallback) {
   });
 }
 
+// Returns next meetingday's schedule for a user
+function getUserMeetings(userID, userType, callback) {
+  let query;
+  if (userType === 'coach') {
+    query = `
+    SELECT name, time, duration, date, "/app/imgs/coach_placeholder.png" AS image_src
+    FROM Meetings
+    LEFT OUTER JOIN Profiles ON Profiles.user_id = Meetings.startup_id
+    WHERE Meetings.coach_id = ? AND date = (SELECT MAX(date) FROM Meetings);`;
+  } else {
+    query = `
+    SELECT name, time, duration, date, "/app/imgs/coach_placeholder.png" AS image_src
+    FROM Meetings
+    LEFT OUTER JOIN Profiles ON Profiles.user_id = Meetings.coach_id
+    WHERE Meetings.startup_id = ? AND date = (SELECT MAX(date) FROM Meetings);`;
+  }
+  db.all(query, [userID], (err, result) => {
+    if (err) return callback(err);
+    return callback(err, result);
+  });
+}
+
 function initDB() {
   fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
     if (err) {
@@ -587,6 +733,7 @@ module.exports = {
   closeDatabase,
   getUsers,
   verifyIdentity,
+  changePassword,
   getProfile,
   getRatings,
   getTimeslots,
@@ -606,5 +753,7 @@ module.exports = {
   getComingTimeslots,
   getGivenFeedbacks,
   setActiveStatus,
+  getUserMeetings,
   db,
+  updateProfile,
 };

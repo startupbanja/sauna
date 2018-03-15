@@ -58,6 +58,34 @@ app.post('/login', (req, res) => {
   });
 });
 
+/**
+ * Handles the requests to change password.
+ */
+app.post('/changePassword', (req, res, next) => {
+  const JSONObject = JSON.parse(req.body.data);
+  const currentPassword = JSONObject.currentPassword;
+  const newPassword = JSONObject.newPassword;
+  const repeatedPassword = JSONObject.repeatedPassword;
+
+  if (newPassword === repeatedPassword) {
+    database.changePassword(
+      req.session.userID,
+      currentPassword,
+      newPassword,
+      (err, response) => {
+        if (!err) {
+          res.json(response);
+        } else return next(err);
+      }
+    );
+  } else {
+    res.json({
+      status: 'ERROR',
+      message: 'The new passwords did not match!',
+    });
+  }
+});
+
 // Use when admin is required to allow access
 function requireAdmin(req, res) {
   if (req.session.userType !== 'admin') {
@@ -119,7 +147,11 @@ app.get('/profile', (req, res, next) => {
 
   database.getProfile(id, (err, result) => {
     if (err) return next(err);
+<<<<<<< HEAD
     if (req.session.userID === id || req.session.userID === 82) {
+=======
+    if (req.session.userID == id || req.session.userType === 'admin') {
+>>>>>>> d9de5334ed338a6d3929a12471b31e7a59cc15ba
       Object.assign(result, { canModify: true });
     }
     res.json(result);
@@ -323,6 +355,34 @@ app.get('/feedback', (req, res, next) => {
   });
 });
 
+app.get('/userMeetings', (req, res, next) => {
+  let meetingDate;
+  const id = req.session.userID;
+  const type = req.session.userType;
+  database.getUserMeetings(id, type, (err, result) => {
+    if (err) return next(err);
+    const meetingArray = [];
+    for (var row in result) { // eslint-disable-line
+      row = result[row];
+      meetingDate = row.date;
+      const end = new Date('2000-01-01T' + row.time);
+      end.setMinutes(end.getMinutes() + row.duration);
+      meetingArray.push({
+        name: row.name,
+        startTime: row.time,
+        endTime: ('0' + (end.getHours())).slice(-2) + ':' + ('0' + end.getMinutes()).slice(-2) + ':' + ('0' + end.getSeconds()).slice(-2),
+        image: row.image_src,
+      });
+    }
+    meetingArray.sort((a, b) => new Date('2000-01-01T' + a.startTime) - new Date('2000-01-01T' + b.startTime));
+    res.json({
+      date: meetingDate,
+      meetings: meetingArray,
+    });
+    return undefined;
+  });
+});
+
 /* sets either coach_rating or startup_rating for a specific meeting */
 app.post('/giveFeedback', (req, res, next) => {
   const userType = req.session.userType;
@@ -443,6 +503,26 @@ app.post('/insertAvailability', (req, res, next) => {
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send({ error: 'An error has occured!' });
+});
+
+app.post('/updateProfile', (req, res, next) => {
+  // Create a JSON object from request body.
+  const JSONObject = JSON.parse(req.body.data);
+  let userType = JSONObject.type;
+  userType = userType.replace(userType[0], userType[0].toUpperCase());
+  const uid = JSONObject.uid !== undefined ? JSONObject.uid : req.session.userID;
+  const site = JSONObject.site;
+  const description = JSONObject.description;
+  const title = JSONObject.titles[0];
+  const credentials = JSONObject.credentials;
+
+  // Perform insertion to database using the information specified above.
+  database.updateProfile(uid, userType, site, description, title, credentials, (error, response) => {
+    if (error) {
+      return next(error);
+    }
+    res.json(response);
+  });
 });
 
 const server = app.listen(port);

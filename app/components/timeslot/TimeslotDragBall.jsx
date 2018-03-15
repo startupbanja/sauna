@@ -30,15 +30,9 @@ class TimeslotDragBall extends Component {
   }
 
   render() {
-    const styles = {
-      height: totalHeight * 0.03,
-      width: totalHeight * 0.03,
-    };
-    if (this.props.position === 'bottom') styles.bottom = -totalHeight * 0.015;
-    else if (this.props.position === 'top') styles.top = -totalHeight * 0.015;
     return (
       <div
-        className="timeslot-dragball"
+        className={`timeslot-dragball ${this.props.position}`}
         draggable="true"
         onDrag={event => this.handleDrag(event)}
         // onDragStart and onDragEnd needed for dragging in Firefox
@@ -54,7 +48,6 @@ class TimeslotDragBall extends Component {
           this.setState({ dragY: 0 });
         }}
         onTouchMove={this.handleTouchMove}
-        style={styles}
       />
     );
   }

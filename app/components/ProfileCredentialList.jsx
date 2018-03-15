@@ -41,10 +41,10 @@ export default class ProfileCredentialList extends React.Component {
           {credentials}
         </ul>);
     }
-
+    const header = this.props.type === 'coach' ? 'Credentials' : 'Team Members';
     return (
       <div className="credentials">
-        <BlockHeader text="Credentials" color="#363636" />
+        <BlockHeader text={header} color="#363636" />
         {credentialList}
       </div>
     );
@@ -52,6 +52,7 @@ export default class ProfileCredentialList extends React.Component {
 }
 
 ProfileCredentialList.propTypes = {
+  type: PropTypes.string.isRequired,
   credentials: PropTypes.arrayOf(PropTypes.shape({
     company: PropTypes.string.isRequired,
     position: PropTypes.string.isRequired,
