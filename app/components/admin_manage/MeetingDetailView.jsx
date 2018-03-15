@@ -39,8 +39,8 @@ export default class MeetingDetailView extends React.Component {
   coachTotal: int,
   coachDone: int,
   date: string,
-  missingCoachEmails: {},
-  missingStartupEmails: {},
+  missingCoachEmails: {e-mail: true/false},
+  missingStartupEmails: {e-mail: true/false},
   }
   get the feedbacks from the most recent passed meeting
   */
@@ -56,6 +56,9 @@ export default class MeetingDetailView extends React.Component {
       // TODO
       return (<h1>LOADING</h1>);
     }
+    // TODO: separate into coaches & startups
+    const reminderMailsFb = [];
+    const reminderMailsAvb = [];
 
     // null check TODO is this needed?
     const list = this.state.availabilities[this.props.date] ?
@@ -65,10 +68,12 @@ export default class MeetingDetailView extends React.Component {
     const availabilities = { given: [], notGiven: [] };
     list.forEach((arr) => {
       const name = arr[0];
-      const filled = arr[1];
+      const filled = arr[1][0];
+      const email = arr[1][1];
       if (filled) {
         availabilities.given.push(<li key={name}>{name}: {filled}</li>);
       } else {
+        reminderMailsAvb.push(<div>{email}</div>);
         availabilities.notGiven.push(<li key={name}>{name}</li>);
       }
     });
@@ -80,8 +85,6 @@ export default class MeetingDetailView extends React.Component {
       startups: { given: [], notGiven: [] },
     };
 
-    const reminderMails = [];
-
     if (this.props.renderFeedbacks) {
       const keys = ['missingCoachEmails', 'missingStartupEmails'];
       keys.forEach((key) => {
@@ -89,7 +92,7 @@ export default class MeetingDetailView extends React.Component {
           const email = arr[0];
           const missing = arr[1];
           if (missing) {
-            reminderMails.push((
+            reminderMailsFb.push((
               <li key={`${email}-fb`}>
                 {email}
               </li>));
@@ -131,13 +134,14 @@ export default class MeetingDetailView extends React.Component {
         <div className="row">
           <div className="col-md-6">
             <h3>Availabilities for this meeting:</h3>
-            <button className="btn btn-major"> Send reminder</button>
+            <button className="btn btn-major"> Show e-mails</button>
+            {reminderMailsAvb}
           </div>
           {this.props.renderFeedbacks && (
             <div className="col-md-6 feedbacks-header">
               <h3>Feedbacks from last meeting:</h3>
               <button className="btn btn-major"> Show e-mails</button>
-              {reminderMails}
+              {reminderMailsFb}
             </div>)
           }
         </div>

@@ -218,7 +218,7 @@ app.get('/meetings', (req, res, next) => {
 
 app.get('/comingTimeslots', (req, res, next) => {
   const timeslots = {};
-  // Result is in form [{name:"coachname",date:"dateString",time:"timestring",duration:null}]
+// Result is in form {date: {name: [time/null, email]}
   database.getComingTimeslots((err, result) => {
     if (err) return next(err);
     for (const index in result) { //eslint-disable-line
@@ -227,11 +227,11 @@ app.get('/comingTimeslots', (req, res, next) => {
         timeslots[element.date] = {};
       }
       if (element.duration === null) {
-        timeslots[element.date][element.name] = null;
+        timeslots[element.date][element.name] = [null, element.email];
       } else {
         const time = new Date('2000-01-01T' + element.time);
         time.setMinutes(time.getMinutes() + element.duration);
-        timeslots[element.date][element.name] = element.time + '-' + ('0' + (time.getHours())).slice(-2) + ':' + ('0' + time.getMinutes()).slice(-2) + ':' + ('0' + time.getSeconds()).slice(-2);
+        timeslots[element.date][element.name] = [element.time + '-' + ('0' + (time.getHours())).slice(-2) + ':' + ('0' + time.getMinutes()).slice(-2) + ':' + ('0' + time.getSeconds()).slice(-2), null];
       }
     }
     res.json(timeslots);

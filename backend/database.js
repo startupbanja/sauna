@@ -221,9 +221,9 @@ function getComingDates(callback) {
   });
 }
 
-// Returns coming availabilities of coaches and names of the coaches
+// Returns coming availabilities of coaches and names & emails of the coaches
 function getComingTimeslots(callback) {
-  const query = `SELECT CoachProfiles.name, MeetingDays.date, Timeslots.time, Timeslots.duration
+  const query = `SELECT CoachProfiles.name, CoachProfiles.email, MeetingDays.date, Timeslots.time, Timeslots.duration
     FROM Users
     LEFT OUTER JOIN CoachProfiles ON Users.id = CoachProfiles.user_id
     LEFT OUTER JOIN MeetingDays
