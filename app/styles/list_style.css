@@ -1,0 +1,43 @@
+.list-avatar {
+  max-height: 40%;
+  max-width: 40%;
+  display: block;
+  float: left;
+  margin-right: 3%;
+}
+
+div.text-style {
+  display: inline-block;
+}
+
+.list-text-style {
+ font-size: 1.4em;
+ color: var(--light-gray);
+ font-family: 'Vinkel,sans-serif';
+ float: right;
+ margin-top: 5%;
+}
+
+.list-header {
+  color: var(--primary-color);
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+.user-filter-container {
+  position: relative;
+  margin-top: 15px;
+}
+
+.user-filter-container .glyphicon {
+  font-size: 18px;
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  color: black;
+}
+
+.user-filter-container .filter-input {
+  font-size: 24px;
+  color: black;
+}

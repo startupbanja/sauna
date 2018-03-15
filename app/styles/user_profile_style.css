@@ -1,0 +1,107 @@
+.profileContainer #username {
+  color: var(--primary-color);
+  font-size: 1.7em;
+  margin-right: 15%;
+}
+
+.profileContainer .mainInfoSection {
+  padding: 0px;
+  margin-top: -3%;
+}
+
+.profileContainer .mainInfoSection span {
+  top: 10px;
+  right: 10px;
+  float: right;
+  font-size: 1.5em;
+}
+
+.userInfoHeader {
+    clear:both;
+    margin-top: 5%;
+}
+
+.profileContainer .titles {
+  padding: 0px;
+  list-style-type: none;
+  color: white;
+  font-size: 1.5em;
+}
+
+.profileContainer .profileLinks {
+  padding: 5px;
+  list-style-type: none;
+  color: white;
+  font-size: 1.5em;
+  margin-top: 3%;
+  margin-bottom: 3%;
+}
+
+.profileContainer .profileLinks a {
+  color: var(--light-gray);
+}
+
+.profileContainer hr {
+  border-color: var(--dark-gray);
+  border-width: 4px;
+  margin: 0px 0px 5px 0px;
+}
+
+.profileContainer .userDescription p {
+  font-size: 1.5em;
+  margin: 0px;
+  padding: 5px;
+}
+
+.profileContainer .credentialList {
+  list-style-type: none;
+  font-size: 1.5em;
+  padding: 5px;
+}
+
+.profileContainer .credentialList dt {
+  color: var(--primary-color);
+}
+
+.profileContainer .credentialList dd {
+  position: absolute;
+}
+
+.profileContainer .credentialList dd span {
+  font-size: 0.7em;
+  padding-left: 10px;
+}
+
+.edit-text {
+  font-size: 1.3em;
+  width: 95%;
+  margin: 1%;
+  padding: 5px 10px;
+  background-color: var(--dark-gray);
+  color: var(--light-gray);
+  border: none;
+}
+
+.edit-para {
+  font-size: 1.6em;
+  margin-left: 2%;
+  margin-top: 2%;
+  color: var(--primary-color);
+}
+
+.edit-text:focus {
+  outline: 1px solid var(--primary-color);
+}
+
+.glyphicon-cog:before {
+  content: "\e019";
+  font-size: 1.6em;
+}
+
+#editProfileNote {
+  margin-left: 2%;
+}
+
+.credentialField {
+  border-top:1px solid #aaa;
+}
