@@ -23,7 +23,6 @@ function closeDatabase(callback) {
   });
 }
 
-
 function getUsers(type, batch, includeId, callback) {
   const users = {};
   const query = `
@@ -108,9 +107,9 @@ function setActiveStatus(id, active, callback) {
 
 function getProfile(id, callback) {
   const info = {};
-  const query = `SELECT name, description, Profiles.company AS currentCompany, email, linkedin, Credentials.company, Credentials.title
+  const query = `SELECT name, description, Profiles.company AS currentCompany, email, linkedin, website, CredentialsListEntries.title, CredentialsListEntries.content
                  FROM Profiles
-                 LEFT OUTER JOIN Credentials ON Profiles.user_id = Credentials.user_id
+                 LEFT OUTER JOIN CredentialsListEntries ON Profiles.user_id = CredentialsListEntries.uid
                  WHERE Profiles.user_id = ?;`;
 
   db.all(query, [Number(id)], (err, rows) => {
@@ -120,14 +119,20 @@ function getProfile(id, callback) {
         info.name = row.name;
         info.description = row.description;
         info.email = row.email;
-        info.linkedIn = row.linkedin;
+        info.linkedIn = row.linkedin !== null ? row.linkedin : row.website;
         info.company = row.currentCompany;
-        info.credentials = [{ company: row.company, position: row.title }];
+        info.credentials = [{ company: row.title, position: row.content }];
       } else {
-        info.credentials.push({ company: row.company, position: row.title });
+        info.credentials.push({ company: row.title, position: row.content });
       }
     });
-    return callback(err, info);
+
+    db.get('SELECT type FROM Users WHERE id = ?', [id], (error, row) => {
+      if (err) return callback(error);
+      info.type = row.type === 1 ? 'coach' : 'startup';
+      return callback(err, info);
+    });
+    return '';
   });
 }
 
@@ -268,6 +273,87 @@ function insertAvailability(userId, date, startTime, duration, callback) {
   db.run(query, [userId, date, startTime, duration], (err) => {
     if (err) return callback(err);
     return callback(err, { status: 'success' });
+  });
+}
+
+
+/** Updates the credentials or team members for given user (based on UID)
+ *  Parameters:
+ *  uid - the id of the user (in DB)
+ *  list - an array containing either the credentials or team members of given user
+ *  userType - either Coach or Startup (does not throw error if something else if provided)
+ *  callback - a function to call with the status message object as parameter.
+ */
+function updateCredentialsListEntries(uid, list, userType, callback) {
+  const table = userType === 'Coach' ? 'Credentials' : 'TeamMembers';
+  const columns = userType === 'Coach' ? ['user_id', 'company', 'title'] : ['startup_id', 'name', 'title'];
+  const deleteSQL = `DELETE FROM ${table} WHERE ${columns[0]} = ? AND ${columns[1]} = ? AND ${columns[2]} = ?`;
+  const insertSQL = `INSERT INTO ${table}(${columns[0]}, ${columns[1]}, ${columns[2]}) VALUES(?,?,?);`;
+
+  // Fetches all credentials for the given uid and processes them.
+  db.all('SELECT title, content FROM CredentialsListEntries WHERE uid = ?', [uid], (err, rows) => {
+    if (!err) {
+      // We are converting the objects into JSON format for easy comparison.
+      const rowsAsJSON = rows.map(x => JSON.stringify(x));
+      const listAsJSON = list.map(x => JSON.stringify(x));
+      const toBeInserted = []; // holds the credentials to be inserted into the db.
+      const toBeRemoved = []; // holds the credentials that should be deleted.
+      const response = {}; // object to be sent in the response.
+      let thrownError;
+      // If new credentials do not contain a row, add it to deleted creds.
+      rowsAsJSON.forEach((row) => {
+        if (!listAsJSON.includes(row)) {
+          toBeRemoved.push(JSON.parse(row));
+        }
+      });
+
+      // If new credentials contain an entry that is not yet present, add it.
+      listAsJSON.forEach((item) => {
+        if (!rowsAsJSON.includes(item)) {
+          toBeInserted.push(JSON.parse(item));
+        }
+      });
+
+      // Deletes the obsolete credentials.
+      toBeRemoved.forEach((item) => {
+        db.run(deleteSQL, [uid, item.title, item.content], (error) => {
+          if (error) {
+            thrownError = error;
+          }
+        });
+      });
+
+      if (!thrownError) {
+        // Inserts the new credentials.
+        toBeInserted.forEach((item) => {
+          db.run(insertSQL, [uid, item.title, item.content], (error) => {
+            thrownError = error;
+          });
+        });
+      }
+
+      if (response.status === undefined) {
+        response.status = 'SUCCESS';
+        response.message = 'Profile was updated successfully!';
+      }
+      callback(thrownError, response);
+    } else {
+      return callback(err, null);
+    }
+  });
+}
+
+function updateProfile(uid, userType, site, description, title, credentials, callback) {
+  const siteAttr = userType === 'Coach' ? 'linkedin' : 'website';
+  const company = userType === 'Coach' ? ', company = ?' : '';
+  const queryParams = userType === 'Coach' ? [site, description, title, uid] : [site, description, uid];
+  const query = `UPDATE ${userType}Profiles SET ${siteAttr} = ?, description = ?${company} WHERE user_id = ?`;
+  db.run(query, queryParams, (err) => {
+    if (!err) {
+      updateCredentialsListEntries(uid, credentials, userType, callback);
+      return undefined;
+    }
+    return callback(err);
   });
 }
 
@@ -650,4 +736,5 @@ module.exports = {
   setActiveStatus,
   getUserMeetings,
   db,
+  updateProfile,
 };
