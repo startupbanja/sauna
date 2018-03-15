@@ -26,6 +26,7 @@ CREATE TABLE Users(
 CREATE TABLE CoachProfiles(
     user_id INT,
     name VARCHAR(30) NOT NULL,
+    img_url VARCHAR(100) DEFAULT '../app/imgs/coach_placeholder.png',
     description TEXT,
     company VARCHAR(20) NOT NULL,
     email VARCHAR(50) NOT NULL,
@@ -36,6 +37,7 @@ CREATE TABLE CoachProfiles(
 CREATE TABLE StartupProfiles(
     user_id INT,
     name VARCHAR(30) NOT NULL,
+    img_url VARCHAR(100) DEFAULT '../app/imgs/coach_placeholder.png',
     description TEXT,
     email VARCHAR(50) NOT NULL,
     website VARCHAR(100),

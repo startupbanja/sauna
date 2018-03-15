@@ -710,8 +710,85 @@ function getMapping(batch, callback) {
 }
 
 
+function addProfile(userInfo, callback) {
+  let userType;
+  let siteAttr; // linkedin or website
+  let url; // the actual URL of the site
+
+  switch (userInfo.type) {
+    case 'coach':
+      userType = 'Coach';
+      siteAttr = 'linkedin';
+      url = userInfo.linkedin;
+      break;
+    case 'startup':
+      userType = 'Startup';
+      siteAttr = 'website';
+      url = userInfo.website;
+      break;
+    default:
+  }
+
+  const insertSQL = `INSERT INTO ${userType}Profiles(user_id, name, description, email, ${siteAttr}) VALUES(?, ? , ?, ?, ?)`;
+  db.get('SELECT id FROM Users WHERE username=?', [userInfo.email], (err, row) => {
+    if (!err) {
+      const uid = row.id;
+      db.run(
+        insertSQL,
+        [uid, userInfo.name, userInfo.description, userInfo.email, url],
+        (error, row2) => {
+          const response = {};
+          if (!error) {
+            response.type = 'SUCCESS';
+            response.message = 'User added successfully!';
+          } else {
+            response.type = 'ERROR';
+            response.message = 'User could not be created!';
+          }
+          callback(response);
+        });
+    } else {
+      callback({ type: 'ERROR', message: 'User could not be created!' });
+    }
+  });
+}
+
+function addUser(userInfo, callback) {
+  db.get('SELECT * FROM Users WHERE username=?', [userInfo.email], (err, row) => {
+    if (row === undefined) {
+      db.get('SELECT MAX(id) AS id FROM Batches;', [], (err2, row2) => {
+        const batchId = row2.id;
+        const password = bcrypt.hashSync(userInfo.password, 10);
+        let type;
+        switch (userInfo.type) {
+          case 'coach':
+            type = 1;
+            break;
+          case 'startup':
+            type = 2;
+            break;
+          default:
+        }
+
+        const insertSQL = 'INSERT INTO Users(type, username, password, batch, active) VALUES(?, ?, ?, ?, ?);';
+
+        db.run(insertSQL, [type, userInfo.email, password, batchId, 0], (e) => {
+          if (!e) {
+            addProfile(userInfo, callback);
+          } else {
+            callback({ type: 'ERROR', message: 'An error occured while attempting to create new user!' });
+          }
+        });
+      });
+    } else {
+      callback({ type: 'ERROR', message: 'A user with that email already exists!' });
+    }
+  });
+}
+
 module.exports = {
   closeDatabase,
+  addUser,
   getUsers,
   verifyIdentity,
   changePassword,

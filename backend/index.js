@@ -138,6 +138,17 @@ app.get('/users', (req, res, next) => {
   });
 });
 
+app.post('/create_user', (req, res) => {
+  // Only admins can do this.
+  if (req.session.userID === 83) {
+    const userInfo = req.body;
+    database.addUser(userInfo, resp => res.json(resp));
+  } else {
+    res.json({ type: 'ERROR' });
+  }
+});
+
+
 /* gets a profile data for a defined user or
   for the requesting user if no requested id is provided */
 app.get('/profile', (req, res, next) => {
