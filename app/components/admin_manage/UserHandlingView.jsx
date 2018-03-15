@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import UserActivityList from './UserActivityList';
 import pageContent from '../pageContent';
+import '../../styles/user_handling_style.css';
 
 /* Component for presenting active and inactive users */
 class UserHandlingView extends Component {
@@ -45,7 +46,7 @@ class UserHandlingView extends Component {
   render() {
     return (
       <div className="container user-handling-view">
-        <link href="/app/styles/user_handling_style.css" rel="stylesheet" />
+        {/* <link href="/app/styles/user_handling_style.css" rel="stylesheet" /> */}
         <div className="btn-container">
           <button className="btn btn-major">Create new user</button>
         </div>
