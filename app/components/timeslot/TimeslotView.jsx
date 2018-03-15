@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import pageContents from '../pageContent';
 import Timeslot, { parseMinutes, parseTimeStamp } from './Timeslot';
 import StatusMessage from '../StatusMessage';
+import '../../styles/timeslot_style.css';
 
 /* Component to handle availability data between backend and Timeslot */
 class TimeslotView extends Component {
@@ -108,7 +109,7 @@ class TimeslotView extends Component {
   render() {
     return (
       <div className="timeslot-picker">
-        <link rel="stylesheet" type="text/css" href="app/styles/timeslot_style.css" />
+        {/* <link rel="stylesheet" type="text/css" href="app/styles/timeslot_style.css" /> */}
         <StatusMessage message={this.state.message} />
         {this.renderTimeslot()}
       </div>
