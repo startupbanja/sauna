@@ -5,13 +5,20 @@ import UserListItem from './UserListItem';
 // import Image from './Image';
 import pageContent from './pageContent';
 
+/*
+  Component to fetch and display lists of startups or coaches
+  also filters coaches and startups
+*/
 export default class UserList extends React.Component {
   constructor(props) {
     super(props);
     this.fetchAndUpdate = this.fetchAndUpdate.bind(this);
+    this.handleFilterChange = this.handleFilterChange.bind(this);
+    this.clearFilter = this.clearFilter.bind(this);
+    this.renderSearchBar = this.renderSearchBar.bind(this);
     this.state = {
       users: [],
-      // type: props.type,
+      filterText: '',
     };
   }
 
@@ -34,10 +41,43 @@ export default class UserList extends React.Component {
     }));
   }
 
+  handleFilterChange(event) {
+    this.setState({ filterText: event.target.value });
+  }
+  clearFilter() {
+    this.setState({ filterText: '' });
+  }
+
+  renderSearchBar() {
+    return (
+      <div className="user-filter-container">
+        <input
+          className="filter-input text-edit form-control"
+          id="user-search"
+          type="search"
+          onChange={this.handleFilterChange}
+          value={this.state.filterText}
+          placeholder="Search..."
+        />
+        <span
+          className="glyphicon glyphicon-remove"
+          onClick={this.clearFilter}
+          role="button"
+          tabIndex="-100"
+          onKeyPress={() => {}}
+          style={{ visibility: (this.state.filterText === '') ? 'hidden' : 'visible' }}
+        />
+      </div>
+    );
+  }
+
   render() {
     return (
-      <div>
-        {this.state.users.map(user =>
+      <div className="container">
+        {this.renderSearchBar()}
+        {this.state.users
+          .filter(user => user.name.toLowerCase().includes(this.state.filterText.toLowerCase()))
+          .map(user =>
           (
             <Link
               key={user.name}
