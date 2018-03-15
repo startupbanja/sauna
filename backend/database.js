@@ -249,7 +249,7 @@ function getLastMeetingday(callback) {
 function getGivenFeedbacks(callback) {
   getLastMeetingday((err, date) => {
     if (err) return callback(err);
-    const query = `SELECT Users.type, Profiles.name, Meetings.startup_rating, Meetings.coach_rating, Meetings.date
+    const query = `SELECT Users.type, Profiles.name, Profiles.email, Meetings.startup_rating, Meetings.coach_rating, Meetings.date
       FROM Users
       LEFT OUTER JOIN Profiles ON Users.id = Profiles.user_id
       LEFT OUTER JOIN Meetings ON Users.id = Meetings.coach_id OR Users.id = Meetings.startup_id

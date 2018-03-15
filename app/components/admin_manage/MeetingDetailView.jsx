@@ -38,7 +38,9 @@ export default class MeetingDetailView extends React.Component {
   startupDone: int,
   coachTotal: int,
   coachDone: int,
-  date: string
+  date: string,
+  missingCoachEmails: {},
+  missingStartupEmails: {},
   }
   get the feedbacks from the most recent passed meeting
   */
@@ -78,6 +80,24 @@ export default class MeetingDetailView extends React.Component {
       startups: { given: [], notGiven: [] },
     };
 
+    const reminderMails = [];
+
+    if (this.props.renderFeedbacks) {
+      const keys = ['missingCoachEmails', 'missingStartupEmails'];
+      keys.forEach((key) => {
+        Object.entries(this.state.feedbacks[key]).forEach((arr) => {
+          const email = arr[0];
+          const missing = arr[1];
+          if (missing) {
+            reminderMails.push((
+              <li key={`${email}-fb`}>
+                {email}
+              </li>));
+          }
+        });
+      });
+    }
+
     if (this.props.renderFeedbacks) {
       const keys = ['startups', 'coaches'];
       keys.forEach((key) => {
@@ -116,7 +136,8 @@ export default class MeetingDetailView extends React.Component {
           {this.props.renderFeedbacks && (
             <div className="col-md-6 feedbacks-header">
               <h3>Feedbacks from last meeting:</h3>
-              <button className="btn btn-major"> Send reminder</button>
+              <button className="btn btn-major"> Show e-mails</button>
+              {reminderMails}
             </div>)
           }
         </div>
