@@ -8,14 +8,14 @@ import '../../styles/timeslot_style.css';
 class TimeslotView extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      index: 0,
-      data: [],
-      message: undefined,
-    };
     this.renderTimeslot = this.renderTimeslot.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.submitAvailability = this.submitAvailability.bind(this);
+    this.state = {
+      index: 0,
+      data: undefined,
+      message: undefined,
+    };
   }
 
   componentDidMount() {
@@ -82,29 +82,28 @@ class TimeslotView extends Component {
   changeDate(diff) {
     this.setState({
       index: Math.min(this.state.data.length - 1, Math.max(0, this.state.index + diff)),
+      message: undefined,
     });
   }
 
   renderTimeslot() {
-    if (this.state.data.length > 0) {
-      const day = this.state.data[this.state.index];
-      return (
-        <Timeslot
-          key={day.date}
-          start={day.start}
-          end={day.end}
-          split={day.split}
-          available={day.available}
-          date={day.date}
-          onSubmit={this.submitAvailability}
-          onMoveToPrev={((this.state.index > 0) || undefined) && (() => this.changeDate(-1))}
-          onMoveToNext={((this.state.index < this.state.data.length - 1) || undefined)
-            && (() => this.changeDate(1))}
-          statusMessage={this.state.message}
-        />
-      );
-    }
-    return undefined;
+    if (!this.state.data) return null;
+    if (this.state.data.length === 0) return <p className="empty-content-text">No upcoming days</p>;
+    const day = this.state.data[this.state.index];
+    return (
+      <Timeslot
+        key={day.date}
+        start={day.start}
+        end={day.end}
+        split={day.split}
+        available={day.available}
+        date={day.date}
+        onSubmit={this.submitAvailability}
+        onMoveToPrev={((this.state.index > 0) || undefined) && (() => this.changeDate(-1))}
+        onMoveToNext={((this.state.index < this.state.data.length - 1) || undefined)
+          && (() => this.changeDate(1))}
+      />
+    );
   }
 
   render() {

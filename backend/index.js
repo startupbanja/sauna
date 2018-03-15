@@ -333,6 +333,7 @@ app.get('/userMeetings', (req, res, next) => {
         name: row.name,
         startTime: row.time,
         endTime: ('0' + (end.getHours())).slice(-2) + ':' + ('0' + end.getMinutes()).slice(-2) + ':' + ('0' + end.getSeconds()).slice(-2),
+        image: row.image_src,
       });
     }
     meetingArray.sort((a, b) => new Date('2000-01-01T' + a.startTime) - new Date('2000-01-01T' + b.startTime));

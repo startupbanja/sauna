@@ -134,9 +134,9 @@ function getProfile(id, callback) {
 function getFeedback(id, callback) {
   const feedbacks = [];
   const query = `
-    SELECT id AS meetingId, user_id, name, description, rating, "/app/imgs/coach_placeholder.png" AS image_src
+    SELECT date, time, id AS meetingId, user_id, name, description, rating, "/app/imgs/coach_placeholder.png" AS image_src
     FROM
-      (SELECT id,
+      (SELECT date, time, id,
           CASE
             WHEN coach_id = ? THEN startup_id
             WHEN startup_id = ? THEN coach_id
@@ -547,13 +547,13 @@ function getUserMeetings(userID, userType, callback) {
   let query;
   if (userType === 'coach') {
     query = `
-    SELECT name, time, duration, date
+    SELECT name, time, duration, date, "/app/imgs/coach_placeholder.png" AS image_src
     FROM Meetings
     LEFT OUTER JOIN Profiles ON Profiles.user_id = Meetings.startup_id
     WHERE Meetings.coach_id = ? AND date = (SELECT MAX(date) FROM Meetings);`;
   } else {
     query = `
-    SELECT name, time, duration, date
+    SELECT name, time, duration, date, "/app/imgs/coach_placeholder.png" AS image_src
     FROM Meetings
     LEFT OUTER JOIN Profiles ON Profiles.user_id = Meetings.coach_id
     WHERE Meetings.startup_id = ? AND date = (SELECT MAX(date) FROM Meetings);`;
