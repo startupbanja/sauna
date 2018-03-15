@@ -62,8 +62,18 @@ class AdminLandingPage extends Component {
   renderStats() {
     const { total: totalAvail, done: doneAvail } = this.state.availabilities
       || { total: null, done: null };
+    const dateOptions = {
+      day: 'numeric',
+      month: 'numeric',
+      year: 'numeric',
+    };
+    const date = new Date(this.state.nextDate);
     return (
       <div>
+        {(this.state.nextDate !== '') &&
+          <p className="next-date">
+            {`Next meeting date: ${date.toLocaleDateString('en-GB', dateOptions).replace(/\//g, '.')}`}
+          </p>}
         {(totalAvail !== null && doneAvail !== null) &&
           <p>{`${doneAvail}/${totalAvail} Coaches' availability reports`}</p>}
         {(this.state.feedbacks) && (

@@ -6,6 +6,14 @@
   text-align: center;
 }
 
+.admin-landing .stats .next-date {
+  font-size: 18px;
+  color: var(--light-gray);
+}
+.admin-landing .stats .next-date:hover {
+  color: var(--light-gray);
+}
+
 .admin-landing .block-header {
   margin: 10px 0px;
 }
