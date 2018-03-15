@@ -123,7 +123,7 @@ function translate(data, times, firstColumn, editable, editfunc, allUsers) {
           <div
             className={cn}
             key={`${key}_${name}_${i}`}
-          >{name} {x.time}
+          >{name}
             {editable &&
               <div>
                 <DropdownList

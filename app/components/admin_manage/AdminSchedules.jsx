@@ -131,7 +131,7 @@ export default class AdminSchedules extends React.Component {
         </div>);
 
     return (
-      <div>
+      <div className="full-viewport">
         <div className="toggle-container">
           <h1>Timetable</h1>
           <h2>{this.state.date.split('-').reverse().join('.')}</h2>

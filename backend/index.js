@@ -147,11 +147,7 @@ app.get('/profile', (req, res, next) => {
 
   database.getProfile(id, (err, result) => {
     if (err) return next(err);
-<<<<<<< HEAD
-    if (req.session.userID === id || req.session.userID === 82) {
-=======
     if (req.session.userID == id || req.session.userType === 'admin') {
->>>>>>> d9de5334ed338a6d3929a12471b31e7a59cc15ba
       Object.assign(result, { canModify: true });
     }
     res.json(result);
