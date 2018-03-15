@@ -66,6 +66,8 @@ class EditUserProfile extends Component {
     const siteName = this.props.type === 'coach' ? 'LinkedIn' : 'Website';
     const credentialsHeader = this.props.type === 'coach' ? 'Credentials:' : 'Team Members:';
     const removeText = this.props.type === 'coach' ? 'credential' : 'team member';
+    const imgURL = this.props.imgSrc === '../app/imgs/coach_placeholder.png' ? '' : this.props.imgSrc;
+
     return (
       <div className="editProfileContainer container">
         <form>
@@ -78,7 +80,7 @@ class EditUserProfile extends Component {
             defaultValue={this.props.linkedIn}
           />
           <div className="edit-para">Image URL:</div>
-          <input type="text" id="imgURL" className="edit-text" defaultValue={this.props.imgSrc} />
+          <input type="text" id="imgURL" className="edit-text" defaultValue={imgURL} />
           <div className="edit-para">Description:</div>
           <textarea className="edit-text" id="description" defaultValue={this.props.description} />
           <div>

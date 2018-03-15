@@ -347,7 +347,8 @@ function updateCredentialsListEntries(uid, list, userType, callback) {
 function updateProfile(uid, userType, site, imgUrl, description, title, credentials, callback) {
   const siteAttr = userType === 'Coach' ? 'linkedin' : 'website';
   const company = userType === 'Coach' ? ', company = ?' : '';
-  const queryParams = userType === 'Coach' ? [site, imgUrl, description, title, uid] : [site, imgUrl, description, uid];
+  const imgURL = imgUrl === '' ? '../app/imgs/coach_placeholder.png' : imgUrl;
+  const queryParams = userType === 'Coach' ? [site, imgURL, description, title, uid] : [site, imgUrl, description, uid];
   const query = `UPDATE ${userType}Profiles SET ${siteAttr} = ?, img_url = ?, description = ?${company} WHERE user_id = ?`;
   db.run(query, queryParams, (err) => {
     if (!err) {

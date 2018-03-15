@@ -521,7 +521,6 @@ app.use((err, req, res, next) => {
 app.post('/updateProfile', (req, res, next) => {
   // Create a JSON object from request body.
   const JSONObject = JSON.parse(req.body.data);
-  console.log(JSONObject);
   let userType = JSONObject.type;
   userType = userType.replace(userType[0], userType[0].toUpperCase());
   const uid = JSONObject.uid !== undefined ? JSONObject.uid : req.session.userID;
