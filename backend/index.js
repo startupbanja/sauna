@@ -140,6 +140,23 @@ app.get('/users', (req, res, next) => {
   });
 });
 
+app.post('/create_user', (req, res, next) => {
+  // Only admins can do this.
+  if (req.session.userType === 'admin') {
+    const userInfo = req.body;
+
+    database.addUser(userInfo, (err, resp) => {
+      if (!err) {
+        return res.json(resp);
+      }
+      return next(err);
+    });
+  } else {
+    res.json({ type: 'ERROR', text: 'Unauthorized!' });
+  }
+});
+
+
 /* gets a profile data for a defined user or
   for the requesting user if no requested id is provided */
 app.get('/profile', (req, res, next) => {
@@ -505,12 +522,13 @@ app.post('/updateProfile', (req, res, next) => {
   userType = userType.replace(userType[0], userType[0].toUpperCase());
   const uid = JSONObject.uid !== undefined ? JSONObject.uid : req.session.userID;
   const site = JSONObject.site;
+  const imgURL = JSONObject.img_url;
   const description = JSONObject.description;
   const title = JSONObject.titles[0];
   const credentials = JSONObject.credentials;
 
   // Perform insertion to database using the information specified above.
-  database.updateProfile(uid, userType, site, description, title, credentials, (error, response) => {
+  database.updateProfile(uid, userType, site, imgURL, description, title, credentials, (error, response) => {
     if (error) {
       return next(error);
     }

@@ -6,6 +6,7 @@ import LandingPage from './landing/LandingPage';
 import UserProfilePage from './UserProfilePage';
 import UserSchedule from './UserSchedule';
 import UserList from './UserList';
+import UserCreationPage from './UserCreation/UserCreationPage';
 import App from './App';
 import MeetingDaysView from './admin_manage/MeetingDaysView';
 import TimeslotView from './timeslot/TimeslotView';
@@ -170,6 +171,12 @@ const adminContent = (
       )}
     />
     <Route path="/users" component={UserHandlingView} />
+    <Route
+      exact
+      path="/create_user"
+      render={() => <UserCreationPage />}
+      type="Create User"
+    />
   </Switch>
 );
 
@@ -177,8 +184,10 @@ const adminLabels = {
   '/': 'Home',
   '/coaches': 'Coaches',
   '/startups': 'Startups',
+
   '/users': 'Users',
   '/meetingDays': 'Meeting days',
+  '/create_user': 'Create User',
 };
 // TODO change this to something better later
 function getContent(userType) {

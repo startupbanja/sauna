@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import UserActivityList from './UserActivityList';
 import pageContent from '../pageContent';
 import '../../styles/user_handling_style.css';
@@ -17,6 +18,7 @@ class UserHandlingView extends Component {
   componentDidMount() {
     this.fetchData();
   }
+
 
   fetchData() {
     pageContent.fetchData('/activeStatuses', 'GET', {})
@@ -48,7 +50,12 @@ class UserHandlingView extends Component {
       <div className="container user-handling-view">
         {/* <link href="/app/styles/user_handling_style.css" rel="stylesheet" /> */}
         <div className="btn-container">
-          <button className="btn btn-major">Create new user</button>
+          <a
+            className="btn btn-major"
+            href="/create_user"
+          >
+            Create new user
+          </a>
         </div>
         <div className="user-lists-container">
           {(this.state.startups !== undefined) &&

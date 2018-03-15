@@ -26,8 +26,9 @@ CREATE TABLE Users(
 CREATE TABLE CoachProfiles(
     user_id INT,
     name VARCHAR(30) NOT NULL,
+    img_url VARCHAR(100) DEFAULT '../app/imgs/coach_placeholder.png',
     description TEXT,
-    company VARCHAR(20) NOT NULL,
+    company VARCHAR(20),
     email VARCHAR(50) NOT NULL,
     linkedin VARCHAR(100),
     FOREIGN KEY (user_id) REFERENCES Users(id)
@@ -36,6 +37,7 @@ CREATE TABLE CoachProfiles(
 CREATE TABLE StartupProfiles(
     user_id INT,
     name VARCHAR(30) NOT NULL,
+    img_url VARCHAR(100) DEFAULT '../app/imgs/coach_placeholder.png',
     description TEXT,
     email VARCHAR(50) NOT NULL,
     website VARCHAR(100),
@@ -43,9 +45,9 @@ CREATE TABLE StartupProfiles(
 );
 
 CREATE TEMP VIEW IF NOT EXISTS Profiles AS
-SELECT user_id, name, description, email, website, NULL AS company, NULL AS linkedin FROM StartupProfiles
+SELECT user_id, name, img_url, description, email, website, NULL AS company, NULL AS linkedin FROM StartupProfiles
 	UNION ALL
-SELECT user_id, name, description, email, NULL AS website, company, linkedin FROM CoachProfiles;
+SELECT user_id, name, img_url, description, email, NULL AS website, company, linkedin FROM CoachProfiles;
 
 -- View that unifies the credentials and members.
 CREATE TEMP VIEW IF NOT EXISTS CredentialsListEntries AS

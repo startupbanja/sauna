@@ -136,7 +136,7 @@ function setActiveStatus(id, active, callback) {
 
 function getProfile(id, callback) {
   const info = {};
-  const query = `SELECT name, description, Profiles.company AS currentCompany, email, linkedin, website, CredentialsListEntries.title, CredentialsListEntries.content
+  const query = `SELECT name, img_url, description, Profiles.company AS currentCompany, email, linkedin, website, CredentialsListEntries.title, CredentialsListEntries.content
                  FROM Profiles
                  LEFT OUTER JOIN CredentialsListEntries ON Profiles.user_id = CredentialsListEntries.uid
                  WHERE Profiles.user_id = ?;`;
@@ -146,6 +146,7 @@ function getProfile(id, callback) {
     rows.forEach((row) => {
       if (info.name === undefined) {
         info.name = row.name;
+        info.img_url = row.img_url;
         info.description = row.description;
         info.email = row.email;
         info.linkedIn = row.linkedin !== null ? row.linkedin : row.website;
@@ -372,11 +373,12 @@ function updateCredentialsListEntries(uid, list, userType, callback) {
   });
 }
 
-function updateProfile(uid, userType, site, description, title, credentials, callback) {
+function updateProfile(uid, userType, site, imgUrl, description, title, credentials, callback) {
   const siteAttr = userType === 'Coach' ? 'linkedin' : 'website';
   const company = userType === 'Coach' ? ', company = ?' : '';
-  const queryParams = userType === 'Coach' ? [site, description, title, uid] : [site, description, uid];
-  const query = `UPDATE ${userType}Profiles SET ${siteAttr} = ?, description = ?${company} WHERE user_id = ?`;
+  const imgURL = imgUrl === '' ? '../app/imgs/coach_placeholder.png' : imgUrl;
+  const queryParams = userType === 'Coach' ? [site, imgURL, description, title, uid] : [site, imgUrl, description, uid];
+  const query = `UPDATE ${userType}Profiles SET ${siteAttr} = ?, img_url = ?, description = ?${company} WHERE user_id = ?`;
   db.run(query, queryParams, (err) => {
     if (!err) {
       updateCredentialsListEntries(uid, credentials, userType, callback);
@@ -725,8 +727,99 @@ function getMapping(batch, callback) {
 }
 
 
+function addProfile(userInfo, callback) {
+  let userType;
+  let siteAttr; // linkedin or website
+  let url; // the actual URL of the site
+  const imgURL = userInfo.img_url === undefined ? '' : 'img_url, ';
+  const values = userInfo.img_url === undefined ? '(?, ?, ?, ?, ?)' : '(?, ?, ?, ?, ?, ?)';
+
+
+  switch (userInfo.type) {
+    case 'coach':
+      userType = 'Coach';
+      siteAttr = 'linkedin';
+      url = userInfo.linkedin;
+      break;
+    case 'startup':
+      userType = 'Startup';
+      siteAttr = 'website';
+      url = userInfo.website;
+      break;
+    default:
+  }
+
+  const insertSQL = `INSERT INTO ${userType}Profiles(user_id, name, ${imgURL} description, email, ${siteAttr}) VALUES${values}`;
+  db.get('SELECT id FROM Users WHERE username=?', [userInfo.email], (err, row) => {
+    if (!err) {
+      const uid = row.id;
+      const queryParams = [uid, userInfo.name];
+
+      if (userInfo.img_url !== undefined) {
+        queryParams.push(userInfo.img_url);
+      }
+      queryParams.push(userInfo.description, userInfo.email, url);
+
+      db.run(
+        insertSQL,
+        queryParams,
+        (error) => {
+          const response = {};
+          if (!error) {
+            response.type = 'SUCCESS';
+            response.message = 'User added successfully!';
+          } else {
+            callback(error, null);
+          }
+          callback(error, response);
+        });
+    } else {
+      callback(err, null);
+    }
+  });
+}
+
+function addUser(userInfo, callback) {
+  db.get('SELECT * FROM Users WHERE username=?', [userInfo.email], (err, row) => {
+    if (row === undefined) {
+      db.get('SELECT MAX(id) AS id FROM Batches;', [], (err2, row2) => {
+        if (err2) {
+          return callback(err2, null);
+        }
+
+        const batchId = row2.id;
+        const password = bcrypt.hashSync(userInfo.password, 10);
+        let type;
+        switch (userInfo.type) {
+          case 'coach':
+            type = 1;
+            break;
+          case 'startup':
+            type = 2;
+            break;
+          default:
+        }
+
+        const insertSQL = 'INSERT INTO Users(type, username, password, batch, active) VALUES(?, ?, ?, ?, ?);';
+
+        db.run(insertSQL, [type, userInfo.email, password, batchId, 0], (e) => {
+          if (!e) {
+            addProfile(userInfo, callback);
+          } else {
+            callback(err, null);
+          }
+          return undefined;
+        });
+      });
+    } else {
+      callback(err, { type: 'ERROR', message: 'A user with that email already exists!' });
+    }
+  });
+}
+
 module.exports = {
   closeDatabase,
+  addUser,
   getUsers,
   verifyIdentity,
   changePassword,

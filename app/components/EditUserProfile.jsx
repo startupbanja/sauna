@@ -43,6 +43,7 @@ class EditUserProfile extends Component {
   getInputData() {
     return {
       site: this.getValueOfField('linkedIn'),
+      img_url: this.getValueOfField('imgURL'),
       description: this.getValueOfField('description'),
       titles: this.getTitles(),
       credentials: this.getCredentials(),
@@ -65,6 +66,8 @@ class EditUserProfile extends Component {
     const siteName = this.props.type === 'coach' ? 'LinkedIn' : 'Website';
     const credentialsHeader = this.props.type === 'coach' ? 'Credentials:' : 'Team Members:';
     const removeText = this.props.type === 'coach' ? 'credential' : 'team member';
+    const imgURL = this.props.imgSrc === '../app/imgs/coach_placeholder.png' ? '' : this.props.imgSrc;
+
     return (
       <div className="editProfileContainer container">
         <form>
@@ -76,6 +79,8 @@ class EditUserProfile extends Component {
             type="text"
             defaultValue={this.props.linkedIn}
           />
+          <div className="edit-para">Image URL:</div>
+          <input type="text" id="imgURL" className="edit-text" defaultValue={imgURL} />
           <div className="edit-para">Description:</div>
           <textarea className="edit-text" id="description" defaultValue={this.props.description} />
           <div>
@@ -124,6 +129,7 @@ EditUserProfile.propTypes = {
   type: PropTypes.string.isRequired,
   id: PropTypes.number, // eslint-disable-line react/no-unused-prop-types
   name: PropTypes.string.isRequired,
+  imgSrc: PropTypes.string.isRequired,
   linkedIn: PropTypes.string,
   // imgSrc: PropTypes.string,
   description: PropTypes.string,
