@@ -195,7 +195,7 @@ function fetchData(path, methodType, params) {
   if (methodType.toLowerCase() === 'get') query += `?${paramsString}`;
   else bodyParams = paramsString;
   return new Promise((resolve, reject) =>
-    fetch(`/api/${query}`, {
+    fetch(`/api${query}`, {
       method: methodType,
       credentials: 'include',
       headers: {
