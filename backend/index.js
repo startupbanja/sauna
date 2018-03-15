@@ -140,7 +140,7 @@ app.get('/users', (req, res, next) => {
 
 app.post('/create_user', (req, res) => {
   // Only admins can do this.
-  if (req.session.userID === 83) {
+  if (req.session.userType === 'admin') {
     const userInfo = req.body;
     database.addUser(userInfo, resp => res.json(resp));
   } else {

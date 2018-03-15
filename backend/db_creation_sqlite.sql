@@ -28,7 +28,7 @@ CREATE TABLE CoachProfiles(
     name VARCHAR(30) NOT NULL,
     img_url VARCHAR(100) DEFAULT '../app/imgs/coach_placeholder.png',
     description TEXT,
-    company VARCHAR(20) NOT NULL,
+    company VARCHAR(20),
     email VARCHAR(50) NOT NULL,
     linkedin VARCHAR(100),
     FOREIGN KEY (user_id) REFERENCES Users(id)

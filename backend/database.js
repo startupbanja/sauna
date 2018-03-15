@@ -756,13 +756,12 @@ function addProfile(userInfo, callback) {
       db.run(
         insertSQL,
         [uid, userInfo.name, userInfo.img_url, userInfo.description, userInfo.email, url],
-        (error, row2) => {
+        (error) => {
           const response = {};
           if (!error) {
             response.type = 'SUCCESS';
             response.message = 'User added successfully!';
           } else {
-            console.log(error);
             response.type = 'ERROR';
             response.message = 'User could not be created!';
           }
