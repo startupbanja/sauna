@@ -13,6 +13,11 @@
     "type": "git",
     "url": "git+https://github.com/teemukaaria/sauna.git"
   },
+  "jest": {
+    "moduleNameMapper": {
+      "\\.(css)$": "<rootDir>/tests/__mocks__/styleMock.js"
+    }
+  },
   "author": "",
   "license": "ISC",
   "bugs": {
