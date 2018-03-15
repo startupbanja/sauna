@@ -107,7 +107,7 @@ function setActiveStatus(id, active, callback) {
 
 function getProfile(id, callback) {
   const info = {};
-  const query = `SELECT name, description, Profiles.company AS currentCompany, email, linkedin, website, CredentialsListEntries.title, CredentialsListEntries.content
+  const query = `SELECT name, img_url, description, Profiles.company AS currentCompany, email, linkedin, website, CredentialsListEntries.title, CredentialsListEntries.content
                  FROM Profiles
                  LEFT OUTER JOIN CredentialsListEntries ON Profiles.user_id = CredentialsListEntries.uid
                  WHERE Profiles.user_id = ?;`;
@@ -117,6 +117,7 @@ function getProfile(id, callback) {
     rows.forEach((row) => {
       if (info.name === undefined) {
         info.name = row.name;
+        info.img_url = row.img_url;
         info.description = row.description;
         info.email = row.email;
         info.linkedIn = row.linkedin !== null ? row.linkedin : row.website;

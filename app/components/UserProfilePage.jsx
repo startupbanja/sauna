@@ -48,6 +48,7 @@ class UserProfilePage extends Component {
         this.setState({
           userType: responseJSON.type,
           name: responseJSON.name,
+          imgURL: responseJSON.img_url,
           description: responseJSON.description,
           linkedIn: responseJSON.linkedIn,
           credentials: responseJSON.credentials,
@@ -89,6 +90,7 @@ class UserProfilePage extends Component {
             type={this.state.userType}
             id={this.props.id}
             name={this.state.name}
+            imgSrc={this.state.imgURL}
             description={this.state.description}
             linkedIn={this.state.linkedIn}
             credentials={this.state.credentials}
