@@ -173,23 +173,28 @@ app.get('/profile', (req, res, next) => {
 // }
 app.get('/activeStatuses', (req, res, next) => {
   database.getActiveStatuses((err, data) => {
-    if (err) return next(data);
+    if (err) return next(err);
     return res.json(data);
   });
 });
 
-// TODO coach names
-app.get('/meetings', (req, res, next) => {
+
+app.get('/timetable', (req, res, next) => {
   const allMeetings = [];
   database.getUserMap((err, keys) => {
     if (err) return next(err);
-    database.getTimetable((err2, meetings) => {
+    database.getTimetable(req.query.date, (err2, meetings) => {
       if (err2) return next(err2);
+      // if meetings not found, return empty response
+      if (meetings.length === 0) {
+        return res.json({ schedule: null });
+      }
       database.getTimeslots(req.query.date, (err3, timeslots) => {
         if (err3) return next(err3);
         const dur = meetings[0].duration;
         for (const timeslot in timeslots) { // eslint-disable-line
           const id = timeslot;
+          // fill all avaialble slots with startup: null to get availability info to frontend
           let remaining = timeslots[id].duration;
           const time = new Date('2000-10-10T' + timeslots[id].starttime);
           while (remaining > 0) {
@@ -203,16 +208,34 @@ app.get('/meetings', (req, res, next) => {
             remaining -= dur;
           }
         }
-        for (var meeting in meetings) { //eslint-disable-line
-          meeting = meetings[meeting];
-          const index = allMeetings.findIndex(element => (element.coach === meeting.coach && element.time === meeting.time));
-          if (index !== -1) {
-            allMeetings[index] = {
+        for (var i in meetings) { //eslint-disable-line
+          const meeting = meetings[i];
+          const index = allMeetings.findIndex(element => (
+            element.coach === meeting.coach && element.time === meeting.time));
+
+          if (index !== -1) { // already exists..
+            if (allMeetings[index].startup !== null) { // we have a split, add new
+              allMeetings.push({
+                coach: meeting.coach,
+                startup: meeting.startup,
+                time: meeting.time,
+                duration: meeting.duration,
+              });
+            } else { // no split, just replace the startup: null
+              allMeetings[index] = {
+                coach: meeting.coach,
+                startup: meeting.startup,
+                time: meeting.time,
+                duration: meeting.duration,
+              };
+            }
+          } else {
+            allMeetings.push({
               coach: meeting.coach,
               startup: meeting.startup,
               time: meeting.time,
               duration: meeting.duration,
-            };
+            });
           }
         }
         for (var meeting in allMeetings) {
@@ -224,6 +247,17 @@ app.get('/meetings', (req, res, next) => {
       return undefined;
     });
     return undefined;
+  });
+});
+
+app.post('/timetable', (req, res, next) => {
+  const schedule = JSON.parse(req.body.schedule);
+  database.updateTimetable(schedule, req.body.date, (err) => {
+    if (err) {
+      next(err);
+      return res.json({ success: false });
+    }
+    return res.json({ success: true });
   });
 });
 
@@ -419,12 +453,11 @@ function runAlgorithm(date, callback, commit = true) {
         // to .csv in python, TODO remove later
         database.getMapping(batch, (mapErr, mapping) => {
           if (mapErr) return callback(mapErr);
-          console.log(mapping);
           const dataWithMapping = { data, mapping };
           matchmaking.run(dataWithMapping, (runErr, result) => {
             if (runErr) return callback(runErr);
             if (commit) {
-              database.saveMatchmaking(result, date, (saveErr) => {
+              database.saveMatchmakingResult(result, date, (saveErr) => {
                 if (saveErr) return callback(saveErr);
                 return callback(null);
               });
