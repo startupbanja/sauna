@@ -344,11 +344,11 @@ function updateCredentialsListEntries(uid, list, userType, callback) {
   });
 }
 
-function updateProfile(uid, userType, site, description, title, credentials, callback) {
+function updateProfile(uid, userType, site, imgUrl, description, title, credentials, callback) {
   const siteAttr = userType === 'Coach' ? 'linkedin' : 'website';
   const company = userType === 'Coach' ? ', company = ?' : '';
-  const queryParams = userType === 'Coach' ? [site, description, title, uid] : [site, description, uid];
-  const query = `UPDATE ${userType}Profiles SET ${siteAttr} = ?, description = ?${company} WHERE user_id = ?`;
+  const queryParams = userType === 'Coach' ? [site, imgUrl, description, title, uid] : [site, imgUrl, description, uid];
+  const query = `UPDATE ${userType}Profiles SET ${siteAttr} = ?, img_url = ?, description = ?${company} WHERE user_id = ?`;
   db.run(query, queryParams, (err) => {
     if (!err) {
       updateCredentialsListEntries(uid, credentials, userType, callback);
@@ -749,19 +749,20 @@ function addProfile(userInfo, callback) {
     default:
   }
 
-  const insertSQL = `INSERT INTO ${userType}Profiles(user_id, name, description, email, ${siteAttr}) VALUES(?, ? , ?, ?, ?)`;
+  const insertSQL = `INSERT INTO ${userType}Profiles(user_id, name, img_url, description, email, ${siteAttr}) VALUES(?, ?, ?, ?, ?, ?)`;
   db.get('SELECT id FROM Users WHERE username=?', [userInfo.email], (err, row) => {
     if (!err) {
       const uid = row.id;
       db.run(
         insertSQL,
-        [uid, userInfo.name, userInfo.description, userInfo.email, url],
+        [uid, userInfo.name, userInfo.img_url, userInfo.description, userInfo.email, url],
         (error, row2) => {
           const response = {};
           if (!error) {
             response.type = 'SUCCESS';
             response.message = 'User added successfully!';
           } else {
+            console.log(error);
             response.type = 'ERROR';
             response.message = 'User could not be created!';
           }

@@ -106,6 +106,7 @@ class UserProfilePage extends Component {
         <UserProfile
           type={this.state.userType}
           name={this.state.name}
+          imgSrc={this.state.imgURL}
           description={this.state.description}
           linkedIn={this.state.linkedIn}
           credentials={this.state.credentials}

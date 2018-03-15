@@ -45,9 +45,9 @@ CREATE TABLE StartupProfiles(
 );
 
 CREATE TEMP VIEW IF NOT EXISTS Profiles AS
-SELECT user_id, name, description, email, website, NULL AS company, NULL AS linkedin FROM StartupProfiles
+SELECT user_id, name, img_url, description, email, website, NULL AS company, NULL AS linkedin FROM StartupProfiles
 	UNION ALL
-SELECT user_id, name, description, email, NULL AS website, company, linkedin FROM CoachProfiles;
+SELECT user_id, name, img_url, description, email, NULL AS website, company, linkedin FROM CoachProfiles;
 
 -- View that unifies the credentials and members.
 CREATE TEMP VIEW IF NOT EXISTS CredentialsListEntries AS

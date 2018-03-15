@@ -515,16 +515,18 @@ app.use((err, req, res, next) => {
 app.post('/updateProfile', (req, res, next) => {
   // Create a JSON object from request body.
   const JSONObject = JSON.parse(req.body.data);
+  console.log(JSONObject);
   let userType = JSONObject.type;
   userType = userType.replace(userType[0], userType[0].toUpperCase());
   const uid = JSONObject.uid !== undefined ? JSONObject.uid : req.session.userID;
   const site = JSONObject.site;
+  const imgURL = JSONObject.img_url;
   const description = JSONObject.description;
   const title = JSONObject.titles[0];
   const credentials = JSONObject.credentials;
 
   // Perform insertion to database using the information specified above.
-  database.updateProfile(uid, userType, site, description, title, credentials, (error, response) => {
+  database.updateProfile(uid, userType, site, imgURL, description, title, credentials, (error, response) => {
     if (error) {
       return next(error);
     }
