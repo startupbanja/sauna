@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import $ from 'jquery';
 import { totalHeight } from './TimeslotDrag';
 
 class TimeslotDragBall extends Component {
@@ -13,6 +14,7 @@ class TimeslotDragBall extends Component {
   }
 
   handleDrag(event) {
+    event.preventDefault();
     const clientY = (event.clientY !== 0) ? event.clientY : this.state.dragY;
     if (clientY === 0) return;
     let origY = event.target.parentElement.offsetTop;
@@ -22,6 +24,7 @@ class TimeslotDragBall extends Component {
   }
 
   handleTouchMove(event) {
+    event.preventDefault();
     if (event.targetTouches.item(0).clientY === 0) return;
     let origY = event.target.parentElement.offsetTop;
     origY += (event.target.offsetTop + (totalHeight * 0.015));
@@ -48,6 +51,13 @@ class TimeslotDragBall extends Component {
           this.setState({ dragY: 0 });
         }}
         onTouchMove={this.handleTouchMove}
+        // prevents browser scrolling when dragging
+        onTouchEnd={() => {
+          $('body').css({ overflow: 'auto' });
+        }}
+        onTouchStart={() => {
+          $('body').css({ overflow: 'hidden' });
+        }}
       />
     );
   }
