@@ -64,6 +64,9 @@ export default class MeetingDetailView extends React.Component {
     const list = this.state.availabilities[this.props.date] ?
       Object.entries(this.state.availabilities[this.props.date]) : [];
 
+    let stringFb = '';
+    let stringAvb = '';
+
     // filter for filled feedbacks
     const availabilities = { given: [], notGiven: [] };
     list.forEach((arr) => {
@@ -73,7 +76,7 @@ export default class MeetingDetailView extends React.Component {
       if (filled) {
         availabilities.given.push(<li key={name}>{name}: {filled}</li>);
       } else {
-        reminderMailsAvb.push(<div>{email}</div>);
+        reminderMailsAvb.push(({ email }));
         availabilities.notGiven.push(<li key={name}>{name}</li>);
       }
     });
@@ -93,9 +96,8 @@ export default class MeetingDetailView extends React.Component {
           const missing = arr[1];
           if (missing) {
             reminderMailsFb.push((
-              <li key={`${email}-fb`}>
-                {email}
-              </li>));
+              { email }
+            ));
           }
         });
       });
@@ -122,6 +124,16 @@ export default class MeetingDetailView extends React.Component {
       });
     }
 
+    reminderMailsFb.forEach((input) => {
+      stringFb += input.email;
+      stringFb += '; ';
+    });
+
+    reminderMailsAvb.forEach((input) => {
+      stringAvb += input.email;
+      stringAvb += '; ';
+    });
+
     return (
       <div className="container full-viewport">
         <h1>Details {this.props.date}</h1>
@@ -135,13 +147,13 @@ export default class MeetingDetailView extends React.Component {
           <div className="col-md-6">
             <h3>Availabilities for this meeting:</h3>
             <button className="btn btn-major"> Show e-mails</button>
-            {reminderMailsAvb}
+            <div>{stringAvb}</div>
           </div>
           {this.props.renderFeedbacks && (
             <div className="col-md-6 feedbacks-header">
               <h3>Feedbacks from last meeting:</h3>
               <button className="btn btn-major"> Show e-mails</button>
-              {reminderMailsFb}
+              <div>{stringFb}</div>
             </div>)
           }
         </div>
