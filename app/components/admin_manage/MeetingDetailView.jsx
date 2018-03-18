@@ -12,14 +12,29 @@ export default class MeetingDetailView extends React.Component {
     super(props);
     // feedbacks is first either true or false, then when fetched, contains feedback data
     // if props.renferFeedbacks
-    this.state = { availabilities: null, feedbacks: !this.props.renderFeedbacks };
+    this.state = {
+      availabilities: null,
+      feedbacks: !this.props.renderFeedbacks,
+      showAvb: false,
+      showFb: false,
+    };
     this.fetchTimeslots = this.fetchTimeslots.bind(this);
     this.fetchFeedbacks = this.fetchFeedbacks.bind(this);
+    this.onClickFb = this.onClickFb.bind(this);
+    this.onClickAvb = this.onClickAvb.bind(this);
   }
 
   componentDidMount() {
     this.fetchTimeslots();
     if (this.props.renderFeedbacks) this.fetchFeedbacks();
+  }
+
+  onClickAvb() {
+    this.setState({ showAvb: true });
+  }
+
+  onClickFb() {
+    this.setState({ showFb: true });
   }
 
   fetchTimeslots() {
@@ -146,14 +161,18 @@ export default class MeetingDetailView extends React.Component {
         <div className="row">
           <div className="col-md-6">
             <h3>Availabilities for this meeting:</h3>
-            <button className="btn btn-major"> Show e-mails</button>
-            <div>{stringAvb}</div>
+            <button
+              className="btn btn-major"
+              onClick={this.onClickAvb}
+            > Show e-mails
+            </button>
+            { this.state.showAvb ? <div>{stringAvb}</div> : null }
           </div>
           {this.props.renderFeedbacks && (
             <div className="col-md-6 feedbacks-header">
               <h3>Feedbacks from last meeting:</h3>
-              <button className="btn btn-major"> Show e-mails</button>
-              <div>{stringFb}</div>
+              <button className="btn btn-major" onClick={this.onClickFb}> Show e-mails</button>
+              { this.state.showFb ? <div>{stringFb}</div> : null }
             </div>)
           }
         </div>
