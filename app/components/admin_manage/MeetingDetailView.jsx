@@ -30,11 +30,11 @@ export default class MeetingDetailView extends React.Component {
   }
 
   onClickAvb() {
-    this.setState({ showAvb: true });
+    this.setState({ showAvb: !this.state.showAvb });
   }
 
   onClickFb() {
-    this.setState({ showFb: true });
+    this.setState({ showFb: !this.state.showFb });
   }
 
   fetchTimeslots() {
