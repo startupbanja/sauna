@@ -52,7 +52,7 @@ function closeDatabase(callback) {
   });
 }
 
-function getUsers(type, batch, includeId, callback) {
+function getUsers(type, includeId, callback) {
   const users = {};
   const query = `
   SELECT Profiles.user_id, name, description, email, linkedin, Credentials.company, Credentials.title
@@ -61,10 +61,10 @@ function getUsers(type, batch, includeId, callback) {
   WHERE Profiles.user_id IN (
     SELECT id
     FROM USERS
-    WHERE type = ? AND batch = ? AND active = 1
+    WHERE type = ? AND active = 1
   );`;
   // (sql, params, callback for each row, callback on complete)
-  db.each(query, [type, batch], (err, row) => {
+  db.each(query, [type], (err, row) => {
     if (err) return callback(err);
     // if already read one line with the name
     if (users[row.name] !== undefined) {
