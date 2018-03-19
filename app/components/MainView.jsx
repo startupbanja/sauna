@@ -57,7 +57,6 @@ export default class MainView extends React.Component {
               content={this.state.labels}
             />
             <div id="mainContainer">
-              <Route exact path="/" component={LandingPage} />
               {this.state.contentMap}
               <Route exact path="/login" component={LoginView} />
             </div>

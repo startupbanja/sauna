@@ -10,12 +10,16 @@ const matchmaking = require('./matchmaking.js');
 
 const app = express();
 
+database.createDatabase((err) => {
+  if (err) console.log(err);
+  console.log('Data loaded');
+});
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(session({
   cookie: {
-    domain: '127.0.0.1',
+    domain: '',
   },
   secret: '12saUna45',
   name: 'ssauna.sid',
@@ -28,7 +32,6 @@ app.use(session({
 const port = process.env.PORT || 3000;
 
 app.use((req, res, next) => {
-
   // Allow frontend to send cookies
   res.append('Access-Control-Allow-Origin', req.get('origin'));
   res.append('Access-Control-Allow-Credentials', 'true');
@@ -47,7 +50,6 @@ app.use((req, res, next) => {
 app.post('/login', (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
-
   // bcrypt.hash(password, 10, (err, hash) => console.log(hash));
   database.verifyIdentity(username, password, (type, userId) => {
     if (userId !== false) {
@@ -56,6 +58,34 @@ app.post('/login', (req, res) => {
     }
     res.json({ status: (type === 'coach' || type === 'startup') ? 'user' : type });
   });
+});
+
+/**
+ * Handles the requests to change password.
+ */
+app.post('/changePassword', (req, res, next) => {
+  const JSONObject = JSON.parse(req.body.data);
+  const currentPassword = JSONObject.currentPassword;
+  const newPassword = JSONObject.newPassword;
+  const repeatedPassword = JSONObject.repeatedPassword;
+
+  if (newPassword === repeatedPassword) {
+    database.changePassword(
+      req.session.userID,
+      currentPassword,
+      newPassword,
+      (err, response) => {
+        if (!err) {
+          res.json(response);
+        } else return next(err);
+      }
+    );
+  } else {
+    res.json({
+      status: 'ERROR',
+      message: 'The new passwords did not match!',
+    });
+  }
 });
 
 // Use when admin is required to allow access
@@ -88,11 +118,10 @@ app.get('/api', (req, res, next) => {
 /* gets the initial data from all the coaches or startups */
 app.get('/users', (req, res, next) => {
   let type = req.query.type;
-  const batch = 1;
   if (type === 'Startups') type = 2;
   else type = 1;
 
-  database.getUsers(type, batch, true, (err, userList) => {
+  database.getUsers(type, true, (err, userList) => {
     if (err) return next(err);
     const userArray = [];
     for (const user in userList) {
@@ -110,6 +139,23 @@ app.get('/users', (req, res, next) => {
   });
 });
 
+app.post('/create_user', (req, res, next) => {
+  // Only admins can do this.
+  if (req.session.userType === 'admin') {
+    const userInfo = req.body;
+
+    database.addUser(userInfo, (err, resp) => {
+      if (!err) {
+        return res.json(resp);
+      }
+      return next(err);
+    });
+  } else {
+    res.json({ type: 'ERROR', text: 'Unauthorized!' });
+  }
+});
+
+
 /* gets a profile data for a defined user or
   for the requesting user if no requested id is provided */
 app.get('/profile', (req, res, next) => {
@@ -119,7 +165,7 @@ app.get('/profile', (req, res, next) => {
 
   database.getProfile(id, (err, result) => {
     if (err) return next(err);
-    if (req.session.userID == id || req.session.userID === 82) {
+    if (req.session.userID == id || req.session.userType === 'admin') {
       Object.assign(result, { canModify: true });
     }
     res.json(result);
@@ -134,23 +180,28 @@ app.get('/profile', (req, res, next) => {
 // }
 app.get('/activeStatuses', (req, res, next) => {
   database.getActiveStatuses((err, data) => {
-    if (err) return next(data);
+    if (err) return next(err);
     return res.json(data);
   });
 });
 
-// TODO coach names
-app.get('/meetings', (req, res, next) => {
+
+app.get('/timetable', (req, res, next) => {
   const allMeetings = [];
   database.getUserMap((err, keys) => {
     if (err) return next(err);
-    database.getTimetable((err2, meetings) => {
+    database.getTimetable(req.query.date, (err2, meetings) => {
       if (err2) return next(err2);
+      // if meetings not found, return empty response
+      if (meetings.length === 0) {
+        return res.json({ schedule: null });
+      }
       database.getTimeslots(req.query.date, (err3, timeslots) => {
         if (err3) return next(err3);
         const dur = meetings[0].duration;
         for (const timeslot in timeslots) { // eslint-disable-line
           const id = timeslot;
+          // fill all avaialble slots with startup: null to get availability info to frontend
           let remaining = timeslots[id].duration;
           const time = new Date('2000-10-10T' + timeslots[id].starttime);
           while (remaining > 0) {
@@ -164,16 +215,34 @@ app.get('/meetings', (req, res, next) => {
             remaining -= dur;
           }
         }
-        for (var meeting in meetings) { //eslint-disable-line
-          meeting = meetings[meeting];
-          const index = allMeetings.findIndex(element => (element.coach === meeting.coach && element.time === meeting.time));
-          if (index !== -1) {
-            allMeetings[index] = {
+        for (var i in meetings) { //eslint-disable-line
+          const meeting = meetings[i];
+          const index = allMeetings.findIndex(element => (
+            element.coach === meeting.coach && element.time === meeting.time));
+
+          if (index !== -1) { // already exists..
+            if (allMeetings[index].startup !== null) { // we have a split, add new
+              allMeetings.push({
+                coach: meeting.coach,
+                startup: meeting.startup,
+                time: meeting.time,
+                duration: meeting.duration,
+              });
+            } else { // no split, just replace the startup: null
+              allMeetings[index] = {
+                coach: meeting.coach,
+                startup: meeting.startup,
+                time: meeting.time,
+                duration: meeting.duration,
+              };
+            }
+          } else {
+            allMeetings.push({
               coach: meeting.coach,
               startup: meeting.startup,
               time: meeting.time,
               duration: meeting.duration,
-            };
+            });
           }
         }
         for (var meeting in allMeetings) {
@@ -188,9 +257,20 @@ app.get('/meetings', (req, res, next) => {
   });
 });
 
+app.post('/timetable', (req, res, next) => {
+  const schedule = JSON.parse(req.body.schedule);
+  database.updateTimetable(schedule, req.body.date, (err) => {
+    if (err) {
+      next(err);
+      return res.json({ success: false });
+    }
+    return res.json({ success: true });
+  });
+});
+
 app.get('/comingTimeslots', (req, res, next) => {
   const timeslots = {};
-  // Result is in form [{name:"coachname",date:"dateString",time:"timestring",duration:null}]
+// Result is in form {date: {name: [time/null, email]}
   database.getComingTimeslots((err, result) => {
     if (err) return next(err);
     for (const index in result) { //eslint-disable-line
@@ -199,11 +279,11 @@ app.get('/comingTimeslots', (req, res, next) => {
         timeslots[element.date] = {};
       }
       if (element.duration === null) {
-        timeslots[element.date][element.name] = null;
+        timeslots[element.date][element.name] = [null, element.email];
       } else {
         const time = new Date('2000-01-01T' + element.time);
         time.setMinutes(time.getMinutes() + element.duration);
-        timeslots[element.date][element.name] = element.time + '-' + ('0' + (time.getHours())).slice(-2) + ':' + ('0' + time.getMinutes()).slice(-2) + ':' + ('0' + time.getSeconds()).slice(-2);
+        timeslots[element.date][element.name] = [element.time + '-' + ('0' + (time.getHours())).slice(-2) + ':' + ('0' + time.getMinutes()).slice(-2) + ':' + ('0' + time.getSeconds()).slice(-2), null];
       }
     }
     res.json(timeslots);
@@ -240,9 +320,11 @@ app.get('/givenFeedbacks/', (req, res, next) => {
     coachTotal: 0,
     coachDone: 0,
     date: '',
+    missingCoachEmails: {},
+    missingStartupEmails: {},
   };
   // Result is in form
-  // [{type: type, name: name, startup_rating: rating, coach_rating: rating, date}]
+  // [{type: type, name: name, email, startup_rating: rating, coach_rating: rating, date}]
   // Type 1 => Coach, Type 2 => Startup
   // filter out feedbacks which are -1 which means not given
   database.getGivenFeedbacks((err, fbresult) => {
@@ -254,13 +336,21 @@ app.get('/givenFeedbacks/', (req, res, next) => {
       if (element.type === 1) {
         if (element.coach_rating !== -1) {
           givenFeedbacks.coaches[element.name] = true;
+          givenFeedbacks.missingCoachEmails[element.email] = false;
         } else if (givenFeedbacks.coaches[element.name] === undefined) {
           givenFeedbacks.coaches[element.name] = false;
+          if (givenFeedbacks.missingCoachEmails[element.email] === undefined) {
+            givenFeedbacks.missingCoachEmails[element.email] = true;
+          }
         }
       } else if (element.startup_rating !== -1) {
         givenFeedbacks.startups[element.name] = true;
+        givenFeedbacks.missingStartupEmails[element.email] = false;
       } else if (givenFeedbacks.startups[element.name] === undefined) {
         givenFeedbacks.startups[element.name] = false;
+        if (givenFeedbacks.missingStartupEmails[element.email] === undefined) {
+          givenFeedbacks.missingStartupEmails[element.email] = true;
+        }
       }
     }
     for (const index in givenFeedbacks.startups) {//eslint-disable-line
@@ -305,6 +395,7 @@ app.get('/userMeetings', (req, res, next) => {
         name: row.name,
         startTime: row.time,
         endTime: ('0' + (end.getHours())).slice(-2) + ':' + ('0' + end.getMinutes()).slice(-2) + ':' + ('0' + end.getSeconds()).slice(-2),
+        image: row.image_src,
       });
     }
     meetingArray.sort((a, b) => new Date('2000-01-01T' + a.startTime) - new Date('2000-01-01T' + b.startTime));
@@ -353,7 +444,6 @@ app.post('/createMeetingDay', (req, res, next) => {
 });
 
 // Run algorithm with given date and save to database and create a .csv file
-// TODO these errors are a bit confusing... is this right?
 // FIXME those return undefineds and the bracket pyramid...
 // callback is called with either err or null as only argument
 function runAlgorithm(date, callback, commit = true) {
@@ -372,23 +462,18 @@ function runAlgorithm(date, callback, commit = true) {
           startups: startupdata,
         };
         if (!(ratings && timeslots && startupdata)) {
-          callback(false);
+          return callback({ error: 'error fetching parameters for matchmaking algorithm' });
         }
-        const batch = 1;
-        // This getMapping is only needed because we are converting the result
-        // to .csv in python, TODO remove later
-        database.getMapping(batch, (mapErr, mapping) => {
-          if (mapErr) return callback(mapErr);
-          console.log(mapping);
-          const dataWithMapping = { data, mapping };
-          matchmaking.run(dataWithMapping, (runErr, result) => {
+        // get duration of one meeting
+        database.getMeetingDuration(date, (durErr, duration) => {
+          if (durErr) return callback(durErr);
+          matchmaking.run(data, duration, (runErr, result) => {
             if (runErr) return callback(runErr);
             if (commit) {
-              database.saveMatchmaking(result, date, (saveErr) => {
+              return database.saveMatchmakingResult(result, date, (saveErr) => {
                 if (saveErr) return callback(saveErr);
                 return callback(null);
               });
-              return undefined;
             }
             return callback(null);
           });
@@ -439,11 +524,33 @@ app.use((err, req, res, next) => {
   res.status(500).send({ error: 'An error has occured!' });
 });
 
+app.post('/updateProfile', (req, res, next) => {
+  // Create a JSON object from request body.
+  const JSONObject = JSON.parse(req.body.data);
+  let userType = JSONObject.type;
+  userType = userType.replace(userType[0], userType[0].toUpperCase());
+  const uid = JSONObject.uid !== undefined ? JSONObject.uid : req.session.userID;
+  const site = JSONObject.site;
+  const imgURL = JSONObject.img_url;
+  const description = JSONObject.description;
+  const title = JSONObject.titles[0];
+  const credentials = JSONObject.credentials;
+
+  // Perform insertion to database using the information specified above.
+  database.updateProfile(uid, userType, site, imgURL, description, title, credentials, (error, response) => {
+    if (error) {
+      return next(error);
+    }
+    res.json(response);
+  });
+});
+
 const server = app.listen(port);
 console.log(`Magic happens on port ${port}`);
 
 function closeServer() {
   database.closeDatabase(() => {
+    console.log('Database closed')
     server.close(() => {
       console.log('HTTP Server closed.\nExiting...');
       process.exit();

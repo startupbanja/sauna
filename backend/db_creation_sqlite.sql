@@ -9,25 +9,20 @@
 
 -- USE sauna_db
 
-CREATE TABLE Batches(
-    id INT PRIMARY KEY
-);
-
 CREATE TABLE Users(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     type INT NOT NULL,
     username VARCHAR(20) NOT NULL UNIQUE,
     password CHAR(64) NOT NULL,
-    batch INT,
-    active BOOLEAN NOT NULL,
-    FOREIGN KEY (batch) REFERENCES Batches(id)
+    active BOOLEAN NOT NULL
 );
 
 CREATE TABLE CoachProfiles(
     user_id INT,
     name VARCHAR(30) NOT NULL,
+    img_url VARCHAR(100) DEFAULT '../app/imgs/coach_placeholder.png',
     description TEXT,
-    company VARCHAR(20) NOT NULL,
+    company VARCHAR(20),
     email VARCHAR(50) NOT NULL,
     linkedin VARCHAR(100),
     FOREIGN KEY (user_id) REFERENCES Users(id)
@@ -36,6 +31,7 @@ CREATE TABLE CoachProfiles(
 CREATE TABLE StartupProfiles(
     user_id INT,
     name VARCHAR(30) NOT NULL,
+    img_url VARCHAR(100) DEFAULT '../app/imgs/coach_placeholder.png',
     description TEXT,
     email VARCHAR(50) NOT NULL,
     website VARCHAR(100),
@@ -43,9 +39,16 @@ CREATE TABLE StartupProfiles(
 );
 
 CREATE TEMP VIEW IF NOT EXISTS Profiles AS
-SELECT user_id, name, description, email, website, NULL AS company, NULL AS linkedin FROM StartupProfiles
+SELECT user_id, name, img_url, description, email, website, NULL AS company, NULL AS linkedin FROM StartupProfiles
 	UNION ALL
-SELECT user_id, name, description, email, NULL AS website, company, linkedin FROM CoachProfiles;
+SELECT user_id, name, img_url, description, email, NULL AS website, company, linkedin FROM CoachProfiles;
+
+-- View that unifies the credentials and members.
+CREATE TEMP VIEW IF NOT EXISTS CredentialsListEntries AS
+SELECT user_id AS uid, company AS title, title AS content FROM Credentials
+	UNION ALL
+SELECT startup_id AS uid, name AS title, title AS content FROM TeamMembers;
+
 
 CREATE TABLE Credentials(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -107,95 +110,93 @@ CREATE TABLE Ratings(
 
 -- TESTIDATA
 
-INSERT INTO Batches VALUES (0), (1);
-
 -- All the passwords for coaches and startups are pass and for admin admin
-INSERT INTO Users (type, username, password, batch, active) VALUES
-	(2, 'startup1', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
-	(2, 'startup2', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
-	(2, 'startup3', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
-	(2, 'startup4', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
-	(2, 'startup5', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
-	(2, 'startup6', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
-	(2, 'startup7', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
-	(2, 'startup8', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
-	(2, 'startup9', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
-	(2, 'startup10', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 0),
-	(2, 'startup11', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 0),
-	(2, 'startup12', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 0),
-	(2, 'startup13', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 0),
+INSERT INTO Users (type, username, password, active) VALUES
+	(2, 'startup1', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(2, 'startup2', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(2, 'startup3', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(2, 'startup4', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(2, 'startup5', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(2, 'startup6', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(2, 'startup7', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(2, 'startup8', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(2, 'startup9', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(2, 'startup10', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0),
+	(2, 'startup11', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0),
+	(2, 'startup12', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0),
+	(2, 'startup13', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0),
 
-	(1, 'coach1', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
-	(1, 'coach2', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
-	(1, 'coach3', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
-	(1, 'coach4', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
-	(1, 'coach5', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
-	(1, 'coach6', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
-	(1, 'coach7', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
-	(1, 'coach8', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1, 1),
-	(1, 'coach9', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 0),
-	(1, 'coach10', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 0),
-	(1, 'coach11', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 0),
-	(1, 'coach12', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 0),
-	(1, 'coach13', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 0),
-	(1, 'coach14', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 0),
-	(1, 'coach15', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 0),
-	(1, 'coach16', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 0),
-	(1, 'coach17', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 0),
-	(1, 'coach18', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 0),
-	(1, 'coach19', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach20', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach21', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach22', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach23', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach24', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach25', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach26', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach27', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach28', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach29', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach30', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach31', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach32', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach33', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach34', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach35', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach36', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach37', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach38', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach39', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach40', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach41', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach42', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach43', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach44', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach45', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach46', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach47', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach48', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach49', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach50', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach51', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach52', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach53', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach54', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach55', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach56', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach57', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach58', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach59', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach60', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach61', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach62', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach63', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach64', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach65', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach66', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach67', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach68', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
-	(1, 'coach69', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0, 1),
+	(1, 'coach1', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach2', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach3', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach4', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach5', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach6', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach7', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach8', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach9', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0),
+	(1, 'coach10', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0),
+	(1, 'coach11', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0),
+	(1, 'coach12', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0),
+	(1, 'coach13', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0),
+	(1, 'coach14', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0),
+	(1, 'coach15', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0),
+	(1, 'coach16', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0),
+	(1, 'coach17', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0),
+	(1, 'coach18', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 0),
+	(1, 'coach19', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach20', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach21', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach22', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach23', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach24', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach25', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach26', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach27', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach28', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach29', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach30', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach31', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach32', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach33', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach34', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach35', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach36', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach37', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach38', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach39', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach40', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach41', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach42', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach43', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach44', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach45', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach46', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach47', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach48', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach49', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach50', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach51', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach52', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach53', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach54', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach55', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach56', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach57', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach58', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach59', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach60', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach61', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach62', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach63', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach64', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach65', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach66', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach67', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach68', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
+	(1, 'coach69', '$2a$10$1dNm4ulcJqb59s4UcRwGc.2WrNIYTQFkFsAb4rymGlpFH2JjFrn72', 1),
 
-	(0, 'admin', '$2a$10$CRYjO.6VHRvS0nnc/LvDp.dWJlchXzeGpiU2M2yWrlD1zFDsmLPMm', 0, 1);
+	(0, 'admin', '$2a$10$CRYjO.6VHRvS0nnc/LvDp.dWJlchXzeGpiU2M2yWrlD1zFDsmLPMm', 1);
 
 INSERT INTO CoachProfiles (user_id, name, description, company, email, linkedin) VALUES
 	(14, 'Aape Pohjavirta', 'Coach description', 'Coach company', 'coach1@email.com', 'linkedin.com/coach1'),
