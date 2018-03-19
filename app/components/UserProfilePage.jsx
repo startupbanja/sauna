@@ -45,12 +45,18 @@ class UserProfilePage extends Component {
     if (typeof this.props.id !== 'undefined') params = { userId: this.props.id };
     pageContent.fetchData('/profile', 'get', params)
       .then((responseJSON) => {
+        let link = responseJSON.linkedIn;
+
+        if (!link.startsWith('http://') && !link.startsWith('https://')) {
+          link = 'http://'.concat(link);
+        }
+
         this.setState({
           userType: responseJSON.type,
           name: responseJSON.name,
           imgURL: responseJSON.img_url,
           description: responseJSON.description,
-          linkedIn: responseJSON.linkedIn,
+          linkedIn: link,
           credentials: responseJSON.credentials,
           canModify: responseJSON.canModify,
           titles: [responseJSON.company],
