@@ -17,7 +17,6 @@ import PasswordChange from './PasswordChange';
 import AdminLandingPage from './AdminLandingPage';
 
 
-
 const userContent = (
   <Switch>
     <Route path="/coaches/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />
@@ -92,11 +91,6 @@ const adminContent = (
       path="/create_user"
       render={() => <UserCreationPage />}
       type="Create User"
-    />
-    <Route
-      exact
-      path="/404"
-      component={PageNotFound}
     />
   </Switch>
 );
