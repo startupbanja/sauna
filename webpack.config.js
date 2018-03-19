@@ -1,5 +1,7 @@
-var HTMLWebpackPlugin = require('html-webpack-plugin');
-var HTMLWebpackPluginConfig = new HTMLWebpackPlugin({
+/* eslint-disable */
+var webpack = require('webpack');
+const HTMLWebpackPlugin = require('html-webpack-plugin');
+const HTMLWebpackPluginConfig = new HTMLWebpackPlugin({
     template: __dirname + '/app/index.html',
     filename: 'index.html',
     inject: 'body'
@@ -8,17 +10,45 @@ var HTMLWebpackPluginConfig = new HTMLWebpackPlugin({
 module.exports = {
     entry: __dirname + '/app/index.js',
     module: {
-        loaders: [
+        rules: [
             {
-                test: /\.js$/,
+                test: /\.css?$/,
+                use: [
+                    { loader: "style-loader" },
+                    { loader: "css-loader" }
+                ],
+            },
+            {
+                test: /\.jsx?$/,
                 exclude: /node_modules/,
                 loader: 'babel-loader'
             }
-        ]
+        ],
     },
     output: {
         filename: 'transformed.js',
-        path: __dirname + '/build'
+        path: __dirname + '/build/',
+        publicPath: '/'
     },
-    plugins: [HTMLWebpackPluginConfig]
+    resolve: {
+        extensions: ['.js', '.jsx']
+    },
+    plugins: [
+      HTMLWebpackPluginConfig,
+      new webpack.ProvidePlugin({
+        $: 'jquery',
+        jQuery: 'jquery'
+      })
+    ],
+    devServer: {
+        historyApiFallback: true,
+        proxy: {
+          '/api/': {
+            target: 'http://127.0.0.1:3000/',
+            secure: false,
+            pathRewrite: {'^/api/' : '/'}
+          }
+        },
+    }
 };
+/* eslint-enable */

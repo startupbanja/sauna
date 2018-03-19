@@ -1,0 +1,49 @@
+.block-header {
+  display: flex;
+  align-items: center;
+}
+
+.block-header .line {
+  position: absolute;
+  display: inline-block;
+  height: 4px;
+  width: 100%;
+  top: 3px;
+}
+.block-header .line.right {
+  right: 5px;
+}
+.block-header .line.left {
+  left: 5px;
+}
+.block-header .line.long {
+  width: 50%;
+}
+.block-header .line.round {
+  border-radius: 100%;
+}
+
+.block-header .dot {
+  display: inline-block;
+  height: 10px;
+  width: 10px;
+  border-radius: 100%;
+}
+.block-header .dot.right {
+  float: right;
+}
+.block-header .dot.left {
+  float: left;
+}
+
+.block-header .border {
+  position: relative;
+  flex-grow: 2;
+  overflow: hidden;
+}
+
+.block-header .header {
+  margin: 0px;
+  font-weight: bold;
+  padding: 2%;
+}

@@ -1,0 +1,23 @@
+{
+  "name": "sauna-backend",
+  "description": "",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/teemukaaria/sauna.git"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "test": "jest"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^1.0.3",
+    "body-parser": "~1.0.1",
+    "express": "^4.16.2",
+    "express-session": "^1.15.6",
+    "jest": "^22.4.2",
+    "session-file-store": "^1.2.0",
+    "sqlite3": "^3.1.13"
+  }
+}

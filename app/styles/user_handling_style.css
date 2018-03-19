@@ -1,0 +1,30 @@
+.user-handling-view {
+  padding-top: 30px;
+}
+
+.btn-container {
+  text-align: right;
+}
+
+.user-lists-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.user-activity-list-container {
+  flex-grow: 1;
+}
+
+.user-activity-list-container .header .number {
+  color: var(--primary-color);
+}
+
+.user-activity-list-container .header {
+  color: white;
+  text-align: center;
+  font-size: 1.7em;
+}
+
+.user-activity-list-container hr {
+  border-color: var(--light-gray);
+}

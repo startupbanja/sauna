@@ -1,0 +1,88 @@
+.ffbutton-red {
+  background-color: var(--primary-color);
+}
+
+.radiobutton {
+  background-color: #545454;
+  color: white;
+  font-size: 124%;
+}
+
+.radiobutton.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.radiobutton.focus {
+  color: white;
+}
+
+.option-desc {
+  display: block;
+  font-size: 10px;
+  margin: 0 -5px;
+}
+.radiobutton p {
+  margin: 0px;
+}
+
+.cardImage {
+  bottom: 60%;
+}
+
+.feedback-info {
+  font-size: 14px;
+}
+
+.feedback-nro {
+  display: inline-block;
+  font-size: 22px;
+  color: var(--light-gray);
+  padding: 0px 20px;
+  position: relative;
+  top: -2px;
+}
+
+.feedback-question {
+  font-size: 120%;
+  top: 50%;
+  padding: 2%;
+  margin-top: 5%;
+}
+
+.feedback-header {
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  padding: 10px;
+  color: var(--primary-color);
+  left: 30%;
+  margin-bottom: 0px;
+}
+
+.feedback-btn {
+  font-size: 32px;
+  background: var(--dark-gray);
+  color: var(--light-gray);
+  border: none;
+}
+
+.navigation-container {
+  margin-top: 10%;
+  text-align: center;
+}
+
+.empty-content-text {
+  text-align: center;
+  font-size: 28px;
+  margin: 10%;
+}
+
+.datetime {
+  margin-bottom: 5%;
+  text-align: center;
+}
+
+.inactive {
+  background: #545454 !important;
+}

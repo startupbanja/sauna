@@ -1,0 +1,1474 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Timeslot handles change correctly 1`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <Timeslot
+    available={
+      Object {
+        "end": 720,
+        "start": 480,
+      }
+    }
+    date={2018-05-27T21:00:00.000Z}
+    end={720}
+    onMoveToNext={undefined}
+    onMoveToPrev={undefined}
+    onSubmit={[Function]}
+    split={40}
+    start={600}
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": Array [
+        <p
+          className="date"
+        >
+          Mon, 5.28.2018
+        </p>,
+        <p
+          className="help-text help-text-center"
+        >
+          Drag from the arrow to set your availability...
+        </p>,
+        <TimeslotDrag
+          available={
+            Object {
+              "end": 720,
+              "start": 480,
+            }
+          }
+          end={720}
+          onChange={[Function]}
+          split={40}
+          start={600}
+        />,
+        <p
+          className="help-text help-text-center"
+        >
+          ...or type in manually
+        </p>,
+        <TimeslotInput
+          available={
+            Object {
+              "end": 720,
+              "start": 480,
+            }
+          }
+          onChange={[Function]}
+        />,
+        <div
+          className="navigation-container"
+        >
+          <span
+            className="glyphicon glyphicon-triangle-left invisible"
+            onClick={undefined}
+            onKeyDown={undefined}
+            role="button"
+            tabIndex={0}
+          />
+          <button
+            className="btn btn-lg btn-major"
+            onClick={[Function]}
+          >
+            Submit
+          </button>
+          <span
+            className="glyphicon glyphicon-triangle-right invisible"
+            onClick={undefined}
+            onKeyDown={undefined}
+            role="button"
+            tabIndex={0}
+          />
+        </div>,
+      ],
+      "className": "container timeslot-container",
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": "Mon, 5.28.2018",
+          "className": "date",
+        },
+        "ref": null,
+        "rendered": "Mon, 5.28.2018",
+        "type": "p",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": "Drag from the arrow to set your availability...",
+          "className": "help-text help-text-center",
+        },
+        "ref": null,
+        "rendered": "Drag from the arrow to set your availability...",
+        "type": "p",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "available": Object {
+            "end": 720,
+            "start": 480,
+          },
+          "end": 720,
+          "onChange": [Function],
+          "split": 40,
+          "start": 600,
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": "...or type in manually",
+          "className": "help-text help-text-center",
+        },
+        "ref": null,
+        "rendered": "...or type in manually",
+        "type": "p",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "available": Object {
+            "end": 720,
+            "start": 480,
+          },
+          "onChange": [Function],
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <span
+              className="glyphicon glyphicon-triangle-left invisible"
+              onClick={undefined}
+              onKeyDown={undefined}
+              role="button"
+              tabIndex={0}
+            />,
+            <button
+              className="btn btn-lg btn-major"
+              onClick={[Function]}
+            >
+              Submit
+            </button>,
+            <span
+              className="glyphicon glyphicon-triangle-right invisible"
+              onClick={undefined}
+              onKeyDown={undefined}
+              role="button"
+              tabIndex={0}
+            />,
+          ],
+          "className": "navigation-container",
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "className": "glyphicon glyphicon-triangle-left invisible",
+              "onClick": undefined,
+              "onKeyDown": undefined,
+              "role": "button",
+              "tabIndex": 0,
+            },
+            "ref": null,
+            "rendered": null,
+            "type": "span",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": "Submit",
+              "className": "btn btn-lg btn-major",
+              "onClick": [Function],
+            },
+            "ref": null,
+            "rendered": "Submit",
+            "type": "button",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "className": "glyphicon glyphicon-triangle-right invisible",
+              "onClick": undefined,
+              "onKeyDown": undefined,
+              "role": "button",
+              "tabIndex": 0,
+            },
+            "ref": null,
+            "rendered": null,
+            "type": "span",
+          },
+        ],
+        "type": "div",
+      },
+    ],
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <p
+            className="date"
+          >
+            Mon, 5.28.2018
+          </p>,
+          <p
+            className="help-text help-text-center"
+          >
+            Drag from the arrow to set your availability...
+          </p>,
+          <TimeslotDrag
+            available={
+              Object {
+                "end": 720,
+                "start": 480,
+              }
+            }
+            end={720}
+            onChange={[Function]}
+            split={40}
+            start={600}
+          />,
+          <p
+            className="help-text help-text-center"
+          >
+            ...or type in manually
+          </p>,
+          <TimeslotInput
+            available={
+              Object {
+                "end": 720,
+                "start": 480,
+              }
+            }
+            onChange={[Function]}
+          />,
+          <div
+            className="navigation-container"
+          >
+            <span
+              className="glyphicon glyphicon-triangle-left invisible"
+              onClick={undefined}
+              onKeyDown={undefined}
+              role="button"
+              tabIndex={0}
+            />
+            <button
+              className="btn btn-lg btn-major"
+              onClick={[Function]}
+            >
+              Submit
+            </button>
+            <span
+              className="glyphicon glyphicon-triangle-right invisible"
+              onClick={undefined}
+              onKeyDown={undefined}
+              role="button"
+              tabIndex={0}
+            />
+          </div>,
+        ],
+        "className": "container timeslot-container",
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": "Mon, 5.28.2018",
+            "className": "date",
+          },
+          "ref": null,
+          "rendered": "Mon, 5.28.2018",
+          "type": "p",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": "Drag from the arrow to set your availability...",
+            "className": "help-text help-text-center",
+          },
+          "ref": null,
+          "rendered": "Drag from the arrow to set your availability...",
+          "type": "p",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "available": Object {
+              "end": 720,
+              "start": 480,
+            },
+            "end": 720,
+            "onChange": [Function],
+            "split": 40,
+            "start": 600,
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": "...or type in manually",
+            "className": "help-text help-text-center",
+          },
+          "ref": null,
+          "rendered": "...or type in manually",
+          "type": "p",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "available": Object {
+              "end": 720,
+              "start": 480,
+            },
+            "onChange": [Function],
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              <span
+                className="glyphicon glyphicon-triangle-left invisible"
+                onClick={undefined}
+                onKeyDown={undefined}
+                role="button"
+                tabIndex={0}
+              />,
+              <button
+                className="btn btn-lg btn-major"
+                onClick={[Function]}
+              >
+                Submit
+              </button>,
+              <span
+                className="glyphicon glyphicon-triangle-right invisible"
+                onClick={undefined}
+                onKeyDown={undefined}
+                role="button"
+                tabIndex={0}
+              />,
+            ],
+            "className": "navigation-container",
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "className": "glyphicon glyphicon-triangle-left invisible",
+                "onClick": undefined,
+                "onKeyDown": undefined,
+                "role": "button",
+                "tabIndex": 0,
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "span",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": "Submit",
+                "className": "btn btn-lg btn-major",
+                "onClick": [Function],
+              },
+              "ref": null,
+              "rendered": "Submit",
+              "type": "button",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "className": "glyphicon glyphicon-triangle-right invisible",
+                "onClick": undefined,
+                "onKeyDown": undefined,
+                "role": "button",
+                "tabIndex": 0,
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "span",
+            },
+          ],
+          "type": "div",
+        },
+      ],
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`Timeslot handles change correctly 2`] = `
+ShallowWrapper {
+  "length": 1,
+  Symbol(enzyme.__root__): [Circular],
+  Symbol(enzyme.__unrendered__): <Timeslot
+    available={
+      Object {
+        "end": 720,
+        "start": 480,
+      }
+    }
+    date={2018-05-27T21:00:00.000Z}
+    end={720}
+    onMoveToNext={undefined}
+    onMoveToPrev={undefined}
+    onSubmit={[Function]}
+    split={40}
+    start={600}
+  />,
+  Symbol(enzyme.__renderer__): Object {
+    "batchedUpdates": [Function],
+    "getNode": [Function],
+    "render": [Function],
+    "simulateEvent": [Function],
+    "unmount": [Function],
+  },
+  Symbol(enzyme.__node__): Object {
+    "instance": null,
+    "key": undefined,
+    "nodeType": "host",
+    "props": Object {
+      "children": Array [
+        <p
+          className="date"
+        >
+          Mon, 5.28.2018
+        </p>,
+        <p
+          className="help-text help-text-center"
+        >
+          Drag from the arrow to set your availability...
+        </p>,
+        <TimeslotDrag
+          available={
+            Object {
+              "end": 720,
+              "start": 480,
+            }
+          }
+          end={720}
+          onChange={[Function]}
+          split={40}
+          start={600}
+        />,
+        <p
+          className="help-text help-text-center"
+        >
+          ...or type in manually
+        </p>,
+        <TimeslotInput
+          available={
+            Object {
+              "end": 720,
+              "start": 480,
+            }
+          }
+          onChange={[Function]}
+        />,
+        <div
+          className="navigation-container"
+        >
+          <span
+            className="glyphicon glyphicon-triangle-left invisible"
+            onClick={undefined}
+            onKeyDown={undefined}
+            role="button"
+            tabIndex={0}
+          />
+          <button
+            className="btn btn-lg btn-major"
+            onClick={[Function]}
+          >
+            Submit
+          </button>
+          <span
+            className="glyphicon glyphicon-triangle-right invisible"
+            onClick={undefined}
+            onKeyDown={undefined}
+            role="button"
+            tabIndex={0}
+          />
+        </div>,
+      ],
+      "className": "container timeslot-container",
+    },
+    "ref": null,
+    "rendered": Array [
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": "Mon, 5.28.2018",
+          "className": "date",
+        },
+        "ref": null,
+        "rendered": "Mon, 5.28.2018",
+        "type": "p",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": "Drag from the arrow to set your availability...",
+          "className": "help-text help-text-center",
+        },
+        "ref": null,
+        "rendered": "Drag from the arrow to set your availability...",
+        "type": "p",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "available": Object {
+            "end": 720,
+            "start": 480,
+          },
+          "end": 720,
+          "onChange": [Function],
+          "split": 40,
+          "start": 600,
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": "...or type in manually",
+          "className": "help-text help-text-center",
+        },
+        "ref": null,
+        "rendered": "...or type in manually",
+        "type": "p",
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "class",
+        "props": Object {
+          "available": Object {
+            "end": 720,
+            "start": 480,
+          },
+          "onChange": [Function],
+        },
+        "ref": null,
+        "rendered": null,
+        "type": [Function],
+      },
+      Object {
+        "instance": null,
+        "key": undefined,
+        "nodeType": "host",
+        "props": Object {
+          "children": Array [
+            <span
+              className="glyphicon glyphicon-triangle-left invisible"
+              onClick={undefined}
+              onKeyDown={undefined}
+              role="button"
+              tabIndex={0}
+            />,
+            <button
+              className="btn btn-lg btn-major"
+              onClick={[Function]}
+            >
+              Submit
+            </button>,
+            <span
+              className="glyphicon glyphicon-triangle-right invisible"
+              onClick={undefined}
+              onKeyDown={undefined}
+              role="button"
+              tabIndex={0}
+            />,
+          ],
+          "className": "navigation-container",
+        },
+        "ref": null,
+        "rendered": Array [
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "className": "glyphicon glyphicon-triangle-left invisible",
+              "onClick": undefined,
+              "onKeyDown": undefined,
+              "role": "button",
+              "tabIndex": 0,
+            },
+            "ref": null,
+            "rendered": null,
+            "type": "span",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "children": "Submit",
+              "className": "btn btn-lg btn-major",
+              "onClick": [Function],
+            },
+            "ref": null,
+            "rendered": "Submit",
+            "type": "button",
+          },
+          Object {
+            "instance": null,
+            "key": undefined,
+            "nodeType": "host",
+            "props": Object {
+              "className": "glyphicon glyphicon-triangle-right invisible",
+              "onClick": undefined,
+              "onKeyDown": undefined,
+              "role": "button",
+              "tabIndex": 0,
+            },
+            "ref": null,
+            "rendered": null,
+            "type": "span",
+          },
+        ],
+        "type": "div",
+      },
+    ],
+    "type": "div",
+  },
+  Symbol(enzyme.__nodes__): Array [
+    Object {
+      "instance": null,
+      "key": undefined,
+      "nodeType": "host",
+      "props": Object {
+        "children": Array [
+          <p
+            className="date"
+          >
+            Mon, 5.28.2018
+          </p>,
+          <p
+            className="help-text help-text-center"
+          >
+            Drag from the arrow to set your availability...
+          </p>,
+          <TimeslotDrag
+            available={
+              Object {
+                "end": 720,
+                "start": 480,
+              }
+            }
+            end={720}
+            onChange={[Function]}
+            split={40}
+            start={600}
+          />,
+          <p
+            className="help-text help-text-center"
+          >
+            ...or type in manually
+          </p>,
+          <TimeslotInput
+            available={
+              Object {
+                "end": 720,
+                "start": 480,
+              }
+            }
+            onChange={[Function]}
+          />,
+          <div
+            className="navigation-container"
+          >
+            <span
+              className="glyphicon glyphicon-triangle-left invisible"
+              onClick={undefined}
+              onKeyDown={undefined}
+              role="button"
+              tabIndex={0}
+            />
+            <button
+              className="btn btn-lg btn-major"
+              onClick={[Function]}
+            >
+              Submit
+            </button>
+            <span
+              className="glyphicon glyphicon-triangle-right invisible"
+              onClick={undefined}
+              onKeyDown={undefined}
+              role="button"
+              tabIndex={0}
+            />
+          </div>,
+        ],
+        "className": "container timeslot-container",
+      },
+      "ref": null,
+      "rendered": Array [
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": "Mon, 5.28.2018",
+            "className": "date",
+          },
+          "ref": null,
+          "rendered": "Mon, 5.28.2018",
+          "type": "p",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": "Drag from the arrow to set your availability...",
+            "className": "help-text help-text-center",
+          },
+          "ref": null,
+          "rendered": "Drag from the arrow to set your availability...",
+          "type": "p",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "available": Object {
+              "end": 720,
+              "start": 480,
+            },
+            "end": 720,
+            "onChange": [Function],
+            "split": 40,
+            "start": 600,
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": "...or type in manually",
+            "className": "help-text help-text-center",
+          },
+          "ref": null,
+          "rendered": "...or type in manually",
+          "type": "p",
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "class",
+          "props": Object {
+            "available": Object {
+              "end": 720,
+              "start": 480,
+            },
+            "onChange": [Function],
+          },
+          "ref": null,
+          "rendered": null,
+          "type": [Function],
+        },
+        Object {
+          "instance": null,
+          "key": undefined,
+          "nodeType": "host",
+          "props": Object {
+            "children": Array [
+              <span
+                className="glyphicon glyphicon-triangle-left invisible"
+                onClick={undefined}
+                onKeyDown={undefined}
+                role="button"
+                tabIndex={0}
+              />,
+              <button
+                className="btn btn-lg btn-major"
+                onClick={[Function]}
+              >
+                Submit
+              </button>,
+              <span
+                className="glyphicon glyphicon-triangle-right invisible"
+                onClick={undefined}
+                onKeyDown={undefined}
+                role="button"
+                tabIndex={0}
+              />,
+            ],
+            "className": "navigation-container",
+          },
+          "ref": null,
+          "rendered": Array [
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "className": "glyphicon glyphicon-triangle-left invisible",
+                "onClick": undefined,
+                "onKeyDown": undefined,
+                "role": "button",
+                "tabIndex": 0,
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "span",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "children": "Submit",
+                "className": "btn btn-lg btn-major",
+                "onClick": [Function],
+              },
+              "ref": null,
+              "rendered": "Submit",
+              "type": "button",
+            },
+            Object {
+              "instance": null,
+              "key": undefined,
+              "nodeType": "host",
+              "props": Object {
+                "className": "glyphicon glyphicon-triangle-right invisible",
+                "onClick": undefined,
+                "onKeyDown": undefined,
+                "role": "button",
+                "tabIndex": 0,
+              },
+              "ref": null,
+              "rendered": null,
+              "type": "span",
+            },
+          ],
+          "type": "div",
+        },
+      ],
+      "type": "div",
+    },
+  ],
+  Symbol(enzyme.__options__): Object {
+    "adapter": ReactSixteenAdapter {
+      "options": Object {
+        "enableComponentDidUpdateOnSetState": true,
+      },
+    },
+  },
+}
+`;
+
+exports[`Timeslot initializes correctly 1`] = `
+<div
+  className="container timeslot-container"
+>
+  <p
+    className="date"
+  >
+    Mon, 5.28.2018
+  </p>
+  <p
+    className="help-text help-text-center"
+  >
+    Drag from the arrow to set your availability...
+  </p>
+  <div
+    className="dragContainer"
+    style={
+      Object {
+        "height": 300,
+        "overflow": "hidden",
+        "position": "relative",
+      }
+    }
+  >
+    <div
+      className="dragableContainer unavailable"
+      style={
+        Object {
+          "height": 300,
+          "top": 0,
+        }
+      }
+    >
+      <p
+        style={
+          Object {
+            "top": "5px",
+          }
+        }
+      >
+        8:00
+      </p>
+      <hr
+        style={
+          Object {
+            "top": 49,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 97,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 145,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 193,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 241,
+          }
+        }
+      />
+      <p
+        style={
+          Object {
+            "bottom": "5px",
+          }
+        }
+      >
+        12:00
+      </p>
+    </div>
+    <div
+      className="dragableContainer"
+      style={
+        Object {
+          "height": 300,
+          "top": 0,
+        }
+      }
+    >
+      <p
+        style={
+          Object {
+            "top": "5px",
+          }
+        }
+      >
+        8:00
+      </p>
+      <p
+        style={
+          Object {
+            "bottom": "5px",
+          }
+        }
+      >
+        12:00
+      </p>
+      <div
+        className="timeslot-dragball top"
+        draggable="true"
+        onDrag={[Function]}
+        onDragEnd={[Function]}
+        onDragStart={[Function]}
+        onTouchMove={[Function]}
+      />
+      <div
+        className="timeslot-dragball bottom"
+        draggable="true"
+        onDrag={[Function]}
+        onDragEnd={[Function]}
+        onDragStart={[Function]}
+        onTouchMove={[Function]}
+      />
+    </div>
+  </div>
+  <p
+    className="help-text help-text-center"
+  >
+    ...or type in manually
+  </p>
+  <div>
+    <div
+      className="timeslot-input"
+    >
+      <input
+        onBlur={[Function]}
+        onChange={[Function]}
+        onKeyPress={[Function]}
+        type="text"
+        value="8:00"
+      />
+      <p>
+        -
+      </p>
+      <input
+        onBlur={[Function]}
+        onChange={[Function]}
+        onKeyPress={[Function]}
+        type="text"
+        value="12:00"
+      />
+      <p
+        className="unavailable-text invisible"
+      >
+        unavailable
+      </p>
+    </div>
+  </div>
+  <div
+    className="navigation-container"
+  >
+    <span
+      className="glyphicon glyphicon-triangle-left invisible"
+      onClick={undefined}
+      onKeyDown={undefined}
+      role="button"
+      tabIndex={0}
+    />
+    <button
+      className="btn btn-lg btn-major"
+      onClick={[Function]}
+    >
+      Submit
+    </button>
+    <span
+      className="glyphicon glyphicon-triangle-right invisible"
+      onClick={undefined}
+      onKeyDown={undefined}
+      role="button"
+      tabIndex={0}
+    />
+  </div>
+</div>
+`;
+
+exports[`Timeslot initializes correctly 2`] = `
+<div
+  className="container timeslot-container"
+>
+  <p
+    className="date"
+  >
+    Wed, 2.1.2017
+  </p>
+  <p
+    className="help-text help-text-center"
+  >
+    Drag from the arrow to set your availability...
+  </p>
+  <div
+    className="dragContainer"
+    style={
+      Object {
+        "height": 300,
+        "overflow": "hidden",
+        "position": "relative",
+      }
+    }
+  >
+    <div
+      className="dragableContainer unavailable"
+      style={
+        Object {
+          "height": 300,
+          "top": 0,
+        }
+      }
+    >
+      <p
+        style={
+          Object {
+            "top": "5px",
+          }
+        }
+      >
+        12:20
+      </p>
+      <hr
+        style={
+          Object {
+            "top": 11,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 21,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 31,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 41,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 51,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 61,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 71,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 81,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 91,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 101,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 111,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 121,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 131,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 141,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 151,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 161,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 171,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 181,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 191,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 201,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 211,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 221,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 231,
+          }
+        }
+      />
+      <hr
+        style={
+          Object {
+            "top": 241,
+          }
+        }
+      />
+      <p
+        style={
+          Object {
+            "bottom": "5px",
+          }
+        }
+      >
+        20:40
+      </p>
+    </div>
+    <div
+      className="dragableContainer"
+      style={
+        Object {
+          "height": 144,
+          "top": 72,
+        }
+      }
+    >
+      <p
+        style={
+          Object {
+            "top": "5px",
+          }
+        }
+      >
+        14:20
+      </p>
+      <p
+        style={
+          Object {
+            "bottom": "5px",
+          }
+        }
+      >
+        18:20
+      </p>
+      <div
+        className="timeslot-dragball top"
+        draggable="true"
+        onDrag={[Function]}
+        onDragEnd={[Function]}
+        onDragStart={[Function]}
+        onTouchMove={[Function]}
+      />
+      <div
+        className="timeslot-dragball bottom"
+        draggable="true"
+        onDrag={[Function]}
+        onDragEnd={[Function]}
+        onDragStart={[Function]}
+        onTouchMove={[Function]}
+      />
+    </div>
+  </div>
+  <p
+    className="help-text help-text-center"
+  >
+    ...or type in manually
+  </p>
+  <div>
+    <div
+      className="timeslot-input"
+    >
+      <input
+        onBlur={[Function]}
+        onChange={[Function]}
+        onKeyPress={[Function]}
+        type="text"
+        value="14:20"
+      />
+      <p>
+        -
+      </p>
+      <input
+        onBlur={[Function]}
+        onChange={[Function]}
+        onKeyPress={[Function]}
+        type="text"
+        value="18:20"
+      />
+      <p
+        className="unavailable-text invisible"
+      >
+        unavailable
+      </p>
+    </div>
+  </div>
+  <div
+    className="navigation-container"
+  >
+    <span
+      className="glyphicon glyphicon-triangle-left invisible"
+      onClick={undefined}
+      onKeyDown={undefined}
+      role="button"
+      tabIndex={0}
+    />
+    <button
+      className="btn btn-lg btn-major"
+      onClick={[Function]}
+    >
+      Submit
+    </button>
+    <span
+      className="glyphicon glyphicon-triangle-right invisible"
+      onClick={undefined}
+      onKeyDown={undefined}
+      role="button"
+      tabIndex={0}
+    />
+  </div>
+</div>
+`;
