@@ -7,6 +7,14 @@ import StatusMessage from '../StatusMessage';
 function isValidEmail(string) {
   return string.includes('@');
 }
+
+function validateSite(addr) {
+  if (!addr.startsWith('http://') && !addr.startsWith('https://')) {
+    return 'http://'.concat(addr);
+  }
+  return addr;
+}
+
 // Form for createing user accounts.
 // Takes as props an onSubmit function and the wanted user type, either coach or startup
 export default class UserCreationForm extends React.Component {
@@ -39,6 +47,7 @@ export default class UserCreationForm extends React.Component {
     }
   }
 
+
   // validate the form fields based on form name prop
   // return "" if valid or an error string if invalid
   validate(name) {
@@ -66,6 +75,11 @@ export default class UserCreationForm extends React.Component {
   }
 
   handleSubmit() {
+    // Handles links so that theý always start with http:// or https://.
+    const site = this.props.type === 'coach' ? 'linkedin' : 'website';
+    this.setState({
+      [site]: validateSite(this.state[site]),
+    });
     // check that all fields are valid
     if (Object.entries(this.state).every(arr => this.validate(arr[0]) === '')) {
       this.props.onSubmit(this.state);
