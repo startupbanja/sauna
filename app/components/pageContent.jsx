@@ -2,27 +2,38 @@ import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 /* import Image from './Image'; */
 import FeedbackView from './FeedbackView';
-import LandingPage from './LandingPage';
+import LandingPage from './landing/LandingPage';
 import UserProfilePage from './UserProfilePage';
 import UserSchedule from './UserSchedule';
 import UserList from './UserList';
+import UserCreationPage from './UserCreation/UserCreationPage';
 import App from './App';
 import MeetingDaysView from './admin_manage/MeetingDaysView';
 import TimeslotView from './timeslot/TimeslotView';
-import AdminSchedules from './AdminSchedules';
+import AdminSchedules from './admin_manage/AdminSchedules';
 import UserHandlingView from './admin_manage/UserHandlingView';
 import MeetingDetailView from './admin_manage/MeetingDetailView';
+import PasswordChange from './PasswordChange';
+import AdminLandingPage from './AdminLandingPage';
 
 const feedbackQuestions = {
   coach: [{
     index: 0,
     question: 'Would you like to meet again?',
-    options: [0, 1, 2],
+    options: [
+      { desc: 'No', value: 0 },
+      { desc: 'Maybe', value: 1 },
+      { desc: 'Yes', value: 2 },
+    ],
   }],
   startup: [{
     index: 0,
     question: 'Would you like to meet again?',
-    options: [0, 1, 3],
+    options: [
+      { desc: 'No', value: 0 },
+      { desc: 'Maybe', value: 1 },
+      { desc: 'Yes', value: 3 },
+    ],
   }],
 };
 
@@ -65,22 +76,24 @@ const userContent = (
       path="/startups"
       render={({ match }) => <UserList match={match} type="Startups" />}
     />
-    <Route path="/main" render={() => <div><LandingPage /></div>} />
+    <Route exact path="/" component={LandingPage} />
     <Route path="/timetable" render={() => <UserSchedule schedule={schedule} />} />
     <Route path="/user" component={UserProfilePage} />
     <Route path="/feedback" render={() => <FeedbackView questions={feedbackQuestions} />} />
     <Route path="/availability" component={TimeslotView} />
+    <Route path="/change_password" component={PasswordChange} />
   </Switch>
 );
 
 const userLabels = {
-  '/main': 'Home',
+  '/': 'Home',
   '/timetable': 'Timetable',
   '/user': 'User Profile',
   '/feedback': 'Feedback',
   '/coaches': 'Coaches',
   '/startups': 'Startups',
   '/availability': 'Availability',
+  '/change_password': 'Change password',
 };
 /* eslint-disable */
 const testSchedule = [
@@ -125,7 +138,7 @@ const testSchedule = [
 
 const adminContent = (
   <Switch>
-    <Route path="/main" render={() => <div><h1>Home</h1><LandingPage /></div>} />
+    <Route exact path="/" component={AdminLandingPage} />
     <Route path="/coaches/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />
     <Route
       exact
@@ -158,15 +171,23 @@ const adminContent = (
       )}
     />
     <Route path="/users" component={UserHandlingView} />
+    <Route
+      exact
+      path="/create_user"
+      render={() => <UserCreationPage />}
+      type="Create User"
+    />
   </Switch>
 );
 
 const adminLabels = {
-  '/main': 'Home',
+  '/': 'Home',
   '/coaches': 'Coaches',
   '/startups': 'Startups',
+
   '/users': 'Users',
   '/meetingDays': 'Meeting days',
+  '/create_user': 'Create User',
 };
 // TODO change this to something better later
 function getContent(userType) {
@@ -183,7 +204,7 @@ function fetchData(path, methodType, params) {
   if (methodType.toLowerCase() === 'get') query += `?${paramsString}`;
   else bodyParams = paramsString;
   return new Promise((resolve, reject) =>
-    fetch(`http://127.0.0.1:3000${query}`, {
+    fetch(`/api${query}`, {
       method: methodType,
       credentials: 'include',
       headers: {

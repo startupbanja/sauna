@@ -122,10 +122,31 @@ def getEmptyTimetable(availabilities, slotSize):
     timetable[name][2] = [None] * int(slotCount)
   return timetable
 
+
+
+# parameters:
+# data: {
+  # feedbacks: [{'startupid', 'startupfeedback', 'coachid', 'coachfeedback'}, {...}]
+  # availabilities: {coachid: {'starttime', 'duration'}, ...}
+  # startups: [startupid, ...]
+# }
+
+# return values:
+# feedbacks: [{startup, coach, coachfeedback, startupfeedback}, ...]
+# availabilities: {coach1: {starttime, duration}, ...}
+# startupMeetingCount: {coach1: 0, ...}
+
+# will raise ValueError on invalid(empty) parameters
 def init(data, slotSize=40):
-  feedbacks = data['feedbacks']
-  oldAvail = data['availabilities']
-  startups = data['startups']
+  feedbacks = data.get('feedbacks')
+  oldAvail = data.get('availabilities')
+  startups = data.get('startups')
+  if not feedbacks:
+    raise ValueError('feedbacks list cannot be empty')
+  if not oldAvail:
+    raise ValueError('availabilities dict cannot be empty')
+  if not startups:
+    raise ValueError('startups list cannot be empty')
 
   startupMeetingCount = dict(map(lambda a: (a, 0), startups))
 
@@ -151,9 +172,10 @@ def init(data, slotSize=40):
     'duration': datetime.timedelta(minutes=old['duration'])
     })
     return res
+  # {coach1: {starttime, duration}, coach2: {}, ...}
   availabilities = dict(map(mapAvail , oldAvail.keys()) )
 
-  #normalize availability times so they all begin at the same increments of 40 mins
+  #normalize availability times so they all begin at the same increments of slotSize mins
   firstTime = min(map(lambda a: availabilities[a]['starttime'], availabilities.keys()))
   for k in availabilities.keys():
     delta = (availabilities[k]['starttime'] - firstTime).seconds // 60 % slotSize

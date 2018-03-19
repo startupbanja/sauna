@@ -3,7 +3,7 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Menu from './Menu';
 import pageContent from './pageContent';
-import LandingPage from './LandingPage';
+import LandingPage from './landing/LandingPage';
 import LoginView from './LoginView';
 
 // This is the class that shows the whole page content after login
@@ -57,7 +57,6 @@ export default class MainView extends React.Component {
               content={this.state.labels}
             />
             <div id="mainContainer">
-              <Route exact path="/" component={LandingPage} />
               {this.state.contentMap}
               <Route exact path="/login" component={LoginView} />
             </div>
