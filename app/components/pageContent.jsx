@@ -16,51 +16,7 @@ import MeetingDetailView from './admin_manage/MeetingDetailView';
 import PasswordChange from './PasswordChange';
 import AdminLandingPage from './AdminLandingPage';
 
-const feedbackQuestions = {
-  coach: [{
-    index: 0,
-    question: 'Would you like to meet again?',
-    options: [
-      { desc: 'No', value: 0 },
-      { desc: 'Maybe', value: 1 },
-      { desc: 'Yes', value: 2 },
-    ],
-  }],
-  startup: [{
-    index: 0,
-    question: 'Would you like to meet again?',
-    options: [
-      { desc: 'No', value: 0 },
-      { desc: 'Maybe', value: 1 },
-      { desc: 'Yes', value: 3 },
-    ],
-  }],
-};
 
-const schedule = {
-  date: 'Wed 27.11.2017',
-  meetings: [{
-    name: 'Ilkka Paananen',
-    img: 'http://startupsauna.com/wp-content/uploads/2017/06/Ilkka-Paananen.jpg',
-    time: '10.00 - 10.40',
-  }, {
-    name: 'Juha Ruohonen',
-    img: 'http://startupsauna.com/wp-content/uploads/2017/06/Juha-Ruohonen.jpg',
-    time: '10.40 - 11.00',
-  }, {
-    name: 'Timo Ahopelto',
-    img: 'http://startupsauna.com/wp-content/uploads/2017/06/57593326324cc12c26fb3fff_Timo-Ahopelto.png',
-    time: '11.00 - 11.40',
-  }, {
-    name: 'Moaffak Ahmed',
-    img: 'http://startupsauna.com/wp-content/uploads/2017/06/Moaffak-Ahmed.jpg',
-    time: '11.40 - 12.00',
-  }, {
-    name: 'Aape Pohjavirta',
-    img: 'http://startupsauna.com/wp-content/uploads/2017/06/Aape-Pohjavirta.jpg',
-    time: '12.00 - 12.40',
-  }],
-};
 
 const userContent = (
   <Switch>
@@ -77,9 +33,9 @@ const userContent = (
       render={({ match }) => <UserList match={match} type="Startups" />}
     />
     <Route exact path="/" component={LandingPage} />
-    <Route path="/timetable" render={() => <UserSchedule schedule={schedule} />} />
+    <Route path="/timetable" render={() => <UserSchedule />} />
     <Route path="/user" component={UserProfilePage} />
-    <Route path="/feedback" render={() => <FeedbackView questions={feedbackQuestions} />} />
+    <Route path="/feedback" render={() => <FeedbackView />} />
     <Route path="/availability" component={TimeslotView} />
     <Route path="/change_password" component={PasswordChange} />
   </Switch>
@@ -95,46 +51,6 @@ const userLabels = {
   '/availability': 'Availability',
   '/change_password': 'Change password',
 };
-/* eslint-disable */
-const testSchedule = [
-{
-  coachName: 'Coach 1',
-  startUps: [{
-    startupName: 'Startup 1',
-    time: '13:00 - 13:20',
-  },
-  {
-    startupName: 'Startup 2',
-    time: '13:20 - 13:40',
-  },
-  ],
-},
-{
-  coachName: 'Coach 2',
-  startUps: [{
-    startupName: 'Startup 3',
-    time: '13:00 - 13:20',
-  },
-  {
-    startupName: 'Startup 4',
-    time: '13:20 - 13:40',
-  },
-  ],
-
-},
-{ coachName: 'Coach 3',
-  startUps: [{
-    startupName: 'Startup 5',
-    time: '13:00 - 13:20',
-  },
-  {
-    startupName: 'Startup 6',
-    time: '13:20 - 13:40',
-  },
-  ],},
-];
-
-/* eslint-enable */
 
 const adminContent = (
   <Switch>
@@ -177,6 +93,11 @@ const adminContent = (
       render={() => <UserCreationPage />}
       type="Create User"
     />
+    <Route
+      exact
+      path="/404"
+      component={PageNotFound}
+    />
   </Switch>
 );
 
@@ -213,10 +134,21 @@ function fetchData(path, methodType, params) {
       },
       body: bodyParams,
     }).then((response) => {
-      if (response.status === 401) {
-        App.logOff();
-        reject();
-      } else resolve(response.json());
+      switch (response.status) {
+        case 200:
+          resolve(response.json());
+          break;
+        case 401:
+          App.logOff();
+          reject();
+          break;
+        case 404:
+          reject();
+          break;
+        default:
+          reject();
+          break;
+      }
     })
       .catch((error) => {
         console.log(error);

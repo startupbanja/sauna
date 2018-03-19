@@ -158,7 +158,7 @@ function getProfile(id, callback) {
     });
 
     db.get('SELECT type FROM Users WHERE id = ?', [id], (error, row) => {
-      if (err) return callback(error);
+      if (error) return callback(error);
       info.type = row.type === 1 ? 'coach' : 'startup';
       return callback(err, info);
     });

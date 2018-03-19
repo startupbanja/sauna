@@ -80,15 +80,3 @@ export default class Usertimetable extends React.Component {
     );
   }
 }
-
-// Usertimetable.propTypes = {
-//   timetable: PropTypes.shape({
-//     meetings: PropTypes.arrayOf(PropTypes.shape({
-//       name: PropTypes.string,
-//       startTime: PropTypes.string,
-//       endTime: PropTypes.string,
-//       img: PropTypes.string,
-//     })).isRequired,
-//     date: PropTypes.string,
-//   }).isRequired,
-// };

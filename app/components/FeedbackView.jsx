@@ -75,6 +75,26 @@ export default class FeedbackView extends React.Component {
   }
 
   render() {
+    const questions = {
+      coach: [{
+        index: 0,
+        question: 'Would you like to meet again?',
+        options: [
+          { desc: 'No', value: 0 },
+          { desc: 'Maybe', value: 1 },
+          { desc: 'Yes', value: 2 },
+        ],
+      }],
+      startup: [{
+        index: 0,
+        question: 'Would you like to meet again?',
+        options: [
+          { desc: 'No', value: 0 },
+          { desc: 'Maybe', value: 1 },
+          { desc: 'Yes', value: 3 },
+        ],
+      }],
+    };
     if (!this.state.data) return null;
     if (this.state.data.length === 0) {
       return <p className="empty-content-text">No feedbacks currently open</p>;
@@ -85,7 +105,7 @@ export default class FeedbackView extends React.Component {
         <FeedbackForm
           info={this.state.data[this.state.index]}
           onSubmit={this.submitCurrentForm}
-          questions={this.props.questions[this.state.userType]}
+          questions={questions[this.state.userType]}
         />
         <div className="navigation-container">
           <Button
@@ -104,24 +124,3 @@ export default class FeedbackView extends React.Component {
     );
   }
 }
-
-FeedbackView.propTypes = {
-  questions: PropTypes.shape({
-    coach: PropTypes.arrayOf(PropTypes.shape({
-      index: PropTypes.number,
-      question: PropTypes.string,
-      options: PropTypes.arrayOf(PropTypes.shape({
-        desc: PropTypes.string,
-        value: PropTypes.number,
-      })),
-    })),
-    startup: PropTypes.arrayOf(PropTypes.shape({
-      index: PropTypes.number,
-      question: PropTypes.string,
-      options: PropTypes.arrayOf(PropTypes.shape({
-        desc: PropTypes.string,
-        value: PropTypes.number,
-      })),
-    })),
-  }).isRequired,
-};

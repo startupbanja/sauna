@@ -102,18 +102,6 @@ app.get('/', (req, res) => {
   res.sendFile(`${__dirname}/index.html`);
 });
 
-app.get('/api', (req, res, next) => {
-  if (req.query.hasOwnProperty('q')) {
-    res.json({ message: req.query.q });
-  } else {
-    database.getUsers(1, 0, false, (err, data) => {
-      if (err) return next(err);
-      res.json(data);
-      return undefined;
-    });
-  }
-});
-
 
 /* gets the initial data from all the coaches or startups */
 app.get('/users', (req, res, next) => {
@@ -162,14 +150,16 @@ app.get('/profile', (req, res, next) => {
   let id;
   if (typeof req.query.userId !== 'undefined') id = req.query.userId;
   else id = req.session.userID;
-
-  database.getProfile(id, (err, result) => {
+  id = parseInt(id, 10);
+  if (Number.isNaN(id)) {
+    return next();
+  }
+  return database.getProfile(id, (err, result) => {
     if (err) return next(err);
-    if (req.session.userID == id || req.session.userType === 'admin') {
+    if (req.session.userID === id || req.session.userType === 'admin') {
       Object.assign(result, { canModify: true });
     }
-    res.json(result);
-    return undefined;
+    return res.json(result);
   });
 });
 
@@ -518,12 +508,6 @@ app.post('/insertAvailability', (req, res, next) => {
   });
 });
 
-// Error handling
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send({ error: 'An error has occured!' });
-});
-
 app.post('/updateProfile', (req, res, next) => {
   // Create a JSON object from request body.
   const JSONObject = JSON.parse(req.body.data);
@@ -544,6 +528,23 @@ app.post('/updateProfile', (req, res, next) => {
     res.json(response);
   });
 });
+
+// Error handling
+app.use((err, req, res, next) => {
+  if (err) {
+    console.error(err.stack);
+    res.status(500).send({ error: 'An error has occured!' });
+  } else {
+    next();
+  }
+});
+
+// 404 handling
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(404).send('404 NOT FOUND');
+});
+
 
 const server = app.listen(port);
 console.log(`Magic happens on port ${port}`);
