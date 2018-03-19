@@ -7,7 +7,7 @@ import ProfileInfoHeader from './ProfileInfoHeader';
 // React Component for a user's profile page.
 export default class UserProfile extends React.Component {
   render() {
-    const siteName = this.props.type === 'Coach' ? 'LinkedIn' : 'Website';
+    const siteName = this.props.type === 'coach' ? 'LinkedIn' : 'Website';
     return (
       <div className="profileContainer container">
         <link rel="stylesheet" type="text/css" href="/app/styles/user_profile_style.css" />
