@@ -442,10 +442,7 @@ function runAlgorithm(date, callback, commit = true) {
     if (err) return callback(err);
     // Get most recent feedback ratings from all coaches, startups
     database.getRatings((err2, ratings) => {
-      if (err2) {
-        console.log(err2);
-        return callback(err2);
-      }
+      if (err2) return callback(err2);
       // Get list of all startups
       database.getStartups((err3, startupdata) => {
         if (err3) return callback(err3);
