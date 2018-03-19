@@ -256,9 +256,9 @@ function getComingDates(callback) {
   });
 }
 
-// Returns coming availabilities of coaches and names of the coaches
+// Returns coming availabilities of coaches and names & emails of the coaches
 function getComingTimeslots(callback) {
-  const query = `SELECT CoachProfiles.name, MeetingDays.date, Timeslots.time, Timeslots.duration
+  const query = `SELECT CoachProfiles.name, CoachProfiles.email, MeetingDays.date, Timeslots.time, Timeslots.duration
     FROM Users
     LEFT OUTER JOIN CoachProfiles ON Users.id = CoachProfiles.user_id
     LEFT OUTER JOIN MeetingDays
@@ -284,7 +284,7 @@ function getLastMeetingday(callback) {
 function getGivenFeedbacks(callback) {
   getLastMeetingday((err, date) => {
     if (err) return callback(err);
-    const query = `SELECT Users.type, Profiles.name, Meetings.startup_rating, Meetings.coach_rating, Meetings.date
+    const query = `SELECT Users.type, Profiles.name, Profiles.email, Meetings.startup_rating, Meetings.coach_rating, Meetings.date
       FROM Users
       LEFT OUTER JOIN Profiles ON Users.id = Profiles.user_id
       LEFT OUTER JOIN Meetings ON Users.id = Meetings.coach_id OR Users.id = Meetings.startup_id

@@ -270,7 +270,7 @@ app.post('/timetable', (req, res, next) => {
 
 app.get('/comingTimeslots', (req, res, next) => {
   const timeslots = {};
-  // Result is in form [{name:"coachname",date:"dateString",time:"timestring",duration:null}]
+// Result is in form {date: {name: [time/null, email]}
   database.getComingTimeslots((err, result) => {
     if (err) return next(err);
     for (const index in result) { //eslint-disable-line
@@ -279,11 +279,11 @@ app.get('/comingTimeslots', (req, res, next) => {
         timeslots[element.date] = {};
       }
       if (element.duration === null) {
-        timeslots[element.date][element.name] = null;
+        timeslots[element.date][element.name] = [null, element.email];
       } else {
         const time = new Date('2000-01-01T' + element.time);
         time.setMinutes(time.getMinutes() + element.duration);
-        timeslots[element.date][element.name] = element.time + '-' + ('0' + (time.getHours())).slice(-2) + ':' + ('0' + time.getMinutes()).slice(-2) + ':' + ('0' + time.getSeconds()).slice(-2);
+        timeslots[element.date][element.name] = [element.time + '-' + ('0' + (time.getHours())).slice(-2) + ':' + ('0' + time.getMinutes()).slice(-2) + ':' + ('0' + time.getSeconds()).slice(-2), null];
       }
     }
     res.json(timeslots);
@@ -320,9 +320,11 @@ app.get('/givenFeedbacks/', (req, res, next) => {
     coachTotal: 0,
     coachDone: 0,
     date: '',
+    missingCoachEmails: {},
+    missingStartupEmails: {},
   };
   // Result is in form
-  // [{type: type, name: name, startup_rating: rating, coach_rating: rating, date}]
+  // [{type: type, name: name, email, startup_rating: rating, coach_rating: rating, date}]
   // Type 1 => Coach, Type 2 => Startup
   // filter out feedbacks which are -1 which means not given
   database.getGivenFeedbacks((err, fbresult) => {
@@ -334,13 +336,21 @@ app.get('/givenFeedbacks/', (req, res, next) => {
       if (element.type === 1) {
         if (element.coach_rating !== -1) {
           givenFeedbacks.coaches[element.name] = true;
+          givenFeedbacks.missingCoachEmails[element.email] = false;
         } else if (givenFeedbacks.coaches[element.name] === undefined) {
           givenFeedbacks.coaches[element.name] = false;
+          if (givenFeedbacks.missingCoachEmails[element.email] === undefined) {
+            givenFeedbacks.missingCoachEmails[element.email] = true;
+          }
         }
       } else if (element.startup_rating !== -1) {
         givenFeedbacks.startups[element.name] = true;
+        givenFeedbacks.missingStartupEmails[element.email] = false;
       } else if (givenFeedbacks.startups[element.name] === undefined) {
         givenFeedbacks.startups[element.name] = false;
+        if (givenFeedbacks.missingStartupEmails[element.email] === undefined) {
+          givenFeedbacks.missingStartupEmails[element.email] = true;
+        }
       }
     }
     for (const index in givenFeedbacks.startups) {//eslint-disable-line

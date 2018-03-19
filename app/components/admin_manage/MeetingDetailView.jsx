@@ -12,14 +12,29 @@ export default class MeetingDetailView extends React.Component {
     super(props);
     // feedbacks is first either true or false, then when fetched, contains feedback data
     // if props.renferFeedbacks
-    this.state = { availabilities: null, feedbacks: !this.props.renderFeedbacks };
+    this.state = {
+      availabilities: null,
+      feedbacks: !this.props.renderFeedbacks,
+      showAvb: false,
+      showFb: false,
+    };
     this.fetchTimeslots = this.fetchTimeslots.bind(this);
     this.fetchFeedbacks = this.fetchFeedbacks.bind(this);
+    this.onClickFb = this.onClickFb.bind(this);
+    this.onClickAvb = this.onClickAvb.bind(this);
   }
 
   componentDidMount() {
     this.fetchTimeslots();
     if (this.props.renderFeedbacks) this.fetchFeedbacks();
+  }
+
+  onClickAvb() {
+    this.setState({ showAvb: !this.state.showAvb });
+  }
+
+  onClickFb() {
+    this.setState({ showFb: !this.state.showFb });
   }
 
   fetchTimeslots() {
@@ -38,7 +53,9 @@ export default class MeetingDetailView extends React.Component {
   startupDone: int,
   coachTotal: int,
   coachDone: int,
-  date: string
+  date: string,
+  missingCoachEmails: {e-mail: true/false},
+  missingStartupEmails: {e-mail: true/false},
   }
   get the feedbacks from the most recent passed meeting
   */
@@ -54,19 +71,27 @@ export default class MeetingDetailView extends React.Component {
       // TODO
       return (<h1>LOADING</h1>);
     }
+    // TODO: separate into coaches & startups
+    const reminderMailsFb = [];
+    const reminderMailsAvb = [];
 
     // null check TODO is this needed?
     const list = this.state.availabilities[this.props.date] ?
       Object.entries(this.state.availabilities[this.props.date]) : [];
 
+    let stringFb = '';
+    let stringAvb = '';
+
     // filter for filled feedbacks
     const availabilities = { given: [], notGiven: [] };
     list.forEach((arr) => {
       const name = arr[0];
-      const filled = arr[1];
+      const filled = arr[1][0];
+      const email = arr[1][1];
       if (filled) {
         availabilities.given.push(<li key={name}>{name}: {filled}</li>);
       } else {
+        reminderMailsAvb.push(({ email }));
         availabilities.notGiven.push(<li key={name}>{name}</li>);
       }
     });
@@ -77,6 +102,21 @@ export default class MeetingDetailView extends React.Component {
       coaches: { given: [], notGiven: [] },
       startups: { given: [], notGiven: [] },
     };
+
+    if (this.props.renderFeedbacks) {
+      const keys = ['missingCoachEmails', 'missingStartupEmails'];
+      keys.forEach((key) => {
+        Object.entries(this.state.feedbacks[key]).forEach((arr) => {
+          const email = arr[0];
+          const missing = arr[1];
+          if (missing) {
+            reminderMailsFb.push((
+              { email }
+            ));
+          }
+        });
+      });
+    }
 
     if (this.props.renderFeedbacks) {
       const keys = ['startups', 'coaches'];
@@ -99,6 +139,16 @@ export default class MeetingDetailView extends React.Component {
       });
     }
 
+    reminderMailsFb.forEach((input) => {
+      stringFb += input.email;
+      stringFb += '; ';
+    });
+
+    reminderMailsAvb.forEach((input) => {
+      stringAvb += input.email;
+      stringAvb += '; ';
+    });
+
     return (
       <div className="container full-viewport">
         <h1>Details {this.props.date}</h1>
@@ -111,12 +161,18 @@ export default class MeetingDetailView extends React.Component {
         <div className="row">
           <div className="col-md-6">
             <h3>Availabilities for this meeting:</h3>
-            <button className="btn btn-major"> Send reminder</button>
+            <button
+              className="btn btn-major"
+              onClick={this.onClickAvb}
+            > Show e-mails
+            </button>
+            { this.state.showAvb ? <div>{stringAvb}</div> : null }
           </div>
           {this.props.renderFeedbacks && (
             <div className="col-md-6 feedbacks-header">
               <h3>Feedbacks from last meeting:</h3>
-              <button className="btn btn-major"> Send reminder</button>
+              <button className="btn btn-major" onClick={this.onClickFb}> Show e-mails</button>
+              { this.state.showFb ? <div>{stringFb}</div> : null }
             </div>)
           }
         </div>
