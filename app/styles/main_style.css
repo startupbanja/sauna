@@ -1,5 +1,13 @@
+
+
 #mainContainer {
   padding-top: 50px;
+  max-width: 600px;
+  margin: auto;
+}
+
+.container {
+  width: 100%;
 }
 
 body {
@@ -42,4 +50,10 @@ a:hover, a {
 .btn-minor:hover {
   background: var(--darker-gray);
   color: var(--light-gray);
+}
+
+.full-viewport {
+  width: 100vw;
+  position: absolute;
+  left: 0px;
 }

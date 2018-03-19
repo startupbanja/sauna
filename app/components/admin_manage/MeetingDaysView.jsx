@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import $ from 'jquery';
 import pageContent from '../pageContent';
 import NewMeetingDayBlock from './NewMeetingDayBlock';
+import '../../styles/meeting_days_style.css';
 /* eslint-disable jsx-a11y/anchor-is-valid */ // disable complaining from Link
 
 
@@ -151,7 +152,7 @@ class MeetingDaysView extends Component {
     }
     return (
       <div className="meeting-days-view container">
-        <link rel="stylesheet" href="/app/styles/meeting_days_style.css" />
+        {/* <link rel="stylesheet" href="/app/styles/meeting_days_style.css" /> */}
         <div className="banner">
           <p><span className="number">{this.state.days.length}</span> upcoming meeting days</p>
           <div className="btn-container">

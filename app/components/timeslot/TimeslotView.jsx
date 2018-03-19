@@ -1,18 +1,21 @@
 import React, { Component } from 'react';
 import pageContents from '../pageContent';
 import Timeslot, { parseMinutes, parseTimeStamp } from './Timeslot';
+import StatusMessage from '../StatusMessage';
+import '../../styles/timeslot_style.css';
 
 /* Component to handle availability data between backend and Timeslot */
 class TimeslotView extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      index: 0,
-      data: [],
-    };
     this.renderTimeslot = this.renderTimeslot.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.submitAvailability = this.submitAvailability.bind(this);
+    this.state = {
+      index: 0,
+      data: undefined,
+      message: undefined,
+    };
   }
 
   componentDidMount() {
@@ -33,7 +36,7 @@ class TimeslotView extends Component {
             split: day.split,
             available: {
               start: (day.time === null) ? start : parseMinutes(day.time),
-              end: (day.duration === null) ? end : parseMinutes(day.time) + day.duration,
+              end: (day.duration === null) ? start : parseMinutes(day.time) + day.duration,
             },
           });
         });
@@ -60,8 +63,18 @@ class TimeslotView extends Component {
         };
         this.setState({
           data: oldData,
+          message: {
+            text: 'Saved',
+            type: 'success',
+          },
         });
-        this.changeDate(1);
+      } else {
+        this.setState({
+          message: {
+            text: 'Error when saving availability',
+            type: 'error',
+          },
+        });
       }
     });
   }
@@ -69,36 +82,36 @@ class TimeslotView extends Component {
   changeDate(diff) {
     this.setState({
       index: Math.min(this.state.data.length - 1, Math.max(0, this.state.index + diff)),
+      message: undefined,
     });
   }
 
   renderTimeslot() {
-    if (this.state.data.length > 0) {
-      const day = this.state.data[this.state.index];
-      return (
-        <Timeslot
-          key={day.date}
-          start={day.start}
-          end={day.end}
-          split={day.split}
-          available={day.available}
-          date={day.date}
-          onSubmit={this.submitAvailability}
-          onMoveToPrev={((this.state.index > 0) || undefined) && (() => this.changeDate(-1))}
-          onMoveToNext={((this.state.index < this.state.data.length - 1) || undefined)
-            && (() => this.changeDate(1))}
-        />
-      );
-    }
-    return undefined;
+    if (!this.state.data) return null;
+    if (this.state.data.length === 0) return <p className="empty-content-text">No upcoming days</p>;
+    const day = this.state.data[this.state.index];
+    return (
+      <Timeslot
+        key={day.date}
+        start={day.start}
+        end={day.end}
+        split={day.split}
+        available={day.available}
+        date={day.date}
+        onSubmit={this.submitAvailability}
+        onMoveToPrev={((this.state.index > 0) || undefined) && (() => this.changeDate(-1))}
+        onMoveToNext={((this.state.index < this.state.data.length - 1) || undefined)
+          && (() => this.changeDate(1))}
+      />
+    );
   }
 
   render() {
     return (
       <div className="timeslot-picker">
-        <link rel="stylesheet" type="text/css" href="app/styles/timeslot_style.css" />
+        {/* <link rel="stylesheet" type="text/css" href="app/styles/timeslot_style.css" /> */}
+        <StatusMessage message={this.state.message} />
         {this.renderTimeslot()}
-
       </div>
     );
   }

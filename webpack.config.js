@@ -10,13 +10,20 @@ const HTMLWebpackPluginConfig = new HTMLWebpackPlugin({
 module.exports = {
     entry: __dirname + '/app/index.js',
     module: {
-        loaders: [
+        rules: [
+            {
+                test: /\.css?$/,
+                use: [
+                    { loader: "style-loader" },
+                    { loader: "css-loader" }
+                ],
+            },
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
                 loader: 'babel-loader'
             }
-        ]
+        ],
     },
     output: {
         filename: 'transformed.js',
@@ -35,6 +42,13 @@ module.exports = {
     ],
     devServer: {
         historyApiFallback: true,
+        proxy: {
+          '/api/': {
+            target: 'http://127.0.0.1:3000/',
+            secure: false,
+            pathRewrite: {'^/api/' : '/'}
+          }
+        },
     }
 };
 /* eslint-enable */

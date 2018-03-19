@@ -5,24 +5,52 @@ const fs = require('fs');
 const bcrypt = require('bcrypt');
 const testData = require('./db_test_data.js');
 
-const db = new sqlite.Database(':memory:', (err) => {
-  if (err) {
-    return console.error(err.message);
-  }
-  console.log('Connected to the in-memory SQlite database.');
-  return null;
-});
+let db = null;
+
+function initDB(callback) {
+  fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
+    if (err) {
+      return callback(err);
+    }
+    // split data into statements
+    const arr = data.split(';');
+
+    // ensure it is running in serialized mode
+    db.serialize(() => {
+      arr.forEach((statement) => {
+        if (statement.trim()) {
+          db.run(statement, [], (err2) => {
+            if (err2) {
+              throw err2;
+            }
+            return null;
+          });
+        }
+      });
+      testData.insertData(db, 4, callback);
+    });
+    return null;
+  });
+}
+
+function createDatabase(callback) {
+  db = new sqlite.Database(':memory:', (err) => {
+    if (err) {
+      return console.error(err.message);
+    }
+    return initDB(callback);
+  });
+  module.exports.db = db;
+}
 
 function closeDatabase(callback) {
   db.close((err) => {
     if (err) {
       return console.error(err.message);
     }
-    console.log('Database connection closed.');
     return callback();
   });
 }
-
 
 function getUsers(type, includeId, callback) {
   const users = {};
@@ -108,9 +136,9 @@ function setActiveStatus(id, active, callback) {
 
 function getProfile(id, callback) {
   const info = {};
-  const query = `SELECT name, description, Profiles.company AS currentCompany, email, linkedin, Credentials.company, Credentials.title
+  const query = `SELECT name, img_url, description, Profiles.company AS currentCompany, email, linkedin, website, CredentialsListEntries.title, CredentialsListEntries.content
                  FROM Profiles
-                 LEFT OUTER JOIN Credentials ON Profiles.user_id = Credentials.user_id
+                 LEFT OUTER JOIN CredentialsListEntries ON Profiles.user_id = CredentialsListEntries.uid
                  WHERE Profiles.user_id = ?;`;
 
   db.all(query, [Number(id)], (err, rows) => {
@@ -118,25 +146,32 @@ function getProfile(id, callback) {
     rows.forEach((row) => {
       if (info.name === undefined) {
         info.name = row.name;
+        info.img_url = row.img_url;
         info.description = row.description;
         info.email = row.email;
-        info.linkedIn = row.linkedin;
+        info.linkedIn = row.linkedin !== null ? row.linkedin : row.website;
         info.company = row.currentCompany;
-        info.credentials = [{ company: row.company, position: row.title }];
+        info.credentials = [{ company: row.title, position: row.content }];
       } else {
-        info.credentials.push({ company: row.company, position: row.title });
+        info.credentials.push({ company: row.title, position: row.content });
       }
     });
-    return callback(err, info);
+
+    db.get('SELECT type FROM Users WHERE id = ?', [id], (error, row) => {
+      if (err) return callback(error);
+      info.type = row.type === 1 ? 'coach' : 'startup';
+      return callback(err, info);
+    });
+    return '';
   });
 }
 
 function getFeedback(id, callback) {
   const feedbacks = [];
   const query = `
-    SELECT id AS meetingId, user_id, name, description, rating, "/app/imgs/coach_placeholder.png" AS image_src
+    SELECT date, time, id AS meetingId, user_id, name, description, rating, "/app/imgs/coach_placeholder.png" AS image_src
     FROM
-      (SELECT id,
+      (SELECT date, time, id,
           CASE
             WHEN coach_id = ? THEN startup_id
             WHEN startup_id = ? THEN coach_id
@@ -271,6 +306,88 @@ function insertAvailability(userId, date, startTime, duration, callback) {
   });
 }
 
+
+/** Updates the credentials or team members for given user (based on UID)
+ *  Parameters:
+ *  uid - the id of the user (in DB)
+ *  list - an array containing either the credentials or team members of given user
+ *  userType - either Coach or Startup (does not throw error if something else if provided)
+ *  callback - a function to call with the status message object as parameter.
+ */
+function updateCredentialsListEntries(uid, list, userType, callback) {
+  const table = userType === 'Coach' ? 'Credentials' : 'TeamMembers';
+  const columns = userType === 'Coach' ? ['user_id', 'company', 'title'] : ['startup_id', 'name', 'title'];
+  const deleteSQL = `DELETE FROM ${table} WHERE ${columns[0]} = ? AND ${columns[1]} = ? AND ${columns[2]} = ?`;
+  const insertSQL = `INSERT INTO ${table}(${columns[0]}, ${columns[1]}, ${columns[2]}) VALUES(?,?,?);`;
+
+  // Fetches all credentials for the given uid and processes them.
+  db.all('SELECT title, content FROM CredentialsListEntries WHERE uid = ?', [uid], (err, rows) => {
+    if (!err) {
+      // We are converting the objects into JSON format for easy comparison.
+      const rowsAsJSON = rows.map(x => JSON.stringify(x));
+      const listAsJSON = list.map(x => JSON.stringify(x));
+      const toBeInserted = []; // holds the credentials to be inserted into the db.
+      const toBeRemoved = []; // holds the credentials that should be deleted.
+      const response = {}; // object to be sent in the response.
+      let thrownError;
+      // If new credentials do not contain a row, add it to deleted creds.
+      rowsAsJSON.forEach((row) => {
+        if (!listAsJSON.includes(row)) {
+          toBeRemoved.push(JSON.parse(row));
+        }
+      });
+
+      // If new credentials contain an entry that is not yet present, add it.
+      listAsJSON.forEach((item) => {
+        if (!rowsAsJSON.includes(item)) {
+          toBeInserted.push(JSON.parse(item));
+        }
+      });
+
+      // Deletes the obsolete credentials.
+      toBeRemoved.forEach((item) => {
+        db.run(deleteSQL, [uid, item.title, item.content], (error) => {
+          if (error) {
+            thrownError = error;
+          }
+        });
+      });
+
+      if (!thrownError) {
+        // Inserts the new credentials.
+        toBeInserted.forEach((item) => {
+          db.run(insertSQL, [uid, item.title, item.content], (error) => {
+            thrownError = error;
+          });
+        });
+      }
+
+      if (response.status === undefined) {
+        response.status = 'SUCCESS';
+        response.message = 'Profile was updated successfully!';
+      }
+      callback(thrownError, response);
+    } else {
+      return callback(err, null);
+    }
+  });
+}
+
+function updateProfile(uid, userType, site, imgUrl, description, title, credentials, callback) {
+  const siteAttr = userType === 'Coach' ? 'linkedin' : 'website';
+  const company = userType === 'Coach' ? ', company = ?' : '';
+  const imgURL = imgUrl === '' ? '../app/imgs/coach_placeholder.png' : imgUrl;
+  const queryParams = userType === 'Coach' ? [site, imgURL, description, title, uid] : [site, imgUrl, description, uid];
+  const query = `UPDATE ${userType}Profiles SET ${siteAttr} = ?, img_url = ?, description = ?${company} WHERE user_id = ?`;
+  db.run(query, queryParams, (err) => {
+    if (!err) {
+      updateCredentialsListEntries(uid, credentials, userType, callback);
+      return undefined;
+    }
+    return callback(err);
+  });
+}
+
 function verifyIdentity(username, password, callback) {
   const query = 'SELECT id, type, password FROM Users WHERE username = ?';
   db.get(query, [username], (err, row) => {
@@ -307,6 +424,56 @@ function verifyIdentity(username, password, callback) {
       }
       callback(type, userId);
     });
+  });
+}
+
+/**
+ * Changes the given user's (UID) password if possible
+ * and calls callback with response message object.
+ */
+function changePassword(uid, oldPassword, newPassword, callback) {
+  const response = { status: 'ERROR', message: 'Password could not be changed due to technical problems.' };
+
+  // Fetch the hash of the current password.
+  db.get('SELECT password FROM Users WHERE id = ?', [uid], (err, row) => {
+    if (!err) {
+      const oldPass = row.password; // hashed version of the current password.
+      const oldHash = bcrypt.hashSync(oldPassword, 10);
+
+      bcrypt.compare(oldPassword, oldPass, (e, same) => {
+        if (!e) {
+          if (!same) {
+            response.message = 'The current password was incorrect!';
+            return callback(null, response);
+          }
+
+          const newHashed = bcrypt.hashSync(newPassword, 10);
+          db.run('UPDATE Users SET password = ? WHERE id = ?', [newHashed, uid], (error) => {
+            if (!error) {
+              response.status = 'SUCCESS';
+              response.message = 'Password was successfully changed!';
+            }
+            return callback(error, response);
+          });
+        } else {
+          return callback(e, null);
+        }
+      });
+    } else {
+      return callback(err, null);
+    }
+  });
+}
+
+function getMeetingDuration(date, callback) {
+  const q = 'SELECT split FROM MeetingDays WHERE date = ?';
+  db.get(q, date, (err, row) => {
+    if (err) return callback(err);
+    const duration = row.split;
+    if (!duration) {
+      return callback({ error: `Date ${date} not found in table MeetingDays in getMeetingDuration` });
+    }
+    return callback(null, duration);
   });
 }
 
@@ -398,55 +565,65 @@ function getTimeslots(date, callback) {
   });
 }
 
-// jsonData is in array(parsed) form
+// save a given schedule to database
+function saveTimetable(schedule, dateString, callback) {
+  const queryStart = `
+  INSERT INTO Meetings(coach_id, startup_id, date, time, duration, coach_rating, startup_rating)
+  VALUES
+  `;
+  // filter nulls
+  const data = schedule.filter(obj => obj.startup !== null);
+  const strings = data.map((row) => {
+    const {
+      coach, startup, duration, time,
+    } = row;
+    return `( ${coach}, ${startup}, '${dateString}', '${time}', ${duration}, -1, -1)`;
+  });
+  const query = `${queryStart}${strings.join(',\n')};`;
+  db.run(query, (err) => {
+    callback(err);
+  });
+}
+
+// schedule is array of {startupid, coachid, date, duration}
 // save the result of matchmaking algorithm
-function saveMatchmaking(jsonData, dateString, callback) {
-  function save() {
-    const saveMatchmakingQuery = `
-    INSERT INTO Meetings(coach_id, startup_id, date, time, duration, coach_rating, startup_rating)
-    VALUES
-    `;
-    // filter nulls
-    const data = jsonData.filter(obj => obj.startup !== null);
-    const strings = data.map((row) => {
-      const {
-        coach, startup, duration, time,
-      } = row;
-      return `( ${coach}, ${startup}, '${dateString}', '${time}', ${duration}, -1, -1)`;
-    });
-    const query = `${saveMatchmakingQuery}${strings.join(',\n')};`;
-    db.run(query, (err) => {
-      if (err) return callback(err);
-      const q = 'UPDATE MeetingDays SET matchmakingDone = 1 WHERE date = ?';
-      db.run(q, dateString, (err2) => {
-        if (err2) return callback(err2);
-        db.parallelize();
-        return callback(null);
-      });
-      return undefined;
+// only save if the algorithm hasn't been previously saved for this date.
+// afterwards set the saved flag in the database.
+function saveMatchmakingResult(schedule, dateString, callback) {
+  function setFlag() {
+    const q = 'UPDATE MeetingDays SET matchmakingDone = 1 WHERE date = ?';
+    db.run(q, dateString, (err2) => {
+      if (err2) return callback(err2);
+      db.parallelize();
+      return callback(null);
     });
   }
+
   db.serialize(); // serialize here to make into pseudo transaction, FIXME
   // first check if algorithm has already been run on this date
   const checkQuery = 'SELECT matchmakingDone FROM MeetingDays WHERE date = ?';
   db.get(checkQuery, dateString, (err, result) => {
     if (err) return callback(err);
-    if (!result.matchmakingDone) save();
-    console.log(jsonData);
+    if (!result.matchmakingDone) {
+      saveTimetable(schedule, dateString, (err2) => {
+        if (err2) return callback(err2);
+        return setFlag();
+      });
+    }
     return undefined;
   });
 }
 
-function getTimetable(callback) {
+function getTimetable(date, callback) {
   const query = `
     SELECT CoachProfiles.name AS coach, StartupProfiles.name AS startup, time, duration, coach_id, startup_id
     FROM Meetings
     LEFT OUTER JOIN CoachProfiles ON CoachProfiles.user_id = coach_id
     LEFT OUTER JOIN StartupProfiles ON StartupProfiles.user_id = startup_id
-    WHERE date = (SELECT MAX(date) FROM Meetings);
+    WHERE date = ?;
     `;
   const meetings = [];
-  db.each(query, [], (err, row) => {
+  db.each(query, date, (err, row) => {
     if (err) return callback(err);
     const meeting = {
       coach: row.coach_id.toString(),
@@ -462,13 +639,14 @@ function getTimetable(callback) {
   });
 }
 
-// Gets timetable in form [{coach: coachName, startup: startupName, time: time, duration: duration}]
+// Param timetable in form [{coach: coachName, startup: startupName, time: time, duration: duration}]
 // Removes null meetings and saves the rest to the database
-function setTimetable(timetable, date) {
+function updateTimetable(timetable, date, errCallback) {
   const meetings = [];
-  getUserMap((keys) => {
-    for (const element in timetable) { //eslint-disable-line
-      const meeting = timetable[element];
+  getUserMap((err, keys) => {
+    if (err) return errCallback(err);
+    for (let i = 0; i < timetable.length; i += 1) {
+      const meeting = timetable[i];
       if (meeting.startup !== null) {
         meetings.push({
           coach: keys[meeting.coach],
@@ -480,54 +658,38 @@ function setTimetable(timetable, date) {
     }
     const query = `
     DELETE FROM Meetings WHERE Date = ?;`;
-    db.run(query, [date], (err) => {
-      if (err) throw err;
-      if (meetings.length > 0) {
-        var query2 = `
-        INSERT INTO Meetings (coach_id, startup_id, date, time, duration)
-        VALUES`;
-        for (const element in meetings) { //eslint-disable-line
-          const meeting = meetings[element];
-          query2 = query2 + ' (' + meeting.coach + ', ' + meeting.startup + ', ' + date + ', ' + meeting.time + ', ' + meeting.duration + '),';
-        }
-        query2.replace(/.$/, ';');
-        db.run(query2, [], (err2) => {
-          if (err2) throw err2;
-        });
-      }
+    db.run(query, [date], (err2) => {
+      if (err2) return errCallback(err2);
+      return saveTimetable(meetings, date, errCallback);
     });
+    return undefined;
   });
 }
 
-function initDB() {
-  fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
-    if (err) {
-      //TODO do something here
-      return console.log(err);
-    }
-    // split data into statements
-    const arr = data.split(';');
-
-    // ensure it is running in serialized mode
-    db.serialize(() => {
-      arr.forEach((statement) => {
-        if (statement.trim()) {
-          db.run(statement, [], (err2) => {
-            if (err2) {
-              throw err2;
-            }
-            return null;
-          });
-        }
-      });
-      testData.insertData(db, 4);
-      console.log('Data loaded');
-    });
-    return null;
+// Returns next meetingday's schedule for a user
+function getUserMeetings(userID, userType, callback) {
+  let query;
+  if (userType === 'coach') {
+    query = `
+    SELECT name, time, duration, date, "/app/imgs/coach_placeholder.png" AS image_src
+    FROM Meetings
+    LEFT OUTER JOIN Profiles ON Profiles.user_id = Meetings.startup_id
+    WHERE Meetings.coach_id = ? AND date = (SELECT MAX(date) FROM Meetings);`;
+  } else {
+    query = `
+    SELECT name, time, duration, date, "/app/imgs/coach_placeholder.png" AS image_src
+    FROM Meetings
+    LEFT OUTER JOIN Profiles ON Profiles.user_id = Meetings.coach_id
+    WHERE Meetings.startup_id = ? AND date = (SELECT MAX(date) FROM Meetings);`;
+  }
+  db.all(query, [userID], (err, result) => {
+    if (err) return callback(err);
+    return callback(err, result);
   });
 }
-initDB();
-// Get an object mapping all ids from startups and coaches and map them to their names.
+
+
+// Get an object mapping all ids from startups and coaches of the current batch and map them to their names.
 // Currently returns all coaches with any branch number
 // Checks for active = 1 for all rows
 function getMapping(callback) {
@@ -558,28 +720,124 @@ function getMapping(callback) {
 }
 
 
+function addProfile(userInfo, callback) {
+  let userType;
+  let siteAttr; // linkedin or website
+  let url; // the actual URL of the site
+  const imgURL = userInfo.img_url === undefined ? '' : 'img_url, ';
+  const values = userInfo.img_url === undefined ? '(?, ?, ?, ?, ?)' : '(?, ?, ?, ?, ?, ?)';
+
+
+  switch (userInfo.type) {
+    case 'coach':
+      userType = 'Coach';
+      siteAttr = 'linkedin';
+      url = userInfo.linkedin;
+      break;
+    case 'startup':
+      userType = 'Startup';
+      siteAttr = 'website';
+      url = userInfo.website;
+      break;
+    default:
+  }
+
+  const insertSQL = `INSERT INTO ${userType}Profiles(user_id, name, ${imgURL} description, email, ${siteAttr}) VALUES${values}`;
+  db.get('SELECT id FROM Users WHERE username=?', [userInfo.email], (err, row) => {
+    if (!err) {
+      const uid = row.id;
+      const queryParams = [uid, userInfo.name];
+
+      if (userInfo.img_url !== undefined) {
+        queryParams.push(userInfo.img_url);
+      }
+      queryParams.push(userInfo.description, userInfo.email, url);
+
+      db.run(
+        insertSQL,
+        queryParams,
+        (error) => {
+          const response = {};
+          if (!error) {
+            response.type = 'SUCCESS';
+            response.message = 'User added successfully!';
+          } else {
+            callback(error, null);
+          }
+          callback(error, response);
+        });
+    } else {
+      callback(err, null);
+    }
+  });
+}
+
+function addUser(userInfo, callback) {
+  db.get('SELECT * FROM Users WHERE username=?', [userInfo.email], (err, row) => {
+    if (row === undefined) {
+      db.get('SELECT MAX(id) AS id FROM Batches;', [], (err2, row2) => {
+        if (err2) {
+          return callback(err2, null);
+        }
+
+        const batchId = row2.id;
+        const password = bcrypt.hashSync(userInfo.password, 10);
+        let type;
+        switch (userInfo.type) {
+          case 'coach':
+            type = 1;
+            break;
+          case 'startup':
+            type = 2;
+            break;
+          default:
+        }
+
+        const insertSQL = 'INSERT INTO Users(type, username, password, batch, active) VALUES(?, ?, ?, ?, ?);';
+
+        db.run(insertSQL, [type, userInfo.email, password, batchId, 0], (e) => {
+          if (!e) {
+            addProfile(userInfo, callback);
+          } else {
+            callback(err, null);
+          }
+          return undefined;
+        });
+      });
+    } else {
+      callback(err, { type: 'ERROR', message: 'A user with that email already exists!' });
+    }
+  });
+}
+
 module.exports = {
   closeDatabase,
+  addUser,
   getUsers,
   verifyIdentity,
+  changePassword,
   getProfile,
   getRatings,
   getTimeslots,
   getStartups,
   getFeedback,
   giveFeedback,
-  saveMatchmaking,
+  saveMatchmakingResult,
   getMapping,
   createMeetingDay,
   getComingMeetingDays,
   insertAvailability,
   getTimetable,
   getActiveStatuses,
-  setTimetable,
+  updateTimetable,
   getUserMap,
   getComingDates,
   getComingTimeslots,
   getGivenFeedbacks,
   setActiveStatus,
+  getUserMeetings,
+  getMeetingDuration,
+  createDatabase,
   db,
+  updateProfile,
 };

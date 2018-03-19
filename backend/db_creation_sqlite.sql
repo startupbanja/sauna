@@ -20,8 +20,9 @@ CREATE TABLE Users(
 CREATE TABLE CoachProfiles(
     user_id INT,
     name VARCHAR(30) NOT NULL,
+    img_url VARCHAR(100) DEFAULT '../app/imgs/coach_placeholder.png',
     description TEXT,
-    company VARCHAR(20) NOT NULL,
+    company VARCHAR(20),
     email VARCHAR(50) NOT NULL,
     linkedin VARCHAR(100),
     FOREIGN KEY (user_id) REFERENCES Users(id)
@@ -30,6 +31,7 @@ CREATE TABLE CoachProfiles(
 CREATE TABLE StartupProfiles(
     user_id INT,
     name VARCHAR(30) NOT NULL,
+    img_url VARCHAR(100) DEFAULT '../app/imgs/coach_placeholder.png',
     description TEXT,
     email VARCHAR(50) NOT NULL,
     website VARCHAR(100),
@@ -37,9 +39,16 @@ CREATE TABLE StartupProfiles(
 );
 
 CREATE TEMP VIEW IF NOT EXISTS Profiles AS
-SELECT user_id, name, description, email, website, NULL AS company, NULL AS linkedin FROM StartupProfiles
+SELECT user_id, name, img_url, description, email, website, NULL AS company, NULL AS linkedin FROM StartupProfiles
 	UNION ALL
-SELECT user_id, name, description, email, NULL AS website, company, linkedin FROM CoachProfiles;
+SELECT user_id, name, img_url, description, email, NULL AS website, company, linkedin FROM CoachProfiles;
+
+-- View that unifies the credentials and members.
+CREATE TEMP VIEW IF NOT EXISTS CredentialsListEntries AS
+SELECT user_id AS uid, company AS title, title AS content FROM Credentials
+	UNION ALL
+SELECT startup_id AS uid, name AS title, title AS content FROM TeamMembers;
+
 
 CREATE TABLE Credentials(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -281,12 +290,12 @@ INSERT INTO MeetingDays (date, startTime, endTime, split, matchmakingDone) VALUE
 
 INSERT INTO Meetings (coach_id, startup_id, date, time, duration, coach_rating, startup_rating) VALUES
 	(15, 7, '2017-10-03', '12:00:00', 40, 0, 1),
-	(15, 8, '2017-10-03', '12:00:00', 40, 1, 3),
-	(15, 10, '2017-10-03', '12:00:00', 40, 0, 0),
+	(15, 8, '2017-10-03', '12:40:00', 40, 1, 3),
+	(15, 10, '2017-10-03', '13:20:00', 40, 0, 0),
 	(15, 3, '2017-10-10', '12:00:00', 40, 0, 3),
-	(15, 4, '2017-10-10', '12:00:00', 40, 0, 1),
-	(15, 5, '2017-10-10', '12:00:00', 40, 2, 3),
-	(15, 6, '2017-10-10', '12:00:00', 40, 0, 3),
+	(15, 4, '2017-10-10', '12:40:00', 40, 0, 1),
+	(15, 5, '2017-10-10', '13:20:00', 40, 2, 3),
+	(15, 6, '2017-10-10', '15:20:00', 40, 0, 3),
 	(15, 7, '2017-10-10', '12:00:00', 40, 0, 1),
 	(15, 8, '2017-10-10', '12:00:00', 40, 1, 3),
 	(15, 10, '2017-10-10', '12:00:00', 40, 0, 0),

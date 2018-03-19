@@ -9,6 +9,11 @@ class TimeslotInputSet extends Component {
     super(props);
     this.handleStartChange = this.handleStartChange.bind(this);
     this.handleEndChange = this.handleEndChange.bind(this);
+    this.isUnavailable = this.isUnavailable.bind(this);
+    this.markAsUnavailable = this.markAsUnavailable.bind(this);
+    this.state = {
+      errorIn: '',
+    };
   }
 
   handleStartChange(change) {
@@ -18,6 +23,19 @@ class TimeslotInputSet extends Component {
     this.props.onChange('end', change);
   }
 
+  isUnavailable() {
+    return this.props.start === this.props.end;
+  }
+  markAsUnavailable(type) {
+    if (type === 'start') {
+      this.props.onChange('start', this.props.end - this.props.start);
+      this.setState({ errorIn: 'start' });
+    } else if (type === 'end') {
+      this.props.onChange('end', this.props.start - this.props.end);
+      this.setState({ errorIn: 'end' });
+    }
+  }
+
   render() {
     return (
       <div className="timeslot-input">
@@ -25,12 +43,19 @@ class TimeslotInputSet extends Component {
           id="start"
           time={this.props.start}
           onChange={this.handleStartChange}
+          markAsUnavailable={() => this.markAsUnavailable('start')}
+          unavailable={this.isUnavailable() && (this.state.errorIn === 'start')}
         />
         <p>-</p>
         <TimeslotInputElement
           time={this.props.end}
           onChange={this.handleEndChange}
+          unavailable={this.isUnavailable() && (this.state.errorIn !== 'start')}
+          markAsUnavailable={() => this.markAsUnavailable('end')}
         />
+        <p className={`unavailable-text${(!this.isUnavailable()) ? ' invisible' : ''}`}>
+          unavailable
+        </p>
       </div>
     );
   }

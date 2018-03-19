@@ -37,11 +37,13 @@ class Timeslot extends React.Component {
     let newStart = this.state.available.start;
     let newEnd = this.state.available.end;
     if (to === 'start') {
-      newStart = Math.max(newStart + change, this.state.start);
-      newStart = Math.round(Math.min(newStart, newEnd));
+      newStart = Math.min(Math.max(newStart + change, this.state.start), this.state.end);
+      // newStart = Math.round(Math.min(newStart, newEnd));
+      newEnd = Math.max(newStart, this.state.available.end);
     } else if (to === 'end') {
-      newEnd = Math.min(newEnd + change, this.state.end);
-      newEnd = Math.round(Math.max(newEnd, newStart));
+      newEnd = Math.max(Math.min(newEnd + change, this.state.end), this.state.start);
+      // newEnd = Math.round(Math.max(newEnd, newStart));
+      newStart = Math.min(newEnd, this.state.available.start);
     }
     const newObj = { available: { start: newStart, end: newEnd } };
     this.setState(newObj);
@@ -99,9 +101,14 @@ class Timeslot extends React.Component {
       month: 'numeric',
       year: 'numeric',
     };
+    const moveToPrevClass = `glyphicon glyphicon-triangle-left${(this.props.onMoveToPrev === undefined) ? ' invisible' : ''}`;
+    const moveToNextClass = `glyphicon glyphicon-triangle-right${(this.props.onMoveToNext === undefined) ? ' invisible' : ''}`;
     return (
       <div className="container timeslot-container">
         <p className="date">{this.props.date.toLocaleDateString('en-GB', dateOptions).replace(/\//g, '.')}</p>
+        <p className="help-text help-text-center">
+          Drag from the arrow to set your availability...
+        </p>
         <TimeslotDrag
           start={this.state.start}
           end={this.state.end}
@@ -109,28 +116,27 @@ class Timeslot extends React.Component {
           onChange={this.handleChange}
           split={this.props.split}
         />
+        <p className="help-text help-text-center">...or type in manually</p>
         <TimeslotInput
           available={this.state.available}
           onChange={this.handleChange}
         />
         <div className="navigation-container">
-          {((this.props.onMoveToPrev !== undefined) || undefined)
-            && <span
-              className="glyphicon glyphicon-triangle-left"
-              onClick={this.props.onMoveToPrev}
-              role="button"
-              tabIndex={0}
-              onKeyDown={this.props.onMoveToPrev}
-            />}
+          <span
+            className={moveToPrevClass}
+            onClick={this.props.onMoveToPrev}
+            role="button"
+            tabIndex={0}
+            onKeyDown={this.props.onMoveToPrev}
+          />
           <button onClick={this.submitAvailability} className="btn btn-lg btn-major">Submit</button>
-          {((this.props.onMoveToNext !== undefined) || undefined)
-            && <span
-              className="glyphicon glyphicon-triangle-right"
-              onClick={this.props.onMoveToNext}
-              role="button"
-              tabIndex={0}
-              onKeyDown={this.props.onMoveToNext}
-            />}
+          <span
+            className={moveToNextClass}
+            onClick={this.props.onMoveToNext}
+            role="button"
+            tabIndex={0}
+            onKeyDown={this.props.onMoveToNext}
+          />
         </div>
       </div>
     );
