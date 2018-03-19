@@ -334,7 +334,10 @@ function runAlgorithm(date, callback, commit = true) {
     if (err) return callback(err);
     // Get most recent feedback ratings from all coaches, startups
     database.getRatings((err2, ratings) => {
-      if (err2) return callback(err2);
+      if (err2) {
+        console.log(err2);
+        return callback(err2);
+      }
       // Get list of all startups
       database.getStartups((err3, startupdata) => {
         if (err3) return callback(err3);
@@ -346,10 +349,9 @@ function runAlgorithm(date, callback, commit = true) {
         if (!(ratings && timeslots && startupdata)) {
           callback(false);
         }
-        const batch = 1;
         // This getMapping is only needed because we are converting the result
         // to .csv in python, TODO remove later
-        database.getMapping(batch, (mapErr, mapping) => {
+        database.getMapping((mapErr, mapping) => {
           if (mapErr) return callback(mapErr);
           console.log(mapping);
           const dataWithMapping = { data, mapping };

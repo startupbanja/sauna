@@ -332,7 +332,6 @@ function getStartups(callback) {
 }
 
 // return an array of {coach, startup, coachfeedback, startupfeedback}
-// Currently uses newest batch number TODO
 function getRatings(callback) {
   const ratings = [];
   const query = `
@@ -340,10 +339,8 @@ function getRatings(callback) {
   FROM Ratings
   INNER JOIN Users
   ON Ratings.startup_id=Users.id
-  WHERE type=2 AND active=1 AND batch IN (
-  SELECT MAX(id)
-  FROM Batches
-  );`;
+  WHERE type=2 AND active=1
+  ;`;
   // (sql, params, callback for each row, callback on complete)
   db.each(query, [], (err, row) => {
     if (err) return callback(err);
@@ -435,6 +432,7 @@ function saveMatchmaking(jsonData, dateString, callback) {
   db.get(checkQuery, dateString, (err, result) => {
     if (err) return callback(err);
     if (!result.matchmakingDone) save();
+    console.log(jsonData);
     return undefined;
   });
 }
@@ -529,13 +527,12 @@ function initDB() {
   });
 }
 initDB();
-// Get an object mapping all ids from startups and coaches of the current batch and map them to their names.
+// Get an object mapping all ids from startups and coaches and map them to their names.
 // Currently returns all coaches with any branch number
 // Checks for active = 1 for all rows
-function getMapping(batch, callback) {
+function getMapping(callback) {
   const coachType = 1;
   const startupType = 2;
-  // const coachBatch = 1;
   const result = {
     startups: {},
     coaches: {},
@@ -544,9 +541,9 @@ function getMapping(batch, callback) {
   FROM Users
   INNER JOIN Profiles
   ON Users.id = Profiles.user_id
-  WHERE active = 1 AND ((Users.type = ? AND Users.batch = ?)
+  WHERE active = 1 AND (Users.type = ?
   OR Users.type = ?);`;
-  db.each(q, [startupType, batch, coachType], (err, row) => {
+  db.each(q, [startupType, coachType], (err, row) => {
     if (err) return callback(err);
     if (row.type === startupType) {
       result.startups[row.id] = row.name;
