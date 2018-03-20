@@ -9,7 +9,7 @@
 
 .banner p {
   display: inline-block;
-  font-size: 1.5em;
+  font-size: 1.6em;
   color: var(--light-gray);
   flex-grow: 2;
   text-align: center;
@@ -29,9 +29,33 @@
 
 p.meeting-date {
   color: var(--primary-color);
-  font-size: 1.5em;
+  font-size: 1.8em;
+  font-weight: bold;
 }
 
 div.next-day-container {
   text-align: center;
+}
+
+.meeting-text {
+  font-size: 1.6em;
+  padding: 5px;
+  /* font-family: 'Ariel'; */
+}
+
+.meeting-button {
+  padding: 10px;
+  margin: 5px;
+  margin-bottom: 5%;
+}
+
+.details-list-text {
+  font-size: 1.2em;
+  text-align: left;
+}
+
+.details-list-text-missing {
+  color: var(--primary-color);
+  font-size: 1.2em;
+  text-align: left;
 }
