@@ -3,16 +3,18 @@ import PropTypes from 'prop-types';
 
 export default class DropdownList extends React.Component {
   render() {
-    const choices = this.props.choices.map(name =>
-      (
+    const choices = this.props.choices.map((name) => {
+      const cn = `btn dropdown-choice${this.props.markedChoices.includes(name) ? ' marked' : ''}`;
+      return (
         <li key={`choice-${name}`}>
           <button
-            className="btn btn-dropdown"
+            className={cn}
             type="button"
             onClick={() => this.props.onChoice(name)}
           >{name}
           </button>
-        </li>));
+        </li>);
+    });
 
     return (
       <div className="dropdown">
@@ -32,7 +34,7 @@ export default class DropdownList extends React.Component {
           <li role="separator" className="divider" />
           <li>
             <button
-              className="btn btn-dropdown"
+              className="btn dropdown-choice"
               type="button"
               onClick={() => this.props.onChoice(null)}
             >None
@@ -44,9 +46,11 @@ export default class DropdownList extends React.Component {
     );
   }
 }
-// keys is used as a key for registering change in the parent component
+// choices: list of schoices excluding the defaut None
+// markedChoices: choices to be colored differently.
 DropdownList.propTypes = {
   text: PropTypes.string.isRequired,
   onChoice: PropTypes.func.isRequired, // takes as parameter new value of cell
   choices: PropTypes.arrayOf(PropTypes.string).isRequired,
+  markedChoices: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
