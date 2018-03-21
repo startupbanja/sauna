@@ -60,10 +60,25 @@ app.post('/login', (req, res) => {
   });
 });
 
+
+// DEFAULT PASSWORD TO USE FOR ADMIN-INITIATED RESET.
+const defaultPassword = 'abc123';
+
 /**
  * Handles the requests to change password.
  */
 app.post('/changePassword', (req, res, next) => {
+  // If the initiating user is admin.
+  if (req.session.userType === 'admin') {
+    database.changePasswordAdmin(req.body.uid, defaultPassword, (err, result) => {
+      if (!err) {
+        return res.json(result);
+      }
+      return next(err);
+    });
+  }
+
+  // If the initiating user is NOT admin.
   const JSONObject = JSON.parse(req.body.data);
   const currentPassword = JSONObject.currentPassword;
   const newPassword = JSONObject.newPassword;

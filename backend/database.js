@@ -426,6 +426,20 @@ function verifyIdentity(username, password, callback) {
     });
   });
 }
+/**
+ * Changes the given user's (UID) password if the request initiator is an admin.
+ */
+function changePasswordAdmin(uid, password, callback) {
+  bcrypt.hash(password, 10, (err, hash) => {
+    db.run('UPDATE Users SET password  = ? WHERE id = ?', [hash, uid], (error) => {
+      if (error) {
+        return callback(error);
+      }
+      return callback(error, { status: 'SUCCESS', message: 'Password was successfully reset!' });
+    });
+  });
+}
+
 
 /**
  * Changes the given user's (UID) password if possible
@@ -808,6 +822,7 @@ module.exports = {
   addUser,
   getUsers,
   verifyIdentity,
+  changePasswordAdmin,
   changePassword,
   getProfile,
   getRatings,
