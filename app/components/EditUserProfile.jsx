@@ -57,6 +57,12 @@ class EditUserProfile extends Component {
   }
   handleSubmit() {
     const input = this.getInputData();
+
+    // Adds the scheme part of the URL in case it's missing.
+    if (!input.site.startsWith('http://') && !input.site.startsWith('https://')) {
+      input.site = 'http://'.concat(input.site);
+    }
+
     const toBeAdded = { uid: this.props.id, type: this.props.type };
     const dataToPass = { data: JSON.stringify(Object.assign(input, toBeAdded)) };
     this.props.handleSubmit(dataToPass);
