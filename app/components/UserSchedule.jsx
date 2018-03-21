@@ -25,6 +25,9 @@ export default class Usertimetable extends React.Component {
 
   render() {
     if (this.state.timetable === undefined) return null;
+    if (this.state.timetable.length === 0) {
+      return <p className="empty-content-text">No scheduled meetings</p>;
+    }
     const data = this.state.timetable.sort((a, b) => a.startTime - b.startTime);
     for (let i = 0; i < data.length - 1; i += 1) {
       if (data[i].endTime < data[i + 1].startTime) {
