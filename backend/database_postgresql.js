@@ -176,6 +176,17 @@ function getProfile(id, callback) {
   });
 }
 
+// Returns an array of feedbacks:
+// [{
+// date: DATE,
+// time: '',
+// meetingid: int,
+// user_id: int,
+// name: '',
+// description: '',
+// rating: int,
+// image_src: ''
+// }]
 function getFeedback(id, callback) {
   const client = getClient();
   const query = {
