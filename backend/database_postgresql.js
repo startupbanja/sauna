@@ -179,4 +179,6 @@ function getProfile(id, callback) {
 module.exports = {
   getUsers,
   getActiveStatuses,
+  setActiveStatus,
+  getProfile,
 };
