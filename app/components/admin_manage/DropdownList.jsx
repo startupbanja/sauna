@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+// component to display a dropdown list with names of startups or coahes and a default None
 export default class DropdownList extends React.Component {
   render() {
     const choices = this.props.choices.map((name) => {

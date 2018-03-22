@@ -12,7 +12,9 @@ export default class MainView extends React.Component {
     super(props);
     const contents = pageContent.getContent(this.props.type);
     this.state = {
+      // router Switch for user or admin content
       contentMap: contents.content,
+      // object linking router paths to display names in menu
       labels: contents.labels,
     };
   }

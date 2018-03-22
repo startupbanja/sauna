@@ -17,6 +17,7 @@ export default class StatusMessage extends React.Component {
   }
 
   shouldComponentUpdate(nextProps) {
+    // if the instance of message is changed, show message
     if (nextProps.message !== this.props.message) {
       this.setState({
         showMessage: true,
@@ -46,6 +47,7 @@ export default class StatusMessage extends React.Component {
 StatusMessage.propTypes = {
   message: PropTypes.shape({
     text: PropTypes.string.isRequired,
+    // type as either 'success' or 'error'
     type: PropTypes.string.isRequired,
   }),
   duration: PropTypes.number,

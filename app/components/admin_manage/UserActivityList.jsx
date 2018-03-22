@@ -10,6 +10,7 @@ class UserActivityList extends Component {
     this.userActivityChanged = this.userActivityChanged.bind(this);
   }
 
+  // when admin changes a user's status, submit the change
   userActivityChanged(newActivity, userId) {
     pageContent.fetchData('/setActiveStatus', 'POST', {
       id: userId,
