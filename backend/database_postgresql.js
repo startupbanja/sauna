@@ -101,6 +101,31 @@ function getActiveStatuses(callback) {
   });
 }
 
+// Changes active of user
+function setActiveStatus(id, active, callback) {
+  const client = getClient();
+  const query = {
+    name: 'set-activeStatus',
+    text: `
+    UPDATE Users
+    SET active = $1
+    WHERE id = $2;`,
+    values: [active, id],
+  };
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2, res) => {
+        if (err2) callback(err2);
+        else {
+          callback(err2, { status: 'success' });
+        }
+        client.end();
+      });
+    }
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
