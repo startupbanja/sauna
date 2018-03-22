@@ -176,9 +176,47 @@ function getProfile(id, callback) {
   });
 }
 
+function getFeedback(id, callback) {
+  const client = getClient();
+  const query = {
+    name: 'get-feedback',
+    text: `
+      SELECT date, time, id AS meetingId, user_id, name, description, rating, img_url AS image_src
+      FROM
+        (SELECT date, time, id,
+            CASE
+              WHEN coach_id = $1 THEN startup_id
+              WHEN startup_id = $1 THEN coach_id
+            END user_id,
+            CASE
+              WHEN coach_id = $1 THEN coach_rating
+              WHEN startup_id = $1 THEN startup_rating
+            END rating
+          FROM Meetings
+          WHERE (coach_id = $1 OR startup_id = $1) AND date =
+            (SELECT MAX(date) FROM Meetings WHERE (coach_id = $1 OR startup_id = $1) AND date < current_date))
+          AS Subquery
+        NATURAL JOIN Profiles;`,
+    values: [id],
+  };
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2, res) => {
+        if (err2) callback(err2);
+        else {
+          callback(err2, res.rows);
+        }
+        client.end();
+      });
+    }
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
   setActiveStatus,
   getProfile,
+  getFeedback,
 };
