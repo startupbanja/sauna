@@ -7,7 +7,7 @@ class UserListItem extends Component {
     return (
       /* eslint-disable */
       <div className="fullwidth list-text-style" >
-        <img className="list-avatar img-responsive" src={this.props.imageSrc} alt="" />
+        <img className="list-avatar img-responsive" src={this.props.imageSrc || defaultImg} alt="" />
         <div>
           <div>
             <span className="list-header">{this.props.name}</span>
@@ -23,7 +23,7 @@ class UserListItem extends Component {
 }
 
 UserListItem.defaultProps = {
-  imageSrc: defaultImg,
+  imageSrc: null,
   description: 'Description is not available.',
 };
 

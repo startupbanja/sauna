@@ -130,7 +130,7 @@ app.get('/users', (req, res, next) => {
         id: userData.id,
         name: user,
         description: userData.description,
-        img: '../app/imgs/coach_placeholder.png',
+        img: userData.img_url,
       };
       userArray.push(userObj);
     }
