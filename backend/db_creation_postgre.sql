@@ -7,26 +7,14 @@ CREATE TABLE Users(
   active BOOLEAN NOT NULL
 );
 
-CREATE TABLE CoachProfiles(
+CREATE TABLE Profiles(
   user_id INT REFERENCES Users(id),
   name VARCHAR NOT NULL,
   description VARCHAR,
+  img_url VARCHAR DEFAULT '../app/imgs/coach_placeholder.png',
   title VARCHAR,
-  linkedin VARCHAR
+  website VARCHAR
 );
-
-CREATE TABLE StartupProfiles(
-    user_id INT REFERENCES Users(id),
-    name VARCHAR NOT NULL,
-    description VARCHAR,
-    website VARCHAR
-);
-
--- View for selecting all profiles
-CREATE VIEW Profiles AS
-SELECT user_id, name, description, website, NULL AS title, NULL AS linkedin FROM StartupProfiles
-  UNION ALL
-SELECT user_id, name, description, NULL AS website, title, linkedin FROM CoachProfiles;
 
 CREATE TABLE Credentials(
     id SERIAL PRIMARY KEY,
