@@ -18,11 +18,13 @@ export default class UserProfile extends React.Component {
           canModify={this.props.canModify}
           onModifyClick={this.props.onModifyClick}
         />
-        <ul className="profileLinks">
-          <li>
-            {siteName}: <a href={this.props.linkedIn}>{this.props.linkedIn}</a>
-          </li>
-        </ul>
+        {((this.props.linkedIn || null) &&
+          <ul className="profileLinks">
+            <li>
+              {siteName}: <a href={this.props.linkedIn}>{this.props.linkedIn}</a>
+            </li>
+          </ul>
+        )}
         <hr />
         <div className="userDescription">
           <p>

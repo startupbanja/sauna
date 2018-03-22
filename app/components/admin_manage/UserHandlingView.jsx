@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import UserActivityList from './UserActivityList';
 import pageContent from '../pageContent';
 import '../../styles/user_handling_style.css';
@@ -10,7 +9,9 @@ class UserHandlingView extends Component {
     super(props);
     this.fetchData = this.fetchData.bind(this);
     this.state = {
+      // array of all startups in objects {active, id, name}
       startups: undefined,
+      // array of all coaches in objects {active, id, name}
       coaches: undefined,
     };
   }
@@ -18,7 +19,6 @@ class UserHandlingView extends Component {
   componentDidMount() {
     this.fetchData();
   }
-
 
   fetchData() {
     pageContent.fetchData('/activeStatuses', 'GET', {})
@@ -30,6 +30,7 @@ class UserHandlingView extends Component {
       });
   }
 
+  // when activity is changed and submitted successfully, update state
   handleActivityChanged(newActivity, userId, userType) {
     if (userType === 'startup') {
       const index = this.state.startups.findIndex(startup => startup.id === userId);
@@ -48,7 +49,6 @@ class UserHandlingView extends Component {
   render() {
     return (
       <div className="container user-handling-view">
-        {/* <link href="/app/styles/user_handling_style.css" rel="stylesheet" /> */}
         <div className="btn-container">
           <a
             className="btn btn-major"
@@ -58,13 +58,15 @@ class UserHandlingView extends Component {
           </a>
         </div>
         <div className="user-lists-container">
-          {(this.state.startups !== undefined) &&
+          {// list of startups
+            (this.state.startups !== undefined) &&
             <UserActivityList
               users={this.state.startups}
               type="startups"
               onChange={(newActivity, userId) => this.handleActivityChanged(newActivity, userId, 'startup')}
             />}
-          {(this.state.coaches !== undefined) &&
+          {// list of coaches
+            (this.state.coaches !== undefined) &&
             <UserActivityList
               users={this.state.coaches}
               type="coaches"

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-/* Component for prettier checkboxes */
+/* Component for prettier checkboxes with label */
 class CheckBox extends Component {
   constructor(props) {
     super(props);

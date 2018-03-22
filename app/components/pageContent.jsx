@@ -1,11 +1,10 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-/* import Image from './Image'; */
-import FeedbackView from './FeedbackView';
+import FeedbackView from './feedback/FeedbackView';
 import LandingPage from './landing/LandingPage';
-import UserProfilePage from './UserProfilePage';
-import UserSchedule from './UserSchedule';
-import UserList from './UserList';
+import UserProfilePage from './UserProfile/UserProfilePage';
+import UserTimetable from './timetable/UserTimetable';
+import UserList from './UserList/UserList';
 import UserCreationPage from './UserCreation/UserCreationPage';
 import App from './App';
 import MeetingDaysView from './admin_manage/MeetingDaysView';
@@ -13,9 +12,14 @@ import TimeslotView from './timeslot/TimeslotView';
 import AdminSchedules from './admin_manage/AdminSchedules';
 import UserHandlingView from './admin_manage/UserHandlingView';
 import MeetingDetailView from './admin_manage/MeetingDetailView';
-import PasswordChange from './PasswordChange';
-import AdminLandingPage from './AdminLandingPage';
+import PasswordChange from './UserProfile/PasswordChange';
+import AdminLandingPage from './landing/AdminLandingPage';
 
+// file that contains contents of the app for both users and admin
+// also contains the default gateway for fetching data from backend
+
+// guestions that will be displayed on feedback page
+// different guestions for coaches and startups
 const feedbackQuestions = {
   coach: [{
     index: 0,
@@ -37,31 +41,7 @@ const feedbackQuestions = {
   }],
 };
 
-const schedule = {
-  date: 'Wed 27.11.2017',
-  meetings: [{
-    name: 'Ilkka Paananen',
-    img: 'http://startupsauna.com/wp-content/uploads/2017/06/Ilkka-Paananen.jpg',
-    time: '10.00 - 10.40',
-  }, {
-    name: 'Juha Ruohonen',
-    img: 'http://startupsauna.com/wp-content/uploads/2017/06/Juha-Ruohonen.jpg',
-    time: '10.40 - 11.00',
-  }, {
-    name: 'Timo Ahopelto',
-    img: 'http://startupsauna.com/wp-content/uploads/2017/06/57593326324cc12c26fb3fff_Timo-Ahopelto.png',
-    time: '11.00 - 11.40',
-  }, {
-    name: 'Moaffak Ahmed',
-    img: 'http://startupsauna.com/wp-content/uploads/2017/06/Moaffak-Ahmed.jpg',
-    time: '11.40 - 12.00',
-  }, {
-    name: 'Aape Pohjavirta',
-    img: 'http://startupsauna.com/wp-content/uploads/2017/06/Aape-Pohjavirta.jpg',
-    time: '12.00 - 12.40',
-  }],
-};
-
+// react router Switch that contains all the user views
 const userContent = (
   <Switch>
     <Route path="/coaches/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />
@@ -77,7 +57,7 @@ const userContent = (
       render={({ match }) => <UserList match={match} type="Startups" />}
     />
     <Route exact path="/" component={LandingPage} />
-    <Route path="/timetable" render={() => <UserSchedule schedule={schedule} />} />
+    <Route path="/timetable" render={() => <UserTimetable />} />
     <Route path="/user" component={UserProfilePage} />
     <Route path="/feedback" render={() => <FeedbackView questions={feedbackQuestions} />} />
     <Route path="/availability" component={TimeslotView} />
@@ -85,6 +65,7 @@ const userContent = (
   </Switch>
 );
 
+// object that links router paths to their display names in menu in user side
 const userLabels = {
   '/': 'Home',
   '/timetable': 'Timetable',
@@ -95,47 +76,8 @@ const userLabels = {
   '/availability': 'Availability',
   '/change_password': 'Change password',
 };
-/* eslint-disable */
-const testSchedule = [
-{
-  coachName: 'Coach 1',
-  startUps: [{
-    startupName: 'Startup 1',
-    time: '13:00 - 13:20',
-  },
-  {
-    startupName: 'Startup 2',
-    time: '13:20 - 13:40',
-  },
-  ],
-},
-{
-  coachName: 'Coach 2',
-  startUps: [{
-    startupName: 'Startup 3',
-    time: '13:00 - 13:20',
-  },
-  {
-    startupName: 'Startup 4',
-    time: '13:20 - 13:40',
-  },
-  ],
 
-},
-{ coachName: 'Coach 3',
-  startUps: [{
-    startupName: 'Startup 5',
-    time: '13:00 - 13:20',
-  },
-  {
-    startupName: 'Startup 6',
-    time: '13:20 - 13:40',
-  },
-  ],},
-];
-
-/* eslint-enable */
-
+// react router Switch that contains all the admin views
 const adminContent = (
   <Switch>
     <Route exact path="/" component={AdminLandingPage} />
@@ -180,16 +122,18 @@ const adminContent = (
   </Switch>
 );
 
+// object that links router paths to their display names in menu in admin side
 const adminLabels = {
   '/': 'Home',
   '/coaches': 'Coaches',
   '/startups': 'Startups',
-
   '/users': 'Users',
   '/meetingDays': 'Meeting days',
   '/create_user': 'Create User',
 };
+
 // TODO change this to something better later
+// returns contents and labels for menu based on users type
 function getContent(userType) {
   if (userType === 'admin') {
     return { content: adminContent, labels: adminLabels };
@@ -197,6 +141,11 @@ function getContent(userType) {
   return { content: userContent, labels: userLabels };
 }
 
+// the default gateway to fetch data from backend
+// path as '/pathInApi'
+// methodType as either 'get' or 'post'
+// params as object
+// returns Promise with the response in JSON
 function fetchData(path, methodType, params) {
   const paramsString = Object.keys(params).map(x => `${x}=${params[x]}`).join('&');
   let query = path;
@@ -206,6 +155,7 @@ function fetchData(path, methodType, params) {
   return new Promise((resolve, reject) =>
     fetch(`/api${query}`, {
       method: methodType,
+      // make sure that the cookies will be send
       credentials: 'include',
       headers: {
         Accept: 'application/json',
@@ -213,14 +163,14 @@ function fetchData(path, methodType, params) {
       },
       body: bodyParams,
     }).then((response) => {
+      // if user is not logged in log out in App
       if (response.status === 401) {
         App.logOff();
         reject();
       } else resolve(response.json());
     })
       .catch((error) => {
-        console.log(error);
-        reject();
+        reject(error);
       }));
 }
 

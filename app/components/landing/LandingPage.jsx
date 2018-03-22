@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import $ from 'jquery';
 import BlockHeader from '../BlockHeader';
 import ComingUpCarousel from './ComingUpCarousel';
 import pageContent from '../pageContent';

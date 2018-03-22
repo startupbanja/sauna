@@ -1,7 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import pageContent from './pageContent';
-import ScheduleItem from './landing/ScheduleItem';
+import pageContent from '../pageContent';
 
 export default class Usertimetable extends React.Component {
   constructor(props) {
@@ -37,31 +35,6 @@ export default class Usertimetable extends React.Component {
           name: 'BREAK',
         });
       }
-
-      if (i > data.length - 3) continue; // eslint-disable-line
-      const scheduleItemContainers = [];
-      for (let j = 0; j < 3; j += 1) {
-        const scheduleItemData = data[i + j];
-        let scheduleItem;
-        if (scheduleItemData.name) {
-          scheduleItem = (<ScheduleItem
-            type="meeting"
-            time={{
-              start: new Date(`${this.state.date}T${scheduleItemData.startTime}`),
-              end: new Date(`${this.state.date}T${scheduleItemData.endTime}`),
-            }}
-            name={scheduleItemData.name}
-          />);
-        } else {
-          scheduleItem = (<ScheduleItem
-            type="break"
-            time={{
-              start: new Date(`${this.state.date}T${scheduleItemData.startTime}`),
-              end: new Date(`${this.state.date}T${scheduleItemData.endTime}`),
-            }}
-          />);
-        }
-      }
     }
 
     return (
@@ -83,15 +56,3 @@ export default class Usertimetable extends React.Component {
     );
   }
 }
-
-// Usertimetable.propTypes = {
-//   timetable: PropTypes.shape({
-//     meetings: PropTypes.arrayOf(PropTypes.shape({
-//       name: PropTypes.string,
-//       startTime: PropTypes.string,
-//       endTime: PropTypes.string,
-//       img: PropTypes.string,
-//     })).isRequired,
-//     date: PropTypes.string,
-//   }).isRequired,
-// };

@@ -23,10 +23,8 @@ export default class UserCreationPage extends React.Component {
   handleSubmit(data) {
     const obj = Object.assign({}, data);
     obj.type = this.state.type;
-    console.log(data);
     pageContent.fetchData('/create_user/', 'POST', obj)
       .then((response) => {
-        console.log(response);
         this.showMessage(response.type, response.message);
       });// .catch(this.showMessage('ERROR', 'Could not connect to backend!'));
   }

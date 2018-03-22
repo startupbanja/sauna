@@ -646,6 +646,7 @@ INSERT INTO Meetings (coach_id, startup_id, date, time, duration, coach_rating, 
 INSERT INTO Credentials (user_id, company, title) VALUES
 	(14, 'Company', 'Title'),
 	(15, 'Company', 'Title'),
+	(15, 'Company2', 'Title2'),
 	(16, 'Company', 'Title'),
 	(17, 'Company', 'Title'),
 	(18, 'Company', 'Title'),

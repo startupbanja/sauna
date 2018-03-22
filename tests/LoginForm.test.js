@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
-import LoginForm from '../app/components/LoginForm';
+import LoginForm from '../app/components/login/LoginForm';
 
 describe('function calls', () => {
   const onSubmit = jest.fn();
