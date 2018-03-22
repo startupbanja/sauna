@@ -1,11 +1,10 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-/* import Image from './Image'; */
-import FeedbackView from './FeedbackView';
+import FeedbackView from './feedback/FeedbackView';
 import LandingPage from './landing/LandingPage';
-import UserProfilePage from './UserProfilePage';
-import UserSchedule from './UserSchedule';
-import UserList from './UserList';
+import UserProfilePage from './UserProfile/UserProfilePage';
+import UserTimetable from './timetable/UserTimetable';
+import UserList from './UserList/UserList';
 import UserCreationPage from './UserCreation/UserCreationPage';
 import App from './App';
 import MeetingDaysView from './admin_manage/MeetingDaysView';
@@ -13,8 +12,8 @@ import TimeslotView from './timeslot/TimeslotView';
 import AdminSchedules from './admin_manage/AdminSchedules';
 import UserHandlingView from './admin_manage/UserHandlingView';
 import MeetingDetailView from './admin_manage/MeetingDetailView';
-import PasswordChange from './PasswordChange';
-import AdminLandingPage from './AdminLandingPage';
+import PasswordChange from './UserProfile/PasswordChange';
+import AdminLandingPage from './landing/AdminLandingPage';
 
 const feedbackQuestions = {
   coach: [{
@@ -77,7 +76,7 @@ const userContent = (
       render={({ match }) => <UserList match={match} type="Startups" />}
     />
     <Route exact path="/" component={LandingPage} />
-    <Route path="/timetable" render={() => <UserSchedule schedule={schedule} />} />
+    <Route path="/timetable" render={() => <UserTimetable schedule={schedule} />} />
     <Route path="/user" component={UserProfilePage} />
     <Route path="/feedback" render={() => <FeedbackView questions={feedbackQuestions} />} />
     <Route path="/availability" component={TimeslotView} />

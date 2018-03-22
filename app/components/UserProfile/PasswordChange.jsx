@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Button from './Button';
-import StatusMessage from './StatusMessage';
-import pageContent from './pageContent';
+import Button from '../Button';
+import StatusMessage from '../StatusMessage';
+import pageContent from '../pageContent';
 
 class PasswordChange extends Component {
   constructor(props) {

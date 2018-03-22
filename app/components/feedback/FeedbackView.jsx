@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FeedbackForm from './FeedbackForm';
-import Button from './Button';
-import pageContent from './pageContent';
-import StatusMessage from './StatusMessage';
+import Button from '../Button';
+import pageContent from '../pageContent';
+import StatusMessage from '../StatusMessage';
 
 
 // This is the class that shows the whole page content after login

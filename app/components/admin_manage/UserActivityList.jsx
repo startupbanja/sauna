@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import CheckBox from '../CheckBox';
+import CheckBox from './CheckBox';
 import pageContent from '../pageContent';
 
 /* List active and inactive users and changes their statuses */

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import BlockHeader from './BlockHeader';
+import BlockHeader from '../BlockHeader';
 
 
 // React Component for the list of credentials on a user's profile page.

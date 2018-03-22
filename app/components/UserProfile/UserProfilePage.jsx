@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import UserProfile from './UserProfile';
 import EditUserProfile from './EditUserProfile';
-import StatusMessage from './StatusMessage';
-import pageContent from './pageContent';
+import StatusMessage from '../StatusMessage';
+import pageContent from '../pageContent';
 
 class UserProfilePage extends Component {
   constructor(props) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import pageContent from './pageContent';
+import pageContent from '../pageContent';
 
 export default class Usertimetable extends React.Component {
   constructor(props) {

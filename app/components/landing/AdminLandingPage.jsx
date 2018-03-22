@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import BlockHeader from './BlockHeader';
-import pageContent from './pageContent';
+import BlockHeader from '../BlockHeader';
+import pageContent from '../pageContent';
 
 class AdminLandingPage extends Component {
   constructor(props) {
