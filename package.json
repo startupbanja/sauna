@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack",
-    "start": "npm run eslint && webpack-dev-server",
+    "build": "webpack --config webpack.prod.js",
+    "start": "npm run eslint && webpack-dev-server --config webpack.dev.js",
     "eslint": "eslint --ext .jsx --ext .js app/",
     "test": "jest tests/*"
   },
@@ -53,6 +53,7 @@
     "react-test-renderer": "^16.2.0",
     "style-loader": "^0.20.3",
     "webpack": "^3.8.1",
-    "webpack-dev-server": "^2.9.4"
+    "webpack-dev-server": "^2.9.4",
+    "webpack-merge": "^4.1.2"
   }
 }
