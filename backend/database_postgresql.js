@@ -126,6 +126,56 @@ function setActiveStatus(id, active, callback) {
   });
 }
 
+// Returns JSON containing profile information based on id:
+// {
+// type: 'startup'/'coach',
+// name: '',
+// img_url: '',
+// description: '',
+// email: '',
+// linkedin: '',
+// credentials: [{company: '', position: ''}],
+// }
+function getProfile(id, callback) {
+  const client = getClient();
+  const info = {};
+  const query = {
+    name: 'get-profile',
+    text: `
+    SELECT name, img_url, description, email, website, CredentialsListEntries.title, CredentialsListEntries.content
+    FROM Users
+    LEFT OUTER JOIN Profiles ON Users.id = Profiles.user_id
+    LEFT OUTER JOIN CredentialsListEntries ON Users.id = CredentialsListEntries.user_id
+    WHERE Users.id = $1;`,
+    values: [id],
+  };
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2, res) => {
+        if (err2) callback(err2);
+        else {
+          res.rows.forEach((row) => {
+            if (info.name === undefined) {
+              info.type = row.type === 1 ? 'coach' : 'startup';
+              info.name = row.name;
+              info.img_url = row.img_url;
+              info.description = row.description;
+              info.email = row.email;
+              info.linkedIn = row.website;
+              info.credentials = [{ company: row.title, position: row.content }];
+            } else {
+              info.credentials.push({ company: row.title, position: row.content });
+            }
+          });
+          callback(err2, info);
+        }
+        client.end();
+      });
+    }
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
