@@ -72,34 +72,36 @@ app.post('/changePassword', (req, res, next) => {
   if (req.session.userType === 'admin') {
     database.changePasswordAdmin(req.body.uid, defaultPassword, (err, result) => {
       if (!err) {
-        return res.json(result);
+        res.json(result);
+      } else {
+        return next(err);
       }
-      return next(err);
     });
-  }
-
-  // If the initiating user is NOT admin.
-  const JSONObject = JSON.parse(req.body.data);
-  const currentPassword = JSONObject.currentPassword;
-  const newPassword = JSONObject.newPassword;
-  const repeatedPassword = JSONObject.repeatedPassword;
-
-  if (newPassword === repeatedPassword) {
-    database.changePassword(
-      req.session.userID,
-      currentPassword,
-      newPassword,
-      (err, response) => {
-        if (!err) {
-          res.json(response);
-        } else return next(err);
-      }
-    );
   } else {
-    res.json({
-      status: 'ERROR',
-      message: 'The new passwords did not match!',
-    });
+
+    // If the initiating user is NOT admin.
+    const JSONObject = JSON.parse(req.body.data);
+    const currentPassword = JSONObject.currentPassword;
+    const newPassword = JSONObject.newPassword;
+    const repeatedPassword = JSONObject.repeatedPassword;
+
+    if (newPassword === repeatedPassword) {
+      database.changePassword(
+        req.session.userID,
+        currentPassword,
+        newPassword,
+        (err, response) => {
+          if (!err) {
+            res.json(response);
+          } else return next(err);
+        }
+      );
+    } else {
+      res.json({
+        status: 'ERROR',
+        message: 'The new passwords did not match!',
+      });
+    }
   }
 });
 

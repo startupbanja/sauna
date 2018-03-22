@@ -2,12 +2,17 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import CheckBox from '../CheckBox';
 import pageContent from '../pageContent';
+import StatusMessage from '../StatusMessage';
 
 /* List active and inactive users and changes their statuses */
 class UserActivityList extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      message: undefined,
+    };
     this.userActivityChanged = this.userActivityChanged.bind(this);
+    this.resetPassword = this.resetPassword.bind(this);
   }
 
   userActivityChanged(newActivity, userId) {
@@ -21,21 +26,36 @@ class UserActivityList extends Component {
     });
   }
 
+  resetPassword(id) {
+    pageContent.fetchData('/changePassword', 'POST', { uid: id }).then((res) => {
+      this.setState({
+        message: {
+          type: res.status.toLowerCase(),
+          text: res.message,
+        },
+      });
+    });
+  }
+
   render() {
     return (
       <div className="user-activity-list-container">
+        <StatusMessage message={this.state.message} />
         <h4 className="header">
           <span className="number">{this.props.users.filter(user => user.active).length}</span>{` active ${this.props.type}`}
         </h4>
         <hr />
         {this.props.users.map(user =>
           (
-            <CheckBox
-              key={user.id}
-              label={user.name}
-              checked={user.active === 1}
-              onChange={checked => this.userActivityChanged(checked, user.id)}
-            />
+            <span key={user.id}>
+              <CheckBox
+                key={user.id}
+                label={user.name}
+                checked={user.active === 1}
+                onChange={checked => this.userActivityChanged(checked, user.id)}
+              />
+              <button className="btn btn-major" style={{ display: 'inline' }} onClick={() => this.resetPassword(user.id)}>Reset password</button>
+            </span>
           ))}
       </div>
     );
