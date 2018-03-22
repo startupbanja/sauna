@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import pageContent from './pageContent';
 import ScheduleItem from './landing/ScheduleItem';
 import pointImg from '../imgs/piste2.png';
@@ -41,7 +40,6 @@ export default class Usertimetable extends React.Component {
       }
 
       if (i > data.length - 3) continue; // eslint-disable-line
-      const scheduleItemContainers = [];
       for (let j = 0; j < 3; j += 1) {
         const scheduleItemData = data[i + j];
         let scheduleItem;
@@ -85,15 +83,3 @@ export default class Usertimetable extends React.Component {
     );
   }
 }
-
-// Usertimetable.propTypes = {
-//   timetable: PropTypes.shape({
-//     meetings: PropTypes.arrayOf(PropTypes.shape({
-//       name: PropTypes.string,
-//       startTime: PropTypes.string,
-//       endTime: PropTypes.string,
-//       img: PropTypes.string,
-//     })).isRequired,
-//     date: PropTypes.string,
-//   }).isRequired,
-// };
