@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import pageContent from './pageContent';
 import ScheduleItem from './landing/ScheduleItem';
+import pointImg from '../imgs/piste2.png';
+import defaultImg from '../imgs/coach_placeholder.png';
 
 export default class Usertimetable extends React.Component {
   constructor(props) {
@@ -70,13 +72,13 @@ export default class Usertimetable extends React.Component {
         {this.state.timetable.map(b => (
           <div id="figure" key={b.name}>
             <div>
-              <img className="timetable-list-avatar" src={b.image} alt="" />
+              <img className="timetable-list-avatar" src={b.image || defaultImg} alt="" />
               <figcaption className="timetable-name-style">{b.name}</figcaption>
               <div className="timetable-text-style">
                 {b.startTime.substr(0, 5)} - {b.endTime.substr(0, 5)}
               </div>
             </div>
-            <img src="../app/imgs/piste2.png" alt="" className="timetable-divider" />
+            <img src={pointImg} alt="" className="timetable-divider" />
           </div>
         ))}
       </div>

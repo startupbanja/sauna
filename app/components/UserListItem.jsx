@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import defaultImg from '../imgs/coach_placeholder.png';
 
 class UserListItem extends Component {
   render() {
@@ -22,7 +23,7 @@ class UserListItem extends Component {
 }
 
 UserListItem.defaultProps = {
-  imageSrc: '../app/imgs/coach_placeholder.png',
+  imageSrc: defaultImg,
   description: 'Description is not available.',
 };
 

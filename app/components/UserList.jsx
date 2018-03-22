@@ -2,7 +2,6 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import UserListItem from './UserListItem';
-// import Image from './Image';
 import pageContent from './pageContent';
 
 /*
