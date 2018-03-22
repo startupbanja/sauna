@@ -22,6 +22,7 @@ function getClient() {
   return new pg.Client(params);
 }
 
+// Returns JSON containing {name: {description: '', img_url: '', id: int}}
 function getUsers(type, includeId, callback) {
   const client = getClient();
   const users = {};
@@ -54,3 +55,53 @@ function getUsers(type, includeId, callback) {
     }
   });
 }
+
+// Returns id, name and active status for all coaches and startups in form
+// {
+// coaches: [{name: '', id: int, active: true/false}]
+// startups: [{name: '', id: int, active: true/false}]
+// }
+function getActiveStatuses(callback) {
+  const client = getClient();
+  const data = { coaches: [], startups: [] };
+  const query = {
+    name: 'get-activeStatuses',
+    text: `
+    SELECT user_id, name, type, active
+    FROM Users
+    LEFT OUTER JOIN Profiles ON Users.id = Profiles.user_id;`,
+    values: [],
+  };
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2, res) => {
+        if (err2) callback(err2);
+        else {
+          res.rows.forEach((row) => {
+            if (row.type === 1) {
+              data.coaches.push({
+                id: row.user_id,
+                name: row.name,
+                active: row.active,
+              });
+            } else if (row.type === 2) {
+              data.startups.push({
+                id: row.user_id,
+                name: row.name,
+                active: row.active,
+              });
+            }
+          });
+          callback(err2, data);
+        }
+        client.end();
+      });
+    }
+  });
+}
+
+module.exports = {
+  getUsers,
+  getActiveStatuses,
+};
