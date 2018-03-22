@@ -8,7 +8,7 @@ CREATE TABLE Users(
 );
 
 CREATE TABLE Profiles(
-  user_id INT REFERENCES Users(id),
+  user_id INT PRIMARY KEY REFERENCES Users(id),
   name VARCHAR NOT NULL,
   description VARCHAR,
   img_url VARCHAR DEFAULT '../app/imgs/coach_placeholder.png',
@@ -68,5 +68,6 @@ CREATE TABLE Ratings(
     coach_id INT REFERENCES Users(id),
     startup_id INT REFERENCES Users(id),
     coach_rating INT,
-    startup_rating INT
+    startup_rating INT,
+    PRIMARY KEY (coach_id, startup_id)
 );
