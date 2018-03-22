@@ -30,7 +30,11 @@ export default class ProfileInfoHeader extends React.Component {
     }
     return (
       <div className="userInfoHeader row">
-        <img src={this.props.imgSrc || defaultImg} alt="Username" className="userImage img-responsive col-xs-5" />
+        <img
+          src={this.props.imgSrc || defaultImg}
+          alt="Username"
+          className="userImage img-responsive col-xs-5"
+        />
         <div className="mainInfoSection col-xs-7">
           {modifyBtn}
           <h4 id="username">{this.props.name}</h4>

@@ -15,7 +15,8 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "\\.(css)$": "<rootDir>/tests/__mocks__/styleMock.js"
+      "\\.(css)$": "<rootDir>/tests/__mocks__/styleMock.js",
+      "\\.(png|jpg|svg|gif)$": "<rootDir>/tests/__mocks__/imageMock.js"
     }
   },
   "author": "",
