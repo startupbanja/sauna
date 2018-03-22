@@ -3,7 +3,6 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Menu from './Menu';
 import pageContent from './pageContent';
-import LandingPage from './landing/LandingPage';
 import LoginView from './LoginView';
 
 // This is the class that shows the whole page content after login

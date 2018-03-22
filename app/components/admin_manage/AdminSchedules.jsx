@@ -49,8 +49,7 @@ export default class AdminSchedules extends React.Component {
 
 
   handleSaveClick() {
-    this.saveTimetable((res) => {
-      console.log(res);
+    this.saveTimetable(() => {
       this.setState({ editable: false, oldSchedule: null });
     });
   }

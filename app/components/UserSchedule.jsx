@@ -1,7 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import pageContent from './pageContent';
-import ScheduleItem from './landing/ScheduleItem';
 
 export default class Usertimetable extends React.Component {
   constructor(props) {
@@ -36,31 +34,6 @@ export default class Usertimetable extends React.Component {
           endTime: data[i + 1].startTime,
           name: 'BREAK',
         });
-      }
-
-      if (i > data.length - 3) continue; // eslint-disable-line
-      const scheduleItemContainers = [];
-      for (let j = 0; j < 3; j += 1) {
-        const scheduleItemData = data[i + j];
-        let scheduleItem;
-        if (scheduleItemData.name) {
-          scheduleItem = (<ScheduleItem
-            type="meeting"
-            time={{
-              start: new Date(`${this.state.date}T${scheduleItemData.startTime}`),
-              end: new Date(`${this.state.date}T${scheduleItemData.endTime}`),
-            }}
-            name={scheduleItemData.name}
-          />);
-        } else {
-          scheduleItem = (<ScheduleItem
-            type="break"
-            time={{
-              start: new Date(`${this.state.date}T${scheduleItemData.startTime}`),
-              end: new Date(`${this.state.date}T${scheduleItemData.endTime}`),
-            }}
-          />);
-        }
       }
     }
 

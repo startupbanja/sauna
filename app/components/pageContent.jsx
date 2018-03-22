@@ -219,8 +219,7 @@ function fetchData(path, methodType, params) {
       } else resolve(response.json());
     })
       .catch((error) => {
-        console.log(error);
-        reject();
+        reject(error);
       }));
 }
 

@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import StatusMessage from '../StatusMessage';
-
 // check validity for email, TODO palceholder
 function isValidEmail(string) {
   return string.includes('@');

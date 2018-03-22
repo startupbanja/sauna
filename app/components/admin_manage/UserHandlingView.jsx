@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import UserActivityList from './UserActivityList';
 import pageContent from '../pageContent';
 import '../../styles/user_handling_style.css';
