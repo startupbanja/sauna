@@ -47,7 +47,7 @@ class UserProfilePage extends Component {
       .then((responseJSON) => {
         let link = responseJSON.linkedIn;
 
-        if (!link.startsWith('http://') && !link.startsWith('https://')) {
+        if (link && !link.startsWith('http://') && !link.startsWith('https://')) {
           link = 'http://'.concat(link);
         }
 
