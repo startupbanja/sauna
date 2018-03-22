@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import UserListItem from './UserListItem';
-import pageContent from './pageContent';
+import pageContent from '../pageContent';
 
 /*
   Component to fetch and display lists of startups or coaches

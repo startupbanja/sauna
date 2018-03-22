@@ -97,7 +97,7 @@ function translate(data, times, firstColumn, editable, editfunc, allUsers) {
   });
   let i = 0;
   // map the data into jsx elements
-  const table = timesCombined.map((arr, index) => {
+  const table = timesCombined.map((arr) => {
     // key is either coach or startup, which one is on the leftmost column
     const key = arr[0];
     const row = arr[1];

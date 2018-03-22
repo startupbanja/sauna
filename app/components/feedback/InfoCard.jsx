@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import defaultImg from '../imgs/coach_placeholder.png';
+import defaultImg from '../../imgs/coach_placeholder.png';
 
 export default class InfoCard extends React.Component {
   render() {

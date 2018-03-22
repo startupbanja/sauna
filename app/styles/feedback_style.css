@@ -86,3 +86,7 @@
 .inactive {
   background: #545454 !important;
 }
+
+.feedback-question-label {
+  font-weight: 600;
+}

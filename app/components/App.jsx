@@ -1,5 +1,5 @@
 import React from 'react';
-import LoginView from './LoginView';
+import LoginView from './login/LoginView';
 import MainView from './MainView';
 import '../styles/login_page.css';
 import '../styles/adminViews.css';

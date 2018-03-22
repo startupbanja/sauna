@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import saunaLogo from '../imgs/Startupsaunatext_white.svg';
+import saunaLogo from '../../imgs/Startupsaunatext_white.svg';
 
 
 export default class LoginForm extends React.Component {

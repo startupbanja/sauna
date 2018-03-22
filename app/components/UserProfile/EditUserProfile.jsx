@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Button from './Button';
+import Button from '../Button';
 
 class EditUserProfile extends Component {
   constructor(props) {
@@ -103,7 +103,7 @@ class EditUserProfile extends Component {
             <div id="credentialFieldsContainer">
               {this.state.credentials.map(value =>
                 (
-                  <div key={`cred${value}`} className="credentialField">
+                  <div key={`cred${value.company}`} className="credentialField">
                     <input className="edit-text" key={`company${value}`} type="text" defaultValue={value.company} />
                     <input className="edit-text" key={`position${value}`} type="text" defaultValue={value.position} />
                   </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
-import FeedbackForm from '../app/components/FeedbackForm';
+import FeedbackForm from '../app/components/feedback/FeedbackForm';
 
 describe('function calls', () => {
   describe('when rating is clicked', () => {

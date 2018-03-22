@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import defaultImg from '../imgs/coach_placeholder.png';
+import defaultImg from '../../imgs/coach_placeholder.png';
 
 class UserListItem extends Component {
   render() {
