@@ -151,7 +151,9 @@ function getProfile(id, callback) {
         info.email = row.email;
         info.linkedIn = row.linkedin !== null ? row.linkedin : row.website;
         info.company = row.currentCompany;
-        info.credentials = [{ company: row.title, position: row.content }];
+        if (row.title || row.content) {
+          info.credentials = [{ company: row.title, position: row.content }];
+        }
       } else {
         info.credentials.push({ company: row.title, position: row.content });
       }

@@ -40,7 +40,8 @@ export default class ProfileCredentialList extends React.Component {
         <ul className="credentialList">
           {credentials}
         </ul>);
-    }
+    } else return null;
+
     const header = this.props.type === 'coach' ? 'Credentials' : 'Team Members';
     return (
       <div className="credentials">
