@@ -101,3 +101,11 @@
 .credentialField {
   border-top:1px solid #aaa;
 }
+
+.control-buttons {
+  text-align: center;
+}
+
+.control-buttons button {
+  margin: 5px;
+}

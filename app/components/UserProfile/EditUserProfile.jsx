@@ -117,16 +117,18 @@ class EditUserProfile extends Component {
           <span className="glyphicon glyphicon-plus-sign" />
           Add a {removeText}
         </button>
-        <Button
-          className="btn btn-lg ffbutton-red"
-          onClick={() => this.handleSubmit()}
-          text="Save"
-        />
-        <Button
-          className="btn btn-lg ffbutton-red"
-          text="Cancel"
-          onClick={() => this.props.cancel()}
-        />
+        <div className="control-buttons">
+          <Button
+            className="btn btn-lg btn-major"
+            onClick={() => this.handleSubmit()}
+            text="Save"
+          />
+          <Button
+            className="btn btn-lg btn-major"
+            text="Cancel"
+            onClick={() => this.props.cancel()}
+          />
+        </div>
       </div>
     );
   }
