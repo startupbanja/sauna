@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../Button';
 
+// view for editing users' profile
 class EditUserProfile extends Component {
   constructor(props) {
     super(props);
@@ -133,11 +134,10 @@ class EditUserProfile extends Component {
 
 EditUserProfile.propTypes = {
   type: PropTypes.string.isRequired,
-  id: PropTypes.number, // eslint-disable-line react/no-unused-prop-types
+  id: PropTypes.number,
   name: PropTypes.string.isRequired,
   imgSrc: PropTypes.string.isRequired,
   linkedIn: PropTypes.string,
-  // imgSrc: PropTypes.string,
   description: PropTypes.string,
   titles: PropTypes.arrayOf(PropTypes.string),
   credentials: PropTypes.arrayOf(PropTypes.shape({
@@ -151,7 +151,6 @@ EditUserProfile.propTypes = {
 EditUserProfile.defaultProps = {
   id: undefined,
   linkedIn: '',
-  // imgSrc: '../app/imgs/coach_placeholder.png',
   description: '',
   titles: [],
   credentials: [],

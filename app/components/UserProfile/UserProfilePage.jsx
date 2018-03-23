@@ -5,6 +5,9 @@ import EditUserProfile from './EditUserProfile';
 import StatusMessage from '../StatusMessage';
 import pageContent from '../pageContent';
 
+// Component to either display user's profile or editing view
+// fetches the data from backend and provides that for UserProfile and EditUserProfile
+// also subbmits possible changes
 class UserProfilePage extends Component {
   constructor(props) {
     super(props);
@@ -34,6 +37,7 @@ class UserProfilePage extends Component {
     this.fetchData();
   }
 
+  // change between editing and displaying
   toggleEdit() {
     this.setState({
       modifying: !this.state.modifying,

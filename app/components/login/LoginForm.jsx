@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 
+// Component for displaying form for login and an error message if necessary
 export default class LoginForm extends React.Component {
   constructor(props) {
     super(props);

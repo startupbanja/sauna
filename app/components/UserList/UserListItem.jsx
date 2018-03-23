@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+// individual item in UserList displaying info about the user
 class UserListItem extends Component {
   render() {
     return (
-      /* eslint-disable */
       <div className="fullwidth list-text-style" >
         <img className="list-avatar img-responsive" src={this.props.imageSrc} alt="" />
         <div>
@@ -16,7 +16,6 @@ class UserListItem extends Component {
           </div>
         </div>
       </div>
-      /* eslint-enable */
     );
   }
 }

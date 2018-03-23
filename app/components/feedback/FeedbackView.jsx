@@ -5,16 +5,16 @@ import Button from '../Button';
 import pageContent from '../pageContent';
 import StatusMessage from '../StatusMessage';
 
-
-// This is the class that shows the whole page content after login
-// Currently shows a menubar at the top and content below it
+// View to display all feedbacks for previous meetings
 export default class FeedbackView extends React.Component {
   constructor(props) {
     super(props);
     this.getData = this.getData.bind(this);
     this.submitCurrentForm = this.submitCurrentForm.bind(this);
     this.state = {
+      // object containing info about the user to give feedback to and the currenti rating if exist
       data: undefined,
+      // the type of the logged in user
       userType: 'coach',
       index: 0,
       message: undefined,
@@ -42,12 +42,14 @@ export default class FeedbackView extends React.Component {
       meetingId: this.state.data[this.state.index].meetingId,
       rating: newRating,
     }).then((result) => {
+      // if uploaded successfully update state
       if (result.status === 'success') {
         this.setState((oldState) => {
           const newData = oldState.data.slice();
           newData[this.state.index].rating = newRating;
           return {
             data: newData,
+            // display StatusMessage on success
             message: {
               text: 'Saved',
               type: 'success',
@@ -56,6 +58,7 @@ export default class FeedbackView extends React.Component {
         });
       } else {
         this.setState({
+          // display StatusMessage on error
           message: {
             text: 'Error when saving the feedback',
             type: 'error',
@@ -65,6 +68,7 @@ export default class FeedbackView extends React.Component {
     });
   }
 
+  // navigate between feedbacks
   changeForm(newI) {
     if (newI < 0 || newI > this.state.data.length - 1) return false;
     this.setState({

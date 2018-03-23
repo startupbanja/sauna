@@ -1,10 +1,17 @@
 import React from 'react';
 import pageContent from '../pageContent';
 
+// component for displaying users' upcoming meetings and their timetable
 export default class Usertimetable extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { timetable: undefined, date: undefined };
+    this.state = {
+      // array of objects containing data about distinct meetings
+      // {endTime, image, name, startTime}
+      timetable: undefined,
+      // meeting date as 'YYYY-MM-DD'
+      date: undefined,
+    };
   }
 
   componentDidMount() {
@@ -27,6 +34,7 @@ export default class Usertimetable extends React.Component {
       return <p className="empty-content-text">No scheduled meetings</p>;
     }
     const data = this.state.timetable.sort((a, b) => a.startTime - b.startTime);
+    // add breaks if exist
     for (let i = 0; i < data.length - 1; i += 1) {
       if (data[i].endTime < data[i + 1].startTime) {
         data.splice(i + 1, 0, {
