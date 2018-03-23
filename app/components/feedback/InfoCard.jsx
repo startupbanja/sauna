@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import defaultImg from '../../imgs/coach_placeholder.png';
 
 export default class InfoCard extends React.Component {
   render() {
@@ -17,7 +18,11 @@ export default class InfoCard extends React.Component {
         <p className="datetime">{datetime.toLocaleDateString('en-GB', dateOptions).replace(/\//g, '.')}</p>
         <div className="row">
           <div className="form-group col-xs-5">
-            <img className="img-responsive cardImage" src={this.props.info.image_src} alt="coach" />
+            <img
+              className="img-responsive cardImage"
+              src={this.props.info.image_src || defaultImg}
+              alt="coach"
+            />
           </div>
           <div className="form-group feedback-info">
             {this.props.info.description}

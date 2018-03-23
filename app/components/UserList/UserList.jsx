@@ -88,7 +88,6 @@ export default class UserList extends React.Component {
                 id={user.id}
                 description={user.description}
                 imageSrc={user.img}
-                // handleClick={this.props.handleClick}
               />
             </Link>
           ))}
@@ -99,6 +98,5 @@ export default class UserList extends React.Component {
 
 UserList.propTypes = {
   type: PropTypes.string.isRequired,
-  // handleClick: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
 };

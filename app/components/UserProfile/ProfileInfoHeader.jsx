@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import defaultImg from '../../imgs/coach_placeholder.png';
 
 export default class ProfileInfoHeader extends React.Component {
   constructor(props) {
@@ -29,7 +30,11 @@ export default class ProfileInfoHeader extends React.Component {
     }
     return (
       <div className="userInfoHeader row">
-        <img src={this.props.imgSrc} alt="Username" className="userImage img-responsive col-xs-5" />
+        <img
+          src={this.props.imgSrc || defaultImg}
+          alt="Username"
+          className="userImage img-responsive col-xs-5"
+        />
         <div className="mainInfoSection col-xs-7">
           {modifyBtn}
           <h4 id="username">{this.props.name}</h4>
@@ -51,7 +56,7 @@ ProfileInfoHeader.propTypes = {
 };
 
 ProfileInfoHeader.defaultProps = {
-  imgSrc: '../app/imgs/coach_placeholder.png',
+  imgSrc: defaultImg,
   titles: [],
   canModify: false,
 };

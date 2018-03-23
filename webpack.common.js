@@ -12,11 +12,22 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.css?$/,
+                test: /\.css$/,
                 use: [
                     { loader: "style-loader" },
                     { loader: "css-loader" }
                 ],
+            },
+            {
+                test: /\.(png|jpg|gif|svg)$/,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: 'images/[name].[ext]'
+                        }
+                    }
+                ]
             },
             {
                 test: /\.jsx?$/,
@@ -40,15 +51,5 @@ module.exports = {
         jQuery: 'jquery'
       })
     ],
-    devServer: {
-        historyApiFallback: true,
-        proxy: {
-          '/api/': {
-            target: 'http://127.0.0.1:3000/',
-            secure: false,
-            pathRewrite: {'^/api/' : '/'}
-          }
-        },
-    }
 };
 /* eslint-enable */

@@ -1,6 +1,5 @@
 .list-avatar {
-  max-height: 40%;
-  max-width: 40%;
+  width: 40%;
   display: block;
   float: left;
   margin-right: 3%;

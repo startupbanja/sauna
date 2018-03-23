@@ -55,7 +55,7 @@ UserProfile.propTypes = {
 
 UserProfile.defaultProps = {
   linkedIn: '',
-  imgSrc: '../app/imgs/coach_placeholder.png',
+  imgSrc: null,
   description: '',
   titles: [],
   credentials: [],
