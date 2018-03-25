@@ -4,7 +4,6 @@ import UserCreationForm from './UserCreationForm';
 import StatusMessage from '../StatusMessage';
 
 // Page that contains the form for an admin to create new user accounts
-
 export default class UserCreationPage extends React.Component {
   constructor(props) {
     super(props);
@@ -15,7 +14,7 @@ export default class UserCreationPage extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.toggle = this.toggle.bind(this);
   }
-  // Toggle between coach and startup for cration
+  // Toggle between coach and startup for creation
   toggle(newType) {
     this.setState({ type: newType });
   }

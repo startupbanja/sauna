@@ -14,7 +14,7 @@ export default class LoginView extends React.Component {
     this.handleInput = this.handleInput.bind(this);
   }
 
-
+  // check if authentication succeeded or not and act accordingly
   handleInput(input) {
     this.state.handle(input, (authResult) => {
       if (authResult === 'user' || authResult === 'admin') {

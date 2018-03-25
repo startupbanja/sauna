@@ -3,6 +3,7 @@ import Button from '../Button';
 import StatusMessage from '../StatusMessage';
 import pageContent from '../pageContent';
 
+// view for changing user's own password
 class PasswordChange extends Component {
   constructor(props) {
     super(props);

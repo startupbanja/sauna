@@ -31,6 +31,7 @@ class LandingPage extends Component {
       });
   }
 
+  // render the carousel showing the next meetings if exist
   renderComingUpCarousel() {
     if (!this.state.timetable) return null;
     if (this.state.timetable.length === 0) {
