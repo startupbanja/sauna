@@ -14,7 +14,7 @@ class EditUserProfile extends Component {
   getValueOfField(id) {
     return document.getElementById(id).value;
   }
-  
+
   // Returns the values of the title fields in the form.
   getTitles() {
     let titles = [];
@@ -23,11 +23,11 @@ class EditUserProfile extends Component {
     });
     return titles;
   }
-  
+
   // Returns the values of the credentials fields.
   getCredentials() {
     let credentials = [];
-    
+
     document.querySelectorAll('.credentialField').forEach(function(elem){
       const children = elem.children;
       if (children[0].value !== '' && children[1].value !== '') {
@@ -39,7 +39,7 @@ class EditUserProfile extends Component {
     });
     return credentials;
   }
-  
+
   /* eslint-enable */
   getInputData() {
     return {
@@ -73,7 +73,7 @@ class EditUserProfile extends Component {
     const siteName = this.props.type === 'coach' ? 'LinkedIn' : 'Website';
     const credentialsHeader = this.props.type === 'coach' ? 'Credentials:' : 'Team Members:';
     const removeText = this.props.type === 'coach' ? 'credential' : 'team member';
-    const imgURL = this.props.imgSrc === '../app/imgs/coach_placeholder.png' ? '' : this.props.imgSrc;
+    const imgURL = this.props.imgSrc;
 
     return (
       <div className="editProfileContainer container">

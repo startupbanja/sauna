@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import saunaLogo from '../../imgs/Startupsaunatext_white.svg';
 
 
 // Component for displaying form for login and an error message if necessary
@@ -39,7 +40,7 @@ export default class LoginForm extends React.Component {
 
         <form className="form-signin">
           <img
-            src="../app/imgs/Startupsaunatext_white.svg"
+            src={saunaLogo}
             alt="Startup Sauna"
             className="login-logo"
           />
