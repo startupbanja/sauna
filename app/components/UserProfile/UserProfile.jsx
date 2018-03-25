@@ -4,7 +4,7 @@ import ProfileCredentialList from './ProfileCredentialList';
 import ProfileInfoHeader from './ProfileInfoHeader';
 
 
-// React Component for a user's profile page.
+// React Component for displaying a user's profile page.
 export default class UserProfile extends React.Component {
   render() {
     const siteName = this.props.type === 'coach' ? 'LinkedIn' : 'Website';

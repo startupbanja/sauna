@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Button from '../Button';
 
+// view for editing users' profile
 class EditUserProfile extends Component {
   constructor(props) {
     super(props);
@@ -116,16 +117,18 @@ class EditUserProfile extends Component {
           <span className="glyphicon glyphicon-plus-sign" />
           Add a {removeText}
         </button>
-        <Button
-          className="btn btn-lg ffbutton-red"
-          onClick={() => this.handleSubmit()}
-          text="Save"
-        />
-        <Button
-          className="btn btn-lg ffbutton-red"
-          text="Cancel"
-          onClick={() => this.props.cancel()}
-        />
+        <div className="control-buttons">
+          <Button
+            className="btn btn-lg btn-major"
+            onClick={() => this.handleSubmit()}
+            text="Save"
+          />
+          <Button
+            className="btn btn-lg btn-major"
+            text="Cancel"
+            onClick={() => this.props.cancel()}
+          />
+        </div>
       </div>
     );
   }
@@ -133,11 +136,10 @@ class EditUserProfile extends Component {
 
 EditUserProfile.propTypes = {
   type: PropTypes.string.isRequired,
-  id: PropTypes.number, // eslint-disable-line react/no-unused-prop-types
+  id: PropTypes.number,
   name: PropTypes.string.isRequired,
   imgSrc: PropTypes.string.isRequired,
   linkedIn: PropTypes.string,
-  // imgSrc: PropTypes.string,
   description: PropTypes.string,
   titles: PropTypes.arrayOf(PropTypes.string),
   credentials: PropTypes.arrayOf(PropTypes.shape({

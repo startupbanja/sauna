@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import defaultImg from '../../imgs/coach_placeholder.png';
 
+// Component to display user's image, name and title
 export default class ProfileInfoHeader extends React.Component {
   constructor(props) {
     super(props);
@@ -18,6 +19,7 @@ export default class ProfileInfoHeader extends React.Component {
       <li key={x}>{x}</li>
     ));
     let modifyBtn = '';
+    // if user is allowed to modify (admin or own profile), add button to open editing
     if (this.props.canModify) {
       modifyBtn = (
         <span

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import TimeslotDragBall from './TimeslotDragBall';
 import { parseTimeStamp } from './Timeslot';
 
+// component for a draggable or undraggable box in TimeslotDrag
 class TimeslotDragable extends Component {
   constructor(props) {
     super(props);
@@ -10,6 +11,7 @@ class TimeslotDragable extends Component {
     this.handleStartChange = this.handleStartChange.bind(this);
   }
 
+  // figure out was the change in start or end and pass forward
   handleStartChange(change) {
     this.props.onChange('start', change);
   }
@@ -28,9 +30,11 @@ class TimeslotDragable extends Component {
     let bottomDragBall = null;
     let splitBreaks = null;
     if (this.props.dragable === true) {
+      // if component is draggable add the boxes that track dragging
       topDragBall = <TimeslotDragBall position="top" onChange={this.handleStartChange} />;
       bottomDragBall = <TimeslotDragBall position="bottom" onChange={this.handleEndChange} />;
     } else {
+      // if component is undraggable (background) add lines for meeting breaks
       splitBreaks = [];
       const splitCount = ((this.props.end - this.props.start) / this.props.split);
       const splitHeight = this.props.totalHeight / splitCount;
@@ -53,11 +57,13 @@ class TimeslotDragable extends Component {
 TimeslotDragable.propTypes = {
   onChange: PropTypes.func, // eslint-disable-line
   ending: PropTypes.number.isRequired,
+  // the vertical offset from the start of the day in pixels
   starting: PropTypes.number.isRequired,
   dragable: PropTypes.bool.isRequired,
   start: PropTypes.number.isRequired,
   end: PropTypes.number.isRequired,
   split: PropTypes.number,
+  // total height of the surrounding component in pixels
   totalHeight: PropTypes.number,
 };
 

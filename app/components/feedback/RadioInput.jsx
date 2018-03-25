@@ -1,9 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+// radio input for a one guestion in feedback form
 export default class RadioInput extends React.Component {
   render() {
     const choices = this.props.options.map((option) => {
+      // if the choice is the same as current rating set as active
       const activeClass = (this.props.rating === option.value) ? ' active' : ' inactive';
       return (
         <div
