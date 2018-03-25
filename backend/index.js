@@ -2,7 +2,6 @@ const express = require('express');
 const readline = require('readline');
 const bodyParser = require('body-parser');
 const database = require('./database.js');
-const bcrypt = require('bcrypt');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const matchmaking = require('./matchmaking.js');
@@ -407,7 +406,7 @@ app.post('/giveFeedback', (req, res, next) => {
   const userType = req.session.userType;
   const meetingId = req.body.meetingId;
   const rating = req.body.rating;
-// TODO we are not checking if user is one of the attendants of the meeting
+  // TODO we are not checking if user is one of the attendants of the meeting
   database.giveFeedback(meetingId, rating, (userType === 'coach') ? 'coach_rating' : 'startup_rating', (err, result) => {
     if (err) return next(err);
     res.json({ status: result });
@@ -427,7 +426,7 @@ app.post('/setActiveStatus', (req, res, next) => {
 
 /* adds a new meeting day */
 app.post('/createMeetingDay', (req, res, next) => {
-  if (!requireAdmin(req, res)) return res.sendStatus(403);
+  if (!requireAdmin(req, res)) return undefined;
   const date = req.body.date;
   const start = req.body.start;
   const end = req.body.end;
@@ -438,8 +437,7 @@ app.post('/createMeetingDay', (req, res, next) => {
   });
 });
 
-// Run algorithm with given date and save to database and create a .csv file
-// FIXME those return undefineds and the bracket pyramid...
+// Run algorithm with given date and save to database
 // callback is called with either err or null as only argument
 function runAlgorithm(date, callback, commit = true) {
   // Get coach timeslots/availabilities
@@ -535,12 +533,14 @@ app.post('/updateProfile', (req, res, next) => {
   const credentials = JSONObject.credentials;
 
   // Perform insertion to database using the information specified above.
-  database.updateProfile(uid, userType, site, imgURL, description, title, credentials, (error, response) => {
-    if (error) {
-      return next(error);
-    }
-    res.json(response);
-  });
+  database.updateProfile(uid, userType, site, imgURL, description, title, credentials,
+    (error, response) => {
+      if (error) {
+        return next(error);
+      }
+      return res.json(response);
+    },
+  );
 });
 
 // Error handling
@@ -553,9 +553,10 @@ app.use((err, req, res, next) => {
   }
 });
 
-// 404 handling
+// send 404 response if we get here for some reason
 app.use((err, req, res, next) => {
   res.status(404).send('404 NOT FOUND');
+  next();
 });
 
 
