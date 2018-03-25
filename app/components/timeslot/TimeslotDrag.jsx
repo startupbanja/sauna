@@ -4,12 +4,14 @@ import TimeslotDragable from './TimeslotDragable';
 
 export const totalHeight = 300;
 
+// the draggable componet for setting the availability
 class TimeslotDrag extends Component {
   constructor(props) {
     super(props);
     this.handleAvailableChange = this.handleAvailableChange.bind(this);
   }
 
+  // change the distance dragged to corresponding minutes and pass the result forward
   handleAvailableChange(to, change) {
     this.props.onChange(to, (change / totalHeight) * (this.props.end - this.props.start));
   }
@@ -26,6 +28,7 @@ class TimeslotDrag extends Component {
     ending /= (this.props.end - this.props.start);
     return (
       <div className="dragContainer" style={containerStyle}>
+        {/* undraggable background for the component */}
         <TimeslotDragable
           start={this.props.start}
           end={this.props.end}
@@ -36,6 +39,7 @@ class TimeslotDrag extends Component {
           split={this.props.split}
           totalHeight={totalHeight}
         />
+        {/* the draggable availability box */}
         <TimeslotDragable
           start={this.props.available.start}
           end={this.props.available.end}
@@ -58,6 +62,7 @@ TimeslotDrag.propTypes = {
     start: PropTypes.number,
     end: PropTypes.number,
   }).isRequired,
+  // length of one meeting
   split: PropTypes.number.isRequired,
 };
 

@@ -3,8 +3,7 @@ import { BrowserRouter, Route } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Menu from './Menu';
 import pageContent from './pageContent';
-import LandingPage from './landing/LandingPage';
-import LoginView from './LoginView';
+import LoginView from './login/LoginView';
 
 // This is the class that shows the whole page content after login
 // Currently shows a menubar at the top and content below it
@@ -13,7 +12,9 @@ export default class MainView extends React.Component {
     super(props);
     const contents = pageContent.getContent(this.props.type);
     this.state = {
+      // router Switch for user or admin content
       contentMap: contents.content,
+      // object linking router paths to display names in menu
       labels: contents.labels,
     };
   }

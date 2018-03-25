@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import $ from 'jquery';
 import BlockHeader from '../BlockHeader';
 import ComingUpCarousel from './ComingUpCarousel';
 import pageContent from '../pageContent';
@@ -11,6 +10,7 @@ class LandingPage extends Component {
   constructor(props) {
     super(props);
     this.fetchTimetable = this.fetchTimetable.bind(this);
+    this.renderComingUpCarousel = this.renderComingUpCarousel.bind(this);
     this.state = {
       timetable: undefined,
       date: undefined,
@@ -31,12 +31,21 @@ class LandingPage extends Component {
       });
   }
 
+  // render the carousel showing the next meetings if exist
+  renderComingUpCarousel() {
+    if (!this.state.timetable) return null;
+    if (this.state.timetable.length === 0) {
+      return <p className="empty-content-text">No scheduled meetings</p>;
+    }
+    if (!this.state.date) return null;
+    return <ComingUpCarousel timetable={this.state.timetable} date={this.state.date} />;
+  }
+
   render() {
     return (
       <div className="container" >
         <h3 className="text-center" style={{ fontWeight: 'bold' }}>Coming up</h3>
-        {((this.state.timetable && this.state.date) || undefined) &&
-          <ComingUpCarousel timetable={this.state.timetable} date={this.state.date} />}
+        {this.renderComingUpCarousel()}
         <BlockHeader text="Mind these:" />
         <div className="row">
           <div className="col-sm-6 col-xs-12" style={{ padding: '10px' }}>

@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import UserProfile from './UserProfile';
 import EditUserProfile from './EditUserProfile';
-import StatusMessage from './StatusMessage';
-import pageContent from './pageContent';
+import StatusMessage from '../StatusMessage';
+import pageContent from '../pageContent';
 
+// Component to either display user's profile or editing view
+// fetches the data from backend and provides that for UserProfile and EditUserProfile
+// also subbmits possible changes
 class UserProfilePage extends Component {
   constructor(props) {
     super(props);
@@ -34,6 +37,7 @@ class UserProfilePage extends Component {
     this.fetchData();
   }
 
+  // change between editing and displaying
   toggleEdit() {
     this.setState({
       modifying: !this.state.modifying,
@@ -45,12 +49,18 @@ class UserProfilePage extends Component {
     if (typeof this.props.id !== 'undefined') params = { userId: this.props.id };
     pageContent.fetchData('/profile', 'get', params)
       .then((responseJSON) => {
+        let link = responseJSON.linkedIn;
+
+        if (link && !link.startsWith('http://') && !link.startsWith('https://')) {
+          link = 'http://'.concat(link);
+        }
+
         this.setState({
           userType: responseJSON.type,
           name: responseJSON.name,
           imgURL: responseJSON.img_url,
           description: responseJSON.description,
-          linkedIn: responseJSON.linkedIn,
+          linkedIn: link,
           credentials: responseJSON.credentials,
           canModify: responseJSON.canModify,
           titles: [responseJSON.company],

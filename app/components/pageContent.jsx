@@ -1,11 +1,10 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-/* import Image from './Image'; */
-import FeedbackView from './FeedbackView';
+import FeedbackView from './feedback/FeedbackView';
 import LandingPage from './landing/LandingPage';
-import UserProfilePage from './UserProfilePage';
-import UserSchedule from './UserSchedule';
-import UserList from './UserList';
+import UserProfilePage from './UserProfile/UserProfilePage';
+import UserTimetable from './timetable/UserTimetable';
+import UserList from './UserList/UserList';
 import UserCreationPage from './UserCreation/UserCreationPage';
 import App from './App';
 import MeetingDaysView from './admin_manage/MeetingDaysView';
@@ -13,10 +12,14 @@ import TimeslotView from './timeslot/TimeslotView';
 import AdminSchedules from './admin_manage/AdminSchedules';
 import UserHandlingView from './admin_manage/UserHandlingView';
 import MeetingDetailView from './admin_manage/MeetingDetailView';
-import PasswordChange from './PasswordChange';
-import AdminLandingPage from './AdminLandingPage';
+import PasswordChange from './UserProfile/PasswordChange';
+import AdminLandingPage from './landing/AdminLandingPage';
+
+// file that contains contents of the app for both users and admin
+// also contains the default gateway for fetching data from backend
 
 
+// react router Switch that contains all the user views
 const userContent = (
   <Switch>
     <Route path="/coaches/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />
@@ -32,7 +35,7 @@ const userContent = (
       render={({ match }) => <UserList match={match} type="Startups" />}
     />
     <Route exact path="/" component={LandingPage} />
-    <Route path="/timetable" render={() => <UserSchedule />} />
+    <Route path="/timetable" render={() => <UserTimetable />} />
     <Route path="/user" component={UserProfilePage} />
     <Route path="/feedback" render={() => <FeedbackView />} />
     <Route path="/availability" component={TimeslotView} />
@@ -40,6 +43,7 @@ const userContent = (
   </Switch>
 );
 
+// object that links router paths to their display names in menu in user side
 const userLabels = {
   '/': 'Home',
   '/timetable': 'Timetable',
@@ -51,6 +55,7 @@ const userLabels = {
   '/change_password': 'Change password',
 };
 
+// react router Switch that contains all the admin views
 const adminContent = (
   <Switch>
     <Route exact path="/" component={AdminLandingPage} />
@@ -95,16 +100,18 @@ const adminContent = (
   </Switch>
 );
 
+// object that links router paths to their display names in menu in admin side
 const adminLabels = {
   '/': 'Home',
   '/coaches': 'Coaches',
   '/startups': 'Startups',
-
   '/users': 'Users',
   '/meetingDays': 'Meeting days',
   '/create_user': 'Create User',
 };
+
 // TODO change this to something better later
+// returns contents and labels for menu based on users type
 function getContent(userType) {
   if (userType === 'admin') {
     return { content: adminContent, labels: adminLabels };
@@ -112,6 +119,11 @@ function getContent(userType) {
   return { content: userContent, labels: userLabels };
 }
 
+// the default gateway to fetch data from backend
+// path as '/pathInApi'
+// methodType as either 'get' or 'post'
+// params as object
+// returns Promise with the response in JSON
 function fetchData(path, methodType, params) {
   const paramsString = Object.keys(params).map(x => `${x}=${params[x]}`).join('&');
   let query = path;
@@ -121,6 +133,7 @@ function fetchData(path, methodType, params) {
   return new Promise((resolve, reject) =>
     fetch(`/api${query}`, {
       method: methodType,
+      // make sure that the cookies will be send
       credentials: 'include',
       headers: {
         Accept: 'application/json',
@@ -133,6 +146,7 @@ function fetchData(path, methodType, params) {
           resolve(response.json());
           break;
         case 401:
+        // if user is not logged in log out in App
           App.logOff();
           reject();
           break;
@@ -145,8 +159,7 @@ function fetchData(path, methodType, params) {
       }
     })
       .catch((error) => {
-        console.log(error);
-        reject();
+        reject(error);
       }));
 }
 

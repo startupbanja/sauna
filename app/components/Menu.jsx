@@ -3,14 +3,15 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import $ from 'jquery';
-// import Button from './Button';
 
+// Navigation menu that's horizontal in desktop and collapsed vertical in smaller screens
 export default class Menu extends React.Component {
   collapseNav() { // eslint-disable-line
     $('.navbar-collapse').collapse('hide');
   }
 
   render() {
+    // create all links for navigation bar
     const list = Object.keys(this.props.content).map(name => (
       <li key={name} className="nav-item menuListItem" >
         <Link className="nav-link" to={name} onClick={this.collapseNav} >
@@ -18,8 +19,7 @@ export default class Menu extends React.Component {
         </Link>
       </li>
     ), this);
-    /* TODO: nav className=navbar-fixed-top tähän myöhemmin, ei
-    toimi placeholder kuvien kanssa */
+
     return (
       <nav className="navbar navbar-inverse menubar navbar-fixed-top">
         <div className="container-fluid">
@@ -65,13 +65,6 @@ export default class Menu extends React.Component {
 
 Menu.propTypes = {
   logoff: PropTypes.func.isRequired,
+  // object mapping router paths to display names
   content: PropTypes.objectOf(PropTypes.string).isRequired,
-  // onChange: PropTypes.func,
 };
-
-//
-// <Button
-//   className="menubutton btn"
-//   onClick={() => { this.props.onChange(name); }}
-//   text={this.props.content[name]}
-// />

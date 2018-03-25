@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-/* Component for ComingUpCarousel's items */
+/* Component for ComingUpCarousel's meeting items */
 class ScheduleItem extends Component {
   render() {
     let nameText = 'break';
