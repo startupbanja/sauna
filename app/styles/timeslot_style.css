@@ -14,7 +14,7 @@
 
 .dragableContainer.unavailable hr{
   position: relative;
-  border-top: dashed 1px;
+  border: dashed 1px;
   margin: 0px;
 }
 
