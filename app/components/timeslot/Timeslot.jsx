@@ -32,9 +32,11 @@ class Timeslot extends React.Component {
       start: this.props.start,
       // time of ending for the whole day in minutes
       end: this.props.end,
+      changesMade: false,
     };
     this.handleChange = this.handleChange.bind(this);
     this.submitAvailability = this.submitAvailability.bind(this);
+    this.handleNavigationClick = this.handleNavigationClick.bind(this);
     this.askForMoreTime = this.askForMoreTime.bind(this);
   }
 
@@ -49,7 +51,7 @@ class Timeslot extends React.Component {
       newEnd = Math.max(Math.min(newEnd + change, this.state.end), this.state.start);
       newStart = Math.min(newEnd, this.state.available.start);
     }
-    const newObj = { available: { start: newStart, end: newEnd } };
+    const newObj = { available: { start: newStart, end: newEnd }, changesMade: true };
     this.setState(newObj);
   }
 
@@ -59,6 +61,12 @@ class Timeslot extends React.Component {
     startAvail = this.askForMoreTime('start', startAvail);
     endAvail = this.askForMoreTime('end', endAvail);
     this.props.onSubmit(startAvail, endAvail);
+    this.setState({ changesMade: false });
+  }
+
+  handleNavigationClick(callback) {
+    if (this.state.changesMade) this.submitAvailability();
+    callback();
   }
 
   // ask if the user can come earlier or stay longer
@@ -133,18 +141,18 @@ class Timeslot extends React.Component {
         <div className="navigation-container">
           <span
             className={moveToPrevClass}
-            onClick={this.props.onMoveToPrev}
+            onClick={() => this.handleNavigationClick(this.props.onMoveToPrev)}
             role="button"
             tabIndex={0}
-            onKeyDown={this.props.onMoveToPrev}
+            onKeyDown={() => {}}
           />
           <button onClick={this.submitAvailability} className="btn btn-lg btn-major">Submit</button>
           <span
             className={moveToNextClass}
-            onClick={this.props.onMoveToNext}
+            onClick={() => this.handleNavigationClick(this.props.onMoveToNext)}
             role="button"
             tabIndex={0}
-            onKeyDown={this.props.onMoveToNext}
+            onKeyDown={() => {}}
           />
         </div>
       </div>

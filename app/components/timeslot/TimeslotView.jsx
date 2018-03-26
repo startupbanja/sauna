@@ -53,8 +53,8 @@ class TimeslotView extends Component {
       });
   }
 
-  submitAvailability(startAvail, endAvail) {
-    const meetingDay = this.state.data[this.state.index];
+  submitAvailability(startAvail, endAvail, index) {
+    const meetingDay = this.state.data[index];
     let startTime = Math.ceil((startAvail - meetingDay.start) / meetingDay.split);
     startTime = (startTime * meetingDay.split) + meetingDay.start;
     let endTime = Math.floor((endAvail - meetingDay.start) / meetingDay.split);
@@ -67,7 +67,7 @@ class TimeslotView extends Component {
       // if submitting correctly update state
       if (result.status === 'success') {
         const oldData = this.state.data;
-        oldData[this.state.index].available = {
+        oldData[index].available = {
           start: startTime,
           end: endTime,
         };
@@ -112,7 +112,7 @@ class TimeslotView extends Component {
         split={day.split}
         available={day.available}
         date={day.date}
-        onSubmit={this.submitAvailability}
+        onSubmit={(a, b) => this.submitAvailability(a, b, this.state.index)}
         onMoveToPrev={((this.state.index > 0) || undefined) && (() => this.changeDate(-1))}
         onMoveToNext={((this.state.index < this.state.data.length - 1) || undefined)
           && (() => this.changeDate(1))}
