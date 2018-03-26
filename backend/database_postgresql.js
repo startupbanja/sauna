@@ -345,7 +345,7 @@ function createMeetingDay(date, start, end, split, callback) {
     name: 'insert-MeetingDay',
     text: `
     INSERT INTO MeetingDays(date, startTime, endTime, split, matchmakingDone)
-    VALUES ($1, $2, $3, $4, 0)`,
+    VALUES ($1, $2, $3, $4, 0);`,
     values: [date, start, end, split],
   };
   client.connect((err) => {
@@ -362,6 +362,42 @@ function createMeetingDay(date, start, end, split, callback) {
   });
 }
 
+// Gets all MeetingDays in the future together with a flag indicating if matchmaking was run
+// Returns: [{
+//  date: '',
+//  starttime: '',
+//  endtime: '',
+//  split: int,
+//  time: '',
+//  duration: int,
+//  matchmakingdone: int,
+// }]
+function getComingMeetingDays(userId, callback) {
+  const client = getClient();
+  const query = {
+    name: 'get-MeetingDays',
+    text: `
+    SELECT MeetingDays.date, startTime, endTime, split, time, duration, matchmakingDone
+    FROM Users
+    NATURAL JOIN MeetingDays
+    LEFT OUTER JOIN Timeslots ON Timeslots.date = MeetingDays.date AND Timeslots.user_id = Users.id
+    WHERE Users.id = $1 AND MeetingDays.date >= current_date;`,
+    values: [userId],
+  };
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2, res) => {
+        if (err2) callback(err2);
+        else {
+          callback(err2, res.rows);
+        }
+        client.end();
+      });
+    }
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
@@ -370,4 +406,5 @@ module.exports = {
   getFeedback,
   giveFeedback,
   createMeetingDay,
+  getComingMeetingDays,
 };
