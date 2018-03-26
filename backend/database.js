@@ -455,7 +455,7 @@ function verifyIdentity(username, password, callback) {
         default:
           type = 'error';
       }
-      return callback(type, userId);
+      return callback(null, type, userId);
     });
     return undefined;
   });
