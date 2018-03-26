@@ -210,8 +210,35 @@ function giveFeedback(meetingId, rating, field, callback) {
       SET ${field} = ?
       WHERE startup_id = ? AND coach_id = ?`;
       db.run(query3, [rating, row.startup_id, row.coach_id], (err3) => {
+        // UPDATE might fail so we try to insert data if it does not already exist
         if (err3) return callback(err3);
-        return callback(err3, 'success');
+        // name of field where we insert data
+        let newField;
+        // field where we just set -1
+        let nullField;
+        if (field === 'coach_rating') {
+          newField = '$coachrating';
+          nullField = '$startuprating';
+        } else {
+          newField = '$startuprating';
+          nullField = '$coachrating';
+        }
+
+        const query4 = `INSERT INTO Ratings(coach_id, startup_id, coach_rating, startup_rating) SELECT
+         $coachid, $startupid, $coachrating, $startuprating WHERE NOT EXISTS (SELECT * FROM Ratings WHERE coach_id = $coachid, startup_id = $startupid;`;
+        return db.run(
+          query4,
+          {
+            $startupid: row.startup_id,
+            $coachid: row.coach_id,
+            [newField]: [rating],
+            [nullField]: -1,
+          },
+          (err4) => {
+            if (err4) return callback(err4);
+            return callback(null, 'success');
+          },
+        );
       });
       return undefined;
     });
