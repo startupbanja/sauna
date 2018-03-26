@@ -33,14 +33,19 @@ function initDB(callback) {
   });
 }
 
-function createDatabase(callback) {
-  db = new sqlite.Database(':memory:', (err) => {
-    if (err) {
-      return console.error(err.message);
-    }
-    return initDB(callback);
-  });
-  module.exports.db = db;
+function openDatabase(callback) {
+  if (process.env.DATABASE_ENGINE === 'PG') {
+    db = require('./postgre_adapter'); // eslint-disable-line
+    console.log('using posgresql');
+  } else {
+    db = new sqlite.Database(':memory:', (err) => {
+      if (err) {
+        return console.error(err.message);
+      }
+      return initDB(callback);
+    });
+    module.exports.db = db;
+  }
 }
 
 function closeDatabase(callback) {
@@ -217,20 +222,21 @@ function giveFeedback(meetingId, rating, field, callback) {
         // field where we just set -1
         let nullField;
         if (field === 'coach_rating') {
-          newField = '$coachrating';
-          nullField = '$startuprating';
+          newField = '$1';
+          nullField = '$2';
         } else {
-          newField = '$startuprating';
-          nullField = '$coachrating';
+          newField = '$2';
+          nullField = '$1';
         }
 
         const query4 = `INSERT INTO Ratings(coach_id, startup_id, coach_rating, startup_rating) SELECT
-         $coachid, $startupid, $coachrating, $startuprating WHERE NOT EXISTS (SELECT * FROM Ratings WHERE coach_id = $coachid AND startup_id = $startupid);`;
+         $1, $2, $3, $4 WHERE NOT EXISTS (SELECT * FROM Ratings WHERE coach_id = $3 AND startup_id = $4);`;
+        // TODO rewrite to numbered params for postgre
         return db.run(
           query4,
           {
-            $startupid: row.startup_id,
-            $coachid: row.coach_id,
+            $1: row.startup_id,
+            $2: row.coach_id,
             [newField]: [rating],
             [nullField]: -1,
           },
@@ -318,7 +324,7 @@ function getGivenFeedbacks(callback) {
       LEFT OUTER JOIN Profiles ON Users.id = Profiles.user_id
       LEFT OUTER JOIN Meetings ON Users.id = Meetings.coach_id OR Users.id = Meetings.startup_id
       WHERE Meetings.date = ?;`;
-    db.all(query, date, (err2, result) => {
+    db.all(query, [date], (err2, result) => {
       if (err2) return callback(err2);
       return callback(err, { date, result });
     });
@@ -408,7 +414,7 @@ function updateProfile(uid, userType, site, imgUrl, description, title, credenti
   const imgURL = imgUrl === '' ? null : imgUrl;
   const queryParams = userType === 'Coach' ? [site, imgURL, description, title, uid] : [site, imgUrl, description, uid];
   const query = `UPDATE ${userType}Profiles SET ${siteAttr} = ?, img_url = ?, description = ?${company} WHERE user_id = ?`;
-  db.run(query, queryParams, (err) => {
+  db.run(query, [queryParams], (err) => {
     if (!err) {
       updateCredentialsListEntries(uid, credentials, userType, callback);
       return undefined;
@@ -496,7 +502,7 @@ function changePassword(uid, oldPassword, newPassword, callback) {
 
 function getMeetingDuration(date, callback) {
   const q = 'SELECT split FROM MeetingDays WHERE date = ?';
-  db.get(q, date, (err, row) => {
+  db.get(q, [date], (err, row) => {
     if (err) return callback(err);
     const duration = row.split;
     if (!duration) {
@@ -609,7 +615,7 @@ function saveTimetable(schedule, dateString, callback) {
     return `( ${coach}, ${startup}, '${dateString}', '${time}', ${duration}, -1, -1)`;
   });
   const query = `${queryStart}${strings.join(',\n')};`;
-  db.run(query, (err) => {
+  db.run(query, [], (err) => {
     callback(err);
   });
 }
@@ -621,7 +627,7 @@ function saveTimetable(schedule, dateString, callback) {
 function saveMatchmakingResult(schedule, dateString, callback) {
   function setFlag() {
     const q = 'UPDATE MeetingDays SET matchmakingDone = 1 WHERE date = ?';
-    db.run(q, dateString, (err2) => {
+    db.run(q, [dateString], (err2) => {
       if (err2) return callback(err2);
       db.parallelize();
       return callback(null);
@@ -631,7 +637,7 @@ function saveMatchmakingResult(schedule, dateString, callback) {
   db.serialize(); // serialize here to make into pseudo transaction, FIXME
   // first check if algorithm has already been run on this date
   const checkQuery = 'SELECT matchmakingDone FROM MeetingDays WHERE date = ?';
-  db.get(checkQuery, dateString, (err, result) => {
+  db.get(checkQuery, [dateString], (err, result) => {
     if (err) return callback(err);
     if (!result.matchmakingDone) {
       saveTimetable(schedule, dateString, (err2) => {
@@ -652,7 +658,7 @@ function getTimetable(date, callback) {
     WHERE date = ?;
     `;
   const meetings = [];
-  db.each(query, date, (err, row) => {
+  db.each(query, [date], (err, row) => {
     if (err) return callback(err);
     const meeting = {
       coach: row.coach_id.toString(),
@@ -784,7 +790,7 @@ function addProfile(userInfo, callback) {
 
       db.run(
         insertSQL,
-        queryParams,
+        [queryParams],
         (error) => {
           const response = {};
           if (!error) {
@@ -859,7 +865,7 @@ module.exports = {
   setActiveStatus,
   getUserMeetings,
   getMeetingDuration,
-  createDatabase,
+  openDatabase,
   db,
   updateProfile,
 };

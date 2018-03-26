@@ -10,7 +10,7 @@ const matchmaking = require('./matchmaking.js');
 
 const app = express();
 
-database.createDatabase((err) => {
+database.openDatabase((err) => {
   if (err) console.log(err);
   console.log('Data loaded');
 });
