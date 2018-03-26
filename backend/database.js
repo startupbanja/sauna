@@ -427,17 +427,15 @@ function verifyIdentity(username, password, callback) {
   const query = 'SELECT id, type, password FROM Users WHERE username = ?';
   db.get(query, [username], (err, row) => {
     if (err) {
-      throw err;
+      return callback(err);
     }
     if (!row) {
-      callback('error');
-      return;
+      return callback(null, 'error');
     }
     bcrypt.compare(password, row.password, (error, same) => {
-      if (error) throw error;
+      if (error) return callback(error);
       if (!same) {
-        callback('error');
-        return;
+        return callback(null, 'error');
       }
       let type;
       let userId = false;
@@ -457,8 +455,9 @@ function verifyIdentity(username, password, callback) {
         default:
           type = 'error';
       }
-      callback(type, userId);
+      return callback(type, userId);
     });
+    return undefined;
   });
 }
 

@@ -47,16 +47,17 @@ app.use((req, res, next) => {
 
 // logs user in and sets for session:
 // userID = user's personal id and type = one of 'coach', 'startup', 'admin'
-app.post('/login', (req, res) => {
+app.post('/login', (req, res, next) => {
   const username = req.body.username;
   const password = req.body.password;
   // bcrypt.hash(password, 10, (err, hash) => console.log(hash));
-  database.verifyIdentity(username, password, (type, userId) => {
+  database.verifyIdentity(username, password, (error, type, userId) => {
+    if (error) return next(error);
     if (userId !== false) {
       req.session.userID = userId;
       req.session.userType = type;
     }
-    res.json({ status: (type === 'coach' || type === 'startup') ? 'user' : type });
+    return res.json({ status: (type === 'coach' || type === 'startup') ? 'user' : type });
   });
 });
 
