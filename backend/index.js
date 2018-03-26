@@ -183,7 +183,7 @@ app.get('/profile', (req, res, next) => {
   database.getProfile(id, (err, result) => {
     if (err) return next(err);
     if (req.session.userID == id || req.session.userType === 'admin') {
-      Object.assign(result, { canModify: true });
+      Object.assign(result, { canModify: true, canResetPW: true });
     }
     res.json(result);
     return undefined;

@@ -17,6 +17,8 @@ export default class ProfileInfoHeader extends React.Component {
       <li key={x}>{x}</li>
     ));
     let modifyBtn = '';
+    let resetPW;
+
     if (this.props.canModify) {
       modifyBtn = (
         <span
@@ -27,10 +29,22 @@ export default class ProfileInfoHeader extends React.Component {
           onKeyPress={this.props.onModifyClick}
         />);
     }
+
+    if (this.props.canResetPW) {
+      resetPW = (
+        <button
+          className="btn btn-major"
+          onClick={this.props.resetPW}
+        >
+        Reset password
+        </button>);
+    }
+
     return (
       <div className="userInfoHeader row">
         <img src={this.props.imgSrc} alt="Username" className="userImage img-responsive col-xs-5" />
         <div className="mainInfoSection col-xs-7">
+          {resetPW}
           {modifyBtn}
           <h4 id="username">{this.props.name}</h4>
           <ul className="titles">
@@ -47,6 +61,8 @@ ProfileInfoHeader.propTypes = {
   imgSrc: PropTypes.string,
   titles: PropTypes.arrayOf(PropTypes.string),
   canModify: PropTypes.bool,
+  canResetPW: PropTypes.bool,
+  resetPW: PropTypes.func.isRequired,
   onModifyClick: PropTypes.func.isRequired,
 };
 
@@ -54,4 +70,5 @@ ProfileInfoHeader.defaultProps = {
   imgSrc: '../app/imgs/coach_placeholder.png',
   titles: [],
   canModify: false,
+  canResetPW: false,
 };

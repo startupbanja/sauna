@@ -12,7 +12,6 @@ class UserActivityList extends Component {
       message: undefined,
     };
     this.userActivityChanged = this.userActivityChanged.bind(this);
-    this.resetPassword = this.resetPassword.bind(this);
   }
 
   userActivityChanged(newActivity, userId) {
@@ -26,17 +25,6 @@ class UserActivityList extends Component {
     });
   }
 
-  resetPassword(id) {
-    pageContent.fetchData('/changePassword', 'POST', { uid: id }).then((res) => {
-      this.setState({
-        message: {
-          type: res.status.toLowerCase(),
-          text: res.message,
-        },
-      });
-    });
-  }
-
   render() {
     return (
       <div className="user-activity-list-container">
@@ -46,16 +34,12 @@ class UserActivityList extends Component {
         </h4>
         <hr />
         {this.props.users.map(user =>
-          (
-            <span key={user.id}>
-              <CheckBox
-                key={user.id}
-                label={user.name}
-                checked={user.active === 1}
-                onChange={checked => this.userActivityChanged(checked, user.id)}
-              />
-              <button className="btn btn-major" style={{ display: 'inline' }} onClick={() => this.resetPassword(user.id)}>Reset password</button>
-            </span>
+          (<CheckBox
+            key={user.id}
+            label={user.name}
+            checked={user.active === 1}
+            onChange={checked => this.userActivityChanged(checked, user.id)}
+          />
           ))}
       </div>
     );
