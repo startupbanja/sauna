@@ -338,6 +338,30 @@ function giveFeedback(meetingId, rating, field, callback) {
   });
 }
 
+// Creates a row into the MeetingDays table
+function createMeetingDay(date, start, end, split, callback) {
+  const client = getClient();
+  const query = {
+    name: 'insert-MeetingDay',
+    text: `
+    INSERT INTO MeetingDays(date, startTime, endTime, split, matchmakingDone)
+    VALUES ($1, $2, $3, $4, 0)`,
+    values: [date, start, end, split],
+  };
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2) => {
+        if (err2) callback(err2);
+        else {
+          callback(err2, { status: 'success' });
+        }
+        client.end();
+      });
+    }
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
@@ -345,4 +369,5 @@ module.exports = {
   getProfile,
   getFeedback,
   giveFeedback,
+  createMeetingDay,
 };
