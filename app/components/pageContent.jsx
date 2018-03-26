@@ -18,28 +18,6 @@ import AdminLandingPage from './landing/AdminLandingPage';
 // file that contains contents of the app for both users and admin
 // also contains the default gateway for fetching data from backend
 
-// guestions that will be displayed on feedback page
-// different guestions for coaches and startups
-const feedbackQuestions = {
-  coach: [{
-    index: 0,
-    question: 'Would you like to meet again?',
-    options: [
-      { desc: 'No', value: 0 },
-      { desc: 'Maybe', value: 1 },
-      { desc: 'Yes', value: 2 },
-    ],
-  }],
-  startup: [{
-    index: 0,
-    question: 'Would you like to meet again?',
-    options: [
-      { desc: 'No', value: 0 },
-      { desc: 'Maybe', value: 1 },
-      { desc: 'Yes', value: 3 },
-    ],
-  }],
-};
 
 // react router Switch that contains all the user views
 const userContent = (
@@ -59,7 +37,7 @@ const userContent = (
     <Route exact path="/" component={LandingPage} />
     <Route path="/timetable" render={() => <UserTimetable />} />
     <Route path="/user" component={UserProfilePage} />
-    <Route path="/feedback" render={() => <FeedbackView questions={feedbackQuestions} />} />
+    <Route path="/feedback" render={() => <FeedbackView />} />
     <Route path="/availability" component={TimeslotView} />
     <Route path="/change_password" component={PasswordChange} />
   </Switch>
@@ -163,11 +141,22 @@ function fetchData(path, methodType, params) {
       },
       body: bodyParams,
     }).then((response) => {
-      // if user is not logged in log out in App
-      if (response.status === 401) {
-        App.logOff();
-        reject();
-      } else resolve(response.json());
+      switch (response.status) {
+        case 200:
+          resolve(response.json());
+          break;
+        case 401:
+        // if user is not logged in log out in App
+          App.logOff();
+          reject();
+          break;
+        case 404:
+          reject();
+          break;
+        default:
+          reject();
+          break;
+      }
     })
       .catch((error) => {
         reject(error);

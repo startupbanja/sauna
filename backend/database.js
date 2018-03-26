@@ -160,8 +160,9 @@ function getProfile(id, callback) {
       }
     });
 
-    db.get('SELECT type FROM Users WHERE id = ?', [id], (error, row) => {
-      if (err) return callback(error);
+    db.get('SELECT type FROM Users WHERE id = ?', [Number(id)], (error, row) => {
+      if (error) return callback(error);
+      if (row === undefined) return callback(null, undefined);
       info.type = row.type === 1 ? 'coach' : 'startup';
       return callback(err, info);
     });
@@ -191,7 +192,7 @@ function getFeedback(id, callback) {
     return callback(err, rows);
   });
 }
-
+// TODO what happends on UPDATE if does not exist?
 function giveFeedback(meetingId, rating, field, callback) {
   const query = `
   UPDATE Meetings
