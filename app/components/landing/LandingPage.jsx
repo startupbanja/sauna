@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import BlockHeader from '../BlockHeader';
 import ComingUpCarousel from './ComingUpCarousel';
 import pageContent from '../pageContent';
@@ -11,6 +12,7 @@ class LandingPage extends Component {
     super(props);
     this.fetchTimetable = this.fetchTimetable.bind(this);
     this.renderComingUpCarousel = this.renderComingUpCarousel.bind(this);
+    this.renderMindTheseButtons = this.renderMindTheseButtons.bind(this);
     this.state = {
       timetable: undefined,
       date: undefined,
@@ -41,12 +43,9 @@ class LandingPage extends Component {
     return <ComingUpCarousel timetable={this.state.timetable} date={this.state.date} />;
   }
 
-  render() {
-    return (
-      <div className="container" >
-        <h3 className="text-center" style={{ fontWeight: 'bold' }}>Coming up</h3>
-        {this.renderComingUpCarousel()}
-        <BlockHeader text="Mind these:" />
+  renderMindTheseButtons() {
+    if (this.props.type === 'coach') {
+      return (
         <div className="row">
           <div className="col-sm-6 col-xs-12" style={{ padding: '10px' }}>
             <Link className="btn btn-lg btn-major col-xs-12" to="/feedback">
@@ -59,6 +58,26 @@ class LandingPage extends Component {
             </Link>
           </div>
         </div>
+      );
+    }
+    return (
+      <div className="row">
+        <div className="col-xs-12" style={{ padding: '10px' }}>
+          <Link className="btn btn-lg btn-major col-xs-12" to="/feedback">
+            Give Feedback
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div className="container" >
+        <h3 className="text-center" style={{ fontWeight: 'bold' }}>Coming up</h3>
+        {this.renderComingUpCarousel()}
+        <BlockHeader text="Mind these:" />
+        {this.renderMindTheseButtons()}
         <BlockHeader text="Problems?" />
         <div className="row">
           <div className="col-sm-3" />
@@ -73,5 +92,9 @@ class LandingPage extends Component {
     );
   }
 }
+
+LandingPage.propTypes = {
+  type: PropTypes.string.isRequired,
+};
 
 export default LandingPage;

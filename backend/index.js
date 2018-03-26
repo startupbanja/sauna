@@ -55,7 +55,7 @@ app.post('/login', (req, res) => {
       req.session.userID = userId;
       req.session.userType = type;
     }
-    res.json({ status: (type === 'coach' || type === 'startup') ? 'user' : type });
+    res.json({ status: type });
   });
 });
 
