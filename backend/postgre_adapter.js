@@ -7,15 +7,32 @@ function getClient() {
   return new Client(connectionParams);
 }
 
+function replaceParams(queryStr) {
+  let i = 0;
+  const res = queryStr.replace('?', (char) => {
+    i += 1;
+    return `$${i}`;
+  });
+  console.log(res);
+  return res;
+  // for (let i = 0; i < query.length; i += 1) {
+  //   const char = query[i];
+  //   if (char === '?') {
+
+  //   }
+  // }
+}
+
 function query(queryString, params, callback) {
   const client = getClient();
   // TODO this might cause multiple calls to callback?
   client.on('error', (err) => {
     callback(err);
   });
+  const queryWithReplacements = replaceParams(queryString);
   client.connect((connectionError) => {
     if (connectionError) return callback(connectionError);
-    return client.query(queryString, params, (queryErr, result) => {
+    return client.query(queryWithReplacements, params, (queryErr, result) => {
       if (queryErr) return callback(queryErr);
       callback(null, result);
       return client.end(() => undefined);

@@ -36,7 +36,7 @@ function initDB(callback) {
 function openDatabase(callback) {
   if (process.env.DATABASE_ENGINE === 'PG') {
     db = require('./postgre_adapter'); // eslint-disable-line
-    console.log('using posgresql');
+    console.log('using postgresql');
   } else {
     db = new sqlite.Database(':memory:', (err) => {
       if (err) {
@@ -424,7 +424,7 @@ function updateProfile(uid, userType, site, imgUrl, description, title, credenti
 }
 
 function verifyIdentity(username, password, callback) {
-  const query = 'SELECT id, type, password FROM Users WHERE username = ?';
+  const query = 'SELECT id, type, password FROM Users WHERE username = ?;';
   db.get(query, [username], (err, row) => {
     if (err) {
       return callback(err);
