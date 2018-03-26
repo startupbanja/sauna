@@ -47,10 +47,12 @@ class Timeslot extends React.Component {
     let newEnd = this.state.available.end;
     if (to === 'start') {
       newStart = Math.min(Math.max(newStart + change, this.state.start), this.state.end);
-      newEnd = Math.max(newStart, this.state.available.end);
+      newStart = Math.min(newStart, newEnd);
+      // newEnd = Math.max(newStart, this.state.available.end);
     } else if (to === 'end') {
       newEnd = Math.max(Math.min(newEnd + change, this.state.end), this.state.start);
-      newStart = Math.min(newEnd, this.state.available.start);
+      newEnd = Math.max(newEnd, newStart);
+      // newStart = Math.min(newEnd, this.state.available.start);
     }
     const newObj = { available: { start: newStart, end: newEnd }, changesMade: true };
     this.setState(newObj);
