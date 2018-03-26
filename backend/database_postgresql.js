@@ -115,7 +115,7 @@ function setActiveStatus(id, active, callback) {
   client.connect((err) => {
     if (err) callback(err);
     else {
-      client.query(query, (err2, res) => {
+      client.query(query, (err2) => {
         if (err2) callback(err2);
         else {
           callback(err2, { status: 'success' });
@@ -224,10 +224,125 @@ function getFeedback(id, callback) {
   });
 }
 
+// Sets feedback for a meeting and between a coach and a startup
+function giveFeedback(meetingId, rating, field, callback) {
+  // Sets the given rating into the meetings table
+  function setMeetingRating(callback2) {
+    const client = getClient();
+    const query = {
+      name: 'set-meetingRating',
+      text: `
+      UPDATE Meetings
+      SET ${field} = $1
+      WHERE id = $2;`,
+      values: [rating, meetingId],
+    };
+    client.connect((err) => {
+      if (err) callback(err);
+      else {
+        client.query(query, (err2) => {
+          if (err2) callback(err2);
+          else {
+            callback2();
+          }
+          client.end();
+        });
+      }
+    });
+  }
+
+  // Gets the IDs of the coach and startup
+  function getIDs(callback2) {
+    const client = getClient();
+    const query = {
+      name: 'get-IDs',
+      text: `
+      SELECT startup_id, coach_id
+      FROM Meetings
+      WHERE id = $1;`,
+      values: [meetingId],
+    };
+    client.connect((err) => {
+      if (err) callback(err);
+      else {
+        client.query(query, (err2, res) => {
+          if (err2) callback(err2);
+          else {
+            callback2([res.rows[0].startup_id, res.rows[0].coach_id]);
+          }
+          client.end();
+        });
+      }
+    });
+  }
+
+  // Creates a row into the ratings table if it doesn't exist
+  function insertRating(startupID, coachID, callback2) {
+    const client = getClient();
+    const query = {
+      name: 'insert-rating',
+      text: `
+      INSERT INTO Ratings (coach_id, startup_id, coach_rating, startup_rating)
+      SELECT $1, $2, -1, -1
+      WHERE NOT EXISTS (SELECT * FROM Ratings WHERE coach_id = $1 AND startup_id = $2);`,
+      values: [coachID, startupID],
+    };
+    client.connect((err) => {
+      if (err) callback(err);
+      else {
+        client.query(query, (err2) => {
+          if (err2) callback(err2);
+          else {
+            callback2();
+          }
+          client.end();
+        });
+      }
+    });
+  }
+
+  // Sets the given value into ratings table
+  function updateRating(startupID, coachID, callback2) {
+    const client = getClient();
+    const query = {
+      name: 'update-rating',
+      text: `
+      UPDATE Ratings
+      SET ${field} = $1
+      WHERE coach_id = $2 AND startup_id = $3;`,
+      values: [rating, coachID, startupID],
+    };
+    client.connect((err) => {
+      if (err) callback(err);
+      else {
+        client.query(query, (err2) => {
+          if (err2) callback(err2);
+          else {
+            callback2();
+          }
+          client.end();
+        });
+      }
+    });
+  }
+
+  // Calls the functions in the right order
+  setMeetingRating(() => {
+    getIDs(([startupID, coachID]) => {
+      insertRating(startupID, coachID, () => {
+        updateRating(startupID, coachID, () => {
+          callback(null, { status: 'success' });
+        });
+      });
+    });
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
   setActiveStatus,
   getProfile,
   getFeedback,
+  giveFeedback,
 };
