@@ -37,10 +37,10 @@ app.use((req, res, next) => {
   res.append('Access-Control-Allow-Credentials', 'true');
 
   // if user has not logged in, returns not authorized and ends the request
-  // if (!req.session.userID && req.path !== '/login') {
-  //   res.sendStatus(401);
-  //   return;
-  // }
+  if (!req.session.userID && req.path !== '/login') {
+    res.sendStatus(401);
+    return;
+  }
 
   next();
 });
@@ -524,7 +524,7 @@ app.post('/insertAvailability', (req, res, next) => {
 
 // Error handling
 app.use((err, req, res, next) => {
-  console.log(err.stack);
+  console.log(err);
   res.status(500).send({ error: 'An error has occured!' });
 });
 
