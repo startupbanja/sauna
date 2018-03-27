@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import CheckBox from '../CheckBox';
+import CheckBox from './CheckBox';
 import pageContent from '../pageContent';
 import StatusMessage from '../StatusMessage';
 
@@ -14,6 +14,7 @@ class UserActivityList extends Component {
     this.userActivityChanged = this.userActivityChanged.bind(this);
   }
 
+  // when admin changes a user's status, submit the change
   userActivityChanged(newActivity, userId) {
     pageContent.fetchData('/setActiveStatus', 'POST', {
       id: userId,

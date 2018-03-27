@@ -4,7 +4,10 @@ import Timeslot, { parseMinutes, parseTimeStamp } from './Timeslot';
 import StatusMessage from '../StatusMessage';
 import '../../styles/timeslot_style.css';
 
-/* Component to handle availability data between backend and Timeslot */
+/*
+  Component to handle availability data between backend and Timeslot
+  and displaying all upcoming meeting days' timeslots
+*/
 class TimeslotView extends Component {
   constructor(props) {
     super(props);
@@ -13,6 +16,7 @@ class TimeslotView extends Component {
     this.submitAvailability = this.submitAvailability.bind(this);
     this.state = {
       index: 0,
+      // array of objects containing different meeting days and their submitted availabilities
       data: undefined,
       message: undefined,
     };
@@ -35,7 +39,12 @@ class TimeslotView extends Component {
             end,
             split: day.split,
             available: {
+              // if no availability is submitted,
+              // make the initial value to be the start of the whole day
               start: (day.time === null) ? start : parseMinutes(day.time),
+              // if no availability is submitted,
+              // make the initial value to be the start of the whole day
+              // so the user is unavailable by default
               end: (day.duration === null) ? start : parseMinutes(day.time) + day.duration,
             },
           });
@@ -55,6 +64,7 @@ class TimeslotView extends Component {
       start: parseTimeStamp(startTime),
       end: parseTimeStamp(endTime),
     }).then((result) => {
+      // if submitting correctly update state
       if (result.status === 'success') {
         const oldData = this.state.data;
         oldData[this.state.index].available = {
@@ -63,6 +73,7 @@ class TimeslotView extends Component {
         };
         this.setState({
           data: oldData,
+          // show StatusMessage on success
           message: {
             text: 'Saved',
             type: 'success',
@@ -70,6 +81,7 @@ class TimeslotView extends Component {
         });
       } else {
         this.setState({
+          // show StatusMessage on errro
           message: {
             text: 'Error when saving availability',
             type: 'error',
@@ -79,6 +91,7 @@ class TimeslotView extends Component {
     });
   }
 
+  // navigate between different meeting days
   changeDate(diff) {
     this.setState({
       index: Math.min(this.state.data.length - 1, Math.max(0, this.state.index + diff)),
@@ -86,6 +99,7 @@ class TimeslotView extends Component {
     });
   }
 
+  // render the timeslot picker for the current date
   renderTimeslot() {
     if (!this.state.data) return null;
     if (this.state.data.length === 0) return <p className="empty-content-text">No upcoming days</p>;
@@ -109,7 +123,6 @@ class TimeslotView extends Component {
   render() {
     return (
       <div className="timeslot-picker">
-        {/* <link rel="stylesheet" type="text/css" href="app/styles/timeslot_style.css" /> */}
         <StatusMessage message={this.state.message} />
         {this.renderTimeslot()}
       </div>

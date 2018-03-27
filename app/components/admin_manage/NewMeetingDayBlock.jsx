@@ -3,14 +3,14 @@ import $ from 'jquery';
 import PropTypes from 'prop-types';
 import pageContents from '../pageContent';
 
-/* Conponen for displaying and submitting new meeting days */
+/* Componen for displaying the form for submitting new meeting days */
 class NewMeetingDayBlock extends Component {
   constructor(props) {
     super(props);
     this.validateForm = this.validateForm.bind(this);
   }
 
-  /* Makes sure that the meetings can be devided in full lenght
+  /* Makes sure that the meetings can be devided in full length
   and submits the data */
   validateForm(e) {
     e.preventDefault();

@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack",
-    "start": "npm run eslint && webpack-dev-server",
+    "build": "webpack --config webpack.prod.js",
+    "start": "npm run eslint && webpack-dev-server --config webpack.dev.js",
     "eslint": "eslint --ext .jsx --ext .js app/",
     "test": "jest tests/*"
   },
@@ -15,7 +15,8 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "\\.(css)$": "<rootDir>/tests/__mocks__/styleMock.js"
+      "\\.(css)$": "<rootDir>/tests/__mocks__/styleMock.js",
+      "\\.(png|jpg|svg|gif)$": "<rootDir>/tests/__mocks__/imageMock.js"
     }
   },
   "author": "",
@@ -46,11 +47,13 @@
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
     "eslint-plugin-react": "^7.5.1",
+    "file-loader": "^1.1.11",
     "html-webpack-plugin": "^2.30.1",
     "jest": "^21.2.1",
     "react-test-renderer": "^16.2.0",
     "style-loader": "^0.20.3",
     "webpack": "^3.8.1",
-    "webpack-dev-server": "^2.9.4"
+    "webpack-dev-server": "^2.9.4",
+    "webpack-merge": "^4.1.2"
   }
 }

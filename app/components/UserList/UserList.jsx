@@ -2,8 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import UserListItem from './UserListItem';
-// import Image from './Image';
-import pageContent from './pageContent';
+import pageContent from '../pageContent';
 
 /*
   Component to fetch and display lists of startups or coaches
@@ -17,7 +16,9 @@ export default class UserList extends React.Component {
     this.clearFilter = this.clearFilter.bind(this);
     this.renderSearchBar = this.renderSearchBar.bind(this);
     this.state = {
+      // array of objects {description, id, img, name}
       users: [],
+      // the text by witch filtering results
       filterText: '',
     };
   }
@@ -26,12 +27,10 @@ export default class UserList extends React.Component {
     this.fetchAndUpdate();
   }
 
-  /* eslint-disable */
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate(prevProps) {
     if (prevProps.type === this.props.type) return;
     this.fetchAndUpdate();
   }
-  /* eslint-enable */
 
   fetchAndUpdate() {
     pageContent.fetchData('/users', 'get', {
@@ -48,6 +47,7 @@ export default class UserList extends React.Component {
     this.setState({ filterText: '' });
   }
 
+  // render the textfield for filtering results
   renderSearchBar() {
     return (
       <div className="user-filter-container">
@@ -89,7 +89,6 @@ export default class UserList extends React.Component {
                 id={user.id}
                 description={user.description}
                 imageSrc={user.img}
-                // handleClick={this.props.handleClick}
               />
             </Link>
           ))}
@@ -100,6 +99,5 @@ export default class UserList extends React.Component {
 
 UserList.propTypes = {
   type: PropTypes.string.isRequired,
-  // handleClick: PropTypes.func.isRequired,
   match: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
 };

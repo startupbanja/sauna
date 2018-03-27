@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-
+// Basic button component
 export default class Button extends React.Component {
   render() {
     return (

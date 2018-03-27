@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import $ from 'jquery';
 import { totalHeight } from './TimeslotDrag';
 
+// componet for displaying a draggable box and registering dragging
 class TimeslotDragBall extends Component {
   constructor(props) {
     super(props);
@@ -13,6 +14,7 @@ class TimeslotDragBall extends Component {
     };
   }
 
+  // calculate the distace and direction dragged in pixels
   handleDrag(event) {
     event.preventDefault();
     const clientY = (event.clientY !== 0) ? event.clientY : this.state.dragY;
@@ -22,7 +24,6 @@ class TimeslotDragBall extends Component {
     const dragY = clientY - event.target.closest('.dragContainer').getBoundingClientRect().top;
     this.props.onChange(dragY - origY);
   }
-
   handleTouchMove(event) {
     event.preventDefault();
     if (event.targetTouches.item(0).clientY === 0) return;

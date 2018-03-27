@@ -10,9 +10,13 @@ export default class AdminSchedules extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      // string in format 'YYYY-MM-DD'
       date: this.props.date,
+      // array of all the set cells. {coach, startup, duration, time}
       schedule: [],
+      // either 'coach' or 'startup'
       firstColumn: 'coach',
+      // {coaches: listOfCoachNames, startups: listOfStartupNames}
       allUsers: null,
       editable: false,
       oldSchedule: null,
@@ -31,6 +35,7 @@ export default class AdminSchedules extends React.Component {
     this.fetchUsers();
   }
 
+  // turn the edit mode on
   setEditable() {
     this.setState(old => ({ editable: true, oldSchedule: Object.assign([], old.schedule) }));
   }
@@ -49,12 +54,12 @@ export default class AdminSchedules extends React.Component {
 
 
   handleSaveClick() {
-    this.saveTimetable((res) => {
-      console.log(res);
+    this.saveTimetable(() => {
       this.setState({ editable: false, oldSchedule: null });
     });
   }
 
+  // cancel modifications and set back the old values
   revertChanges() {
     this.setState(old => ({ schedule: old.oldSchedule, oldSchedule: null, editable: false }));
   }
@@ -67,6 +72,7 @@ export default class AdminSchedules extends React.Component {
     });
   }
 
+  // set the table to be either from coache's or startup's perspecite
   toggle(n) {
     this.setState({ firstColumn: n });
   }
@@ -74,7 +80,7 @@ export default class AdminSchedules extends React.Component {
 
   // newValue is new value of cell
   // cellKeys is of form: {leftColumn: either coach or startup, time, cellValue: old value}
-  //
+  // replace is boolean of wether to replace or add a new
   updateValue(newValue, cellKeys, replace) {
     this.setState((oldState) => {
       let oldValue = cellKeys.cellValue;

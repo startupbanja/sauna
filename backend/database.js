@@ -55,7 +55,7 @@ function closeDatabase(callback) {
 function getUsers(type, includeId, callback) {
   const users = {};
   const query = `
-  SELECT Profiles.user_id, name, description, email, linkedin, Credentials.company, Credentials.title
+  SELECT Profiles.user_id, name, description, email, linkedin, Credentials.company, Credentials.title, img_url
   FROM Profiles
   LEFT OUTER JOIN Credentials ON Profiles.user_id = Credentials.user_id
   WHERE Profiles.user_id IN (
@@ -75,6 +75,7 @@ function getUsers(type, includeId, callback) {
         email: row.email,
         linkedin: row.linkedin,
         credentials: [[row.company, row.title]],
+        img_url: row.img_url,
       };
       if (includeId) {
         users[row.name].id = row.user_id;
@@ -151,14 +152,17 @@ function getProfile(id, callback) {
         info.email = row.email;
         info.linkedIn = row.linkedin !== null ? row.linkedin : row.website;
         info.company = row.currentCompany;
-        info.credentials = [{ company: row.title, position: row.content }];
+        if (row.title || row.content) {
+          info.credentials = [{ company: row.title, position: row.content }];
+        }
       } else {
         info.credentials.push({ company: row.title, position: row.content });
       }
     });
 
-    db.get('SELECT type FROM Users WHERE id = ?', [id], (error, row) => {
-      if (err) return callback(error);
+    db.get('SELECT type FROM Users WHERE id = ?', [Number(id)], (error, row) => {
+      if (error) return callback(error);
+      if (row === undefined) return callback(null, undefined);
       info.type = row.type === 1 ? 'coach' : 'startup';
       return callback(err, info);
     });
@@ -167,9 +171,8 @@ function getProfile(id, callback) {
 }
 
 function getFeedback(id, callback) {
-  const feedbacks = [];
   const query = `
-    SELECT date, time, id AS meetingId, user_id, name, description, rating, "/app/imgs/coach_placeholder.png" AS image_src
+    SELECT date, time, id AS meetingId, user_id, name, description, rating, img_url AS image_src
     FROM
       (SELECT date, time, id,
           CASE
@@ -189,7 +192,7 @@ function getFeedback(id, callback) {
     return callback(err, rows);
   });
 }
-
+// TODO what happends on UPDATE if does not exist?
 function giveFeedback(meetingId, rating, field, callback) {
   const query = `
   UPDATE Meetings
@@ -376,7 +379,7 @@ function updateCredentialsListEntries(uid, list, userType, callback) {
 function updateProfile(uid, userType, site, imgUrl, description, title, credentials, callback) {
   const siteAttr = userType === 'Coach' ? 'linkedin' : 'website';
   const company = userType === 'Coach' ? ', company = ?' : '';
-  const imgURL = imgUrl === '' ? '../app/imgs/coach_placeholder.png' : imgUrl;
+  const imgURL = imgUrl === '' ? null : imgUrl;
   const queryParams = userType === 'Coach' ? [site, imgURL, description, title, uid] : [site, imgUrl, description, uid];
   const query = `UPDATE ${userType}Profiles SET ${siteAttr} = ?, img_url = ?, description = ?${company} WHERE user_id = ?`;
   db.run(query, queryParams, (err) => {
@@ -685,13 +688,13 @@ function getUserMeetings(userID, userType, callback) {
   let query;
   if (userType === 'coach') {
     query = `
-    SELECT name, time, duration, date, "/app/imgs/coach_placeholder.png" AS image_src
+    SELECT name, time, duration, date, img_url AS image_src
     FROM Meetings
     LEFT OUTER JOIN Profiles ON Profiles.user_id = Meetings.startup_id
     WHERE Meetings.coach_id = ? AND date = (SELECT MAX(date) FROM Meetings);`;
   } else {
     query = `
-    SELECT name, time, duration, date, "/app/imgs/coach_placeholder.png" AS image_src
+    SELECT name, time, duration, date, img_url AS image_src
     FROM Meetings
     LEFT OUTER JOIN Profiles ON Profiles.user_id = Meetings.coach_id
     WHERE Meetings.startup_id = ? AND date = (SELECT MAX(date) FROM Meetings);`;

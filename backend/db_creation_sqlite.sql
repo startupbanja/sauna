@@ -20,7 +20,7 @@ CREATE TABLE Users(
 CREATE TABLE CoachProfiles(
     user_id INT,
     name VARCHAR(30) NOT NULL,
-    img_url VARCHAR(100) DEFAULT '../app/imgs/coach_placeholder.png',
+    img_url VARCHAR(100),
     description TEXT,
     company VARCHAR(20),
     email VARCHAR(50) NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE CoachProfiles(
 CREATE TABLE StartupProfiles(
     user_id INT,
     name VARCHAR(30) NOT NULL,
-    img_url VARCHAR(100) DEFAULT '../app/imgs/coach_placeholder.png',
+    img_url VARCHAR(100),
     description TEXT,
     email VARCHAR(50) NOT NULL,
     website VARCHAR(100),
@@ -646,6 +646,7 @@ INSERT INTO Meetings (coach_id, startup_id, date, time, duration, coach_rating, 
 INSERT INTO Credentials (user_id, company, title) VALUES
 	(14, 'Company', 'Title'),
 	(15, 'Company', 'Title'),
+	(15, 'Company2', 'Title2'),
 	(16, 'Company', 'Title'),
 	(17, 'Company', 'Title'),
 	(18, 'Company', 'Title'),
