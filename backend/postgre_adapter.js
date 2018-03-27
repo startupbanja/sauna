@@ -13,14 +13,7 @@ function replaceParams(queryStr) {
     i += 1;
     return `$${i}`;
   });
-  console.log(res);
   return res;
-  // for (let i = 0; i < query.length; i += 1) {
-  //   const char = query[i];
-  //   if (char === '?') {
-
-  //   }
-  // }
 }
 
 function query(queryString, params, callback) {
@@ -34,7 +27,7 @@ function query(queryString, params, callback) {
     if (connectionError) return callback(connectionError);
     return client.query(queryWithReplacements, params, (queryErr, result) => {
       if (queryErr) return callback(queryErr);
-      callback(null, result);
+      callback(null, result.rows);
       return client.end(() => undefined);
     });
   });
@@ -66,7 +59,10 @@ function all(queryString, params, callback) {
 }
 
 function get(queryString, params, callback) {
-  query(queryString, params, callback);
+  query(queryString, params, (err, rows) => {
+    if (err) return callback(err);
+    return callback(null, rows[0]);
+  });
 }
 
 
