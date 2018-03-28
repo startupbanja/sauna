@@ -259,6 +259,7 @@ app.get('/timetable', (req, res, next) => {
 
 app.post('/timetable', (req, res, next) => {
   const schedule = JSON.parse(req.body.schedule);
+  if (!schedule) return res.status(404);
   database.updateTimetable(schedule, req.body.date, (err) => {
     if (err) {
       next(err);
