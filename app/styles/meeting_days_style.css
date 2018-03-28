@@ -35,3 +35,9 @@ p.meeting-date {
 div.next-day-container {
   text-align: center;
 }
+
+div.new-meeting-day-form p.form-error-message {
+  display: block;
+  font-size: 1em;
+  color: var(--primary-color);
+}
