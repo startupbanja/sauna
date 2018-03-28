@@ -225,7 +225,7 @@ function giveFeedback(meetingId, rating, field, callback) {
         }
 
         const query4 = `INSERT INTO Ratings(coach_id, startup_id, coach_rating, startup_rating) SELECT
-         $coachid, $startupid, $coachrating, $startuprating WHERE NOT EXISTS (SELECT * FROM Ratings WHERE coach_id = $coachid, startup_id = $startupid;`;
+         $coachid, $startupid, $coachrating, $startuprating WHERE NOT EXISTS (SELECT * FROM Ratings WHERE coach_id = $coachid AND startup_id = $startupid);`;
         return db.run(
           query4,
           {

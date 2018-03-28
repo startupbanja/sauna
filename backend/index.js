@@ -37,10 +37,10 @@ app.use((req, res, next) => {
   res.append('Access-Control-Allow-Credentials', 'true');
 
   // if user has not logged in, returns not authorized and ends the request
-  if (!req.session.userID && req.path !== '/login') {
-    res.sendStatus(401);
-    return;
-  }
+  // if (!req.session.userID && req.path !== '/login') {
+  //   res.sendStatus(401);
+  //   return;
+  // }
 
   next();
 });
@@ -488,9 +488,12 @@ function runAlgorithm(date, callback, commit = true) {
 }
 
 // TODO sanitize date;
-app.post('/runMatchmaking', (req, res) => {
+app.post('/runMatchmaking', (req, res, next) => {
   if (req.body.date) {
-    runAlgorithm(req.body.date, result => res.json({ success: result }));
+    runAlgorithm(req.body.date, (error) => {
+      if (error) return next(error);
+      return res.json({ success: true });
+    });
   } else {
     res.json({ success: false });
   }
@@ -520,7 +523,7 @@ app.post('/insertAvailability', (req, res, next) => {
 
 // Error handling
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.log(err.stack);
   res.status(500).send({ error: 'An error has occured!' });
 });
 
