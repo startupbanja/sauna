@@ -1,3 +1,4 @@
+
 .profileContainer #username {
   color: var(--primary-color);
   font-size: 1.7em;
@@ -108,4 +109,8 @@
 
 .control-buttons button {
   margin: 5px;
+}
+
+#edit_manage_account {
+  text-align: center;
 }

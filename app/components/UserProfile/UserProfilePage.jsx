@@ -14,6 +14,7 @@ class UserProfilePage extends Component {
     this.fetchData = this.fetchData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.toggleEdit = this.toggleEdit.bind(this);
+    this.resetPassword = this.resetPassword.bind(this);
 
     // Initialize the state as empty.
     this.state = {
@@ -23,6 +24,7 @@ class UserProfilePage extends Component {
       linkedIn: '',
       credentials: [],
       canModify: false,
+      canResetPW: false,
       titles: [],
       modifying: false,
     };
@@ -41,6 +43,17 @@ class UserProfilePage extends Component {
   toggleEdit() {
     this.setState({
       modifying: !this.state.modifying,
+    });
+  }
+
+  resetPassword() {
+    pageContent.fetchData('/changePassword', 'POST', { uid: this.props.id }).then((res) => {
+      this.setState({
+        message: {
+          type: res.status.toLowerCase(),
+          text: res.message,
+        },
+      });
     });
   }
 
@@ -63,6 +76,7 @@ class UserProfilePage extends Component {
           linkedIn: link,
           credentials: responseJSON.credentials,
           canModify: responseJSON.canModify,
+          canResetPW: responseJSON.canResetPW,
           titles: [responseJSON.company],
         });
       });
@@ -107,6 +121,8 @@ class UserProfilePage extends Component {
             titles={this.state.titles}
             handleSubmit={this.handleSubmit}
             cancel={this.toggleEdit}
+            canResetPW={this.state.canResetPW}
+            resetPw={this.resetPassword}
           />
         </div>);
     }

@@ -59,30 +59,47 @@ app.post('/login', (req, res) => {
   });
 });
 
+
+// DEFAULT PASSWORD TO USE FOR ADMIN-INITIATED RESET.
+const defaultPassword = 'abc123';
+
 /**
  * Handles the requests to change password.
  */
 app.post('/changePassword', (req, res, next) => {
-  const JSONObject = JSON.parse(req.body.data);
-  const currentPassword = JSONObject.currentPassword;
-  const newPassword = JSONObject.newPassword;
-  const repeatedPassword = JSONObject.repeatedPassword;
-
-  if (newPassword === repeatedPassword) {
-    database.changePassword(
-      req.session.userID,
-      currentPassword,
-      newPassword,
-      (err, response) => {
-        if (err) return next(err);
-        return res.json(response);
+  // If the initiating user is admin.
+  if (req.session.userType === 'admin') {
+    database.changePasswordAdmin(req.body.uid, defaultPassword, (err, result) => {
+      if (!err) {
+        res.json(result);
+      } else {
+        return next(err);
       }
-    );
-  } else {
-    res.json({
-      status: 'ERROR',
-      message: 'The new passwords did not match!',
     });
+  } else {
+    // If the initiating user is NOT admin.
+    const JSONObject = JSON.parse(req.body.data);
+    const currentPassword = JSONObject.currentPassword;
+    const newPassword = JSONObject.newPassword;
+    const repeatedPassword = JSONObject.repeatedPassword;
+
+    if (newPassword === repeatedPassword) {
+      database.changePassword(
+        req.session.userID,
+        currentPassword,
+        newPassword,
+        (err, response) => {
+          if (!err) {
+            res.json(response);
+          } else return next(err);
+        }
+      );
+    } else {
+      res.json({
+        status: 'ERROR',
+        message: 'The new passwords did not match!',
+      });
+    }
   }
 });
 
@@ -155,9 +172,13 @@ app.get('/profile', (req, res, next) => {
   }
   return database.getProfile(id, (err, result) => {
     if (err) return next(err);
+
     if (result === undefined) return res.sendStatus(404);
     // set canModify flag if user is admin or viewing own profile
     if (req.session.userID === id || req.session.userType === 'admin') {
+      if (req.session.userType === 'admin') {
+        Object.assign(result, { canResetPW: true });
+      }
       Object.assign(result, { canModify: true });
     }
     return res.json(result);
