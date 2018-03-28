@@ -60,6 +60,18 @@ app.post('/login', (req, res) => {
 });
 
 
+app.post('/changeEmail', (req, res, next) => {
+  const userType = req.body.type;
+  userType.replace(userType[0], userType[0].toUpperCase());
+  database.changeEmail(req.body.uid, userType, req.body.email, (err, response) => {
+    if (err) {
+      return next(err);
+    }
+    return res.json(response);
+  });
+});
+
+
 // DEFAULT PASSWORD TO USE FOR ADMIN-INITIATED RESET.
 const defaultPassword = 'abc123';
 

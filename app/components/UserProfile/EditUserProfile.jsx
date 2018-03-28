@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import $ from 'jquery';
 import Button from '../Button';
 
 // view for editing users' profile
@@ -56,6 +57,7 @@ class EditUserProfile extends Component {
       credentials: this.state.credentials.concat({ company: 'Company', position: 'Position' }),
     });
   }
+
   handleSubmit() {
     const input = this.getInputData();
 
@@ -67,6 +69,10 @@ class EditUserProfile extends Component {
     const toBeAdded = { uid: this.props.id, type: this.props.type };
     const dataToPass = { data: JSON.stringify(Object.assign(input, toBeAdded)) };
     this.props.handleSubmit(dataToPass);
+  }
+
+  handleEmailSubmit() {
+    this.props.changeEmail($('#edit_manage_email').val(), this.props.type);
   }
 
   render() {
@@ -84,6 +90,15 @@ class EditUserProfile extends Component {
               className="btn btn-major"
               onClick={this.props.resetPw}
             >Reset password
+            </button>
+            <form>
+              <div className="edit-para" htmlFor="edit_manage_email">Set email address</div>
+              <input type="email" className="edit-text" id="edit_manage_email" />
+            </form>
+            <button
+              className="btn btn-major"
+              onClick={() => this.handleEmailSubmit()}
+            >Set email
             </button>
           </div>
         }
@@ -160,6 +175,7 @@ EditUserProfile.propTypes = {
   cancel: PropTypes.func.isRequired,
   resetPw: PropTypes.func.isRequired,
   canResetPW: PropTypes.bool.isRequired,
+  changeEmail: PropTypes.func.isRequired,
 };
 
 EditUserProfile.defaultProps = {

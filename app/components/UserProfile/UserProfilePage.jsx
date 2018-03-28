@@ -15,6 +15,7 @@ class UserProfilePage extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.toggleEdit = this.toggleEdit.bind(this);
     this.resetPassword = this.resetPassword.bind(this);
+    this.changeEmail = this.changeEmail.bind(this);
 
     // Initialize the state as empty.
     this.state = {
@@ -55,6 +56,26 @@ class UserProfilePage extends Component {
         },
       });
     });
+  }
+
+  changeEmail(addr, userType) {
+    if (addr.indexOf('@') < 0) {
+      this.setState({
+        message: {
+          type: 'error',
+          text: 'Invalid email address format! Did you forget "@"?',
+        },
+      });
+    } else {
+      pageContent.fetchData('/changeEmail', 'POST', { uid: this.props.id, email: addr, type: userType }).then((res) => {
+        this.setState({
+          message: {
+            type: res.status.toLowerCase(),
+            text: res.message,
+          },
+        });
+      });
+    }
   }
 
   fetchData() {
@@ -123,6 +144,7 @@ class UserProfilePage extends Component {
             cancel={this.toggleEdit}
             canResetPW={this.state.canResetPW}
             resetPw={this.resetPassword}
+            changeEmail={this.changeEmail}
           />
         </div>);
     }

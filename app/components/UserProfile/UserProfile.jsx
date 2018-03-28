@@ -16,9 +16,7 @@ export default class UserProfile extends React.Component {
           imgSrc={this.props.imgSrc}
           titles={this.props.titles}
           canModify={this.props.canModify}
-          canResetPW={this.props.canResetPW}
           onModifyClick={this.props.onModifyClick}
-          resetPW={this.props.resetPW}
         />
         {((this.props.linkedIn || null) &&
           <ul className="profileLinks">
@@ -52,9 +50,7 @@ UserProfile.propTypes = {
     position: PropTypes.string.isRequired,
   })),
   canModify: PropTypes.bool,
-  canResetPW: PropTypes.bool,
   onModifyClick: PropTypes.func.isRequired,
-  resetPW: PropTypes.func.isRequired,
 };
 
 UserProfile.defaultProps = {
@@ -63,6 +59,5 @@ UserProfile.defaultProps = {
   description: '',
   titles: [],
   credentials: [],
-  canResetPW: false,
   canModify: false,
 };
