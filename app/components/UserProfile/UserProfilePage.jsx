@@ -121,6 +121,8 @@ class UserProfilePage extends Component {
             titles={this.state.titles}
             handleSubmit={this.handleSubmit}
             cancel={this.toggleEdit}
+            canResetPW={this.state.canResetPW}
+            resetPw={this.resetPassword}
           />
         </div>);
     }
@@ -135,8 +137,6 @@ class UserProfilePage extends Component {
           linkedIn={this.state.linkedIn}
           credentials={this.state.credentials}
           canModify={this.state.canModify}
-          canResetPW={this.state.canResetPW}
-          resetPW={this.resetPassword}
           titles={this.state.titles}
           onModifyClick={this.toggleEdit}
         />

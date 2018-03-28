@@ -77,6 +77,16 @@ class EditUserProfile extends Component {
 
     return (
       <div className="editProfileContainer container">
+        {this.props.canResetPW &&
+          <div id="edit_manage_account">
+            <h2>Manage account</h2>
+            <button
+              className="btn btn-major"
+              onClick={this.props.resetPw}
+            >Reset password
+            </button>
+          </div>
+        }
         <form>
           <h4>{this.props.name} </h4>
           <div className="edit-para">{siteName}:</div>
@@ -136,7 +146,7 @@ class EditUserProfile extends Component {
 
 EditUserProfile.propTypes = {
   type: PropTypes.string.isRequired,
-  id: PropTypes.number,
+  id: PropTypes.string,
   name: PropTypes.string.isRequired,
   imgSrc: PropTypes.string.isRequired,
   linkedIn: PropTypes.string,
@@ -148,6 +158,8 @@ EditUserProfile.propTypes = {
   })),
   handleSubmit: PropTypes.func.isRequired,
   cancel: PropTypes.func.isRequired,
+  resetPw: PropTypes.func.isRequired,
+  canResetPW: PropTypes.bool.isRequired,
 };
 
 EditUserProfile.defaultProps = {

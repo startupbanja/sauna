@@ -19,7 +19,6 @@ export default class ProfileInfoHeader extends React.Component {
       <li key={x}>{x}</li>
     ));
     let modifyBtn = '';
-    let resetPW;
 
     // if user is allowed to modify (admin or own profile), add button to open editing
     if (this.props.canModify) {
@@ -33,16 +32,6 @@ export default class ProfileInfoHeader extends React.Component {
         />);
     }
 
-    if (this.props.canResetPW) {
-      resetPW = (
-        <button
-          className="btn btn-major"
-          onClick={this.props.resetPW}
-        >
-        Reset password
-        </button>);
-    }
-
     return (
       <div className="userInfoHeader row">
         <img
@@ -51,8 +40,7 @@ export default class ProfileInfoHeader extends React.Component {
           className="userImage img-responsive col-xs-5"
         />
         <div className="mainInfoSection col-xs-7">
-          {resetPW}
-          {modifyBtn}
+          <span>{modifyBtn}</span>
           <h4 id="username">{this.props.name}</h4>
           <ul className="titles">
             {titles}
@@ -68,8 +56,6 @@ ProfileInfoHeader.propTypes = {
   imgSrc: PropTypes.string,
   titles: PropTypes.arrayOf(PropTypes.string),
   canModify: PropTypes.bool,
-  canResetPW: PropTypes.bool,
-  resetPW: PropTypes.func.isRequired,
   onModifyClick: PropTypes.func.isRequired,
 };
 
@@ -77,5 +63,4 @@ ProfileInfoHeader.defaultProps = {
   imgSrc: defaultImg,
   titles: [],
   canModify: false,
-  canResetPW: false,
 };

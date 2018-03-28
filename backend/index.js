@@ -67,7 +67,6 @@ const defaultPassword = 'abc123';
  * Handles the requests to change password.
  */
 app.post('/changePassword', (req, res, next) => {
-<<<<<<< HEAD
   // If the initiating user is admin.
   if (req.session.userType === 'admin') {
     database.changePasswordAdmin(req.body.uid, defaultPassword, (err, result) => {
@@ -75,25 +74,9 @@ app.post('/changePassword', (req, res, next) => {
         res.json(result);
       } else {
         return next(err);
-=======
-  const JSONObject = JSON.parse(req.body.data);
-  const currentPassword = JSONObject.currentPassword;
-  const newPassword = JSONObject.newPassword;
-  const repeatedPassword = JSONObject.repeatedPassword;
-
-  if (newPassword === repeatedPassword) {
-    database.changePassword(
-      req.session.userID,
-      currentPassword,
-      newPassword,
-      (err, response) => {
-        if (err) return next(err);
-        return res.json(response);
->>>>>>> development
       }
     });
   } else {
-
     // If the initiating user is NOT admin.
     const JSONObject = JSON.parse(req.body.data);
     const currentPassword = JSONObject.currentPassword;
