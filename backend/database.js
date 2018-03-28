@@ -230,6 +230,34 @@ function createMeetingDay(date, start, end, split, callback) {
   });
 }
 
+function removeMeetingDay(date, callback) {
+  const query = `BEGIN TRANSACTION;
+    DELETE FROM Meetings WHERE date = ?;
+    DELETE FROM Timeslots WHERE date = ?;
+    DELETE FROM MeetingDays WHERE date = ?;
+    COMMIT;`;
+  let error = null;
+  db.serialize(() => {
+    db.exec('BEGIN TRANSACTION;', (err) => {
+      if (err) error = err;
+    });
+    db.run('DELETE FROM Meetings WHERE date = ?;', [date], (err) => {
+      if (err) error = err;
+    });
+    db.run('DELETE FROM Timeslots WHERE date = ?;', [date], (err) => {
+      if (err) error = err;
+    });
+    db.run('DELETE FROM MeetingDays WHERE date = ?;', [date], (err) => {
+      if (err) error = err;
+    });
+    db.exec('COMMIT', (err) => {
+      if (err) error = err;
+      if (error) return callback(error);
+      return callback(err, { status: 'success' });
+    });
+  });
+}
+
 // get all meetingdays in the future together with a flag indicating if matchmaking was run
 // on them
 function getComingMeetingDays(userId, callback) {
@@ -821,6 +849,7 @@ module.exports = {
   saveMatchmakingResult,
   getMapping,
   createMeetingDay,
+  removeMeetingDay,
   getComingMeetingDays,
   insertAvailability,
   getTimetable,

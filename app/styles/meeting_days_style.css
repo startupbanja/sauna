@@ -30,6 +30,7 @@
 p.meeting-date {
   color: var(--primary-color);
   font-size: 1.5em;
+  margin: 10px 0;
 }
 
 div.next-day-container {
@@ -40,4 +41,9 @@ div.new-meeting-day-form p.form-error-message {
   display: block;
   font-size: 1em;
   color: var(--primary-color);
+}
+
+.matchmaking-buttons {
+  display: block;
+  margin: 5px;
 }

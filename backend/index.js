@@ -437,6 +437,15 @@ app.post('/createMeetingDay', (req, res, next) => {
   });
 });
 
+app.post('/removeMeetingDay', (req, res, next) => {
+  if (!requireAdmin(req, res)) return undefined;
+  const { date } = req.body;
+  return database.removeMeetingDay(date, (err, result) => {
+    if (err) return next(err);
+    return res.json(result);
+  });
+});
+
 // Run algorithm with given date and save to database
 // callback is called with either err or null as only argument
 function runAlgorithm(date, callback, commit = true) {
