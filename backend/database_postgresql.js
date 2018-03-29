@@ -1091,6 +1091,128 @@ function saveMatchmakingResult(schedule, dateString, callback) {
         });
       });
     });
+// Returns an array of meetings: [{
+// coach: '',
+// startup: '',
+// time: '',
+// duration: int,
+// coach_id: int,
+// startup_id: int,
+// }]
+function getTimetable(date, callback) {
+  const client = getClient();
+  const meetings = [];
+  const query = {
+    name: 'get-timetable',
+    text: `
+    SELECT CoachProfiles.name AS coach, StartupProfiles.name AS startup, time, duration, coach_id, startup_id
+    FROM Meetings
+    LEFT OUTER JOIN Profiles AS CoachProfiles ON CoachProfiles.user_id = coach_id
+    LEFT OUTER JOIN Profiles AS StartupProfiles ON StartupProfiles.user_id = startup_id
+    WHERE date = $1;`,
+    values: [date],
+  };
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2, res) => {
+        if (err2) callback(err2);
+        else {
+          res.rows.forEach((row) => {
+            const meeting = {
+              coach: row.coach_id.toString(),
+              startup: row.startup,
+              time: row.time,
+              duration: row.duration,
+            };
+            meetings.push(meeting);
+          });
+          callback(err2, meetings);
+        }
+        client.end();
+      });
+    }
+  });
+}
+
+// Takes timetable in form [{
+// coach: '',
+// startup: '',
+// time: '',
+// duration: int
+// }]
+// Removes null meetings and saves the rest to the database
+function updateTimetable(timetable, date, callback) {
+  const meetings = [];
+  getUserMap((err, keys) => {
+    if (err) callback(err);
+    else {
+      for (let i = 0; i < timetable.length; i += 1) {
+        const meeting = timetable[i];
+        if (meeting.startup !== null) {
+          meetings.push({
+            coach: keys[meeting.coach],
+            startup: keys[meeting.startup],
+            time: meeting.time,
+            duration: meeting.duration,
+          });
+        }
+      }
+      const client = getClient();
+      const query = {
+        name: 'save-timetable',
+        text: 'DELETE FROM Meetings WHERE Date = $1;',
+        values: [date],
+      };
+      client.connect((err2) => {
+        if (err2) callback(err2);
+        else {
+          client.query(query, (err3) => {
+            if (err3) callback(err3);
+            else {
+              saveTimetable(meetings, date, callback);
+            }
+            client.end();
+          });
+        }
+      });
+    }
+  });
+}
+
+// Returns next meetingday's schedule for a user
+function getUserMeetings(userID, userType, callback) {
+  let queryText;
+  if (userType === 'coach') {
+    queryText = `
+    SELECT name, time, duration, date, img_url AS image_src
+    FROM Meetings
+    LEFT OUTER JOIN Profiles ON Profiles.user_id = Meetings.startup_id
+    WHERE Meetings.coach_id = $1 AND date = (SELECT MAX(date) FROM Meetings);`;
+  } else {
+    queryText = `
+    SELECT name, time, duration, date, img_url AS image_src
+    FROM Meetings
+    LEFT OUTER JOIN Profiles ON Profiles.user_id = Meetings.coach_id
+    WHERE Meetings.startup_id = $1 AND date = (SELECT MAX(date) FROM Meetings);`;
+  }
+  const client = getClient();
+  const query = {
+    name: 'get-userMeetings',
+    text: queryText,
+    values: [userID],
+  };
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2, res) => {
+        if (err2) callback(err2);
+        else {
+          callback(err2, res.rows);
+        }
+        client.end();
+      });
+    }
   });
 }
 
@@ -1121,5 +1243,11 @@ module.exports = {
   getUserMap,
   getTimeslots,
   saveTimetable,
+<<<<<<< HEAD
   saveMatchmakingResult,
+=======
+  getTimetable,
+  updateTimetable,
+  getUserMeetings,
+>>>>>>> b5f4a86575f186b48439e50861a6dd430bc5ad89
 };
