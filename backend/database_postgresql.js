@@ -1043,6 +1043,50 @@ function saveTimetable(schedule, dateString, callback) {
   }
 }
 
+// Returns an array of meetings: [{
+// coach: '',
+// startup: '',
+// time: '',
+// duration: int,
+// coach_id: int,
+// startup_id: int,
+// }]
+function getTimetable(date, callback) {
+  const client = getClient();
+  const meetings = [];
+  const query = {
+    name: 'get-timetable',
+    text: `
+    SELECT CoachProfiles.name AS coach, StartupProfiles.name AS startup, time, duration, coach_id, startup_id
+    FROM Meetings
+    LEFT OUTER JOIN Profiles AS CoachProfiles ON CoachProfiles.user_id = coach_id
+    LEFT OUTER JOIN Profiles AS StartupProfiles ON StartupProfiles.user_id = startup_id
+    WHERE date = $1;`,
+    values: [date],
+  };
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2, res) => {
+        if (err2) callback(err2);
+        else {
+          res.rows.forEach((row) => {
+            const meeting = {
+              coach: row.coach_id.toString(),
+              startup: row.startup,
+              time: row.time,
+              duration: row.duration,
+            };
+            meetings.push(meeting);
+          });
+          callback(err2, meetings);
+        }
+        client.end();
+      });
+    }
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
@@ -1070,4 +1114,5 @@ module.exports = {
   getUserMap,
   getTimeslots,
   saveTimetable,
+  getTimetable,
 };
