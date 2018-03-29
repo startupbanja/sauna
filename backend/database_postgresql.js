@@ -1087,6 +1087,51 @@ function getTimetable(date, callback) {
   });
 }
 
+// Takes timetable in form [{
+// coach: '',
+// startup: '',
+// time: '',
+// duration: int
+// }]
+// Removes null meetings and saves the rest to the database
+function updateTimetable(timetable, date, callback) {
+  const meetings = [];
+  getUserMap((err, keys) => {
+    if (err) callback(err);
+    else {
+      for (let i = 0; i < timetable.length; i += 1) {
+        const meeting = timetable[i];
+        if (meeting.startup !== null) {
+          meetings.push({
+            coach: keys[meeting.coach],
+            startup: keys[meeting.startup],
+            time: meeting.time,
+            duration: meeting.duration,
+          });
+        }
+      }
+      const client = getClient();
+      const query = {
+        name: 'save-timetable',
+        text: 'DELETE FROM Meetings WHERE Date = $1;',
+        values: [date],
+      };
+      client.connect((err2) => {
+        if (err2) callback(err2);
+        else {
+          client.query(query, (err3) => {
+            if (err3) callback(err3);
+            else {
+              saveTimetable(meetings, date, callback);
+            }
+            client.end();
+          });
+        }
+      });
+    }
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
@@ -1115,4 +1160,5 @@ module.exports = {
   getTimeslots,
   saveTimetable,
   getTimetable,
+  updateTimetable,
 };
