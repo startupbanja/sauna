@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import BlockHeader from './BlockHeader';
+import BlockHeader from '../BlockHeader';
 
 
-// React Component for the list of credentials on a user's profile page.
+// React Component for the list of credentials or team members on a user's profile page.
 export default class ProfileCredentialList extends React.Component {
   constructor(props) {
     super(props);
@@ -40,7 +40,8 @@ export default class ProfileCredentialList extends React.Component {
         <ul className="credentialList">
           {credentials}
         </ul>);
-    }
+    } else return null;
+
     const header = this.props.type === 'coach' ? 'Credentials' : 'Team Members';
     return (
       <div className="credentials">

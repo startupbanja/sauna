@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Button from './Button';
-import StatusMessage from './StatusMessage';
-import pageContent from './pageContent';
+import Button from '../Button';
+import StatusMessage from '../StatusMessage';
+import pageContent from '../pageContent';
 
+// view for changing user's own password
 class PasswordChange extends Component {
   constructor(props) {
     super(props);
@@ -29,7 +29,6 @@ class PasswordChange extends Component {
       };
       if (inputs.newPassword === inputs.repeatedPassword) {
         pageContent.fetchData('/changePassword', 'POST', { data: JSON.stringify(inputs) }).then((res) => {
-          console.log(res);
           this.setState({
             message: {
               type: res.status.toLowerCase(),

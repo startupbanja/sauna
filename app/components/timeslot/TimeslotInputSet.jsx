@@ -4,6 +4,7 @@ import TimeslotInputElement from './TimeslotInputElement';
 /* eslint jsx-a11y/label-has-for: "warn"
 */
 
+// component for displaying one start and end time set
 class TimeslotInputSet extends Component {
   constructor(props) {
     super(props);
@@ -16,6 +17,7 @@ class TimeslotInputSet extends Component {
     };
   }
 
+  // figure out was the change for start or end
   handleStartChange(change) {
     this.props.onChange('start', change);
   }
@@ -26,6 +28,8 @@ class TimeslotInputSet extends Component {
   isUnavailable() {
     return this.props.start === this.props.end;
   }
+  // if the input type is incorrect chage the incorrect value to match the other
+  // making the users' availability slot empty and unavailable
   markAsUnavailable(type) {
     if (type === 'start') {
       this.props.onChange('start', this.props.end - this.props.start);

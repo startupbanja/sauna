@@ -4,10 +4,10 @@ import ProfileCredentialList from './ProfileCredentialList';
 import ProfileInfoHeader from './ProfileInfoHeader';
 
 
-// React Component for a user's profile page.
+// React Component for displaying a user's profile page.
 export default class UserProfile extends React.Component {
   render() {
-    const siteName = this.props.type === 'Coach' ? 'LinkedIn' : 'Website';
+    const siteName = this.props.type === 'coach' ? 'LinkedIn' : 'Website';
     return (
       <div className="profileContainer container">
         <link rel="stylesheet" type="text/css" href="/app/styles/user_profile_style.css" />
@@ -18,11 +18,13 @@ export default class UserProfile extends React.Component {
           canModify={this.props.canModify}
           onModifyClick={this.props.onModifyClick}
         />
-        <ul className="profileLinks">
-          <li>
-            {siteName}: <a href={this.props.linkedIn}>{this.props.linkedIn}</a>
-          </li>
-        </ul>
+        {((this.props.linkedIn || null) &&
+          <ul className="profileLinks">
+            <li>
+              {siteName}: <a href={this.props.linkedIn}>{this.props.linkedIn}</a>
+            </li>
+          </ul>
+        )}
         <hr />
         <div className="userDescription">
           <p>
@@ -53,7 +55,7 @@ UserProfile.propTypes = {
 
 UserProfile.defaultProps = {
   linkedIn: '',
-  imgSrc: '../app/imgs/coach_placeholder.png',
+  imgSrc: null,
   description: '',
   titles: [],
   credentials: [],

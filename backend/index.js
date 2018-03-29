@@ -2,7 +2,6 @@ const express = require('express');
 const readline = require('readline');
 const bodyParser = require('body-parser');
 const database = require('./database.js');
-const bcrypt = require('bcrypt');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const matchmaking = require('./matchmaking.js');
@@ -56,68 +55,84 @@ app.post('/login', (req, res) => {
       req.session.userID = userId;
       req.session.userType = type;
     }
-    res.json({ status: (type === 'coach' || type === 'startup') ? 'user' : type });
+    res.json({ status: type });
   });
 });
+
+
+app.post('/changeEmail', (req, res, next) => {
+  const userType = req.body.type;
+  userType.replace(userType[0], userType[0].toUpperCase());
+  database.changeEmail(req.body.uid, userType, req.body.email, (err, response) => {
+    if (err) {
+      return next(err);
+    }
+    return res.json(response);
+  });
+});
+
+
+// DEFAULT PASSWORD TO USE FOR ADMIN-INITIATED RESET.
+const defaultPassword = 'abc123';
 
 /**
  * Handles the requests to change password.
  */
 app.post('/changePassword', (req, res, next) => {
-  const JSONObject = JSON.parse(req.body.data);
-  const currentPassword = JSONObject.currentPassword;
-  const newPassword = JSONObject.newPassword;
-  const repeatedPassword = JSONObject.repeatedPassword;
-
-  if (newPassword === repeatedPassword) {
-    database.changePassword(
-      req.session.userID,
-      currentPassword,
-      newPassword,
-      (err, response) => {
-        if (!err) {
-          res.json(response);
-        } else return next(err);
+  // If the initiating user is admin.
+  if (req.session.userType === 'admin') {
+    database.changePasswordAdmin(req.body.uid, defaultPassword, (err, result) => {
+      if (!err) {
+        res.json(result);
+      } else {
+        return next(err);
       }
-    );
-  } else {
-    res.json({
-      status: 'ERROR',
-      message: 'The new passwords did not match!',
     });
+  } else {
+    // If the initiating user is NOT admin.
+    const JSONObject = JSON.parse(req.body.data);
+    const currentPassword = JSONObject.currentPassword;
+    const newPassword = JSONObject.newPassword;
+    const repeatedPassword = JSONObject.repeatedPassword;
+
+    if (newPassword === repeatedPassword) {
+      database.changePassword(
+        req.session.userID,
+        currentPassword,
+        newPassword,
+        (err, response) => {
+          if (!err) {
+            res.json(response);
+          } else return next(err);
+        }
+      );
+    } else {
+      res.json({
+        status: 'ERROR',
+        message: 'The new passwords did not match!',
+      });
+    }
   }
 });
 
 // Use when admin is required to allow access
 function requireAdmin(req, res) {
   if (req.session.userType !== 'admin') {
-    res.sendStatus(401);
+    res.sendStatus(403);
     res.end();
     return false;
   }
   return true;
 }
 
-app.get('/', (req, res) => {
-  res.sendFile(`${__dirname}/index.html`);
-});
-
-app.get('/api', (req, res, next) => {
-  if (req.query.hasOwnProperty('q')) {
-    res.json({ message: req.query.q });
-  } else {
-    database.getUsers(1, 0, false, (err, data) => {
-      if (err) return next(err);
-      res.json(data);
-      return undefined;
-    });
-  }
-});
+function isDate(string) {
+  return !Number.isNaN(Date.parse(string));
+}
 
 
 /* gets the initial data from all the coaches or startups */
 app.get('/users', (req, res, next) => {
-  let type = req.query.type;
+  let { type } = req.query;
   if (type === 'Startups') type = 2;
   else type = 1;
 
@@ -130,7 +145,7 @@ app.get('/users', (req, res, next) => {
         id: userData.id,
         name: user,
         description: userData.description,
-        img: '../app/imgs/coach_placeholder.png',
+        img: userData.img_url,
       };
       userArray.push(userObj);
     }
@@ -141,7 +156,7 @@ app.get('/users', (req, res, next) => {
 
 app.post('/create_user', (req, res, next) => {
   // Only admins can do this.
-  if (req.session.userType === 'admin') {
+  if (requireAdmin(req, res)) {
     const userInfo = req.body;
 
     database.addUser(userInfo, (err, resp) => {
@@ -150,26 +165,35 @@ app.post('/create_user', (req, res, next) => {
       }
       return next(err);
     });
-  } else {
-    res.json({ type: 'ERROR', text: 'Unauthorized!' });
   }
 });
 
 
 /* gets a profile data for a defined user or
-  for the requesting user if no requested id is provided */
+  for the requesting user if no requested id is provided
+  returns 404 on invalid query param id
+  */
 app.get('/profile', (req, res, next) => {
   let id;
   if (typeof req.query.userId !== 'undefined') id = req.query.userId;
   else id = req.session.userID;
-
-  database.getProfile(id, (err, result) => {
+  // make sure id is a number, which means it is possibly a valid id
+  id = parseInt(id, 10);
+  if (Number.isNaN(id)) {
+    return res.sendStatus(404);
+  }
+  return database.getProfile(id, (err, result) => {
     if (err) return next(err);
-    if (req.session.userID == id || req.session.userType === 'admin') {
+
+    if (result === undefined) return res.sendStatus(404);
+    // set canModify flag if user is admin or viewing own profile
+    if (req.session.userID === id || req.session.userType === 'admin') {
+      if (req.session.userType === 'admin') {
+        Object.assign(result, { canResetPW: true });
+      }
       Object.assign(result, { canModify: true });
     }
-    res.json(result);
-    return undefined;
+    return res.json(result);
   });
 });
 
@@ -187,8 +211,9 @@ app.get('/activeStatuses', (req, res, next) => {
 
 
 app.get('/timetable', (req, res, next) => {
+  if (!isDate(req.query.date)) return res.sendStatus(404);
   const allMeetings = [];
-  database.getUserMap((err, keys) => {
+  return database.getUserMap((err, keys) => {
     if (err) return next(err);
     database.getTimetable(req.query.date, (err2, meetings) => {
       if (err2) return next(err2);
@@ -201,7 +226,7 @@ app.get('/timetable', (req, res, next) => {
         const dur = meetings[0].duration;
         for (const timeslot in timeslots) { // eslint-disable-line
           const id = timeslot;
-          // fill all avaialble slots with startup: null to get availability info to frontend
+          // fill all available slots with startup: null to get availability info to frontend
           let remaining = timeslots[id].duration;
           const time = new Date('2000-10-10T' + timeslots[id].starttime);
           while (remaining > 0) {
@@ -258,19 +283,21 @@ app.get('/timetable', (req, res, next) => {
 });
 
 app.post('/timetable', (req, res, next) => {
-  const schedule = JSON.parse(req.body.schedule);
-  database.updateTimetable(schedule, req.body.date, (err) => {
-    if (err) {
-      next(err);
-      return res.json({ success: false });
-    }
-    return res.json({ success: true });
-  });
+  if (requireAdmin(req, res)) {
+    const schedule = JSON.parse(req.body.schedule);
+    database.updateTimetable(schedule, req.body.date, (err) => {
+      if (err) {
+        next(err);
+        return res.json({ success: false });
+      }
+      return res.json({ success: true });
+    });
+  }
 });
 
 app.get('/comingTimeslots', (req, res, next) => {
   const timeslots = {};
-// Result is in form {date: {name: [time/null, email]}
+  // Result is in form {date: {name: [time/null, email]}
   database.getComingTimeslots((err, result) => {
     if (err) return next(err);
     for (const index in result) { //eslint-disable-line
@@ -412,7 +439,7 @@ app.post('/giveFeedback', (req, res, next) => {
   const userType = req.session.userType;
   const meetingId = req.body.meetingId;
   const rating = req.body.rating;
-
+  // TODO we are not checking if user is one of the attendants of the meeting
   database.giveFeedback(meetingId, rating, (userType === 'coach') ? 'coach_rating' : 'startup_rating', (err, result) => {
     if (err) return next(err);
     res.json({ status: result });
@@ -421,30 +448,38 @@ app.post('/giveFeedback', (req, res, next) => {
 });
 
 app.post('/setActiveStatus', (req, res, next) => {
-  const id = req.body.id;
-  const active = req.body.active;
-  database.setActiveStatus(id, active, (err, result) => {
+  if (requireAdmin(req, res)) {
+    const { id, active } = req.body;
+    database.setActiveStatus(id, active, (err, result) => {
+      if (err) return next(err);
+      return res.json(result);
+    });
+  }
+});
+
+/* adds a new meeting day */
+app.post('/createMeetingDay', (req, res, next) => {
+  if (!requireAdmin(req, res)) return undefined;
+  const date = req.body.date;
+  const start = req.body.start;
+  const end = req.body.end;
+  const split = req.body.split;
+  return database.createMeetingDay(date, start, end, split, (err, result) => {
     if (err) return next(err);
     return res.json(result);
   });
 });
 
-/* adds a new meeting day */
-app.post('/createMeetingDay', (req, res, next) => {
-  if (!requireAdmin(req, res)) return;
-  const date = req.body.date;
-  const start = req.body.start;
-  const end = req.body.end;
-  const split = req.body.split;
-  database.createMeetingDay(date, start, end, split, (err, result) => {
+app.post('/removeMeetingDay', (req, res, next) => {
+  if (!requireAdmin(req, res)) return undefined;
+  const { date } = req.body;
+  return database.removeMeetingDay(date, (err, result) => {
     if (err) return next(err);
-    res.json(result);
-    return undefined;
+    return res.json(result);
   });
 });
 
-// Run algorithm with given date and save to database and create a .csv file
-// FIXME those return undefineds and the bracket pyramid...
+// Run algorithm with given date and save to database
 // callback is called with either err or null as only argument
 function runAlgorithm(date, callback, commit = true) {
   // Get coach timeslots/availabilities
@@ -472,10 +507,10 @@ function runAlgorithm(date, callback, commit = true) {
             if (commit) {
               return database.saveMatchmakingResult(result, date, (saveErr) => {
                 if (saveErr) return callback(saveErr);
-                return callback(null);
+                return callback(null, true);
               });
             }
-            return callback(null);
+            return callback(null, true);
           });
           return undefined;
         });
@@ -487,14 +522,19 @@ function runAlgorithm(date, callback, commit = true) {
   });
 }
 
-// TODO sanitize date;
-app.post('/runMatchmaking', (req, res) => {
-  if (req.body.date) {
-    runAlgorithm(req.body.date, result => res.json({ success: result }));
-  } else {
-    res.json({ success: false });
+app.post('/runMatchmaking', (req, res, next) => {
+  if (requireAdmin(req, res)) {
+    if (req.body.date && isDate(req.body.date)) {
+      runAlgorithm(req.body.date, (err, result) => {
+        if (err) return next(err);
+        return res.json({ success: result });
+      });
+    } else {
+      res.json({ success: false });
+    }
   }
 });
+
 /* gets the still to come meeting days with given availabilities for a specific user */
 app.get('/getComingMeetingDays', (req, res, next) => {
   database.getComingMeetingDays(req.session.userID, (err, result) => {
@@ -509,6 +549,7 @@ app.post('/insertAvailability', (req, res, next) => {
   const userId = req.session.userID;
   const date = req.body.date;
   const startTime = req.body.start;
+  if (!isDate(date)) return res.sendStatus(404);
   let duration = (new Date(`${date}T${req.body.end}`).getTime() - new Date(`${date}T${startTime}`).getTime());
   duration = parseInt(duration / 60000, 10);
   database.insertAvailability(userId, date, startTime, duration, (err, result) => {
@@ -518,18 +559,15 @@ app.post('/insertAvailability', (req, res, next) => {
   });
 });
 
-// Error handling
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send({ error: 'An error has occured!' });
-});
-
 app.post('/updateProfile', (req, res, next) => {
   // Create a JSON object from request body.
   const JSONObject = JSON.parse(req.body.data);
   let userType = JSONObject.type;
   userType = userType.replace(userType[0], userType[0].toUpperCase());
   const uid = JSONObject.uid !== undefined ? JSONObject.uid : req.session.userID;
+
+  if (uid !== req.session.userID && req.session.userType !== 'admin') return res.sendStatus(403);
+
   const site = JSONObject.site;
   const imgURL = JSONObject.img_url;
   const description = JSONObject.description;
@@ -537,16 +575,35 @@ app.post('/updateProfile', (req, res, next) => {
   const credentials = JSONObject.credentials;
 
   // Perform insertion to database using the information specified above.
-  database.updateProfile(uid, userType, site, imgURL, description, title, credentials, (error, response) => {
-    if (error) {
-      return next(error);
-    }
-    res.json(response);
-  });
+  database.updateProfile(uid, userType, site, imgURL, description, title, credentials,
+    (error, response) => {
+      if (error) {
+        return next(error);
+      }
+      return res.json(response);
+    },
+  );
 });
 
+// Error handling
+app.use((err, req, res, next) => {
+  if (err) {
+    console.error(err.stack); // TODO some real logging here
+    res.status(500).send({ error: 'An error has occured!' });
+  } else {
+    next();
+  }
+});
+
+// send 404 response if we get here for some reason
+app.use((err, req, res, next) => {
+  res.status(404).send('404 NOT FOUND');
+  next();
+});
+
+
 const server = app.listen(port);
-console.log(`Magic happens on port ${port}`);
+console.log(`Backend server listening on port ${port}`);
 
 function closeServer() {
   database.closeDatabase(() => {

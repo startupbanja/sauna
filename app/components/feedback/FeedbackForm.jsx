@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import RadioInput from './RadioInput';
 import InfoCard from './InfoCard';
 
-
+// Form for displaying feedback guestions for one coach or startup
 export default class FeedbackForm extends React.Component {
   constructor(props) {
     super(props);
@@ -45,6 +45,7 @@ export default class FeedbackForm extends React.Component {
 
 FeedbackForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
+  // info about the coach or startup to give feedback to
   info: PropTypes.shape({
     date: PropTypes.string,
     time: PropTypes.string,

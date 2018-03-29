@@ -70,7 +70,6 @@ function translate(data, times, firstColumn, editable, editfunc, allUsers) {
       }
       a += 1;
     }
-    if (a === 100) console.log('infinite loop');
   });
 
   // combine cells with same leftColumn key and time into one arr index
@@ -98,11 +97,15 @@ function translate(data, times, firstColumn, editable, editfunc, allUsers) {
   });
   let i = 0;
   // map the data into jsx elements
-  const table = timesCombined.map((arr, index) => {
+  const table = timesCombined.map((arr) => {
     // key is either coach or startup, which one is on the leftmost column
     const key = arr[0];
-    const meetings = timesCombined[index][1].map((row, idx) => {
-      const combinedCell = row.map((x) => {
+    const row = arr[1];
+    // collect all names that are already in use in this row
+    const namesInRow = [];
+    row.forEach(cell => cell.forEach(x => x.name && namesInRow.push(x.name)));
+    const meetings = row.map((cell, idx) => {
+      const combinedCell = cell.map((x) => { // x : {name, time}
         i += 1;
         let name;
         let cn;
@@ -123,18 +126,20 @@ function translate(data, times, firstColumn, editable, editfunc, allUsers) {
           <div
             className={cn}
             key={`${key}_${name}_${i}`}
-          >{name}
+          ><span className={editable ? 'editing-p' : ''}>{name}</span>
             {editable &&
-              <div>
+              <div className="dropdown-container">
                 <DropdownList
                   text="Edit"
                   onChoice={newValue => editfunc(newValue, keys, true)}
                   choices={choiceList}
+                  markedChoices={namesInRow}
                 />
                 <DropdownList
                   text="+"
                   onChoice={newValue => editfunc(newValue, keys, false)}
                   choices={choiceList}
+                  markedChoices={namesInRow}
                 />
               </div>}
           </div>);

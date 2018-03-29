@@ -1,24 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import $ from 'jquery';
-/* eslint
-jsx-a11y/label-has-for: "warn",
-jsx-a11y/click-events-have-key-events: "warn",
-jsx-a11y/no-noninteractive-element-to-interactive-role: "warn"
-*/
-// TODO make the activeness of buttons change here, not based on bootstrap jquery stuff
+
+// radio input for a one guestion in feedback form
 export default class RadioInput extends React.Component {
   render() {
     const choices = this.props.options.map((option) => {
+      // if the choice is the same as current rating set as active
       const activeClass = (this.props.rating === option.value) ? ' active' : ' inactive';
       return (
-        <label
+        <div
           key={`option_${option.value}`}
           className={`btn btn-secondary radiobutton${activeClass}`}
           role="button"
           htmlFor={`${this.props.id}_${option.value}`}
           value={option.value}
+          tabIndex={-100}
           onClick={() => { this.props.onChange(this.props.index, option.value); }}
+          onKeyPress={() => {}}
         >
           <input
             id={`${this.props.id}_${option.value}`}
@@ -27,14 +25,14 @@ export default class RadioInput extends React.Component {
             autoComplete="off"
           />
           <p><span className="option-desc">{option.desc}</span>{option.value}</p>
-        </label>
+        </div>
       );
     });
 
     return (
       <div className="row">
         <div className="form-group col-xs-6">
-          <label className="control-label" >{this.props.question}</label>
+          <p className="control-label feedback-question-label" >{this.props.question}</p>
         </div>
         <div className="btn-group form-group col-xs-6" data-toggle="buttons">
           {choices}

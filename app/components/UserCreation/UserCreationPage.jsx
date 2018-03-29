@@ -4,7 +4,6 @@ import UserCreationForm from './UserCreationForm';
 import StatusMessage from '../StatusMessage';
 
 // Page that contains the form for an admin to create new user accounts
-
 export default class UserCreationPage extends React.Component {
   constructor(props) {
     super(props);
@@ -15,7 +14,7 @@ export default class UserCreationPage extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.toggle = this.toggle.bind(this);
   }
-  // Toggle between coach and startup for cration
+  // Toggle between coach and startup for creation
   toggle(newType) {
     this.setState({ type: newType });
   }
@@ -23,10 +22,8 @@ export default class UserCreationPage extends React.Component {
   handleSubmit(data) {
     const obj = Object.assign({}, data);
     obj.type = this.state.type;
-    console.log(data);
     pageContent.fetchData('/create_user/', 'POST', obj)
       .then((response) => {
-        console.log(response);
         this.showMessage(response.type, response.message);
       });// .catch(this.showMessage('ERROR', 'Could not connect to backend!'));
   }

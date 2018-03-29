@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import $ from 'jquery';
+import PropTypes from 'prop-types';
 import BlockHeader from '../BlockHeader';
 import ComingUpCarousel from './ComingUpCarousel';
 import pageContent from '../pageContent';
@@ -11,6 +11,8 @@ class LandingPage extends Component {
   constructor(props) {
     super(props);
     this.fetchTimetable = this.fetchTimetable.bind(this);
+    this.renderComingUpCarousel = this.renderComingUpCarousel.bind(this);
+    this.renderMindTheseButtons = this.renderMindTheseButtons.bind(this);
     this.state = {
       timetable: undefined,
       date: undefined,
@@ -31,13 +33,19 @@ class LandingPage extends Component {
       });
   }
 
-  render() {
-    return (
-      <div className="container" >
-        <h3 className="text-center" style={{ fontWeight: 'bold' }}>Coming up</h3>
-        {((this.state.timetable && this.state.date) || undefined) &&
-          <ComingUpCarousel timetable={this.state.timetable} date={this.state.date} />}
-        <BlockHeader text="Mind these:" />
+  // render the carousel showing the next meetings if exist
+  renderComingUpCarousel() {
+    if (!this.state.timetable) return null;
+    if (this.state.timetable.length === 0) {
+      return <p className="empty-content-text">No scheduled meetings</p>;
+    }
+    if (!this.state.date) return null;
+    return <ComingUpCarousel timetable={this.state.timetable} date={this.state.date} />;
+  }
+
+  renderMindTheseButtons() {
+    if (this.props.type === 'coach') {
+      return (
         <div className="row">
           <div className="col-sm-6 col-xs-12" style={{ padding: '10px' }}>
             <Link className="btn btn-lg btn-major col-xs-12" to="/feedback">
@@ -50,6 +58,26 @@ class LandingPage extends Component {
             </Link>
           </div>
         </div>
+      );
+    }
+    return (
+      <div className="row">
+        <div className="col-xs-12" style={{ padding: '10px' }}>
+          <Link className="btn btn-lg btn-major col-xs-12" to="/feedback">
+            Give Feedback
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <div className="container" >
+        <h3 className="text-center" style={{ fontWeight: 'bold' }}>Coming up</h3>
+        {this.renderComingUpCarousel()}
+        <BlockHeader text="Mind these:" />
+        {this.renderMindTheseButtons()}
         <BlockHeader text="Problems?" />
         <div className="row">
           <div className="col-sm-3" />
@@ -64,5 +92,9 @@ class LandingPage extends Component {
     );
   }
 }
+
+LandingPage.propTypes = {
+  type: PropTypes.string.isRequired,
+};
 
 export default LandingPage;
