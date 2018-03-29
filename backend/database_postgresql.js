@@ -757,6 +757,28 @@ function verifyIdentity(email, password, callback) {
   });
 }
 
+// Sets email of a user
+function changeEmail(uid, email, callback) {
+  const client = getClient();
+  const query = {
+    name: 'set-email',
+    text: 'UPDATE Users SET email = $1 WHERE id = $2;',
+    values: [email, uid],
+  };
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2) => {
+        if (err2) callback(err2);
+        else {
+          callback(err2, { status: 'SUCCESS', message: 'Email changed successfully.' });
+        }
+        client.end();
+      });
+    }
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
@@ -775,4 +797,5 @@ module.exports = {
   updateCredentialsListEntries,
   updateProfile,
   verifyIdentity,
+  changeEmail,
 };
