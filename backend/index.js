@@ -283,16 +283,16 @@ app.get('/timetable', (req, res, next) => {
 });
 
 app.post('/timetable', (req, res, next) => {
-  if (requireAdmin(req, res)) {
-    const schedule = JSON.parse(req.body.schedule);
-    database.updateTimetable(schedule, req.body.date, (err) => {
-      if (err) {
-        next(err);
-        return res.json({ success: false });
-      }
-      return res.json({ success: true });
-    });
-  }
+  if (!requireAdmin(req, res)) return undefined;
+  const schedule = JSON.parse(req.body.schedule);
+  if (!schedule) return res.status(404);
+  database.updateTimetable(schedule, req.body.date, (err) => {
+    if (err) {
+      next(err);
+      return res.json({ success: false });
+    }
+    return res.json({ success: true });
+  });
 });
 
 app.get('/comingTimeslots', (req, res, next) => {
@@ -523,16 +523,12 @@ function runAlgorithm(date, callback, commit = true) {
 }
 
 app.post('/runMatchmaking', (req, res, next) => {
-  if (requireAdmin(req, res)) {
-    if (req.body.date && isDate(req.body.date)) {
-      runAlgorithm(req.body.date, (err, result) => {
-        if (err) return next(err);
-        return res.json({ success: result });
-      });
-    } else {
-      res.json({ success: false });
-    }
-  }
+  if (!requireAdmin(req, res)) return undefined;
+  if (!req.body.date || !isDate(req.body.date)) return res.json({ success: false });
+  runAlgorithm(req.body.date, (err, result) => {
+    if (err) return next(err);
+    return res.json({ success: result });
+  });
 });
 
 /* gets the still to come meeting days with given availabilities for a specific user */
