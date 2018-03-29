@@ -362,6 +362,44 @@ function createMeetingDay(date, start, end, split, callback) {
   });
 }
 
+// Removes the date from tables: Meetings, Timeslots, MeetingDays
+// Uses a single transaction
+function removeMeetingDay(date, callback) {
+  const client = getClient();
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query('BEGIN', (err1) => {
+        if (err1) callback(err1);
+        else {
+          client.query('DELETE FROM Meetings WHERE date = $1;', [date], (err2) => {
+            if (err2) callback(err2);
+            else {
+              client.query('DELETE FROM Timeslots WHERE date = $1;', [date], (err3) => {
+                if (err3) callback(err3);
+                else {
+                  client.query('DELETE FROM MeetingDays WHERE date = $1;', [date], (err4) => {
+                    if (err4) callback(err4);
+                    else {
+                      client.query('COMMIT;', [], (err5) => {
+                        if (err5) callback(err5);
+                        else {
+                          callback(err5, { status: 'success' });
+                        }
+                        client.end();
+                      });
+                    }
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+    }
+  });
+}
+
 // Gets all MeetingDays in the future together with a flag indicating if matchmaking was run
 // Returns: [{
 //  date: '',
@@ -398,6 +436,7 @@ function getComingMeetingDays(userId, callback) {
   });
 }
 
+// Returns an array of coming dates
 function getComingDates(callback) {
   const dates = [];
   const client = getClient();
@@ -426,11 +465,6 @@ function getComingDates(callback) {
   });
 }
 
-getComingDates((err, dates) => {
-  if (err) console.log(err);
-  if (dates) console.log(dates);
-});
-
 module.exports = {
   getUsers,
   getActiveStatuses,
@@ -440,4 +474,6 @@ module.exports = {
   giveFeedback,
   createMeetingDay,
   getComingMeetingDays,
+  getComingDates,
+  removeMeetingDay,
 };
