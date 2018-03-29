@@ -1001,6 +1001,46 @@ function getTimeslots(date, callback) {
   });
 }
 
+function query(queryString, callback) {
+  const client = getClient();
+  client.connect((connectionError) => {
+    if (connectionError) return callback(connectionError);
+    return client.query(queryString, (queryErr, result) => {
+      if (queryErr) return callback(queryErr);
+      callback(null, result);
+    });
+  });
+}
+
+// schedule is array of {startupid, coachid, date, duration}
+// save the result of matchmaking algorithm
+// only save if the algorithm hasn't been previously saved for this date.
+// afterwards set the saved flag in the database.
+function saveMatchmakingResult(schedule, dateString, callback) {
+  const client = getClient();
+  // set flag that matchmaking has been run
+  function setFlag(cb) {
+    const q = 'UPDATE MeetingDays SET matchmakingDone = 1 WHERE date = $1';
+    client.query(q, dateString, (err2) => {
+      if (err2) return callback(err2);
+      return cb();
+    });
+  }
+  // first check if algorithm has already been run on this date
+  function checkIfAlreadyDone(cb) {
+    const checkQuery = 'SELECT matchmakingDone FROM MeetingDays WHERE date = $1';
+    client.query(checkQuery, dateString, (err, result) => {
+      if (err) return callback(err);
+      if (result.matchmakingDone) return callback(err);
+      return cb();
+    });
+  }
+  client.connect((connectionError) => {
+    if (connectionError) return callback(connectionError);
+
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
