@@ -119,9 +119,9 @@ export default class UserCreationForm extends React.Component {
       required: true,
       type: 'password',
     }, {
-      label: 'Full Name:',
+      label: 'Name:',
       name: 'name',
-      placeholder: 'Full Name',
+      placeholder: 'Name',
       required: true,
       type: 'text',
     }, {
