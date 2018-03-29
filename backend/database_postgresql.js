@@ -531,7 +531,7 @@ function getLastMeetingday(callback) {
 // email: '',
 // startup_rating: int,
 // coach_rating: int,
-// date: ''
+// date: '',
 // }],
 // }
 function getGivenFeedbacks(callback) {
@@ -565,6 +565,30 @@ function getGivenFeedbacks(callback) {
   });
 }
 
+// Adds availability for a user to Timeslots table
+function insertAvailability(userId, date, startTime, duration, callback) {
+  const client = getClient();
+  const query = {
+    name: 'insert-availability',
+    text: `
+    INSERT INTO Timeslots(user_id, date, time, duration)
+    VALUES ($1, $2, $3, $4);`,
+    values: [userId, date, startTime, duration],
+  };
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2) => {
+        if (err2) callback(err2);
+        else {
+          callback(err2, { status: 'success' });
+        }
+        client.end();
+      });
+    }
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
@@ -579,4 +603,5 @@ module.exports = {
   getComingTimeSlots,
   getLastMeetingday,
   getGivenFeedbacks,
+  insertAvailability,
 };
