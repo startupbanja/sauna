@@ -18,52 +18,35 @@ import AdminLandingPage from './landing/AdminLandingPage';
 // file that contains contents of the app for both users and admin
 // also contains the default gateway for fetching data from backend
 
-// guestions that will be displayed on feedback page
-// different guestions for coaches and startups
-const feedbackQuestions = {
-  coach: [{
-    index: 0,
-    question: 'Would you like to meet again?',
-    options: [
-      { desc: 'No', value: 0 },
-      { desc: 'Maybe', value: 1 },
-      { desc: 'Yes', value: 2 },
-    ],
-  }],
-  startup: [{
-    index: 0,
-    question: 'Would you like to meet again?',
-    options: [
-      { desc: 'No', value: 0 },
-      { desc: 'Maybe', value: 1 },
-      { desc: 'Yes', value: 3 },
-    ],
-  }],
-};
 
 // react router Switch that contains all the user views
-const userContent = (
-  <Switch>
-    <Route path="/coaches/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />
-    <Route
-      exact
-      path="/coaches"
-      render={({ match }) => <UserList match={match} type="Coaches" />}
-    />
-    <Route path="/startups/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />
-    <Route
-      exact
-      path="/startups"
-      render={({ match }) => <UserList match={match} type="Startups" />}
-    />
-    <Route exact path="/" component={LandingPage} />
-    <Route path="/timetable" render={() => <UserTimetable />} />
-    <Route path="/user" component={UserProfilePage} />
-    <Route path="/feedback" render={() => <FeedbackView questions={feedbackQuestions} />} />
-    <Route path="/availability" component={TimeslotView} />
-    <Route path="/change_password" component={PasswordChange} />
-  </Switch>
-);
+/* eslint-disable */
+const userContent = [
+  <Route path="/coaches/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />,
+  <Route
+    exact
+    path="/coaches"
+    render={({ match }) => <UserList match={match} type="Coaches" />}
+  />,
+  <Route path="/startups/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />,
+  <Route
+    exact
+    path="/startups"
+    render={({ match }) => <UserList match={match} type="Startups" />}
+  />,
+  <Route path="/timetable" render={() => <UserTimetable />} />,
+  <Route path="/user" component={UserProfilePage} />,
+  <Route path="/feedback" render={() => <FeedbackView />} />,
+  <Route path="/change_password" component={PasswordChange} />,
+];
+const coachContent = [
+  <Route path="/availability" component={TimeslotView} />,
+  <Route exact path="/" render={() => <LandingPage type="coach" />} />,
+];
+const startupContent = [
+  <Route exact path="/" render={() => <LandingPage type="startup" />} />,
+];
+/* eslint-enable */
 
 // object that links router paths to their display names in menu in user side
 const userLabels = {
@@ -73,8 +56,10 @@ const userLabels = {
   '/feedback': 'Feedback',
   '/coaches': 'Coaches',
   '/startups': 'Startups',
-  '/availability': 'Availability',
   '/change_password': 'Change password',
+};
+const coachLabels = {
+  '/availability': 'Availability',
 };
 
 // react router Switch that contains all the admin views
@@ -138,7 +123,13 @@ function getContent(userType) {
   if (userType === 'admin') {
     return { content: adminContent, labels: adminLabels };
   }
-  return { content: userContent, labels: userLabels };
+  if (userType === 'coach') {
+    const content = userContent.concat(coachContent);
+    const labels = Object.assign({}, userLabels, coachLabels);
+    return { content: <Switch>{content}</Switch>, labels };
+  }
+  const content = userContent.concat(startupContent);
+  return { content: <Switch>{content}</Switch>, labels: userLabels };
 }
 
 // the default gateway to fetch data from backend
@@ -163,11 +154,22 @@ function fetchData(path, methodType, params) {
       },
       body: bodyParams,
     }).then((response) => {
-      // if user is not logged in log out in App
-      if (response.status === 401) {
-        App.logOff();
-        reject();
-      } else resolve(response.json());
+      switch (response.status) {
+        case 200:
+          resolve(response.json());
+          break;
+        case 401:
+        // if user is not logged in log out in App
+          App.logOff();
+          reject();
+          break;
+        case 404:
+          reject();
+          break;
+        default:
+          reject();
+          break;
+      }
     })
       .catch((error) => {
         reject(error);

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import $ from 'jquery';
 import Button from '../Button';
 
 // view for editing users' profile
@@ -56,6 +57,7 @@ class EditUserProfile extends Component {
       credentials: this.state.credentials.concat({ company: 'Company', position: 'Position' }),
     });
   }
+
   handleSubmit() {
     const input = this.getInputData();
 
@@ -69,6 +71,10 @@ class EditUserProfile extends Component {
     this.props.handleSubmit(dataToPass);
   }
 
+  handleEmailSubmit() {
+    this.props.changeEmail($('#edit_manage_email').val(), this.props.type);
+  }
+
   render() {
     const siteName = this.props.type === 'coach' ? 'LinkedIn' : 'Website';
     const credentialsHeader = this.props.type === 'coach' ? 'Credentials:' : 'Team Members:';
@@ -77,6 +83,25 @@ class EditUserProfile extends Component {
 
     return (
       <div className="editProfileContainer container">
+        {this.props.canResetPW &&
+          <div id="edit_manage_account">
+            <h2>Manage account</h2>
+            <button
+              className="btn btn-major"
+              onClick={this.props.resetPw}
+            >Reset password
+            </button>
+            <form>
+              <div className="edit-para" htmlFor="edit_manage_email">Set email address</div>
+              <input type="email" className="edit-text" id="edit_manage_email" />
+            </form>
+            <button
+              className="btn btn-major"
+              onClick={() => this.handleEmailSubmit()}
+            >Set email
+            </button>
+          </div>
+        }
         <form>
           <h4>{this.props.name} </h4>
           <div className="edit-para">{siteName}:</div>
@@ -136,7 +161,7 @@ class EditUserProfile extends Component {
 
 EditUserProfile.propTypes = {
   type: PropTypes.string.isRequired,
-  id: PropTypes.number,
+  id: PropTypes.string,
   name: PropTypes.string.isRequired,
   imgSrc: PropTypes.string.isRequired,
   linkedIn: PropTypes.string,
@@ -148,6 +173,9 @@ EditUserProfile.propTypes = {
   })),
   handleSubmit: PropTypes.func.isRequired,
   cancel: PropTypes.func.isRequired,
+  resetPw: PropTypes.func.isRequired,
+  canResetPW: PropTypes.bool.isRequired,
+  changeEmail: PropTypes.func.isRequired,
 };
 
 EditUserProfile.defaultProps = {

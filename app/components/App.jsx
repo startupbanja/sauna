@@ -26,7 +26,8 @@ export default class App extends React.Component {
     let firstContent = <LoginView login={this.changeToMenu} />;
     if (document.cookie.indexOf('ssaunaloggedin=') > -1) {
       let type = '';
-      if (document.cookie.indexOf('ssaunaloggedin=user') > -1) type = 'user';
+      if (document.cookie.indexOf('ssaunaloggedin=coach') > -1) type = 'coach';
+      else if (document.cookie.indexOf('ssaunaloggedin=startup') > -1) type = 'startup';
       else if (document.cookie.indexOf('ssaunaloggedin=admin') > -1) type = 'admin';
       firstContent = <MainView type={type} logoff={this.changeToLogin} />;
     }

@@ -19,6 +19,7 @@ export default class ProfileInfoHeader extends React.Component {
       <li key={x}>{x}</li>
     ));
     let modifyBtn = '';
+
     // if user is allowed to modify (admin or own profile), add button to open editing
     if (this.props.canModify) {
       modifyBtn = (
@@ -30,6 +31,7 @@ export default class ProfileInfoHeader extends React.Component {
           onKeyPress={this.props.onModifyClick}
         />);
     }
+
     return (
       <div className="userInfoHeader row">
         <img
@@ -38,7 +40,7 @@ export default class ProfileInfoHeader extends React.Component {
           className="userImage img-responsive col-xs-5"
         />
         <div className="mainInfoSection col-xs-7">
-          {modifyBtn}
+          <span>{modifyBtn}</span>
           <h4 id="username">{this.props.name}</h4>
           <ul className="titles">
             {titles}

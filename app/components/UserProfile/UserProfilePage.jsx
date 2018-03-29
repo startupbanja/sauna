@@ -14,6 +14,8 @@ class UserProfilePage extends Component {
     this.fetchData = this.fetchData.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.toggleEdit = this.toggleEdit.bind(this);
+    this.resetPassword = this.resetPassword.bind(this);
+    this.changeEmail = this.changeEmail.bind(this);
 
     // Initialize the state as empty.
     this.state = {
@@ -23,6 +25,7 @@ class UserProfilePage extends Component {
       linkedIn: '',
       credentials: [],
       canModify: false,
+      canResetPW: false,
       titles: [],
       modifying: false,
     };
@@ -44,6 +47,37 @@ class UserProfilePage extends Component {
     });
   }
 
+  resetPassword() {
+    pageContent.fetchData('/changePassword', 'POST', { uid: this.props.id }).then((res) => {
+      this.setState({
+        message: {
+          type: res.status.toLowerCase(),
+          text: res.message,
+        },
+      });
+    });
+  }
+
+  changeEmail(addr, userType) {
+    if (addr.indexOf('@') < 0) {
+      this.setState({
+        message: {
+          type: 'error',
+          text: 'Invalid email address format! Did you forget "@"?',
+        },
+      });
+    } else {
+      pageContent.fetchData('/changeEmail', 'POST', { uid: this.props.id, email: addr, type: userType }).then((res) => {
+        this.setState({
+          message: {
+            type: res.status.toLowerCase(),
+            text: res.message,
+          },
+        });
+      });
+    }
+  }
+
   fetchData() {
     let params = {};
     if (typeof this.props.id !== 'undefined') params = { userId: this.props.id };
@@ -63,6 +97,7 @@ class UserProfilePage extends Component {
           linkedIn: link,
           credentials: responseJSON.credentials,
           canModify: responseJSON.canModify,
+          canResetPW: responseJSON.canResetPW,
           titles: [responseJSON.company],
         });
       });
@@ -107,6 +142,9 @@ class UserProfilePage extends Component {
             titles={this.state.titles}
             handleSubmit={this.handleSubmit}
             cancel={this.toggleEdit}
+            canResetPW={this.state.canResetPW}
+            resetPw={this.resetPassword}
+            changeEmail={this.changeEmail}
           />
         </div>);
     }

@@ -160,8 +160,9 @@ function getProfile(id, callback) {
       }
     });
 
-    db.get('SELECT type FROM Users WHERE id = ?', [id], (error, row) => {
-      if (err) return callback(error);
+    db.get('SELECT type FROM Users WHERE id = ?', [Number(id)], (error, row) => {
+      if (error) return callback(error);
+      if (row === undefined) return callback(null, undefined);
       info.type = row.type === 1 ? 'coach' : 'startup';
       return callback(err, info);
     });
@@ -191,7 +192,7 @@ function getFeedback(id, callback) {
     return callback(err, rows);
   });
 }
-
+// TODO what happends on UPDATE if does not exist?
 function giveFeedback(meetingId, rating, field, callback) {
   const query = `
   UPDATE Meetings
@@ -253,6 +254,29 @@ function createMeetingDay(date, start, end, split, callback) {
   db.run(query, [date, start, end, split], (err) => {
     if (err) return callback(err);
     return callback(err, { status: 'success' });
+  });
+}
+
+function removeMeetingDay(date, callback) {
+  let error = null;
+  db.serialize(() => {
+    db.exec('BEGIN TRANSACTION;', (err) => {
+      if (err) error = err;
+    });
+    db.run('DELETE FROM Meetings WHERE date = ?;', [date], (err) => {
+      if (err) error = err;
+    });
+    db.run('DELETE FROM Timeslots WHERE date = ?;', [date], (err) => {
+      if (err) error = err;
+    });
+    db.run('DELETE FROM MeetingDays WHERE date = ?;', [date], (err) => {
+      if (err) error = err;
+    });
+    db.exec('COMMIT', (err) => {
+      if (err) error = err;
+      if (error) return callback(error);
+      return callback(err, { status: 'success' });
+    });
   });
 }
 
@@ -455,6 +479,30 @@ function verifyIdentity(username, password, callback) {
     });
   });
 }
+
+function changeEmail(uid, userType, email, callback) {
+  db.run(`UPDATE ${userType}Profiles SET email = ? WHERE user_id = ?`, [email, uid], (err) => {
+    if (err) {
+      return callback(err);
+    }
+    return callback(err, { status: 'SUCCESS', message: 'Email changed successfully.' });
+  });
+}
+
+/**
+ * Changes the given user's (UID) password if the request initiator is an admin.
+ */
+function changePasswordAdmin(uid, password, callback) {
+  bcrypt.hash(password, 10, (err, hash) => {
+    db.run('UPDATE Users SET password  = ? WHERE id = ?', [hash, uid], (error) => {
+      if (error) {
+        return callback(error);
+      }
+      return callback(error, { status: 'SUCCESS', message: 'Password was successfully reset!' });
+    });
+  });
+}
+
 
 /**
  * Changes the given user's (UID) password if possible
@@ -837,6 +885,8 @@ module.exports = {
   addUser,
   getUsers,
   verifyIdentity,
+  changeEmail,
+  changePasswordAdmin,
   changePassword,
   getProfile,
   getRatings,
@@ -847,6 +897,7 @@ module.exports = {
   saveMatchmakingResult,
   getMapping,
   createMeetingDay,
+  removeMeetingDay,
   getComingMeetingDays,
   insertAvailability,
   getTimetable,
