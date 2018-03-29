@@ -1,7 +1,0 @@
-{
-  "host": "sauna-matchmaking-db.cltaj2ngk5e5.eu-central-1.rds.amazonaws.com",
-  "port": 5432,
-  "user": "master",
-  "database": "test_1",
-  "password": "1220o9057xXpMhF"
-}
