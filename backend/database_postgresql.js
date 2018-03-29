@@ -895,6 +895,52 @@ function getStartups(callback) {
   });
 }
 
+// Returns an array of ratings: [{
+// coach: 'id',
+// startup: 'id',
+// coachfeedback: int,
+// startupfeedback: int,
+// }]
+function getRatings(callback) {
+  const client = getClient();
+  const ratings = [];
+  const query = {
+    name: 'get-ratings',
+    text: `
+    SELECT coach_id, startup_id, coach_rating, startup_rating
+    FROM Ratings
+    INNER JOIN Users
+    ON Ratings.startup_id=Users.id
+    WHERE type = 2 AND active = TRUE;`,
+    values: [],
+  };
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2, res) => {
+        if (err2) callback(err2);
+        else {
+          res.rows.forEach((row) => {
+            ratings.push({
+              coach: row.coach_id.toString(),
+              startup: row.startup_id.toString(),
+              coachfeedback: row.coach_rating,
+              startupfeedback: row.startup_rating,
+            });
+          });
+          callback(err2, ratings);
+        }
+        client.end();
+      });
+    }
+  });
+}
+
+getRatings((err, res) => {
+  console.log(err);
+  console.log(res);
+});
+
 module.exports = {
   getUsers,
   getActiveStatuses,
@@ -917,4 +963,6 @@ module.exports = {
   changePasswordAdmin,
   changePassword,
   getMeetingDuration,
+  getStartups,
+  getRatings,
 };
