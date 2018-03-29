@@ -231,11 +231,6 @@ function createMeetingDay(date, start, end, split, callback) {
 }
 
 function removeMeetingDay(date, callback) {
-  const query = `BEGIN TRANSACTION;
-    DELETE FROM Meetings WHERE date = ?;
-    DELETE FROM Timeslots WHERE date = ?;
-    DELETE FROM MeetingDays WHERE date = ?;
-    COMMIT;`;
   let error = null;
   db.serialize(() => {
     db.exec('BEGIN TRANSACTION;', (err) => {
