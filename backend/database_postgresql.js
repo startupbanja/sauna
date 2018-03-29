@@ -205,7 +205,7 @@ function getFeedback(id, callback) {
             END rating
           FROM Meetings
           WHERE (coach_id = $1 OR startup_id = $1) AND date =
-            (SELECT MAX(date) FROM Meetings WHERE (coach_id = $1 OR startup_id = $1) AND date < current_date))
+            (SELECT MAX(date) FROM Meetings WHERE (coach_id = $1 OR startup_id = $1) AND date <= current_date))
           AS Subquery
         NATURAL JOIN Profiles;`,
     values: [id],
@@ -465,6 +465,33 @@ function getComingDates(callback) {
   });
 }
 
+function getComingTimeSlots(callback) {
+  const client = getClient();
+  const query = {
+    name: 'get-comingTimeSlots',
+    text: `
+    SELECT name, email, MeetingDays.date, Timeslots.time, Timeslots.duration
+    FROM Users
+    LEFT OUTER JOIN Profiles ON Users.id = Profiles.user_id
+    NATURAL JOIN MeetingDays
+    LEFT OUTER JOIN Timeslots ON MeetingDays.date = Timeslots.date AND Timeslots.user_id = Users.id
+    WHERE MeetingDays.date >= current_date AND Users.active = TRUE AND Users.type = 1;`,
+    values: [],
+  };
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2, res) => {
+        if (err2) callback(err2);
+        else {
+          callback(err2, res.rows);
+        }
+        client.end();
+      });
+    }
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
@@ -473,7 +500,8 @@ module.exports = {
   getFeedback,
   giveFeedback,
   createMeetingDay,
+  removeMeetingDay,
   getComingMeetingDays,
   getComingDates,
-  removeMeetingDay,
+  getComingTimeSlots,
 };
