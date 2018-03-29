@@ -779,6 +779,32 @@ function changeEmail(uid, email, callback) {
   });
 }
 
+/**
+ * Changes the given user's (UID) password if the request initiator is an admin.
+ */
+function changePasswordAdmin(uid, password, callback) {
+  bcrypt.hash(password, 10, (err, hash) => {
+    const client = getClient();
+    const query = {
+      name: 'set-email',
+      text: 'UPDATE Users SET password = $1 WHERE id = $2;',
+      values: [hash, uid],
+    };
+    client.connect((err1) => {
+      if (err) callback(err1);
+      else {
+        client.query(query, (err2) => {
+          if (err2) callback(err2);
+          else {
+            callback(err2, { status: 'SUCCESS', message: 'Password was successfully reset!' });
+          }
+          client.end();
+        });
+      }
+    });
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
@@ -798,4 +824,5 @@ module.exports = {
   updateProfile,
   verifyIdentity,
   changeEmail,
+  changePasswordAdmin,
 };
