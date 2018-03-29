@@ -27,7 +27,15 @@ class PasswordChange extends Component {
         newPassword: this.state.new_pw,
         repeatedPassword: this.state.new_pw_again,
       };
-      if (inputs.newPassword === inputs.repeatedPassword) {
+
+      if (inputs.newPassword.length < 6 || inputs.repeatedPassword.length < 6) {
+        this.setState({
+          message: {
+            type: 'error',
+            text: 'Passwords must be at least 6 characters long!',
+          },
+        });
+      } else if (inputs.newPassword === inputs.repeatedPassword) {
         pageContent.fetchData('/changePassword', 'POST', { data: JSON.stringify(inputs) }).then((res) => {
           this.setState({
             message: {
@@ -44,6 +52,13 @@ class PasswordChange extends Component {
           },
         });
       }
+    } else {
+      this.setState({
+        message: {
+          type: 'error',
+          text: 'Please fill in all fields!',
+        },
+      });
     }
   }
 
