@@ -589,6 +589,94 @@ function insertAvailability(userId, date, startTime, duration, callback) {
   });
 }
 
+/** Updates the credentials or team members for given user (based on UID)
+ *  Parameters:
+ *  uid - the id of the user (in DB)
+ *  list - an array containing either the credentials or team members of given user
+ *  userType - either Coach or Startup (does not throw error if something else if provided)
+ *  callback - a function to call with the status message object as parameter.
+ */
+function updateCredentialsListEntries(uid, list, userType, callback) {
+  const client = getClient();
+  const table = userType === 'Coach' ? 'Credentials' : 'TeamMembers';
+  const columns = userType === 'Coach' ? ['user_id', 'company', 'title'] : ['startup_id', 'name', 'title'];
+  const deleteSQL = `DELETE FROM ${table} WHERE ${columns[0]} = $1 AND ${columns[1]} = $2 AND ${columns[2]} = $3;`;
+  const insertSQL = `INSERT INTO ${table}(${columns[0]}, ${columns[1]}, ${columns[2]}) VALUES($1,$2,$3);`;
+
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query('SELECT title, content FROM CredentialsListEntries WHERE user_id = $1;', [uid], (err2, res) => {
+        if (err2) callback(err2);
+        else {
+          // We are converting the objects into JSON format for easy comparison.
+          const { rows } = res;
+          const rowsAsJSON = rows.map(x => JSON.stringify(x));
+          const listAsJSON = list.map(x => JSON.stringify(x));
+          const toBeInserted = []; // holds the credentials to be inserted into the db.
+          const toBeRemoved = []; // holds the credentials that should be deleted.
+          const response = {}; // object to be sent in the response.
+          let thrownError;
+          // If new credentials do not contain a row, add it to deleted creds.
+          rowsAsJSON.forEach((row) => {
+            if (!listAsJSON.includes(row)) {
+              toBeRemoved.push(JSON.parse(row));
+            }
+          });
+
+          // If new credentials contain an entry that is not yet present, add it.
+          listAsJSON.forEach((item) => {
+            if (!rowsAsJSON.includes(item)) {
+              toBeInserted.push(JSON.parse(item));
+            }
+          });
+
+          // Deletes the obsolete credentials.
+          toBeRemoved.forEach((item) => {
+            const subClient = getClient();
+            subClient.connect((err3) => {
+              if (err3) callback(err3);
+              else {
+                subClient.query(deleteSQL, [uid, item.title, item.content], (error) => {
+                  if (error) {
+                    thrownError = error;
+                  }
+                  subClient.end();
+                });
+              }
+            });
+          });
+
+          if (!thrownError) {
+            // Inserts the new credentials.
+            toBeInserted.forEach((item) => {
+              const subClient = getClient();
+              subClient.connect((err3) => {
+                if (err3) callback(err3);
+                else {
+                  subClient.query(insertSQL, [uid, item.title, item.content], (error) => {
+                    if (error) {
+                      thrownError = error;
+                    }
+                    subClient.end();
+                  });
+                }
+              });
+            });
+          }
+
+          if (response.status === undefined) {
+            response.status = 'SUCCESS';
+            response.message = 'Profile was updated successfully!';
+          }
+          callback(thrownError, response);
+        }
+        client.end();
+      });
+    }
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
@@ -604,4 +692,5 @@ module.exports = {
   getLastMeetingday,
   getGivenFeedbacks,
   insertAvailability,
+  updateCredentialsListEntries,
 };
