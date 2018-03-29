@@ -144,7 +144,7 @@ class MeetingDaysView extends Component {
           >
             View details
           </Link>
-          <button className="btn btn-minor" onClick={() => this.removeDate(index)}>
+          <button className="btn btn-minor meeting-button" onClick={() => this.removeDate(index)}>
             Remove
           </button>
 

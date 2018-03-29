@@ -138,7 +138,7 @@ class EditUserProfile extends Component {
             </div>
           </div>
         </form>
-        <button onClick={() => this.addCredential()} style={{ display: 'block' }}  className="credentials-btn">
+        <button onClick={() => this.addCredential()} style={{ display: 'block' }} className="credentials-btn">
           <span className="glyphicon glyphicon-plus-sign" />
           Add a {removeText}
         </button>
