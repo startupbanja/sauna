@@ -465,6 +465,13 @@ function getComingDates(callback) {
   });
 }
 
+// Returns coming timeslot-data as array: [{
+// name: '',
+// email: '',
+// date: '',
+// time: '',
+// duration: int,
+// }]
 function getComingTimeSlots(callback) {
   const client = getClient();
   const query = {
@@ -492,6 +499,28 @@ function getComingTimeSlots(callback) {
   });
 }
 
+// Returns latest MeetingDay from the past
+function getLastMeetingday(callback) {
+  const client = getClient();
+  const query = {
+    name: 'get-lastMeetingDay',
+    text: 'SELECT MAX(Date) AS date FROM MeetingDays WHERE Date < current_date;',
+    values: [],
+  };
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2, res) => {
+        if (err2) callback(err2);
+        else {
+          callback(err2, res.rows[0].date);
+        }
+        client.end();
+      });
+    }
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
@@ -504,4 +533,5 @@ module.exports = {
   getComingMeetingDays,
   getComingDates,
   getComingTimeSlots,
+  getLastMeetingday,
 };
