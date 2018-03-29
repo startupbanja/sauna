@@ -677,6 +677,33 @@ function updateCredentialsListEntries(uid, list, userType, callback) {
   });
 }
 
+// Updates the profile of a given user
+// Also calls updateCredentialsListEntries
+function updateProfile(uid, userType, site, imgUrl, description, title, credentials, callback) {
+  const client = getClient();
+  const titleField = userType === 'Coach' ? ', title = $5' : '';
+  const imgURL = imgUrl === '' ? null : imgUrl;
+  const queryParams = userType === 'Coach' ? [site, imgURL, description, uid, title] : [site, imgUrl, description, uid];
+  const query = {
+    name: 'update-profile',
+    text: `
+    UPDATE Profiles SET website = $1, img_url = $2, description = $3${titleField} WHERE user_id = $4;`,
+    values: queryParams,
+  };
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2) => {
+        if (err2) callback(err2);
+        else {
+          updateCredentialsListEntries(uid, credentials, userType, callback);
+        }
+        client.end();
+      });
+    }
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
@@ -693,4 +720,5 @@ module.exports = {
   getGivenFeedbacks,
   insertAvailability,
   updateCredentialsListEntries,
+  updateProfile,
 };
