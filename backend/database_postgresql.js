@@ -7,6 +7,12 @@ function getClient() {
   return new pg.Client(params);
 }
 
+const UserTypes = {
+  admin: 0,
+  coach: 1,
+  startup: 2,
+};
+
 // Returns JSON containing {name: {description: '', img_url: '', id: int}}
 function getUsers(type, includeId, callback) {
   const client = getClient();
@@ -1076,7 +1082,7 @@ function saveMatchmakingResult(schedule, dateString, callback) {
 
   client.connect((connectionError) => {
     if (connectionError) return callback(connectionError);
-    checkIfAlreadyDone(() => {
+    return checkIfAlreadyDone(() => {
       begin(() => {
         saveTimetable(schedule, dateString, (saveErr) => {
           if (saveErr) {
@@ -1220,9 +1226,12 @@ function getUserMeetings(userID, userType, callback) {
   });
 }
 
-// Get an object mapping all ids from startups and coaches and map them to their names.
-// Currently returns all coaches with any branch number
-// Checks for active = 1 for all rows
+/**
+ * Get an object mapping all ids from startups and coaches and map them to their names.
+ * @param {function} callback
+ * return value given to callback:
+ * { startups: { id: name }, coaches: {...} }
+ */
 function getMapping(callback) {
   const client = getClient();
   const coachType = 1;
@@ -1235,7 +1244,7 @@ function getMapping(callback) {
     FROM Users
     INNER JOIN Profiles
     ON Users.id = Profiles.user_id
-    WHERE active = 1 AND (Users.type = $1
+    WHERE active = true AND (Users.type = $1
     OR Users.type = $2);`;
 
   const query = {
@@ -1254,7 +1263,95 @@ function getMapping(callback) {
           mapping.coaches[row.id] = row.name;
         }
       });
-      return callback(null, mapping);
+      callback(null, mapping);
+      return client.end();
+    });
+  });
+}
+
+/**
+ * Add a profile to the database. requires a user to already exist with the given id
+ * @param {Object} userInfo
+ * @param {string} userInfo.name
+ * @param {string} userInfo.email
+ * @param {string} userInfo.img_url
+ * @param {string} userInfo.linkedin - if type === 'coach'
+ * @param {string} userInfo.website - if type === 'startup'
+ * @param {string} id
+ */
+function addProfile(userInfo, id, callback) {
+  const client = getClient();
+  const imgURL = userInfo.img_url || null;
+  const website = userInfo.website || userInfo.linkedin;
+  const qText = `INSERT INTO Profiles(user_id, name, img_url, description, website) VALUES
+  ($1, $2, $3, $4, $5);`;
+  const query = {
+    text: qText,
+    values: [id, userInfo.name, imgURL, userInfo.description, website],
+  };
+
+  client.connect((connErr) => {
+    if (connErr) return callback(connErr);
+    return client.query(query, (error) => {
+      if (error) return callback(error);
+      callback(error, { type: 'SUCCESS', message: 'User added successfully!' });
+      return client.end();
+    });
+  });
+}
+/**
+ * Add a user to the database, including an entry to the Profiles table
+ * wraps the process in a transaction
+ * @param {Object} userInfo
+ * @param {string} userInfo.name
+ * @param {string} userInfo.email
+ * @param {string} userInfo.type
+ * @param {string} userInfo.img_url
+ * @param {string} userInfo.linkedin - if type === 'coach'
+ * @param {string} userInfo.website - if type === 'startup'
+ * @param {string} userInfo.password
+ * return value given to callback: { type: 'ERROR'|'SUCCESS', message: string}
+ */
+function addUser(userInfo, callback) {
+  if (!userInfo.password || userInfo.password.length < 6) {
+    return callback(null, { type: 'ERROR', message: 'password too short' });
+  }
+  const client = getClient();
+  // checks if there already exists a user with that email, returns an error msg in callback if so
+  function check(cb) {
+    const q = {
+      text: 'SELECT * FROM Users where email = $1;',
+      values: [userInfo.email],
+    }
+    client.query(q, (err, result) => {
+      if (err) return cb(err);
+      if (result.rowCount !== 0) return cb(null, { type: 'ERROR', message: 'A user with that email already exists!' });
+      return cb(null, null);
+    });
+  }
+  // hash password
+  const password = bcrypt.hashSync(userInfo.password, 10);
+  const type = UserTypes[userInfo.type];
+  const query = {
+    text: 'INSERT INTO Users(type, email, password, active) VALUES($1, $2, $3, $4) RETURNING id;',
+    values: [type, userInfo.email, password, 0],
+  };
+  return client.connect((connErr) => {
+    if (connErr) return callback(connErr);
+    // check if email already in use
+    return check((checkErr, checkResult) => {
+      if (checkErr || checkResult) return callback(checkErr, checkResult);
+      // insert into user table and return id
+      return client.query(query, (error, result) => {
+        if (error) return callback(error);
+        if (result.rowCount !== 1) return callback({ error: 'Error inserting user' });
+        // insert into profile table
+        return addProfile(userInfo, result.rows[0].id, (profileError, resultMsg) => {
+          if (profileError) return callback(profileError);
+          callback(null, resultMsg);
+          return client.end();
+        });
+      });
     });
   });
 }
@@ -1291,4 +1388,6 @@ module.exports = {
   updateTimetable,
   getUserMeetings,
   getMapping,
+  addProfile,
+  addUser,
 };

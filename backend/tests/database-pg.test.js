@@ -24,12 +24,30 @@ describe.skip('testing saveMatchmakingResult', () => {
 });
 
 
-describe('testing getMapping', () => {
+describe.skip('testing getMapping', () => {
   test('expecting result to be non empty', (done) => {
     database.getMapping((err, result) => {
-      console.log(result);
       expect(err).toBeFalsy();
       expect(Object.keys(result).length > 0).toBe(true);
+      done();
+    });
+  });
+});
+
+describe.skip('testing addUser', () => {
+  const i = 3;
+  test('expecting to return success', (done) => {
+    const userInfo = {
+      name: `unit-test-${i}`,
+      email: `unit-test-${i}@`,
+      type: 'coach',
+      img_url: null,
+      linkedin: null,
+      password: 'asdasd',
+    };
+    database.addUser(userInfo, (err, result) => {
+      expect(err).toBeFalsy();
+      expect(result.type).toBe('SUCCESS');
       done();
     });
   });

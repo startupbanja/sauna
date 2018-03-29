@@ -766,9 +766,12 @@ function getUserMeetings(userID, userType, callback) {
 }
 
 
-// Get an object mapping all ids from startups and coaches and map them to their names.
-// Currently returns all coaches with any branch number
-// Checks for active = 1 for all rows
+/**
+ Get an object mapping all ids from active startups and coaches and map them to their names
+ @param {function} callback
+ return value given to callback:
+ {startups: {id: name}, coaches: {...}}
+ */
 function getMapping(callback) {
   const coachType = 1;
   const startupType = 2;
