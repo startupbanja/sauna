@@ -16,7 +16,7 @@ export default class FeedbackForm extends React.Component {
   }
 
   handleSubmit(value) {
-    this.props.onSubmit((value === undefined) ? this.state.choices[0] : value);
+    this.props.onSubmit(value);
   }
 
   render() {
