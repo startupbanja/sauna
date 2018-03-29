@@ -1,7 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import saunaLogo from '../../imgs/Startupsaunatext_white.svg';
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 
-
+// Component for displaying form for login and an error message if necessary
 export default class LoginForm extends React.Component {
   constructor(props) {
     super(props);
@@ -29,11 +31,14 @@ export default class LoginForm extends React.Component {
 
   render() {
     return (
-      <div className="container">
+      <div
+        className="container"
+        onKeyPress={(event) => { if (event.key === 'Enter') this.handleSubmit(); }}
+      >
 
         <form className="form-signin">
           <img
-            src="../app/imgs/Startupsaunatext_white.svg"
+            src={saunaLogo}
             alt="Startup Sauna"
             className="login-logo"
           />

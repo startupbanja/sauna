@@ -1,3 +1,4 @@
+
 .profileContainer #username {
   color: var(--primary-color);
   font-size: 1.7em;
@@ -63,10 +64,6 @@
   color: var(--primary-color);
 }
 
-.profileContainer .credentialList dd {
-  position: absolute;
-}
-
 .profileContainer .credentialList dd span {
   font-size: 0.7em;
   padding-left: 10px;
@@ -104,4 +101,38 @@
 
 .credentialField {
   border-top:1px solid #aaa;
+}
+
+.control-buttons {
+  text-align: center;
+}
+
+.control-buttons button {
+  margin: 5px;
+}
+
+#edit_manage_account {
+  text-align: center;
+}
+
+.save-button {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--dark-primary-color);
+  margin-right: 5px;
+}
+
+.credentials-btn {
+  background: var(--dark-gray);
+  color: var(--primary-color);
+  border-color: var(--darker-gray);
+  margin-top: 5px;
+  margin-bottom: 10px;
+  font-size: 1.3em;
+}
+
+.edit-prof-header {
+  text-align: center;
+  font-size: 1.4em;
+  color: var(--primary-color);
 }

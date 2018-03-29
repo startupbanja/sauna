@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import BlockHeader from './BlockHeader';
-import pageContent from './pageContent';
+import BlockHeader from '../BlockHeader';
+import pageContent from '../pageContent';
 
+// Landing page for admins
 class AdminLandingPage extends Component {
   constructor(props) {
     super(props);
@@ -59,6 +60,7 @@ class AdminLandingPage extends Component {
       });
   }
 
+  // renders the info about given availabilities and feedbacks for the next meeting day
   renderStats() {
     const { total: totalAvail, done: doneAvail } = this.state.availabilities
       || { total: null, done: null };
@@ -92,6 +94,7 @@ class AdminLandingPage extends Component {
     );
   }
 
+  // renders the info about how many active coaches and startups there are
   renderActiveUsers() {
     if (!this.state.activeUsers) return null;
     const { startups, coaches } = this.state.activeUsers;

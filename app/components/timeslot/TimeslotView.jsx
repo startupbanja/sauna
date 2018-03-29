@@ -4,7 +4,10 @@ import Timeslot, { parseMinutes, parseTimeStamp } from './Timeslot';
 import StatusMessage from '../StatusMessage';
 import '../../styles/timeslot_style.css';
 
-/* Component to handle availability data between backend and Timeslot */
+/*
+  Component to handle availability data between backend and Timeslot
+  and displaying all upcoming meeting days' timeslots
+*/
 class TimeslotView extends Component {
   constructor(props) {
     super(props);
@@ -13,6 +16,7 @@ class TimeslotView extends Component {
     this.submitAvailability = this.submitAvailability.bind(this);
     this.state = {
       index: 0,
+      // array of objects containing different meeting days and their submitted availabilities
       data: undefined,
       message: undefined,
     };
@@ -35,7 +39,12 @@ class TimeslotView extends Component {
             end,
             split: day.split,
             available: {
+              // if no availability is submitted,
+              // make the initial value to be the start of the whole day
               start: (day.time === null) ? start : parseMinutes(day.time),
+              // if no availability is submitted,
+              // make the initial value to be the start of the whole day
+              // so the user is unavailable by default
               end: (day.duration === null) ? start : parseMinutes(day.time) + day.duration,
             },
           });
@@ -44,25 +53,23 @@ class TimeslotView extends Component {
       });
   }
 
-  submitAvailability(startAvail, endAvail) {
-    const meetingDay = this.state.data[this.state.index];
-    let startTime = Math.ceil((startAvail - meetingDay.start) / meetingDay.split);
-    startTime = (startTime * meetingDay.split) + meetingDay.start;
-    let endTime = Math.floor((endAvail - meetingDay.start) / meetingDay.split);
-    endTime = (endTime * meetingDay.split) + meetingDay.start;
+  submitAvailability(startAvail, endAvail, index) {
+    const meetingDay = this.state.data[index];
     pageContents.fetchData('/insertAvailability', 'POST', {
       date: meetingDay.date.toISOString().substr(0, 10),
-      start: parseTimeStamp(startTime),
-      end: parseTimeStamp(endTime),
+      start: parseTimeStamp(startAvail),
+      end: parseTimeStamp(endAvail),
     }).then((result) => {
+      // if submitting correctly update state
       if (result.status === 'success') {
         const oldData = this.state.data;
-        oldData[this.state.index].available = {
-          start: startTime,
-          end: endTime,
+        oldData[index].available = {
+          start: startAvail,
+          end: endAvail,
         };
         this.setState({
           data: oldData,
+          // show StatusMessage on success
           message: {
             text: 'Saved',
             type: 'success',
@@ -70,6 +77,7 @@ class TimeslotView extends Component {
         });
       } else {
         this.setState({
+          // show StatusMessage on errro
           message: {
             text: 'Error when saving availability',
             type: 'error',
@@ -79,6 +87,7 @@ class TimeslotView extends Component {
     });
   }
 
+  // navigate between different meeting days
   changeDate(diff) {
     this.setState({
       index: Math.min(this.state.data.length - 1, Math.max(0, this.state.index + diff)),
@@ -86,6 +95,7 @@ class TimeslotView extends Component {
     });
   }
 
+  // render the timeslot picker for the current date
   renderTimeslot() {
     if (!this.state.data) return null;
     if (this.state.data.length === 0) return <p className="empty-content-text">No upcoming days</p>;
@@ -98,7 +108,7 @@ class TimeslotView extends Component {
         split={day.split}
         available={day.available}
         date={day.date}
-        onSubmit={this.submitAvailability}
+        onSubmit={(a, b) => this.submitAvailability(a, b, this.state.index)}
         onMoveToPrev={((this.state.index > 0) || undefined) && (() => this.changeDate(-1))}
         onMoveToNext={((this.state.index < this.state.data.length - 1) || undefined)
           && (() => this.changeDate(1))}
@@ -109,7 +119,6 @@ class TimeslotView extends Component {
   render() {
     return (
       <div className="timeslot-picker">
-        {/* <link rel="stylesheet" type="text/css" href="app/styles/timeslot_style.css" /> */}
         <StatusMessage message={this.state.message} />
         {this.renderTimeslot()}
       </div>

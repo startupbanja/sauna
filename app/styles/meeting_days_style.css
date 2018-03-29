@@ -9,7 +9,7 @@
 
 .banner p {
   display: inline-block;
-  font-size: 1.5em;
+  font-size: 1.6em;
   color: var(--light-gray);
   flex-grow: 2;
   text-align: center;
@@ -29,9 +29,44 @@
 
 p.meeting-date {
   color: var(--primary-color);
-  font-size: 1.5em;
+  margin: 10px 0;
+  font-size: 1.8em;
+  font-weight: bold;
 }
 
 div.next-day-container {
   text-align: center;
+}
+
+div.new-meeting-day-form p.form-error-message {
+  display: block;
+  font-size: 1em;
+  color: var(--primary-color);
+}
+
+.matchmaking-buttons {
+  display: block;
+  margin: 5px;
+}
+
+.meeting-text {
+  font-size: 1.6em;
+  padding: 5px;
+}
+
+.meeting-button {
+  padding: 10px;
+  margin: 5px;
+  margin-bottom: 5%;
+}
+
+.details-list-text {
+  font-size: 1.2em;
+  text-align: left;
+}
+
+.details-list-text-missing {
+  color: var(--primary-color);
+  font-size: 1.2em;
+  text-align: left;
 }

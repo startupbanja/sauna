@@ -1,15 +1,20 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import CheckBox from '../CheckBox';
+import CheckBox from './CheckBox';
 import pageContent from '../pageContent';
+import StatusMessage from '../StatusMessage';
 
 /* List active and inactive users and changes their statuses */
 class UserActivityList extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      message: undefined,
+    };
     this.userActivityChanged = this.userActivityChanged.bind(this);
   }
 
+  // when admin changes a user's status, submit the change
   userActivityChanged(newActivity, userId) {
     pageContent.fetchData('/setActiveStatus', 'POST', {
       id: userId,
@@ -24,18 +29,18 @@ class UserActivityList extends Component {
   render() {
     return (
       <div className="user-activity-list-container">
+        <StatusMessage message={this.state.message} />
         <h4 className="header">
           <span className="number">{this.props.users.filter(user => user.active).length}</span>{` active ${this.props.type}`}
         </h4>
         <hr />
         {this.props.users.map(user =>
-          (
-            <CheckBox
-              key={user.id}
-              label={user.name}
-              checked={user.active === 1}
-              onChange={checked => this.userActivityChanged(checked, user.id)}
-            />
+          (<CheckBox
+            key={user.id}
+            label={user.name}
+            checked={user.active === 1}
+            onChange={checked => this.userActivityChanged(checked, user.id)}
+          />
           ))}
       </div>
     );

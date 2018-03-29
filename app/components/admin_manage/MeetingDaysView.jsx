@@ -6,8 +6,9 @@ import NewMeetingDayBlock from './NewMeetingDayBlock';
 import '../../styles/meeting_days_style.css';
 /* eslint-disable jsx-a11y/anchor-is-valid */ // disable complaining from Link
 
-
-/* Component to display all upcoming meeting days */
+/* Component to display all upcoming meeting days
+  and a more detailed info about the next meeting day
+  also allows the possibility to create new days */
 class MeetingDaysView extends Component {
   constructor(props) {
     super(props);
@@ -15,10 +16,14 @@ class MeetingDaysView extends Component {
     this.fetchAvailabilityStats = this.fetchAvailabilityStats.bind(this);
     this.fetchGivenFeedbacks = this.fetchGivenFeedbacks.bind(this);
     this.handleNewMeetingDaySubmit = this.handleNewMeetingDaySubmit.bind(this);
+    this.removeDate = this.removeDate.bind(this);
     this.renderMeetingDay = this.renderMeetingDay.bind(this);
     this.state = {
+      // list of all coming meeting days as a object containing the date as 'YYYY-MM-DD'
       days: null,
+      // object mapping a date to given and total availabilities from coaches
       availabilities: null,
+      // object of feedbacks given and total as { coachDone, coachTotal, startupDone, startupTotal }
       feedbacks: null,
       canRunMatchmaking: false,
     };
@@ -46,9 +51,12 @@ class MeetingDaysView extends Component {
           if (a.date > b.date) return 1;
           return 0;
         });
-        const first = arr[0];
-        // convert to boolean
-        const canRun = first.matchmakingDone === 0;
+        let canRun = false;
+        if (arr.length > 0) {
+          const first = arr[0];
+          // convert to boolean
+          canRun = first.matchmakingDone === 0;
+        }
         this.setState({
           days: arr,
           canRunMatchmaking: canRun,
@@ -78,15 +86,30 @@ class MeetingDaysView extends Component {
   }
 
   handleNewMeetingDaySubmit() {
+    // remove the transparent gray backround of modal
     const modal = $('#newMeetingDayModal');
     modal.removeClass('in');
     modal.addClass('out');
     $('.modal-backdrop').remove();
+
     this.fetchScheduledDays();
     this.fetchAvailabilityStats();
     this.fetchGivenFeedbacks();
   }
 
+  removeDate(index) {
+    if (confirm(`Are you sure you want to remove the date ${this.state.days[index].date}`)) { // eslint-disable-line
+      pageContent.fetchData('/removeMeetingDay', 'POST', { date: this.state.days[index].date })
+        .then(() => {
+          this.fetchScheduledDays();
+          this.fetchAvailabilityStats();
+          this.fetchGivenFeedbacks();
+        });
+    }
+  }
+
+  // render relevant data about the meeting day
+  // renders more info about the first day
   renderMeetingDay(index) {
     if (this.state.days.length > index) {
       const dateOptions = {
@@ -100,38 +123,44 @@ class MeetingDaysView extends Component {
         <div className="meeting-day-container" key={index}>
           <p className="meeting-date">{new Date(date).toLocaleDateString('en-GB', dateOptions).replace(/\//g, '.')}</p>
           {(total !== null && done !== null) &&
-            <p>{`${done}/${total} Coaches' availabilities`}</p>}
-          {index === 0 && (
+            <p className="meeting-text">{`${done}/${total} Coaches' availabilities`}</p>}
+          {// if the next upcoming date, render info about the feedbacks
+            index === 0 && (
             <div>
               {((this.state.feedbacks.coachTotal &&
                  this.state.feedbacks.coachDone !== undefined)
                 || undefined) &&
-                <p>{`${this.state.feedbacks.coachDone}/${this.state.feedbacks.coachTotal} Coaches' feedbacks`}</p>}
+                <p className="meeting-text">{`${this.state.feedbacks.coachDone}/${this.state.feedbacks.coachTotal} Coaches' feedbacks`}</p>}
               {((this.state.feedbacks.startupTotal &&
                  this.state.feedbacks.startupDone !== undefined)
                 || undefined) &&
-                <p>{`${this.state.feedbacks.startupDone}/${this.state.feedbacks.startupTotal} Startups' feedbacks`}</p>}
+                <p className="meeting-text">{`${this.state.feedbacks.startupDone}/${this.state.feedbacks.startupTotal} Startups' feedbacks`}</p>}
             </div>
           )}
           {/* link to details page, the first item has modified link */}
           <Link
-            className="btn btn-minor"
+            className="btn btn-minor meeting-button"
             to={`/meetings/${!index ? 'recent/' : ''}${this.state.days[index].date}/`}
           >
             View details
           </Link>
+          <button className="btn btn-minor meeting-button" onClick={() => this.removeDate(index)}>
+            Remove
+          </button>
 
-          {index === 0 && (
-            <span>
+          {// if rendering the first upcoming day,
+          // render buttons to run matchmaking and view admin timetable
+            index === 0 && (
+            <span className="matchmaking-buttons">
               <Link
-                className="btn btn-minor"
+                className="btn btn-minor meeting-button"
                 to={`/timetable/${this.state.days[index].date}/`}
               >
                 View timetable
               </Link>
               {this.state.canRunMatchmaking &&
                 <button
-                  className="btn btn-major"
+                  className="btn btn-major meeting-button"
                   onClick={() => this.runMatchmaking(this.state.days[index].date)}
                 > Run Matchmaking
                 </button>
@@ -152,18 +181,18 @@ class MeetingDaysView extends Component {
     }
     return (
       <div className="meeting-days-view container">
-        {/* <link rel="stylesheet" href="/app/styles/meeting_days_style.css" /> */}
         <div className="banner">
           <p><span className="number">{this.state.days.length}</span> upcoming meeting days</p>
           <div className="btn-container">
             <button
               type="button"
-              className="btn btn-minor"
+              className="btn btn-minor meeting-button"
               data-toggle="modal"
               data-target="#newMeetingDayModal"
             >Set more
             </button>
           </div>
+          {/* modal for creating new meeting days */}
           <div id="newMeetingDayModal" className="modal fade" role="dialog">
             <div className="modal-dialog">
               <div className="modal-content">
@@ -177,11 +206,11 @@ class MeetingDaysView extends Component {
               </div>
             </div>
           </div>
+
         </div>
 
         <div className="next-day-container">
           {this.renderMeetingDay(0)}
-
         </div>
 
         <hr />
