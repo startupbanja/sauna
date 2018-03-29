@@ -936,10 +936,33 @@ function getRatings(callback) {
   });
 }
 
-getRatings((err, res) => {
-  console.log(err);
-  console.log(res);
-});
+// Returns a map of {User_id: Name} and {Name: User_id}
+// Used in deciphering and ciphering schedule from admin view
+function getUserMap(callback) {
+  const client = getClient();
+  const keys = {};
+  const query = {
+    name: 'get-userMap',
+    text: 'SELECT name, user_id FROM Profiles;',
+    values: [],
+  };
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2, res) => {
+        if (err2) callback(err2);
+        else {
+          res.rows.forEach((row) => {
+            keys[row.name] = row.user_id.toString();
+            keys[row.user_id.toString()] = row.name;
+          });
+          callback(err2, keys);
+        }
+        client.end();
+      });
+    }
+  });
+}
 
 module.exports = {
   getUsers,
@@ -965,4 +988,5 @@ module.exports = {
   getMeetingDuration,
   getStartups,
   getRatings,
+  getUserMap,
 };
