@@ -1,7 +1,7 @@
 const database = require('../database_postgresql.js');
 
 
-describe('trying saveMatchmakingResult', () => {
+describe.skip('testing saveMatchmakingResult', () => {
   const date = '2018-10-15';
   const data = [];
   beforeAll(() => {
@@ -18,6 +18,18 @@ describe('trying saveMatchmakingResult', () => {
     database.saveMatchmakingResult(data, date, (err) => {
       if (err) console.log(err);
       expect(err).toBeFalsy();
+      done();
+    });
+  });
+});
+
+
+describe('testing getMapping', () => {
+  test('expecting result to be non empty', (done) => {
+    database.getMapping((err, result) => {
+      console.log(result);
+      expect(err).toBeFalsy();
+      expect(Object.keys(result).length > 0).toBe(true);
       done();
     });
   });

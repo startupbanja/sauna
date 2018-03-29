@@ -1,5 +1,5 @@
 const pg = require('pg');
-const fs = require('fs');
+// const fs = require('fs');
 const bcrypt = require('bcrypt');
 const params = require('./database_params.json');
 
@@ -1091,6 +1091,10 @@ function saveMatchmakingResult(schedule, dateString, callback) {
         });
       });
     });
+  });
+}
+
+
 // Returns an array of meetings: [{
 // coach: '',
 // startup: '',
@@ -1216,6 +1220,45 @@ function getUserMeetings(userID, userType, callback) {
   });
 }
 
+// Get an object mapping all ids from startups and coaches and map them to their names.
+// Currently returns all coaches with any branch number
+// Checks for active = 1 for all rows
+function getMapping(callback) {
+  const client = getClient();
+  const coachType = 1;
+  const startupType = 2;
+  const mapping = {
+    startups: {},
+    coaches: {},
+  };
+  const qText = `SELECT Users.id AS id, Profiles.name AS name, Users.type AS type
+    FROM Users
+    INNER JOIN Profiles
+    ON Users.id = Profiles.user_id
+    WHERE active = 1 AND (Users.type = $1
+    OR Users.type = $2);`;
+
+  const query = {
+    text: qText,
+    values: [startupType, coachType],
+  };
+
+  client.connect((connErr) => {
+    if (connErr) return callback(connErr);
+    client.query(query, (err, result) => {
+      if (err) return callback(err);
+      result.rows.forEach((row) => {
+        if (row.type === startupType) {
+          mapping.startups[row.id] = row.name;
+        } else if (row.type === coachType) {
+          mapping.coaches[row.id] = row.name;
+        }
+      });
+      return callback(null, mapping);
+    });
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
@@ -1243,11 +1286,9 @@ module.exports = {
   getUserMap,
   getTimeslots,
   saveTimetable,
-<<<<<<< HEAD
   saveMatchmakingResult,
-=======
   getTimetable,
   updateTimetable,
   getUserMeetings,
->>>>>>> b5f4a86575f186b48439e50861a6dd430bc5ad89
+  getMapping,
 };
