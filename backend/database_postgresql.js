@@ -866,6 +866,35 @@ function getMeetingDuration(date, callback) {
   });
 }
 
+// Returns all active startup IDs in an array
+function getStartups(callback) {
+  const client = getClient();
+  const startups = [];
+  const query = {
+    name: 'get-startups',
+    text: `
+    SELECT id
+    FROM USERS
+    WHERE type = 2 AND active = TRUE;`,
+    values: [],
+  };
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2, res) => {
+        if (err2) callback(err2);
+        else {
+          res.rows.forEach((row) => {
+            startups.push(row.id.toString());
+          });
+          callback(err2, startups);
+        }
+        client.end();
+      });
+    }
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
