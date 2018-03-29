@@ -964,6 +964,43 @@ function getUserMap(callback) {
   });
 }
 
+// Returns given timeslots for a given date as a JSON: {
+// userid: {
+// starttime: '',
+// duration: int,
+// },
+// }
+function getTimeslots(date, callback) {
+  const client = getClient();
+  const timeslots = {};
+  const query = {
+    name: 'get-timeslots',
+    text: `
+    SELECT user_id, date, time, duration
+    FROM Timeslots
+    WHERE date = $1;`,
+    values: [date],
+  };
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2, res) => {
+        if (err2) callback(err2);
+        else {
+          res.rows.forEach((row) => {
+            timeslots[row.user_id] = {
+              starttime: row.time,
+              duration: row.duration,
+            };
+          });
+          callback(err2, timeslots);
+        }
+        client.end();
+      });
+    }
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
@@ -989,4 +1026,5 @@ module.exports = {
   getStartups,
   getRatings,
   getUserMap,
+  getTimeslots,
 };
