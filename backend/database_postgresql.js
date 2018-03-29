@@ -805,6 +805,44 @@ function changePasswordAdmin(uid, password, callback) {
   });
 }
 
+/**
+ * Changes the given user's (UID) password if possible
+ * and calls callback with response message object.
+ */
+function changePassword(uid, oldPassword, newPassword, callback) {
+  const client = getClient();
+  const query = {
+    name: 'get-password',
+    text: 'SELECT password FROM Users WHERE id = $1;',
+    values: [uid],
+  };
+
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2, res) => {
+        if (err2) callback(err2);
+        else {
+          const oldPass = res.rows[0].password;
+          bcrypt.compare(oldPassword, oldPass, (err3, same) => {
+            if (err3) callback(err3);
+            else if (!same) callback(err3, { status: 'ERROR', message: 'The current password was incorrect!' });
+            else {
+              changePasswordAdmin(uid, newPassword, (err4) => {
+                if (err4) callback(err4);
+                else {
+                  callback(err4, { status: 'SUCCESS', message: 'Password was successfully changed!' });
+                }
+              });
+            }
+          });
+        }
+        client.end();
+      });
+    }
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
@@ -825,4 +863,5 @@ module.exports = {
   verifyIdentity,
   changeEmail,
   changePasswordAdmin,
+  changePassword,
 };
