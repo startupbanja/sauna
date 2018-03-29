@@ -1132,6 +1132,42 @@ function updateTimetable(timetable, date, callback) {
   });
 }
 
+// Returns next meetingday's schedule for a user
+function getUserMeetings(userID, userType, callback) {
+  let queryText;
+  if (userType === 'coach') {
+    queryText = `
+    SELECT name, time, duration, date, img_url AS image_src
+    FROM Meetings
+    LEFT OUTER JOIN Profiles ON Profiles.user_id = Meetings.startup_id
+    WHERE Meetings.coach_id = $1 AND date = (SELECT MAX(date) FROM Meetings);`;
+  } else {
+    queryText = `
+    SELECT name, time, duration, date, img_url AS image_src
+    FROM Meetings
+    LEFT OUTER JOIN Profiles ON Profiles.user_id = Meetings.coach_id
+    WHERE Meetings.startup_id = $1 AND date = (SELECT MAX(date) FROM Meetings);`;
+  }
+  const client = getClient();
+  const query = {
+    name: 'get-userMeetings',
+    text: queryText,
+    values: [userID],
+  };
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2, res) => {
+        if (err2) callback(err2);
+        else {
+          callback(err2, res.rows);
+        }
+        client.end();
+      });
+    }
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
@@ -1161,4 +1197,5 @@ module.exports = {
   saveTimetable,
   getTimetable,
   updateTimetable,
+  getUserMeetings,
 };
