@@ -151,7 +151,7 @@ export default class MeetingDetailView extends React.Component {
 
     return (
       <div className="container full-viewport">
-        <h1>Meeting Day {this.props.date}</h1>
+        <h1 style={{ color: '#E55234' }}>Meeting Day {this.props.date}</h1>
         <Link
           className="btn btn-major"
           to={`/timetable/${this.props.date}/`}
@@ -183,15 +183,15 @@ export default class MeetingDetailView extends React.Component {
         <div className="row">
           <div className="listDiv col-md-3">
             <ul>
-              <h3>Given:</h3>
-              <h3>{availabilities.given.length}</h3>
+              <h3 style={{ color: 'white' }}>Given:</h3>
+              <h3 style={{ color: '#E55234' }}>{availabilities.given.length}</h3>
               {availabilities.given}
             </ul>
           </div>
           <div className="listDiv col-md-3">
             <ul>
-              <h3>Not given:</h3>
-              <h3>{availabilities.notGiven.length}</h3>
+              <h3 style={{ color: 'white' }}>Not given:</h3>
+              <h3 style={{ color: '#E55234' }}>{availabilities.notGiven.length}</h3>
               {availabilities.notGiven}
             </ul>
           </div>
@@ -199,14 +199,14 @@ export default class MeetingDetailView extends React.Component {
             <div className="feedbackBlock">
               <div className="listDiv col-md-3">
                 <ul>
-                  <h3>Coaches:</h3>
+                  <h3 style={{ color: 'white' }}>Coaches:</h3>
                   {feedbacks.coaches.notGiven}
                   {feedbacks.coaches.given}
                 </ul>
               </div>
               <div className="listDiv col-md-3">
                 <ul>
-                  <h3>Startups:</h3>
+                  <h3 style={{ color: 'white' }}>Startups:</h3>
                   {feedbacks.startups.notGiven}
                   {feedbacks.startups.given}
                 </ul>

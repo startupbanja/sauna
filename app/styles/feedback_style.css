@@ -31,7 +31,7 @@
 }
 
 .feedback-info {
-  font-size: 14px;
+  font-size: 1.2em;
 }
 
 .feedback-nro {
@@ -81,6 +81,7 @@
 .datetime {
   margin-bottom: 5%;
   text-align: center;
+  font-size: 1.4em;
 }
 
 .inactive {
