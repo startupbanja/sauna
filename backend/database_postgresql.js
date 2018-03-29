@@ -463,7 +463,7 @@ function getComingDates(callback) {
 // time: '',
 // duration: int,
 // }]
-function getComingTimeSlots(callback) {
+function getComingTimeslots(callback) {
   const client = getClient();
   const query = {
     name: 'get-comingTimeSlots',
@@ -1367,7 +1367,7 @@ module.exports = {
   removeMeetingDay,
   getComingMeetingDays,
   getComingDates,
-  getComingTimeSlots,
+  getComingTimeslots,
   getLastMeetingday,
   getGivenFeedbacks,
   insertAvailability,
