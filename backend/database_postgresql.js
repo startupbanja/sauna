@@ -1001,6 +1001,48 @@ function getTimeslots(date, callback) {
   });
 }
 
+// Saves a schedule into database
+// Schedule is given as [{
+// startup: '',
+// coach: '',
+// time: '',
+// duration: int,
+// }]
+function saveTimetable(schedule, dateString, callback) {
+  const queryStart = `
+  INSERT INTO Meetings(coach_id, startup_id, date, time, duration, coach_rating, startup_rating)
+  VALUES
+  `;
+  // Filter out nulls
+  const data = schedule.filter(obj => obj.startup !== null);
+  const strings = data.map((row) => {
+    const {
+      coach, startup, duration, time,
+    } = row;
+    return `( ${coach}, ${startup}, '${dateString}', '${time}', ${duration}, -1, -1)`;
+  });
+
+  if (strings.length > 0) {
+    const client = getClient();
+    const query = {
+      name: 'save-timetable',
+      text: `${queryStart}${strings.join(',\n')};`,
+      values: [],
+    };
+    client.connect((err) => {
+      if (err) callback(err);
+      else {
+        client.query(query, (err2) => {
+          callback(err2);
+          client.end();
+        });
+      }
+    });
+  } else {
+    callback({ error: 'No non-null meetings!' });
+  }
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
@@ -1027,4 +1069,5 @@ module.exports = {
   getRatings,
   getUserMap,
   getTimeslots,
+  saveTimetable,
 };
