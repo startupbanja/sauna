@@ -16,6 +16,7 @@ class MeetingDaysView extends Component {
     this.fetchAvailabilityStats = this.fetchAvailabilityStats.bind(this);
     this.fetchGivenFeedbacks = this.fetchGivenFeedbacks.bind(this);
     this.handleNewMeetingDaySubmit = this.handleNewMeetingDaySubmit.bind(this);
+    this.removeDate = this.removeDate.bind(this);
     this.renderMeetingDay = this.renderMeetingDay.bind(this);
     this.state = {
       // list of all coming meeting days as a object containing the date as 'YYYY-MM-DD'
@@ -50,9 +51,12 @@ class MeetingDaysView extends Component {
           if (a.date > b.date) return 1;
           return 0;
         });
-        const first = arr[0];
-        // convert to boolean
-        const canRun = first.matchmakingDone === 0;
+        let canRun = false;
+        if (arr.length > 0) {
+          const first = arr[0];
+          // convert to boolean
+          canRun = first.matchmakingDone === 0;
+        }
         this.setState({
           days: arr,
           canRunMatchmaking: canRun,
@@ -93,6 +97,17 @@ class MeetingDaysView extends Component {
     this.fetchGivenFeedbacks();
   }
 
+  removeDate(index) {
+    if (confirm(`Are you sure you want to remove the date ${this.state.days[index].date}`)) { // eslint-disable-line
+      pageContent.fetchData('/removeMeetingDay', 'POST', { date: this.state.days[index].date })
+        .then(() => {
+          this.fetchScheduledDays();
+          this.fetchAvailabilityStats();
+          this.fetchGivenFeedbacks();
+        });
+    }
+  }
+
   // render relevant data about the meeting day
   // renders more info about the first day
   renderMeetingDay(index) {
@@ -129,11 +144,14 @@ class MeetingDaysView extends Component {
           >
             View details
           </Link>
+          <button className="btn btn-minor" onClick={() => this.removeDate(index)}>
+            Remove
+          </button>
 
           {// if rendering the first upcoming day,
           // render buttons to run matchmaking and view admin timetable
             index === 0 && (
-            <span>
+            <span className="matchmaking-buttons">
               <Link
                 className="btn btn-minor"
                 to={`/timetable/${this.state.days[index].date}/`}

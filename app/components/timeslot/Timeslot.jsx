@@ -32,9 +32,12 @@ class Timeslot extends React.Component {
       start: this.props.start,
       // time of ending for the whole day in minutes
       end: this.props.end,
+      changesMade: false,
     };
     this.handleChange = this.handleChange.bind(this);
     this.submitAvailability = this.submitAvailability.bind(this);
+    this.handleNavigationClick = this.handleNavigationClick.bind(this);
+    this.askIfWantsToSubmitNone = this.askIfWantsToSubmitNone.bind(this);
     this.askForMoreTime = this.askForMoreTime.bind(this);
   }
 
@@ -44,12 +47,14 @@ class Timeslot extends React.Component {
     let newEnd = this.state.available.end;
     if (to === 'start') {
       newStart = Math.min(Math.max(newStart + change, this.state.start), this.state.end);
-      newEnd = Math.max(newStart, this.state.available.end);
+      newStart = Math.min(newStart, newEnd);
+      // newEnd = Math.max(newStart, this.state.available.end);
     } else if (to === 'end') {
       newEnd = Math.max(Math.min(newEnd + change, this.state.end), this.state.start);
-      newStart = Math.min(newEnd, this.state.available.start);
+      newEnd = Math.max(newEnd, newStart);
+      // newStart = Math.min(newEnd, this.state.available.start);
     }
-    const newObj = { available: { start: newStart, end: newEnd } };
+    const newObj = { available: { start: newStart, end: newEnd }, changesMade: true };
     this.setState(newObj);
   }
 
@@ -58,7 +63,31 @@ class Timeslot extends React.Component {
     let endAvail = Math.round(this.state.available.end / 5) * 5;
     startAvail = this.askForMoreTime('start', startAvail);
     endAvail = this.askForMoreTime('end', endAvail);
+    let submit;
+    ({ startAvail, endAvail, submit } = this.askIfWantsToSubmitNone(startAvail, endAvail)); // eslint-disable-line
+    if (!submit) return;
     this.props.onSubmit(startAvail, endAvail);
+    this.setState({ changesMade: false });
+  }
+
+  handleNavigationClick(callback) {
+    if (this.state.changesMade) this.submitAvailability();
+    callback();
+  }
+
+  askIfWantsToSubmitNone(startAvail, endAvail) {
+    // cut the availability slot to follow meeting splits
+    let startAvailCut = Math.ceil((startAvail - this.state.start) / this.props.split);
+    startAvailCut = (startAvailCut * this.props.split) + this.state.start;
+    let endAvailCut = Math.floor((endAvail - this.state.start) / this.props.split);
+    endAvailCut = (endAvailCut * this.props.split) + this.state.start;
+    let submit = true;
+    if (endAvail - startAvail > 0 && endAvailCut - startAvailCut <= 0) {
+      if (!confirm('You are currently submitting availability with no possible meetings. Do you want to submit?')) { // eslint-disable-line
+        submit = false;
+      }
+    }
+    return { endAvail: endAvailCut, startAvail: startAvailCut, submit };
   }
 
   // ask if the user can come earlier or stay longer
@@ -133,18 +162,18 @@ class Timeslot extends React.Component {
         <div className="navigation-container">
           <span
             className={moveToPrevClass}
-            onClick={this.props.onMoveToPrev}
+            onClick={() => this.handleNavigationClick(this.props.onMoveToPrev)}
             role="button"
             tabIndex={0}
-            onKeyDown={this.props.onMoveToPrev}
+            onKeyDown={() => {}}
           />
           <button onClick={this.submitAvailability} className="btn btn-lg btn-major">Submit</button>
           <span
             className={moveToNextClass}
-            onClick={this.props.onMoveToNext}
+            onClick={() => this.handleNavigationClick(this.props.onMoveToNext)}
             role="button"
             tabIndex={0}
-            onKeyDown={this.props.onMoveToNext}
+            onKeyDown={() => {}}
           />
         </div>
       </div>

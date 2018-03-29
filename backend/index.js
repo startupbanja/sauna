@@ -55,7 +55,7 @@ app.post('/login', (req, res) => {
       req.session.userID = userId;
       req.session.userType = type;
     }
-    res.json({ status: (type === 'coach' || type === 'startup') ? 'user' : type });
+    res.json({ status: type });
   });
 });
 
@@ -453,6 +453,15 @@ app.post('/createMeetingDay', (req, res, next) => {
   const end = req.body.end;
   const split = req.body.split;
   return database.createMeetingDay(date, start, end, split, (err, result) => {
+    if (err) return next(err);
+    return res.json(result);
+  });
+});
+
+app.post('/removeMeetingDay', (req, res, next) => {
+  if (!requireAdmin(req, res)) return undefined;
+  const { date } = req.body;
+  return database.removeMeetingDay(date, (err, result) => {
     if (err) return next(err);
     return res.json(result);
   });
