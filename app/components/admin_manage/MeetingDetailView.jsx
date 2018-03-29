@@ -89,7 +89,7 @@ export default class MeetingDetailView extends React.Component {
       const filled = arr[1][0];
       const email = arr[1][1];
       if (filled) {
-        availabilities.given.push(<li key={name} className="details-list-text">{name}: {filled}</li>);
+        availabilities.given.push(<li key={name} className="details-list-text"> {name}: {filled} </li>);  // eslint-disable-line
       } else {
         reminderMailsAvb.push(({ email }));
         availabilities.notGiven.push(<li key={name} className="details-list-text">{name}</li>);
@@ -141,12 +141,12 @@ export default class MeetingDetailView extends React.Component {
 
     reminderMailsFb.forEach((input) => {
       stringFb += input.email;
-      stringFb += '; ';
+      stringFb += ', ';
     });
 
     reminderMailsAvb.forEach((input) => {
       stringAvb += input.email;
-      stringAvb += '; ';
+      stringAvb += ', ';
     });
 
     return (
@@ -171,7 +171,11 @@ export default class MeetingDetailView extends React.Component {
           {this.props.renderFeedbacks && (
             <div className="col-md-6 feedbacks-header">
               <h3>Feedbacks from last meeting:</h3>
-              <button className="btn btn-major" onClick={this.onClickFb}> Show e-mails of unresponsive users</button>
+              <button
+                className="btn btn-major"
+                onClick={this.onClickFb}
+              > Show e-mails of unresponsive users
+              </button>
               { this.state.showFb ? <div>{stringFb}</div> : null }
             </div>)
           }
