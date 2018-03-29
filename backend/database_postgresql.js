@@ -521,6 +521,50 @@ function getLastMeetingday(callback) {
   });
 }
 
+// Gets given feedbacks for latest MeetingDay from the past
+// Also returns the date:
+// {
+// date: '',
+// rows: [{
+// type: int,
+// name: '',
+// email: '',
+// startup_rating: int,
+// coach_rating: int,
+// date: ''
+// }],
+// }
+function getGivenFeedbacks(callback) {
+  getLastMeetingday((err, date) => {
+    if (err) callback(err);
+    else {
+      const client = getClient();
+      const query = {
+        name: 'get-givenFeedbacks',
+        text: `
+        SELECT type, name, email, startup_rating, coach_rating, date
+        FROM Users
+        LEFT OUTER JOIN Profiles ON Users.id = Profiles.user_id
+        LEFT OUTER JOIN Meetings ON Users.id = Meetings.coach_id OR Users.id = Meetings.startup_id
+        WHERE Meetings.date = $1 AND active = TRUE;`,
+        values: [date],
+      };
+      client.connect((err2) => {
+        if (err2) callback(err2);
+        else {
+          client.query(query, (err3, res) => {
+            if (err3) callback(err3);
+            else {
+              callback(err3, { date, rows: res.rows });
+            }
+            client.end();
+          });
+        }
+      });
+    }
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
@@ -534,4 +578,5 @@ module.exports = {
   getComingDates,
   getComingTimeSlots,
   getLastMeetingday,
+  getGivenFeedbacks,
 };
