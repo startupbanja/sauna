@@ -452,6 +452,16 @@ function verifyIdentity(username, password, callback) {
     });
   });
 }
+
+function changeEmail(uid, userType, email, callback) {
+  db.run(`UPDATE ${userType}Profiles SET email = ? WHERE user_id = ?`, [email, uid], (err) => {
+    if (err) {
+      return callback(err);
+    }
+    return callback(err, { status: 'SUCCESS', message: 'Email changed successfully.' });
+  });
+}
+
 /**
  * Changes the given user's (UID) password if the request initiator is an admin.
  */
@@ -848,6 +858,7 @@ module.exports = {
   addUser,
   getUsers,
   verifyIdentity,
+  changeEmail,
   changePasswordAdmin,
   changePassword,
   getProfile,
