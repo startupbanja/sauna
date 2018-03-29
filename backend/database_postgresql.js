@@ -843,6 +843,29 @@ function changePassword(uid, oldPassword, newPassword, callback) {
   });
 }
 
+// Returns split length on a MeetingDay
+function getMeetingDuration(date, callback) {
+  const client = getClient();
+  const query = {
+    name: 'get-meetingDuration',
+    text: 'SELECT split FROM MeetingDays WHERE date = $1;',
+    values: [date],
+  };
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2, res) => {
+        if (err2) callback(err2);
+        else if (!res.rows[0]) callback({ error: `Date ${date} not found in table MeetingDays in getMeetingDuration` });
+        else {
+          callback(err2, res.rows[0].split);
+        }
+        client.end();
+      });
+    }
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
@@ -864,4 +887,5 @@ module.exports = {
   changeEmail,
   changePasswordAdmin,
   changePassword,
+  getMeetingDuration,
 };
