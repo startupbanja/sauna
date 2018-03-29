@@ -105,3 +105,19 @@
 .credentialField {
   border-top:1px solid #aaa;
 }
+
+.save-button {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--dark-primary-color);
+  margin-right: 5px;
+}
+
+.credentials-btn {
+  background: var(--dark-gray);
+  color: var(--primary-color);
+  border-color: var(--darker-gray);
+  margin-top: 5px;
+  margin-bottom: 10px;
+  font-size: 1.3em;
+}

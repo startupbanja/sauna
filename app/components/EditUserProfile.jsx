@@ -13,7 +13,7 @@ class EditUserProfile extends Component {
   getValueOfField(id) {
     return document.getElementById(id).value;
   }
-  
+
   // Returns the values of the title fields in the form.
   getTitles() {
     let titles = [];
@@ -22,11 +22,11 @@ class EditUserProfile extends Component {
     });
     return titles;
   }
-  
+
   // Returns the values of the credentials fields.
   getCredentials() {
     let credentials = [];
-    
+
     document.querySelectorAll('.credentialField').forEach(function(elem){
       const children = elem.children;
       if (children[0].value !== '' && children[1].value !== '') {
@@ -38,7 +38,7 @@ class EditUserProfile extends Component {
     });
     return credentials;
   }
-  
+
   /* eslint-enable */
   getInputData() {
     return {
@@ -106,17 +106,17 @@ class EditUserProfile extends Component {
             </div>
           </div>
         </form>
-        <button onClick={() => this.addCredential()} style={{ display: 'block' }}>
+        <button onClick={() => this.addCredential()} style={{ display: 'block' }}  className="credentials-btn">
           <span className="glyphicon glyphicon-plus-sign" />
           Add a {removeText}
         </button>
         <Button
-          className="btn btn-lg ffbutton-red"
+          className="btn btn-lg save-button"
           onClick={() => this.handleSubmit()}
           text="Save"
         />
         <Button
-          className="btn btn-lg ffbutton-red"
+          className="btn btn-lg btn-minor"
           text="Cancel"
           onClick={() => this.props.cancel()}
         />
