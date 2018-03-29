@@ -12,7 +12,6 @@ div.text-style {
 .list-text-style {
  font-size: 1.4em;
  color: var(--light-gray);
- font-family: 'Vinkel,sans-serif';
  float: right;
  margin-top: 5%;
 }
