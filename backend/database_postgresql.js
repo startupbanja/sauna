@@ -1,23 +1,7 @@
 const pg = require('pg');
 const fs = require('fs');
 const bcrypt = require('bcrypt');
-
-const params = {
-  host: 'sauna-matchmaking-db.cltaj2ngk5e5.eu-central-1.rds.amazonaws.com',
-  port: 5432,
-  user: 'master',
-  database: 'sauna_production',
-};
-
-function loadPassword() {
-  fs.readFile('./db_password.txt', 'utf8', (err, data) => {
-    if (err) console.error(err);
-    const pwdString = data.split('\n')[0];
-    params.password = pwdString;
-  });
-}
-
-loadPassword();
+const params = require('./database_params.json');
 
 function getClient() {
   return new pg.Client(params);
@@ -1001,27 +985,68 @@ function getTimeslots(date, callback) {
   });
 }
 
-function query(queryString, callback) {
-  const client = getClient();
-  client.connect((connectionError) => {
-    if (connectionError) return callback(connectionError);
-    return client.query(queryString, (queryErr, result) => {
-      if (queryErr) return callback(queryErr);
-      callback(null, result);
-    });
+// Saves a schedule into database
+// Schedule is given as [{
+// startup: '',
+// coach: '',
+// time: '',
+// duration: int,
+// }]
+function saveTimetable(schedule, dateString, callback) {
+  const queryStart = `
+  INSERT INTO Meetings(coach_id, startup_id, date, time, duration, coach_rating, startup_rating)
+  VALUES
+  `;
+  // Filter out nulls
+  const data = schedule.filter(obj => obj.startup !== null);
+  const strings = data.map((row) => {
+    const {
+      coach, startup, duration, time,
+    } = row;
+    return `( ${coach}, ${startup}, '${dateString}', '${time}', ${duration}, -1, -1)`;
   });
+
+  if (strings.length > 0) {
+    const client = getClient();
+    const query = {
+      name: 'save-timetable',
+      text: `${queryStart}${strings.join(',\n')};`,
+      values: [],
+    };
+    client.connect((err) => {
+      if (err) callback(err);
+      else {
+        client.query(query, (err2) => {
+          callback(err2);
+          client.end();
+        });
+      }
+    });
+  } else {
+    callback({ error: 'No non-null meetings!' });
+  }
 }
 
-// schedule is array of {startupid, coachid, date, duration}
-// save the result of matchmaking algorithm
-// only save if the algorithm hasn't been previously saved for this date.
-// afterwards set the saved flag in the database.
+/**
+ Save the result of matchmaking algorithm
+ @param {Object[]} schedule - schedule to be saveds
+ @param {number} schedule.startup
+ @param {number} schedule.coach
+ @param {string} schedule.time
+ @param {number} schedule.duration - duration in minutes
+ @param {string} dateString
+ @param {function} callback
+ only save if the algorithm hasn't been previously saved for this date.
+ afterwards set the saved flag in the database.
+ the saving is wrapped in a transaction, so that if the flag is set, the data is guaranteed
+ to have been saved
+ */
 function saveMatchmakingResult(schedule, dateString, callback) {
   const client = getClient();
   // set flag that matchmaking has been run
   function setFlag(cb) {
     const q = 'UPDATE MeetingDays SET matchmakingDone = 1 WHERE date = $1';
-    client.query(q, dateString, (err2) => {
+    client.query(q, [dateString], (err2) => {
       if (err2) return callback(err2);
       return cb();
     });
@@ -1029,15 +1054,43 @@ function saveMatchmakingResult(schedule, dateString, callback) {
   // first check if algorithm has already been run on this date
   function checkIfAlreadyDone(cb) {
     const checkQuery = 'SELECT matchmakingDone FROM MeetingDays WHERE date = $1';
-    client.query(checkQuery, dateString, (err, result) => {
+    client.query(checkQuery, [dateString], (err, result) => {
       if (err) return callback(err);
-      if (result.matchmakingDone) return callback(err);
+      if (result.matchmakingDone) return callback({ error: 'matchmaking has already been run for this date' });
       return cb();
     });
   }
+
+  function begin(cb) {
+    client.query('BEGIN', (err) => {
+      if (err) callback(err);
+      return cb();
+    });
+  }
+  function commit(cb) {
+    client.query('COMMIT', (err) => {
+      if (err) callback(err);
+      return cb();
+    });
+  }
+
   client.connect((connectionError) => {
     if (connectionError) return callback(connectionError);
-
+    checkIfAlreadyDone(() => {
+      begin(() => {
+        saveTimetable(schedule, dateString, (saveErr) => {
+          if (saveErr) {
+            return callback(saveErr);
+          }
+          return setFlag(() => {
+            commit(() => {
+              callback();
+              return client.end();
+            });
+          });
+        });
+      });
+    });
   });
 }
 
@@ -1067,4 +1120,6 @@ module.exports = {
   getRatings,
   getUserMap,
   getTimeslots,
+  saveTimetable,
+  saveMatchmakingResult,
 };

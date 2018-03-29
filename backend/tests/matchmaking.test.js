@@ -7,7 +7,7 @@ function dateToString(date) {
 }
 
 /* eslint no-loop-func:0 */
-describe('Run matchmaking with database data with different durations...', () => {
+describe.skip('Run matchmaking with database data with different durations...', () => {
   beforeEach((done) => {
     database.createDatabase((err) => {
       if (err) return console.log(err);
