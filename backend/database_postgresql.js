@@ -398,6 +398,39 @@ function getComingMeetingDays(userId, callback) {
   });
 }
 
+function getComingDates(callback) {
+  const dates = [];
+  const client = getClient();
+  const query = {
+    name: 'get-comingMeetingDays',
+    text: `
+    SELECT date
+    FROM MeetingDays
+    WHERE MeetingDays.date >= current_date;`,
+    values: [],
+  };
+  client.connect((err) => {
+    if (err) callback(err);
+    else {
+      client.query(query, (err2, res) => {
+        if (err2) callback(err2);
+        else {
+          res.rows.forEach((row) => {
+            dates.push(row.date);
+          });
+          callback(err2, dates);
+        }
+        client.end();
+      });
+    }
+  });
+}
+
+getComingDates((err, dates) => {
+  if (err) console.log(err);
+  if (dates) console.log(dates);
+});
+
 module.exports = {
   getUsers,
   getActiveStatuses,
