@@ -1,12 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import defaultImg from '../../imgs/coach_placeholder.png';
 
+// individual item in UserList displaying info about the user
 class UserListItem extends Component {
   render() {
     return (
-      /* eslint-disable */
       <div className="fullwidth list-text-style" >
-        <img className="list-avatar img-responsive" src={this.props.imageSrc} alt="" />
+        <img
+          className="list-avatar img-responsive"
+          src={this.props.imageSrc || defaultImg}
+          alt="User profile"
+        />
         <div>
           <div>
             <span className="list-header">{this.props.name}</span>
@@ -16,13 +21,12 @@ class UserListItem extends Component {
           </div>
         </div>
       </div>
-      /* eslint-enable */
     );
   }
 }
 
 UserListItem.defaultProps = {
-  imageSrc: '../app/imgs/coach_placeholder.png',
+  imageSrc: null,
   description: 'Description is not available.',
 };
 

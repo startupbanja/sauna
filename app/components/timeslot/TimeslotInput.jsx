@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import TimeslotInputSet from './TimeslotInputSet';
 
+// the component for changing availability by typing
 class TimeslotInput extends Component {
   render() {
     return (

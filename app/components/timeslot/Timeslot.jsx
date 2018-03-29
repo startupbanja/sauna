@@ -3,11 +3,13 @@ import PropTypes from 'prop-types';
 import TimeslotDrag from './TimeslotDrag';
 import TimeslotInput from './TimeslotInput';
 
+// timestamp 'HH:MM:SS' to minutes
 export function parseMinutes(timeString) {
   if (!timeString.match(/^([0-1]?\d|2[0-3]):[0-5]\d(:|$)/)) return false;
   const pieces = timeString.split(':');
   return (parseInt(pieces[0], 10) * 60) + parseInt(pieces[1], 10);
 }
+// minutes to timestamp 'HH:MM'
 export function parseTimeStamp(minutes) {
   if (minutes < 0 || minutes >= 1440) return false;
   const hours = parseInt(minutes / 60, 10);
@@ -16,36 +18,43 @@ export function parseTimeStamp(minutes) {
   return `${hours}:${minutesOver}`;
 }
 
-/* Component for presenting and editing users availabilities */
+/* Component for presenting and editing users availabilities for one day */
 class Timeslot extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      // currently set start and end of the availability in minutes
       available: {
         start: this.props.available.start,
         end: this.props.available.end,
       },
+      // time of start for the whole day in minutes
       start: this.props.start,
+      // time of ending for the whole day in minutes
       end: this.props.end,
+      changesMade: false,
     };
     this.handleChange = this.handleChange.bind(this);
     this.submitAvailability = this.submitAvailability.bind(this);
+    this.handleNavigationClick = this.handleNavigationClick.bind(this);
+    this.askIfWantsToSubmitNone = this.askIfWantsToSubmitNone.bind(this);
     this.askForMoreTime = this.askForMoreTime.bind(this);
   }
 
+  // update state when availability changed
   handleChange(to, change) {
     let newStart = this.state.available.start;
     let newEnd = this.state.available.end;
     if (to === 'start') {
       newStart = Math.min(Math.max(newStart + change, this.state.start), this.state.end);
-      // newStart = Math.round(Math.min(newStart, newEnd));
-      newEnd = Math.max(newStart, this.state.available.end);
+      newStart = Math.min(newStart, newEnd);
+      // newEnd = Math.max(newStart, this.state.available.end);
     } else if (to === 'end') {
       newEnd = Math.max(Math.min(newEnd + change, this.state.end), this.state.start);
-      // newEnd = Math.round(Math.max(newEnd, newStart));
-      newStart = Math.min(newEnd, this.state.available.start);
+      newEnd = Math.max(newEnd, newStart);
+      // newStart = Math.min(newEnd, this.state.available.start);
     }
-    const newObj = { available: { start: newStart, end: newEnd } };
+    const newObj = { available: { start: newStart, end: newEnd }, changesMade: true };
     this.setState(newObj);
   }
 
@@ -54,9 +63,35 @@ class Timeslot extends React.Component {
     let endAvail = Math.round(this.state.available.end / 5) * 5;
     startAvail = this.askForMoreTime('start', startAvail);
     endAvail = this.askForMoreTime('end', endAvail);
+    let submit;
+    ({ startAvail, endAvail, submit } = this.askIfWantsToSubmitNone(startAvail, endAvail)); // eslint-disable-line
+    if (!submit) return;
     this.props.onSubmit(startAvail, endAvail);
+    this.setState({ changesMade: false });
   }
 
+  handleNavigationClick(callback) {
+    if (this.state.changesMade) this.submitAvailability();
+    callback();
+  }
+
+  askIfWantsToSubmitNone(startAvail, endAvail) {
+    // cut the availability slot to follow meeting splits
+    let startAvailCut = Math.ceil((startAvail - this.state.start) / this.props.split);
+    startAvailCut = (startAvailCut * this.props.split) + this.state.start;
+    let endAvailCut = Math.floor((endAvail - this.state.start) / this.props.split);
+    endAvailCut = (endAvailCut * this.props.split) + this.state.start;
+    let submit = true;
+    if (endAvail - startAvail > 0 && endAvailCut - startAvailCut <= 0) {
+      if (!confirm('You are currently submitting availability with no possible meetings. Do you want to submit?')) { // eslint-disable-line
+        submit = false;
+      }
+    }
+    return { endAvail: endAvailCut, startAvail: startAvailCut, submit };
+  }
+
+  // ask if the user can come earlier or stay longer
+  // if the time to next switch is small enough
   askForMoreTime(type, availability) {
     if (type === 'start') {
       let start = Math.floor((availability - this.state.start) / this.props.split);
@@ -109,6 +144,7 @@ class Timeslot extends React.Component {
         <p className="help-text help-text-center">
           Drag from the arrow to set your availability...
         </p>
+        {/* Component for setting by dragging */}
         <TimeslotDrag
           start={this.state.start}
           end={this.state.end}
@@ -117,25 +153,27 @@ class Timeslot extends React.Component {
           split={this.props.split}
         />
         <p className="help-text help-text-center">...or type in manually</p>
+        {/* Component for setting by typing */}
         <TimeslotInput
           available={this.state.available}
           onChange={this.handleChange}
         />
+        {/* Navigation components */}
         <div className="navigation-container">
           <span
             className={moveToPrevClass}
-            onClick={this.props.onMoveToPrev}
+            onClick={() => this.handleNavigationClick(this.props.onMoveToPrev)}
             role="button"
             tabIndex={0}
-            onKeyDown={this.props.onMoveToPrev}
+            onKeyDown={() => {}}
           />
           <button onClick={this.submitAvailability} className="btn btn-lg btn-major">Submit</button>
           <span
             className={moveToNextClass}
-            onClick={this.props.onMoveToNext}
+            onClick={() => this.handleNavigationClick(this.props.onMoveToNext)}
             role="button"
             tabIndex={0}
-            onKeyDown={this.props.onMoveToNext}
+            onKeyDown={() => {}}
           />
         </div>
       </div>

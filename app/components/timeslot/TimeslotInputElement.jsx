@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { parseTimeStamp, parseMinutes } from './Timeslot';
 
+// trigger blur when pressing enter
 function handleKeypress(event) {
   if (event.key === 'Enter') {
     event.target.blur();
   }
 }
 
+// component for changing time for either start or end
 class TimeslotInputElement extends Component {
   constructor(props) {
     super(props);
@@ -18,11 +20,13 @@ class TimeslotInputElement extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    // if availability has been changed elsewhere round the display time or set unavailable
     let value = parseTimeStamp(Math.round(nextProps.time / 5) * 5);
     if (nextProps.unavailable) value = '--:--';
     this.setState({ editedValue: value });
   }
 
+  // figure out the value to be displayed (round and mark as unavailable)
   getValue() {
     let value = parseTimeStamp(Math.round(this.props.time / 5) * 5);
     if (this.props.unavailable) value = '--:--';
@@ -35,8 +39,11 @@ class TimeslotInputElement extends Component {
   handleBlur(event) {
     this.setState({ editedValue: this.getValue() });
     if (parseMinutes(event.target.value) !== false) {
+      // if the input format is correct
+      // calculate the desired change from previous value in minutes
       this.props.onChange(parseMinutes(event.target.value) - this.props.time);
     } else {
+      // if the input is incorrect make the user unavailable
       this.props.markAsUnavailable();
     }
   }

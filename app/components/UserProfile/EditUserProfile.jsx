@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Button from './Button';
+import $ from 'jquery';
+import Button from '../Button';
 
+// view for editing users' profile
 class EditUserProfile extends Component {
   constructor(props) {
     super(props);
@@ -13,7 +15,7 @@ class EditUserProfile extends Component {
   getValueOfField(id) {
     return document.getElementById(id).value;
   }
-  
+
   // Returns the values of the title fields in the form.
   getTitles() {
     let titles = [];
@@ -22,11 +24,11 @@ class EditUserProfile extends Component {
     });
     return titles;
   }
-  
+
   // Returns the values of the credentials fields.
   getCredentials() {
     let credentials = [];
-    
+
     document.querySelectorAll('.credentialField').forEach(function(elem){
       const children = elem.children;
       if (children[0].value !== '' && children[1].value !== '') {
@@ -38,7 +40,7 @@ class EditUserProfile extends Component {
     });
     return credentials;
   }
-  
+
   /* eslint-enable */
   getInputData() {
     return {
@@ -55,21 +57,51 @@ class EditUserProfile extends Component {
       credentials: this.state.credentials.concat({ company: 'Company', position: 'Position' }),
     });
   }
+
   handleSubmit() {
     const input = this.getInputData();
+
+    // Adds the scheme part of the URL in case it's missing.
+    if (!input.site.startsWith('http://') && !input.site.startsWith('https://')) {
+      input.site = 'http://'.concat(input.site);
+    }
+
     const toBeAdded = { uid: this.props.id, type: this.props.type };
     const dataToPass = { data: JSON.stringify(Object.assign(input, toBeAdded)) };
     this.props.handleSubmit(dataToPass);
+  }
+
+  handleEmailSubmit() {
+    this.props.changeEmail($('#edit_manage_email').val(), this.props.type);
   }
 
   render() {
     const siteName = this.props.type === 'coach' ? 'LinkedIn' : 'Website';
     const credentialsHeader = this.props.type === 'coach' ? 'Credentials:' : 'Team Members:';
     const removeText = this.props.type === 'coach' ? 'credential' : 'team member';
-    const imgURL = this.props.imgSrc === '../app/imgs/coach_placeholder.png' ? '' : this.props.imgSrc;
+    const imgURL = this.props.imgSrc;
 
     return (
       <div className="editProfileContainer container">
+        {this.props.canResetPW &&
+          <div id="edit_manage_account">
+            <h2>Manage account</h2>
+            <button
+              className="btn btn-major"
+              onClick={this.props.resetPw}
+            >Reset password
+            </button>
+            <form>
+              <div className="edit-para" htmlFor="edit_manage_email">Set email address</div>
+              <input type="email" className="edit-text" id="edit_manage_email" />
+            </form>
+            <button
+              className="btn btn-major"
+              onClick={() => this.handleEmailSubmit()}
+            >Set email
+            </button>
+          </div>
+        }
         <form>
           <h4>{this.props.name} </h4>
           <div className="edit-para">{siteName}:</div>
@@ -97,7 +129,7 @@ class EditUserProfile extends Component {
             <div id="credentialFieldsContainer">
               {this.state.credentials.map(value =>
                 (
-                  <div key={`cred${value}`} className="credentialField">
+                  <div key={`cred${value.company}`} className="credentialField">
                     <input className="edit-text" key={`company${value}`} type="text" defaultValue={value.company} />
                     <input className="edit-text" key={`position${value}`} type="text" defaultValue={value.position} />
                   </div>
@@ -110,16 +142,18 @@ class EditUserProfile extends Component {
           <span className="glyphicon glyphicon-plus-sign" />
           Add a {removeText}
         </button>
-        <Button
-          className="btn btn-lg ffbutton-red"
-          onClick={() => this.handleSubmit()}
-          text="Save"
-        />
-        <Button
-          className="btn btn-lg ffbutton-red"
-          text="Cancel"
-          onClick={() => this.props.cancel()}
-        />
+        <div className="control-buttons">
+          <Button
+            className="btn btn-lg btn-major"
+            onClick={() => this.handleSubmit()}
+            text="Save"
+          />
+          <Button
+            className="btn btn-lg btn-major"
+            text="Cancel"
+            onClick={() => this.props.cancel()}
+          />
+        </div>
       </div>
     );
   }
@@ -127,11 +161,10 @@ class EditUserProfile extends Component {
 
 EditUserProfile.propTypes = {
   type: PropTypes.string.isRequired,
-  id: PropTypes.number, // eslint-disable-line react/no-unused-prop-types
+  id: PropTypes.string,
   name: PropTypes.string.isRequired,
   imgSrc: PropTypes.string.isRequired,
   linkedIn: PropTypes.string,
-  // imgSrc: PropTypes.string,
   description: PropTypes.string,
   titles: PropTypes.arrayOf(PropTypes.string),
   credentials: PropTypes.arrayOf(PropTypes.shape({
@@ -140,12 +173,14 @@ EditUserProfile.propTypes = {
   })),
   handleSubmit: PropTypes.func.isRequired,
   cancel: PropTypes.func.isRequired,
+  resetPw: PropTypes.func.isRequired,
+  canResetPW: PropTypes.bool.isRequired,
+  changeEmail: PropTypes.func.isRequired,
 };
 
 EditUserProfile.defaultProps = {
   id: undefined,
   linkedIn: '',
-  // imgSrc: '../app/imgs/coach_placeholder.png',
   description: '',
   titles: [],
   credentials: [],

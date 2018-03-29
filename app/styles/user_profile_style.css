@@ -1,3 +1,4 @@
+
 .profileContainer #username {
   color: var(--primary-color);
   font-size: 1.7em;
@@ -63,10 +64,6 @@
   color: var(--primary-color);
 }
 
-.profileContainer .credentialList dd {
-  position: absolute;
-}
-
 .profileContainer .credentialList dd span {
   font-size: 0.7em;
   padding-left: 10px;
@@ -104,4 +101,16 @@
 
 .credentialField {
   border-top:1px solid #aaa;
+}
+
+.control-buttons {
+  text-align: center;
+}
+
+.control-buttons button {
+  margin: 5px;
+}
+
+#edit_manage_account {
+  text-align: center;
 }

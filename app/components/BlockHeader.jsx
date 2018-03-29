@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+// Component to display a decorated block header
+// color can be overwritten with color prop
+// if no text is specified renders only a decorated line
 class BlockHeader extends Component {
   render() {
     const background = { background: this.props.color };
@@ -25,11 +28,12 @@ class BlockHeader extends Component {
 }
 
 BlockHeader.propTypes = {
-  text: PropTypes.string.isRequired,
+  text: PropTypes.string,
   color: PropTypes.string,
 };
 
 BlockHeader.defaultProps = {
+  text: '',
   color: '#A3A3A3',
 };
 
