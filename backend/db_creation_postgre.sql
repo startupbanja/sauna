@@ -3,7 +3,7 @@ CREATE TABLE Users(
   id SERIAL PRIMARY KEY,
   type INT NOT NULL,
   email VARCHAR NOT NULL,
-  password CHAR(64) NOT NULL,
+  password VARCHAR NOT NULL,
   active BOOLEAN NOT NULL
 );
 

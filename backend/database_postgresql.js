@@ -1,5 +1,6 @@
 const pg = require('pg');
 const fs = require('fs');
+const bcrypt = require('bcrypt');
 
 const params = {
   host: 'sauna-matchmaking-db.cltaj2ngk5e5.eu-central-1.rds.amazonaws.com',
@@ -704,6 +705,58 @@ function updateProfile(uid, userType, site, imgUrl, description, title, credenti
   });
 }
 
+// Verifies user's password using bcrypt
+// Returns user's type and id
+function verifyIdentity(email, password, callback) {
+  const client = getClient();
+  const query = {
+    name: 'select-userData',
+    text: 'SELECT id, type, password FROM Users WHERE email = $1;',
+    values: [email],
+  };
+  client.connect((err) => {
+    if (err) callback('error');
+    else {
+      client.query(query, (err2, res) => {
+        if (err2) callback('error');
+        else {
+          const row = res.rows[0];
+          if (!row) {
+            callback('error');
+            return;
+          }
+          bcrypt.compare(password, row.password, (error, same) => {
+            if (error) callback('error');
+            if (!same) callback('error');
+            else {
+              let type;
+              let userId = false;
+              switch (row.type) {
+                case 0:
+                  type = 'admin';
+                  userId = row.id;
+                  break;
+                case 1:
+                  type = 'coach';
+                  userId = row.id;
+                  break;
+                case 2:
+                  type = 'startup';
+                  userId = row.id;
+                  break;
+                default:
+                  type = 'error';
+              }
+              callback(type, userId);
+            }
+          });
+        }
+        client.end();
+      });
+    }
+  });
+}
+
 module.exports = {
   getUsers,
   getActiveStatuses,
@@ -721,4 +774,5 @@ module.exports = {
   insertAvailability,
   updateCredentialsListEntries,
   updateProfile,
+  verifyIdentity,
 };
