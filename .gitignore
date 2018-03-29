@@ -4,3 +4,4 @@ backend/node_modules
 backend/sessions
 database_params.json
 db_password.txt
+.vscode

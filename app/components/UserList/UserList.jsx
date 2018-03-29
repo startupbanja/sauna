@@ -87,7 +87,9 @@ export default class UserList extends React.Component {
               <UserListItem
                 name={user.name}
                 id={user.id}
-                description={user.description}
+                description={(user.description.length <= 100)
+                  ? user.description : (`${user.description.slice(0, 100)} ...`)
+                }
                 imageSrc={user.img}
               />
             </Link>

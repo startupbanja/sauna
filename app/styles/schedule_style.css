@@ -15,10 +15,8 @@
 
 .timetable-name-style {
   color: var(--primary-color);
-  font-weight: bold;
-  font-family: 'Vinkel,sans-serif';
   margin-left: 37%;
-  font-size: 2em;
+  font-size: 1.9em;
 }
 
 .timetable-divider {
@@ -32,5 +30,6 @@
   font-size: 2.3em;
   color: var(--primary-color);
   text-align: center;
-  font-weight: 800;
+  font-weight: bold;
+  margin: 10px;
 }

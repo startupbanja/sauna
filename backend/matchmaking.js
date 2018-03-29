@@ -24,7 +24,7 @@ function runMatchmaking(paramData, slotSize, callback) {
       const parsed = JSON.parse(storage.toString());
       callback(null, parsed);
     } catch (e) {
-      callback(e);
+      callback({ error: e, data: storage.toString() });
     }
   });
   newProcess.stderr.on('data', (errorMsg) => {
