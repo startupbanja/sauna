@@ -7,7 +7,7 @@ const testData = require('./db_test_data.js');
 
 let db = null;
 
-function initDB(callback) {
+function initDB(callback, addData = true) {
   fs.readFile('./db_creation_sqlite.sql', 'utf8', (err, data) => {
     if (err) {
       return callback(err);
@@ -17,17 +17,44 @@ function initDB(callback) {
 
     // ensure it is running in serialized mode
     db.serialize(() => {
-      arr.forEach((statement) => {
+      // create the next table from arr, will recursively run through all of arr
+      function createNext(i, cb) {
+        const statement = arr[i];
         if (statement.trim()) {
-          db.run(statement, [], (err2) => {
-            if (err2) {
-              throw err2;
-            }
-            return null;
+          return db.run(statement, [], (err2) => {
+            if (err2) throw err2;
+            if (i + 1 < arr.length) return createNext(i + 1, cb);
+            return cb();
           });
+          // return here from last row
         }
+        return cb();
+      }
+      function addDataFromFile() {
+        fs.readFile('db_testdata_sqlite.sql', 'utf8', (fErr2, data2) => {
+          const a = data2.split(';');
+          // add data to next table from a, will recursively run through all of a
+          function addNext(i, cb) {
+            const statement = a[i];
+            if (statement.trim()) {
+              return db.run(statement, [], (err2) => {
+                if (err2) throw err2;
+                if (i + 1 < a.length) return addNext(i + 1, cb);
+                return cb();
+              });
+            }
+            // return here from last (empty) row
+            return cb();
+          }
+          addNext(0, () => testData.insertData(db, 4, callback));
+        });
+      }
+      // first create tables
+      createNext(0, () => {
+        // check if we want to add test data
+        if (!addData) return callback();
+        return addDataFromFile();
       });
-      testData.insertData(db, 4, callback);
     });
     return null;
   });
@@ -38,7 +65,7 @@ function createDatabase(callback) {
     if (err) {
       return console.error(err.message);
     }
-    return initDB(callback);
+    return callback();
   });
   module.exports.db = db;
 }
@@ -821,7 +848,15 @@ function addProfile(userInfo, callback) {
     }
   });
 }
-
+/**
+ * @param {Object} userInfo -user login info
+ * @param {string} userInfo.email
+ * @param {string} userInfo.password
+ * @param {string} userInfo.type
+ * @param {string} userInfo.img_url
+ * @param {string} userInfo.description
+ * @param {string} userInfo.name
+ */
 function addUser(userInfo, callback) {
   db.get('SELECT * FROM Users WHERE username=?', [userInfo.email], (err, row) => {
     if (row === undefined) {
@@ -886,4 +921,5 @@ module.exports = {
   createDatabase,
   db,
   updateProfile,
+  initDB,
 };

@@ -10,8 +10,11 @@ const matchmaking = require('./matchmaking.js');
 const app = express();
 
 database.createDatabase((err) => {
-  if (err) console.log(err);
-  console.log('Data loaded');
+  if (err) throw err;
+  database.initDB((err2) => {
+    if (err2) throw err2;
+    console.log('Data loaded');
+  });
 });
 
 app.use(bodyParser.urlencoded({ extended: true }));
