@@ -103,7 +103,7 @@ class EditUserProfile extends Component {
           </div>
         }
         <form>
-          <h4>{this.props.name} </h4>
+          <h4 className="edit-prof-header">{this.props.name} </h4>
           <div className="edit-para">{siteName}:</div>
           <input
             className="edit-text"
@@ -134,7 +134,7 @@ class EditUserProfile extends Component {
 
             <p id="editProfileNote">
               <b>NOTE:</b>
-              To remove a {removeText}, just leave either (or both) of the fields blank.
+              To remove a {removeText}, leave a field blank.
             </p>
             <div id="credentialFieldsContainer">
               {this.state.credentials.map(value =>
@@ -148,18 +148,18 @@ class EditUserProfile extends Component {
             </div>
           </div>
         </form>
-        <button onClick={() => this.addCredential()} style={{ display: 'block' }}>
+        <button onClick={() => this.addCredential()} style={{ display: 'block' }} className="credentials-btn">
           <span className="glyphicon glyphicon-plus-sign" />
           Add a {removeText}
         </button>
         <div className="control-buttons">
           <Button
-            className="btn btn-lg btn-major"
+            className="btn btn-lg btn-major save-button"
             onClick={() => this.handleSubmit()}
             text="Save"
           />
           <Button
-            className="btn btn-lg btn-major"
+            className="btn btn-lg btn-minor"
             text="Cancel"
             onClick={() => this.props.cancel()}
           />

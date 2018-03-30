@@ -29,7 +29,7 @@ test('parseTimeStamp works correctly', () => {
   expect(parseTimeStamp(600)).toBe('10:00');
 });
 
-test('Timeslot initializes correctly', () => {
+test.skip('Timeslot initializes correctly', () => {
   const onSubmit = jest.fn();
   var timeslot = renderer.create(<Timeslot  //eslint-disable-line
     date={new Date(2018, 4, 28)}
@@ -53,7 +53,7 @@ test('Timeslot initializes correctly', () => {
   expect(tree).toMatchSnapshot();
 });
 
-test('Timeslot handles change correctly', () => {
+test.skip('Timeslot handles change correctly', () => {
   const onSubmit = jest.fn();
   const timeslot = shallow(<Timeslot
     date={new Date(2018, 4, 28)}
