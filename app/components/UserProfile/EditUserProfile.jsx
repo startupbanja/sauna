@@ -54,7 +54,7 @@ class EditUserProfile extends Component {
 
   addCredential() {
     this.setState({
-      credentials: this.state.credentials.concat({ company: 'Company', position: 'Position' }),
+      credentials: this.state.credentials.concat({ company: '', position: '' }),
     });
   }
 
@@ -114,10 +114,20 @@ class EditUserProfile extends Component {
           <div className="edit-para">Image URL:</div>
           <input type="text" id="imgURL" className="edit-text" defaultValue={imgURL} />
           <div className="edit-para">Description:</div>
-          <textarea className="edit-text" id="description" defaultValue={this.props.description} />
+          <textarea
+            className="edit-text"
+            id="description"
+            defaultValue={this.props.description}
+          />
           <div>
             <div className="edit-para">Titles:</div>
-            {this.props.titles.map(value => <input className="edit-text title" key={`title${value}`} type="text" defaultValue={value} />)}
+            {this.props.titles.map(value => (
+              <input
+                className="edit-text title"
+                key={`title${value}`}
+                type="text"
+                defaultValue={value}
+              />))}
           </div>
           <div>
             <div className="edit-para">{credentialsHeader}</div>
@@ -130,8 +140,8 @@ class EditUserProfile extends Component {
               {this.state.credentials.map(value =>
                 (
                   <div key={`cred${value.company}`} className="credentialField">
-                    <input className="edit-text" key={`company${value}`} type="text" defaultValue={value.company} />
-                    <input className="edit-text" key={`position${value}`} type="text" defaultValue={value.position} />
+                    <input className="edit-text" key={`company${value}`} type="text" defaultValue={value.company} placeholder="Company" />
+                    <input className="edit-text" key={`position${value}`} type="text" defaultValue={value.position} placeholder="Position" />
                   </div>
                 ))
               }
