@@ -74,13 +74,13 @@ function getActiveStatuses(callback) {
               data.coaches.push({
                 id: row.user_id,
                 name: row.name,
-                active: row.active,
+                active: row.active ? 1 : 0,
               });
             } else if (row.type === 2) {
               data.startups.push({
                 id: row.user_id,
                 name: row.name,
-                active: row.active,
+                active: row.active ? 1 : 0,
               });
             }
           });
@@ -92,16 +92,21 @@ function getActiveStatuses(callback) {
   });
 }
 
-// Changes active of user
+/** Changes active status of user
+  @param {string} id
+  @param {boolean} active
+  @param {function} callback
+*/
 function setActiveStatus(id, active, callback) {
   const client = getClient();
+  const activeConverted = active === '1';
   const query = {
     name: 'set-activeStatus',
     text: `
     UPDATE Users
     SET active = $1
     WHERE id = $2;`,
-    values: [active, id],
+    values: [activeConverted, id],
   };
   client.connect((err) => {
     if (err) callback(err);
