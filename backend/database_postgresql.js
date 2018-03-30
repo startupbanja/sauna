@@ -12,6 +12,15 @@ const UserTypes = {
   coach: 1,
   startup: 2,
 };
+/**
+ * Convert a date to string of form YYYY-MM-DD
+ * @param {Date} date
+ * @return {string}
+*/
+function dateToString(date) {
+  const newD = date.toISOString().substr(0, 10);
+  return newD;
+}
 
 // Returns JSON containing {name: {description: '', img_url: '', id: int}}
 function getUsers(type, includeId, callback) {
@@ -332,17 +341,26 @@ function giveFeedback(meetingId, rating, field, callback) {
       });
     });
   });
+
+}
+
+function timeToString(date) {
+  return date.toISOString().substring(11, 16);
 }
 
 // Creates a row into the MeetingDays table
 function createMeetingDay(date, start, end, split, callback) {
   const client = getClient();
+  // note these are stored in UTC time
+  const dateString = dateToString(new Date(date));
+  const startString = timeToString(new Date(start));
+  const endString = timeToString(new Date(end));
   const query = {
     name: 'insert-MeetingDay',
     text: `
     INSERT INTO MeetingDays(date, startTime, endTime, split, matchmakingDone)
     VALUES ($1, $2, $3, $4, 0);`,
-    values: [date, start, end, split],
+    values: [dateString, startString, endString, split],
   };
   client.connect((err) => {
     if (err) callback(err);
@@ -396,6 +414,8 @@ function removeMeetingDay(date, callback) {
   });
 }
 
+
+
 // Gets all MeetingDays in the future together with a flag indicating if matchmaking was run
 // Returns: [{
 //  date: '',
@@ -422,11 +442,9 @@ function getComingMeetingDays(userId, callback) {
     if (err) callback(err);
     else {
       client.query(query, (err2, res) => {
-        if (err2) callback(err2);
-        else {
-          callback(err2, res.rows);
-        }
-        client.end();
+        if (err2) return callback(err2);
+        callback(err2, res.rows);
+        return client.end();
       });
     }
   });
