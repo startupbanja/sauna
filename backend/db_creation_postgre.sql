@@ -6,14 +6,14 @@ CREATE TABLE Users(
   password VARCHAR NOT NULL,
   active BOOLEAN NOT NULL
 );
-
+-- img_url null => user default image
 CREATE TABLE Profiles(
   user_id INT PRIMARY KEY REFERENCES Users(id),
   name VARCHAR NOT NULL,
-  description VARCHAR,
-  img_url VARCHAR DEFAULT '../app/imgs/coach_placeholder.png',
-  title VARCHAR,
-  website VARCHAR
+  description VARCHAR DEFAULT '',
+  img_url VARCHAR,
+  title VARCHAR DEFAULT '',
+  website VARCHAR DEFAULT ''
 );
 
 CREATE TABLE Credentials(
