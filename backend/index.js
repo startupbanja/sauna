@@ -1,7 +1,7 @@
 const express = require('express');
 const readline = require('readline');
 const bodyParser = require('body-parser');
-const database = require('./database_postgresql.js');
+const database = process.env.USING_SQLITE ? require('./database_sqlite.js') : require('./database_postgresql.js');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const matchmaking = require('./matchmaking.js');
@@ -9,10 +9,12 @@ const matchmaking = require('./matchmaking.js');
 
 const app = express();
 
-// database.createDatabase((err) => {
-//   if (err) console.log(err);
-//   console.log('Data loaded');
-// });
+if (process.env.USING_SQLITE) {
+  database.createDatabase((err) => {
+    if (err) console.log(err);
+    console.log('Data loaded');
+  });
+}
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -601,12 +603,15 @@ console.log(`Backend server listening on port ${port}`);
 
 function closeServer() {
   server.close(() => {
-    console.log('HTTP Server closed.\nExiting...');
-    process.exit();
+    console.log('HTTP Server closed.');
+    if (process.env.USING_SQLITE) {
+      return database.closeDatabase(() => {
+        console.log('Database closed')
+        process.exit();
+      });
+    }
+    return process.exit();
   });
-  // database.closeDatabase(() => {
-  //   console.log('Database closed')
-  // });
 }
 
 
