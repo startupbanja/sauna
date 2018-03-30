@@ -27,13 +27,18 @@ class TimeslotView extends Component {
   }
 
   fetchData() {
+    function dateToString(date) {
+      const month = date.getMonth();
+      const day = date.getDate();
+      return `${date.getFullYear()}-${month >= 9 ? '' : '0'}${month + 1}-${day >= 10 ? '' : '0'}${day}`;
+    }
     pageContents.fetchData('/getComingMeetingDays', 'GET', {})
       .then((result) => {
         const newData = [];
         result.forEach((day) => {
           // starttime and endtime are in UTC
-          const dateStr = new Date(day.date).toString();
-          console.log(dateStr);
+          const date = new Date(day.date);
+          const dateStr = dateToString(date);
           const startDate = new Date(`${dateStr}T${day.starttime}`);
           const endDate = new Date(`${dateStr}T${day.endtime}`);
           const minuteDif = -1 * startDate.getTimezoneOffset();
@@ -65,7 +70,7 @@ class TimeslotView extends Component {
   submitAvailability(startAvail, endAvail, index) {
     const meetingDay = this.state.data[index];
     pageContents.fetchData('/insertAvailability', 'POST', {
-      date: meetingDay.date.toISOString().substr(0, 10),
+      date: meetingDay.date,
       start: parseTimeStamp(startAvail),
       end: parseTimeStamp(endAvail),
     }).then((result) => {

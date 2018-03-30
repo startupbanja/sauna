@@ -42,6 +42,7 @@ export default class AdminSchedules extends React.Component {
 
   fetchTimetable() {
     pageContent.fetchData('/timetable', 'GET', { date: this.props.date }).then((response) => {
+      console.log(this.props.date);
       this.setState({ schedule: response.schedule });
     });
   }

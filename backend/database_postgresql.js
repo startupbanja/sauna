@@ -582,12 +582,14 @@ function getGivenFeedbacks(callback) {
 // Adds availability for a user to Timeslots table
 function insertAvailability(userId, date, startTime, duration, callback) {
   const client = getClient();
+  const dateString = dateToString(new Date(date));
+  console.log(dateString);
   const query = {
     name: 'insert-availability',
     text: `
     INSERT INTO Timeslots(user_id, date, time, duration)
-    VALUES ($1, $2, $3, $4);`,
-    values: [userId, date, startTime, duration],
+    VALUES ($1, $2, $3, $4) ON CONFLICT ON CONSTRAINT timeslots_user_id_date_key DO UPDATE SET time = $3, duration = $4;`,
+    values: [userId, dateString, startTime, duration],
   };
   client.connect((err) => {
     if (err) callback(err);
