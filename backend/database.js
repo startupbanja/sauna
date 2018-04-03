@@ -185,7 +185,7 @@ function getFeedback(id, callback) {
           END rating
         FROM Meetings
         WHERE (coach_id = ? OR startup_id = ?) AND date =
-          (SELECT MAX(date) FROM Meetings WHERE (coach_id = ? OR startup_id = ?) AND date < date("now")))
+          (SELECT MAX(date) FROM Meetings WHERE (coach_id = ? OR startup_id = ?) AND date <= date("now")))
       NATURAL JOIN Profiles`;
   db.all(query, [id, id, id, id, id, id, id, id], (err, rows) => {
     if (err) return callback(err);
