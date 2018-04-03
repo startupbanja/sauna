@@ -104,7 +104,6 @@ class UserProfilePage extends Component {
   }
 
   handleSubmit(data) {
-    console.log(data, this.state.userType);
     if (this.state.userType === 'coach' && !data.site.split('//')[1].startsWith('linkedin.com')) {
       this.setState({
         message: {
