@@ -585,7 +585,7 @@ app.post('/updateProfile', (req, res, next) => {
 // Error handling
 app.use((err, req, res, next) => {
   if (err) {
-    console.error(err.stack); // TODO some real logging here
+    console.error(err); // TODO some real logging here
     res.status(500).send({ error: 'An error has occured!' });
   } else {
     next();

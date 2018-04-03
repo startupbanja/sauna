@@ -55,7 +55,7 @@ class MeetingDaysView extends Component {
         if (arr.length > 0) {
           const first = arr[0];
           // convert to boolean
-          canRun = first.matchmakingDone === 0;
+          canRun = first.matchmakingdone === 0;
         }
         this.setState({
           days: arr,
