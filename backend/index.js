@@ -5,6 +5,7 @@ const database = require('./database.js');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const matchmaking = require('./matchmaking.js');
+const fs = require('fs');
 
 
 const app = express();
@@ -588,7 +589,13 @@ app.post('/updateProfile', (req, res, next) => {
 // Error handling
 app.use((err, req, res, next) => {
   if (err) {
-    console.error(err.stack); // TODO some real logging here
+    const date = new Date();
+    const logFile = `log/error_log_${date.getDate()}_${date.getMonth() + 1}_${date.getFullYear()}.txt`;
+    console.log(err);
+    fs.appendFile(logFile, `${err}\n`, (error) => {
+      if (error) console.error(err.stack);
+      else console.log('Error saved');
+    });
     res.status(500).send({ error: 'An error has occured!' });
   } else {
     next();
