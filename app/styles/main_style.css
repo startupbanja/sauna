@@ -57,3 +57,7 @@ a:hover, a {
   position: absolute;
   left: 0px;
 }
+
+.navbar-fixed-top div.navbar-collapse {
+  max-height: 100vh;
+}
