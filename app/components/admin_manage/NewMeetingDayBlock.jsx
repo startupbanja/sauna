@@ -19,21 +19,16 @@ class NewMeetingDayBlock extends Component {
   and submits the data */
   validateForm(e) {
     e.preventDefault();
-    // these times are in local time
-    const dateString = $('#dateInput').val();
-    const date = new Date(dateString);
-    console.log(date);
-    const start = new Date(`${dateString}T${$('#startTimeInput').val()}`);
-    console.log(start);
-    const end = new Date(`${dateString}T${$('#endTimeInput').val()}`);
-    console.log(end);
+    const date = $('#dateInput').val();
+    const start = new Date(`${date}T${$('#startTimeInput').val()}`);
+    const end = new Date(`${date}T${$('#endTimeInput').val()}`);
     const diff = (end.getTime() - start.getTime()) / 60000;
     if (diff % parseInt($('#splitInput').val(), 10) === 0) {
       this.setState({ notDivisible: false });
       pageContents.fetchData('/createMeetingDay', 'POST', {
         date,
-        start: start.toISOString(),//.substr(0, 8),
-        end, // : end.toTimeString().substr(0, 8),
+        start: start.toTimeString().substr(0, 8),
+        end: end.toTimeString().substr(0, 8),
         split: parseInt($('#splitInput').val(), 10),
       }).then(() => {
         this.props.onSubmit();

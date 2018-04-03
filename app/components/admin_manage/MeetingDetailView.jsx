@@ -149,15 +149,9 @@ export default class MeetingDetailView extends React.Component {
       stringAvb += ', ';
     });
 
-    const dateOptions = {
-      day: 'numeric',
-      month: 'numeric',
-      year: 'numeric',
-    };
-
     return (
       <div className="container full-viewport">
-        <h1 style={{ color: '#E55234' }}>Meeting Day {new Date(this.props.date).toLocaleDateString('en-GB', dateOptions).replace(/\//g, '.')}</h1>
+        <h1 style={{ color: '#E55234' }}>Meeting Day {this.props.date}</h1>
         <Link
           className="btn btn-major"
           to={`/timetable/${this.props.date}/`}

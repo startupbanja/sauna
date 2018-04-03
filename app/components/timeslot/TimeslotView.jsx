@@ -31,17 +31,8 @@ class TimeslotView extends Component {
       .then((result) => {
         const newData = [];
         result.forEach((day) => {
-          // starttime and endtime are in UTC
-          const dateStr = new Date(day.date).toString();
-          console.log(dateStr);
-          const startDate = new Date(`${dateStr}T${day.starttime}`);
-          const endDate = new Date(`${dateStr}T${day.endtime}`);
-          const minuteDif = -1 * startDate.getTimezoneOffset();
-          // correction for timezone difference from UTC
-          startDate.setMinutes(startDate.getMinutes() + minuteDif);
-          endDate.setMinutes(endDate.getMinutes() + minuteDif);
-          const start = parseMinutes(startDate.toTimeString().substr(0, 5));
-          const end = parseMinutes(endDate.toTimeString().substr(0, 5));
+          const start = parseMinutes(new Date(`${day.date}T${day.startTime}`).toTimeString().substr(0, 5));
+          const end = parseMinutes(new Date(`${day.date}T${day.endTime}`).toTimeString().substr(0, 5));
           newData.push({
             date: new Date(day.date),
             start,
