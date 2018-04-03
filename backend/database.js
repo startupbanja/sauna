@@ -207,12 +207,22 @@ function giveFeedback(meetingId, rating, field, callback) {
     db.get(query2, [meetingId], (err2, row) => {
       if (err2) return callback(err2);
       const query3 = `
-      UPDATE Ratings
-      SET ${field} = ?
-      WHERE startup_id = ? AND coach_id = ?`;
-      db.run(query3, [rating, row.startup_id, row.coach_id], (err3) => {
+      INSERT INTO Ratings(startup_rating, coach_rating, startup_id, coach_id)
+      SELECT -1, -1, ?, ?
+      WHERE NOT EXISTS (
+        SELECT * FROM Ratings WHERE coach_id = ? AND startup_id = ?
+      );`;
+      db.run(query3, [row.startup_id, row.coach_id, row.coach_id, row.startup_id], (err3) => {
         if (err3) return callback(err3);
-        return callback(err3, 'success');
+        const query4 = `
+        UPDATE Ratings
+        SET ${field} = ?
+        WHERE coach_id = ? AND startup_id = ?;`;
+        db.run(query4, [rating, row.coach_id, row.startup_id], (err4) => {
+          if (err4) return callback(err4);
+          return callback(err4, 'success');
+        });
+        return undefined;
       });
       return undefined;
     });
