@@ -73,8 +73,8 @@ ShallowWrapper {
         >
           <span
             className="glyphicon glyphicon-triangle-left invisible"
-            onClick={undefined}
-            onKeyDown={undefined}
+            onClick={[Function]}
+            onKeyDown={[Function]}
             role="button"
             tabIndex={0}
           />
@@ -86,8 +86,8 @@ ShallowWrapper {
           </button>
           <span
             className="glyphicon glyphicon-triangle-right invisible"
-            onClick={undefined}
-            onKeyDown={undefined}
+            onClick={[Function]}
+            onKeyDown={[Function]}
             role="button"
             tabIndex={0}
           />
@@ -174,8 +174,8 @@ ShallowWrapper {
           "children": Array [
             <span
               className="glyphicon glyphicon-triangle-left invisible"
-              onClick={undefined}
-              onKeyDown={undefined}
+              onClick={[Function]}
+              onKeyDown={[Function]}
               role="button"
               tabIndex={0}
             />,
@@ -187,8 +187,8 @@ ShallowWrapper {
             </button>,
             <span
               className="glyphicon glyphicon-triangle-right invisible"
-              onClick={undefined}
-              onKeyDown={undefined}
+              onClick={[Function]}
+              onKeyDown={[Function]}
               role="button"
               tabIndex={0}
             />,
@@ -203,8 +203,8 @@ ShallowWrapper {
             "nodeType": "host",
             "props": Object {
               "className": "glyphicon glyphicon-triangle-left invisible",
-              "onClick": undefined,
-              "onKeyDown": undefined,
+              "onClick": [Function],
+              "onKeyDown": [Function],
               "role": "button",
               "tabIndex": 0,
             },
@@ -231,8 +231,8 @@ ShallowWrapper {
             "nodeType": "host",
             "props": Object {
               "className": "glyphicon glyphicon-triangle-right invisible",
-              "onClick": undefined,
-              "onKeyDown": undefined,
+              "onClick": [Function],
+              "onKeyDown": [Function],
               "role": "button",
               "tabIndex": 0,
             },
@@ -294,8 +294,8 @@ ShallowWrapper {
           >
             <span
               className="glyphicon glyphicon-triangle-left invisible"
-              onClick={undefined}
-              onKeyDown={undefined}
+              onClick={[Function]}
+              onKeyDown={[Function]}
               role="button"
               tabIndex={0}
             />
@@ -307,8 +307,8 @@ ShallowWrapper {
             </button>
             <span
               className="glyphicon glyphicon-triangle-right invisible"
-              onClick={undefined}
-              onKeyDown={undefined}
+              onClick={[Function]}
+              onKeyDown={[Function]}
               role="button"
               tabIndex={0}
             />
@@ -395,8 +395,8 @@ ShallowWrapper {
             "children": Array [
               <span
                 className="glyphicon glyphicon-triangle-left invisible"
-                onClick={undefined}
-                onKeyDown={undefined}
+                onClick={[Function]}
+                onKeyDown={[Function]}
                 role="button"
                 tabIndex={0}
               />,
@@ -408,8 +408,8 @@ ShallowWrapper {
               </button>,
               <span
                 className="glyphicon glyphicon-triangle-right invisible"
-                onClick={undefined}
-                onKeyDown={undefined}
+                onClick={[Function]}
+                onKeyDown={[Function]}
                 role="button"
                 tabIndex={0}
               />,
@@ -424,8 +424,8 @@ ShallowWrapper {
               "nodeType": "host",
               "props": Object {
                 "className": "glyphicon glyphicon-triangle-left invisible",
-                "onClick": undefined,
-                "onKeyDown": undefined,
+                "onClick": [Function],
+                "onKeyDown": [Function],
                 "role": "button",
                 "tabIndex": 0,
               },
@@ -452,8 +452,8 @@ ShallowWrapper {
               "nodeType": "host",
               "props": Object {
                 "className": "glyphicon glyphicon-triangle-right invisible",
-                "onClick": undefined,
-                "onKeyDown": undefined,
+                "onClick": [Function],
+                "onKeyDown": [Function],
                 "role": "button",
                 "tabIndex": 0,
               },
@@ -1076,7 +1076,9 @@ exports[`Timeslot initializes correctly 1`] = `
         onDrag={[Function]}
         onDragEnd={[Function]}
         onDragStart={[Function]}
+        onTouchEnd={[Function]}
         onTouchMove={[Function]}
+        onTouchStart={[Function]}
       />
       <div
         className="timeslot-dragball bottom"
@@ -1084,7 +1086,9 @@ exports[`Timeslot initializes correctly 1`] = `
         onDrag={[Function]}
         onDragEnd={[Function]}
         onDragStart={[Function]}
+        onTouchEnd={[Function]}
         onTouchMove={[Function]}
+        onTouchStart={[Function]}
       />
     </div>
   </div>
@@ -1126,8 +1130,8 @@ exports[`Timeslot initializes correctly 1`] = `
   >
     <span
       className="glyphicon glyphicon-triangle-left invisible"
-      onClick={undefined}
-      onKeyDown={undefined}
+      onClick={[Function]}
+      onKeyDown={[Function]}
       role="button"
       tabIndex={0}
     />
@@ -1139,8 +1143,8 @@ exports[`Timeslot initializes correctly 1`] = `
     </button>
     <span
       className="glyphicon glyphicon-triangle-right invisible"
-      onClick={undefined}
-      onKeyDown={undefined}
+      onClick={[Function]}
+      onKeyDown={[Function]}
       role="button"
       tabIndex={0}
     />
@@ -1401,7 +1405,9 @@ exports[`Timeslot initializes correctly 2`] = `
         onDrag={[Function]}
         onDragEnd={[Function]}
         onDragStart={[Function]}
+        onTouchEnd={[Function]}
         onTouchMove={[Function]}
+        onTouchStart={[Function]}
       />
       <div
         className="timeslot-dragball bottom"
@@ -1409,7 +1415,9 @@ exports[`Timeslot initializes correctly 2`] = `
         onDrag={[Function]}
         onDragEnd={[Function]}
         onDragStart={[Function]}
+        onTouchEnd={[Function]}
         onTouchMove={[Function]}
+        onTouchStart={[Function]}
       />
     </div>
   </div>
@@ -1451,8 +1459,8 @@ exports[`Timeslot initializes correctly 2`] = `
   >
     <span
       className="glyphicon glyphicon-triangle-left invisible"
-      onClick={undefined}
-      onKeyDown={undefined}
+      onClick={[Function]}
+      onKeyDown={[Function]}
       role="button"
       tabIndex={0}
     />
@@ -1464,8 +1472,8 @@ exports[`Timeslot initializes correctly 2`] = `
     </button>
     <span
       className="glyphicon glyphicon-triangle-right invisible"
-      onClick={undefined}
-      onKeyDown={undefined}
+      onClick={[Function]}
+      onKeyDown={[Function]}
       role="button"
       tabIndex={0}
     />
