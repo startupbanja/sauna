@@ -30,7 +30,11 @@ export default class FeedbackView extends React.Component {
     pageContent.fetchData('/feedback', 'get', {})
       .then((result) => {
         this.setState({
-          data: result.data,
+          data: result.data.sort((a, b) => {
+            if (a.time < b.time) return -1;
+            else if (a.time > b.time) return 1;
+            return 0;
+          }),
           userType: result.userType,
         });
       });
