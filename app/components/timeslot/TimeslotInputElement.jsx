@@ -38,10 +38,11 @@ class TimeslotInputElement extends Component {
   }
   handleBlur(event) {
     this.setState({ editedValue: this.getValue() });
-    if (parseMinutes(event.target.value) !== false) {
+    const value = event.target.value.replace('.', ':').replace(',', ':');
+    if (parseMinutes(value) !== false) {
       // if the input format is correct
       // calculate the desired change from previous value in minutes
-      this.props.onChange(parseMinutes(event.target.value) - this.props.time);
+      this.props.onChange(parseMinutes(value) - this.props.time);
     } else {
       // if the input is incorrect make the user unavailable
       this.props.markAsUnavailable();

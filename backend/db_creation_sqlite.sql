@@ -105,7 +105,8 @@ CREATE TABLE Ratings(
     coach_rating INT,
     startup_rating INT,
     FOREIGN KEY (coach_id) REFERENCES Users(id),
-    FOREIGN KEY (startup_id) REFERENCES Users(id)
+    FOREIGN KEY (startup_id) REFERENCES Users(id),
+		PRIMARY KEY (coach_id, startup_id)
 );
 
 -- TESTIDATA
@@ -297,8 +298,8 @@ INSERT INTO Meetings (coach_id, startup_id, date, time, duration, coach_rating, 
 	(15, 5, '2017-10-10', '13:20:00', 40, 2, 3),
 	(15, 6, '2017-10-10', '15:20:00', 40, 0, 3),
 	(15, 7, '2017-10-10', '12:00:00', 40, 0, 1),
-	(15, 8, '2017-10-10', '12:00:00', 40, 1, 3),
-	(15, 10, '2017-10-10', '12:00:00', 40, 0, 0),
+	(15, 8, '2017-10-10', '12:00:00', 40, -1, -1),
+	(15, 10, '2017-10-10', '12:00:00', 40, -1, -1),
 	(17, 1, '2017-10-10', '12:00:00', 40, 0, 0),
 	(17, 2, '2017-10-10', '12:00:00', 40, 0, 1),
 	(17, 4, '2017-10-10', '12:00:00', 40, 0, 1),
@@ -722,8 +723,6 @@ INSERT INTO Ratings (coach_id, startup_id, coach_rating, startup_rating) VALUES
 	(15, 5, 2, 3),
 	(15, 6, 0, 3),
 	(15, 7, 0, 1),
-	(15, 8, 1, 3),
-	(15, 10, 0, 0),
 	(17, 1, 0, 0),
 	(17, 2, 0, 1),
 	(17, 4, 0, 1),
