@@ -546,7 +546,7 @@ app.post('/insertAvailability', (req, res, next) => {
   const date = req.body.date;
   const startTime = req.body.start;
   if (!isDate(date)) return res.sendStatus(404);
-  let duration = (new Date(`2018-01-01T${req.body.end}`).getTime() - new Date(`2018-01-01T${startTime}`).getTime());
+  let duration = (new Date(`${date}T${req.body.end}`).getTime() - new Date(`${date}T${startTime}`).getTime());
   duration = parseInt(duration / 60000, 10);
   database.insertAvailability(userId, date, startTime, duration, (err, result) => {
     if (err) return next(err);
