@@ -3,6 +3,18 @@ const pg = require('pg');
 const bcrypt = require('bcrypt');
 const params = require('./database_params.json');
 
+const pgTypes = pg.types;
+const DATE_OID = 1082;
+const TIME_OID = 1083;
+
+// return date from database as string YYYY-MM-DD
+// default implementation is some Date object stuff
+pgTypes.setTypeParser(DATE_OID, val => val);
+
+// return time from database as string HH:MM:SS
+pgTypes.setTypeParser(TIME_OID, val => val);
+
+
 function getClient() {
   return new pg.Client(params);
 }
@@ -568,7 +580,7 @@ function insertAvailability(userId, date, startTime, duration, callback) {
     name: 'insert-availability',
     text: `
     INSERT INTO Timeslots(user_id, date, time, duration)
-    VALUES ($1, $2, $3, $4);`,
+    VALUES ($1, $2, $3, $4) ON CONFLICT ON CONSTRAINT timeslots_user_id_date_key DO UPDATE SET time = $3, duration = $4;`,
     values: [userId, date, startTime, duration],
   };
   client.connect((err) => {

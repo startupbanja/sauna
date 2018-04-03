@@ -545,8 +545,9 @@ app.post('/insertAvailability', (req, res, next) => {
   const userId = req.session.userID;
   const date = req.body.date;
   const startTime = req.body.start;
+  const endTime = req.body.end;
   if (!isDate(date)) return res.sendStatus(404);
-  let duration = (new Date(`${date}T${req.body.end}`).getTime() - new Date(`${date}T${startTime}`).getTime());
+  let duration = (new Date(`${date}T${endTime}`).getTime() - new Date(`${date}T${startTime}`).getTime());
   duration = parseInt(duration / 60000, 10);
   database.insertAvailability(userId, date, startTime, duration, (err, result) => {
     if (err) return next(err);
@@ -584,7 +585,7 @@ app.post('/updateProfile', (req, res, next) => {
 // Error handling
 app.use((err, req, res, next) => {
   if (err) {
-    console.error(err.stack); // TODO some real logging here
+    console.error(err); // TODO some real logging here
     res.status(500).send({ error: 'An error has occured!' });
   } else {
     next();
