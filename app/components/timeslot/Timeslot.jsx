@@ -12,9 +12,10 @@ export function parseMinutes(timeString) {
 // minutes to timestamp 'HH:MM'
 export function parseTimeStamp(minutes) {
   if (minutes < 0 || minutes >= 1440) return false;
-  const hours = parseInt(minutes / 60, 10);
+  let hours = parseInt(minutes / 60, 10);
   let minutesOver = minutes % 60;
   if (minutesOver < 10) minutesOver = `0${minutesOver}`;
+  if (hours < 10) hours = `0${hours}`;
   return `${hours}:${minutesOver}`;
 }
 
