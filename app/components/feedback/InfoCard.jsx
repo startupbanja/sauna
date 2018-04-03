@@ -26,7 +26,9 @@ export default class InfoCard extends React.Component {
             />
           </div>
           <div className="form-group feedback-info">
-            {this.props.info.description}
+            {(this.props.info.description.length <= 150)
+              ? this.props.info.description : (`${this.props.info.description.slice(0, 150)} ...`)
+            }
           </div>
         </div>
       </div>

@@ -89,10 +89,10 @@ export default class MeetingDetailView extends React.Component {
       const filled = arr[1][0];
       const email = arr[1][1];
       if (filled) {
-        availabilities.given.push(<li key={name}>{name}: {filled}</li>);
+        availabilities.given.push(<li key={name} className="details-list-text"> {name}: {filled} </li>);  // eslint-disable-line
       } else {
         reminderMailsAvb.push(({ email }));
-        availabilities.notGiven.push(<li key={name}>{name}</li>);
+        availabilities.notGiven.push(<li key={name} className="details-list-text">{name}</li>);
       }
     });
 
@@ -126,13 +126,13 @@ export default class MeetingDetailView extends React.Component {
           const filled = arr[1];
           if (filled) {
             feedbacks[key].given.push((
-              <li key={`${name}-fb`}>
-                {name}: <span className="glyphicon glyphicon-ok" aria-hidden="true" />
+              <li key={`${name}-fb`} className="details-list-text">
+                <span className="glyphicon glyphicon-ok" aria-hidden="true" /> {name}
               </li>));
           } else {
             feedbacks[key].notGiven.push((
-              <li key={`${name}-fb`}>
-                {name}: <span className="glyphicon glyphicon-remove" aria-hidden="true" />
+              <li key={`${name}-fb`} className="details-list-text-missing">
+                <span className="glyphicon glyphicon-remove" aria-hidden="true" /> {name}
               </li>));
           }
         });
@@ -141,17 +141,17 @@ export default class MeetingDetailView extends React.Component {
 
     reminderMailsFb.forEach((input) => {
       stringFb += input.email;
-      stringFb += '; ';
+      stringFb += ', ';
     });
 
     reminderMailsAvb.forEach((input) => {
       stringAvb += input.email;
-      stringAvb += '; ';
+      stringAvb += ', ';
     });
 
     return (
       <div className="container full-viewport">
-        <h1>Details {this.props.date}</h1>
+        <h1 style={{ color: '#E55234' }}>Meeting Day {this.props.date}</h1>
         <Link
           className="btn btn-major"
           to={`/timetable/${this.props.date}/`}
@@ -164,14 +164,18 @@ export default class MeetingDetailView extends React.Component {
             <button
               className="btn btn-major"
               onClick={this.onClickAvb}
-            > Show e-mails
+            > Show e-mails of unresponsive users
             </button>
             { this.state.showAvb ? <div>{stringAvb}</div> : null }
           </div>
           {this.props.renderFeedbacks && (
             <div className="col-md-6 feedbacks-header">
               <h3>Feedbacks from last meeting:</h3>
-              <button className="btn btn-major" onClick={this.onClickFb}> Show e-mails</button>
+              <button
+                className="btn btn-major"
+                onClick={this.onClickFb}
+              > Show e-mails of unresponsive users
+              </button>
               { this.state.showFb ? <div>{stringFb}</div> : null }
             </div>)
           }
@@ -179,15 +183,15 @@ export default class MeetingDetailView extends React.Component {
         <div className="row">
           <div className="listDiv col-md-3">
             <ul>
-              <h3>Given:</h3>
-              <h3>{availabilities.given.length}</h3>
+              <h3 style={{ color: 'white' }}>Given:</h3>
+              <h3 style={{ color: '#E55234' }}>{availabilities.given.length}</h3>
               {availabilities.given}
             </ul>
           </div>
           <div className="listDiv col-md-3">
             <ul>
-              <h3>Not given:</h3>
-              <h3>{availabilities.notGiven.length}</h3>
+              <h3 style={{ color: 'white' }}>Not given:</h3>
+              <h3 style={{ color: '#E55234' }}>{availabilities.notGiven.length}</h3>
               {availabilities.notGiven}
             </ul>
           </div>
@@ -195,14 +199,14 @@ export default class MeetingDetailView extends React.Component {
             <div className="feedbackBlock">
               <div className="listDiv col-md-3">
                 <ul>
-                  <h3>Coaches:</h3>
+                  <h3 style={{ color: 'white' }}>Coaches:</h3>
                   {feedbacks.coaches.notGiven}
                   {feedbacks.coaches.given}
                 </ul>
               </div>
               <div className="listDiv col-md-3">
                 <ul>
-                  <h3>Startups:</h3>
+                  <h3 style={{ color: 'white' }}>Startups:</h3>
                   {feedbacks.startups.notGiven}
                   {feedbacks.startups.given}
                 </ul>

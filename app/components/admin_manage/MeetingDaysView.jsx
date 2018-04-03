@@ -123,28 +123,28 @@ class MeetingDaysView extends Component {
         <div className="meeting-day-container" key={index}>
           <p className="meeting-date">{new Date(date).toLocaleDateString('en-GB', dateOptions).replace(/\//g, '.')}</p>
           {(total !== null && done !== null) &&
-            <p>{`${done}/${total} Coaches' availabilities`}</p>}
+            <p className="meeting-text">{`${done}/${total} Coaches' availabilities`}</p>}
           {// if the next upcoming date, render info about the feedbacks
             index === 0 && (
             <div>
               {((this.state.feedbacks.coachTotal &&
                  this.state.feedbacks.coachDone !== undefined)
                 || undefined) &&
-                <p>{`${this.state.feedbacks.coachDone}/${this.state.feedbacks.coachTotal} Coaches' feedbacks`}</p>}
+                <p className="meeting-text">{`${this.state.feedbacks.coachDone}/${this.state.feedbacks.coachTotal} Coaches' feedbacks`}</p>}
               {((this.state.feedbacks.startupTotal &&
                  this.state.feedbacks.startupDone !== undefined)
                 || undefined) &&
-                <p>{`${this.state.feedbacks.startupDone}/${this.state.feedbacks.startupTotal} Startups' feedbacks`}</p>}
+                <p className="meeting-text">{`${this.state.feedbacks.startupDone}/${this.state.feedbacks.startupTotal} Startups' feedbacks`}</p>}
             </div>
           )}
           {/* link to details page, the first item has modified link */}
           <Link
-            className="btn btn-minor"
+            className="btn btn-minor meeting-button"
             to={`/meetings/${!index ? 'recent/' : ''}${this.state.days[index].date}/`}
           >
             View details
           </Link>
-          <button className="btn btn-minor" onClick={() => this.removeDate(index)}>
+          <button className="btn btn-minor meeting-button" onClick={() => this.removeDate(index)}>
             Remove
           </button>
 
@@ -153,14 +153,14 @@ class MeetingDaysView extends Component {
             index === 0 && (
             <span className="matchmaking-buttons">
               <Link
-                className="btn btn-minor"
+                className="btn btn-minor meeting-button"
                 to={`/timetable/${this.state.days[index].date}/`}
               >
                 View timetable
               </Link>
               {this.state.canRunMatchmaking &&
                 <button
-                  className="btn btn-major"
+                  className="btn btn-major meeting-button"
                   onClick={() => this.runMatchmaking(this.state.days[index].date)}
                 > Run Matchmaking
                 </button>
@@ -186,7 +186,7 @@ class MeetingDaysView extends Component {
           <div className="btn-container">
             <button
               type="button"
-              className="btn btn-minor"
+              className="btn btn-minor meeting-button"
               data-toggle="modal"
               data-target="#newMeetingDayModal"
             >Set more
