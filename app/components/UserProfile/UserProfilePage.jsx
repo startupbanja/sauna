@@ -104,7 +104,17 @@ class UserProfilePage extends Component {
   }
 
   handleSubmit(data) {
-    pageContent.fetchData('/updateProfile', 'POST', data).then((res) => {
+    if (this.state.userType === 'coach' && !data.site.split('//')[1].startsWith('linkedin.com')) {
+      this.setState({
+        message: {
+          type: 'error',
+          text: 'The provided LinkedIn URL was invalid!',
+        },
+      });
+      return; // don't continue to the updating phase.
+    }
+
+    pageContent.fetchData('/updateProfile', 'POST', { data: JSON.stringify(data) }).then((res) => {
       const statusType = res.status.toLowerCase();
       if (statusType === 'success') {
         this.setState({

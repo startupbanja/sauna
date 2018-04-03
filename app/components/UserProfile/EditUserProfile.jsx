@@ -67,7 +67,7 @@ class EditUserProfile extends Component {
     }
 
     const toBeAdded = { uid: this.props.id, type: this.props.type };
-    const dataToPass = { data: JSON.stringify(Object.assign(input, toBeAdded)) };
+    const dataToPass = Object.assign(input, toBeAdded);
     this.props.handleSubmit(dataToPass);
   }
 
