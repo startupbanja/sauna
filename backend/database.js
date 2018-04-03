@@ -852,7 +852,7 @@ function addProfile(userInfo, callback) {
 function addUser(userInfo, callback) {
   db.get('SELECT * FROM Users WHERE username=?', [userInfo.email], (err, row) => {
     if (row === undefined) {
-      const password = bcrypt.hashSync(userInfo.password, 10);
+      const password = bcrypt.hashSync('abc123', 10);
       let type;
       switch (userInfo.type) {
         case 'coach':

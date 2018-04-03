@@ -20,7 +20,6 @@ export default class UserCreationForm extends React.Component {
     super(props);
     this.state = {
       email: '',
-      password: '',
       name: '',
       description: '',
       website: '',
@@ -51,9 +50,6 @@ export default class UserCreationForm extends React.Component {
   validate(name) {
     const value = this.state[name];
     switch (name) {
-      case 'password':
-        if (value.length < 6) return 'Password must be atleast 6 characters long';
-        break;
       case 'email':
         if (value.length === 0) return 'Email is required';
         if (!isValidEmail(value)) return 'Please enter a valid email';
@@ -113,15 +109,9 @@ export default class UserCreationForm extends React.Component {
       required: true,
       type: 'email',
     }, {
-      label: 'Password:',
-      name: 'password',
-      placeholder: 'Password',
-      required: true,
-      type: 'password',
-    }, {
-      label: 'Full Name:',
+      label: 'Name:',
       name: 'name',
-      placeholder: 'Full Name',
+      placeholder: 'Name',
       required: true,
       type: 'text',
     }, {
