@@ -11,17 +11,20 @@ describe('Run matchmaking with database data with different durations...', () =>
   beforeEach((done) => {
     database.createDatabase((err) => {
       if (err) return console.log(err);
-      return done();
+      database.initDB((err2) => {
+        if (err2) return console.log(err2);
+        return done();
+      });
     });
   });
 
   afterEach(done => database.closeDatabase(done));
 
-  const durationList = [5, 10, 15, 20, 25, 30, 35, 40, 50, 60, 90];
+  const durationList = [5, 10, 20, 25, 30, 35, 60, 90];
   durationList.forEach((duration) => {
-    test(`Try with duration = ${duration}`, (done) => {
+    test.only(`Try with duration = ${duration}`, (done) => {
       let date = new Date();
-      date.setDate(date.getDate() + 1)
+      date.setDate(date.getDate() + 1);
       date = dateToString(date);
       const q = 'UPDATE MeetingDays SET split = ? WHERE date = ?';
       const callback = console.log;

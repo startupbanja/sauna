@@ -9,7 +9,7 @@ try:
   params = matchmaking.init(data, slotSize)
 except ValueError as e:
   # One of the parameters was probably empty, can't continue execution
-  sys.stderr.write(e)
+  sys.stderr.write(str(e))
 else:
   bestResult = None
   bestStats = None
