@@ -24,11 +24,11 @@ function runMatchmaking(paramData, slotSize, callback) {
       const parsed = JSON.parse(storage.toString());
       callback(null, parsed);
     } catch (e) {
-      callback({ error: e, data: storage.toString() });
+      callback(JSON.stringify({ error: e.toString(), data: storage.toString() }));
     }
   });
   newProcess.stderr.on('data', (errorMsg) => {
-    callback({ error: `Python error: ${errorMsg}` });
+    callback(JSON.stringify({ error: `Python error: ${errorMsg}` }));
   });
   newProcess.stdin.write(JSON.stringify({ data: paramData, slotSize }));
   newProcess.stdin.end();
