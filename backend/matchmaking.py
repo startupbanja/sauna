@@ -141,8 +141,6 @@ def init(data, slotSize=40):
   feedbacks = data.get('feedbacks')
   oldAvail = data.get('availabilities')
   startups = data.get('startups')
-  if not feedbacks:
-    raise ValueError('feedbacks list cannot be empty')
   if not oldAvail:
     raise ValueError('availabilities dict cannot be empty')
   if not startups:

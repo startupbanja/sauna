@@ -6,6 +6,22 @@ import $ from 'jquery';
 
 // Navigation menu that's horizontal in desktop and collapsed vertical in smaller screens
 export default class Menu extends React.Component {
+  constructor(props) {
+    super(props);
+    // close menu if clicking outside of menu contents
+    $(document).ready(() => {
+      $(document).click((e) => {
+        // clicking outside?
+        if ($(e.target).closest('.navbar-collapse').length === 0) {
+          // menu open?
+          if ($('.navbar-collapse').hasClass('collapse in')) {
+            $('.navbar-collapse').collapse('hide');
+          }
+        }
+      });
+    });
+  }
+
   collapseNav() { // eslint-disable-line
     $('.navbar-collapse').collapse('hide');
   }

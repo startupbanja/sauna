@@ -5,6 +5,7 @@ import TimeslotInput from './TimeslotInput';
 
 // timestamp 'HH:MM:SS' to minutes
 export function parseMinutes(timeString) {
+  if (timeString.match(/^([0-1]?\d|2[0-3])$/)) return parseInt(timeString, 10) * 60;
   if (!timeString.match(/^([0-1]?\d|2[0-3]):[0-5]\d(:|$)/)) return false;
   const pieces = timeString.split(':');
   return (parseInt(pieces[0], 10) * 60) + parseInt(pieces[1], 10);

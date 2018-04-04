@@ -10,7 +10,7 @@ configure({ adapter: new Adapter() });
 test('parseMinutes works correctly', () => {
   expect(parseMinutes('string')).toBe(false);
   expect(parseMinutes('24:00')).toBe(false);
-  expect(parseMinutes('10')).toBe(false);
+  expect(parseMinutes('10')).toBe(600);
   expect(parseMinutes('3:63')).toBe(false);
   expect(parseMinutes('9:00')).toBe(540);
   expect(parseMinutes('13:24')).toBe(804);

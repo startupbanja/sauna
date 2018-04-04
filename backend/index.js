@@ -5,14 +5,18 @@ const database = process.env.USING_SQLITE ? require('./database_sqlite.js') : re
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const matchmaking = require('./matchmaking.js');
+const fs = require('fs');
 
 
 const app = express();
 
 if (process.env.USING_SQLITE) {
   database.createDatabase((err) => {
-    if (err) console.log(err);
-    console.log('Data loaded');
+    if (err) throw err;
+    database.initDB((err2) => {
+      if (err2) throw err2;
+      console.log('Data loaded');
+    });
   });
 }
 
@@ -586,6 +590,12 @@ app.post('/updateProfile', (req, res, next) => {
 app.use((err, req, res, next) => {
   if (err) {
     console.error(err); // TODO some real logging here
+    const date = new Date();
+    const logFile = `log/error_log_${date.getDate()}_${date.getMonth() + 1}_${date.getFullYear()}.txt`;
+    fs.appendFile(logFile, `${err}\n`, (error) => {
+      if (error) console.error(err.stack);
+      else console.log('Error saved');
+    });
     res.status(500).send({ error: 'An error has occured!' });
   } else {
     next();
