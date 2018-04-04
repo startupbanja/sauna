@@ -69,6 +69,10 @@
   padding-left: 10px;
 }
 
+.userDescription p {
+  word-wrap: break-word;
+}
+
 .edit-text {
   font-size: 1.3em;
   width: 95%;
