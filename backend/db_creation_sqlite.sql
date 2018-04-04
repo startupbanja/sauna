@@ -105,5 +105,6 @@ CREATE TABLE Ratings(
     coach_rating INT,
     startup_rating INT,
     FOREIGN KEY (coach_id) REFERENCES Users(id),
-    FOREIGN KEY (startup_id) REFERENCES Users(id)
+    FOREIGN KEY (startup_id) REFERENCES Users(id),
+		PRIMARY KEY (coach_id, startup_id)
 );
