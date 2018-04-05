@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import $ from 'jquery';
+import { Link } from 'react-router-dom';
 import Button from '../Button';
 
 // view for editing users' profile
@@ -152,6 +153,11 @@ class EditUserProfile extends Component {
           <span className="glyphicon glyphicon-plus-sign" />
           Add a {removeText}
         </button>
+        {!this.props.canResetPW &&
+          <Link className="btn btn-minor" href="/change_password" to="/change_password">
+            Change Password
+          </Link>
+        }
         <div className="control-buttons">
           <Button
             className="btn btn-lg btn-major save-button"

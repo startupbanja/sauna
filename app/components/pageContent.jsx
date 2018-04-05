@@ -22,20 +22,22 @@ import AdminLandingPage from './landing/AdminLandingPage';
 // react router Switch that contains all the user views
 /* eslint-disable */
 const userContent = [
-  <Route path="/coaches/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />,
+  <Route
+    path="/user/:id(\d+)?/:edit?"
+    render={({ match, history }) =>
+      <UserProfilePage id={match.params.id} edit={match.params.edit} history={history} />}
+  />,
   <Route
     exact
     path="/coaches"
-    render={({ match }) => <UserList match={match} type="Coaches" />}
+    render={() => <UserList type="Coaches" />}
   />,
-  <Route path="/startups/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />,
   <Route
     exact
     path="/startups"
-    render={({ match }) => <UserList match={match} type="Startups" />}
+    render={() => <UserList type="Startups" />}
   />,
   <Route path="/timetable" render={() => <UserTimetable />} />,
-  <Route path="/user" component={UserProfilePage} />,
   <Route path="/feedback" render={() => <FeedbackView />} />,
   <Route path="/change_password" component={PasswordChange} />,
 ];
@@ -50,13 +52,11 @@ const startupContent = [
 
 // object that links router paths to their display names in menu in user side
 const userLabels = {
-  '/': 'Home',
   '/timetable': 'Timetable',
   '/user': 'User Profile',
   '/feedback': 'Feedback',
   '/coaches': 'Coaches',
   '/startups': 'Startups',
-  '/change_password': 'Change password',
 };
 const coachLabels = {
   '/availability': 'Availability',
@@ -66,13 +66,16 @@ const coachLabels = {
 const adminContent = (
   <Switch>
     <Route exact path="/" component={AdminLandingPage} />
-    <Route path="/coaches/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />
+    <Route
+      path="/user/:id(\d+)?/:edit?"
+      render={({ match, history }) =>
+        <UserProfilePage id={match.params.id} edit={match.params.edit} history={history} />}
+    />,
     <Route
       exact
       path="/coaches"
       render={({ match }) => <UserList match={match} type="Coaches" />}
     />
-    <Route path="/startups/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />
     <Route
       exact
       path="/startups"
@@ -109,7 +112,6 @@ const adminContent = (
 
 // object that links router paths to their display names in menu in admin side
 const adminLabels = {
-  '/': 'Home',
   '/coaches': 'Coaches',
   '/startups': 'Startups',
   '/users': 'Users',

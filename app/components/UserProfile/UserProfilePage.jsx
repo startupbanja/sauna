@@ -27,7 +27,6 @@ class UserProfilePage extends Component {
       canModify: false,
       canResetPW: false,
       titles: [],
-      modifying: false,
     };
   }
 
@@ -42,9 +41,11 @@ class UserProfilePage extends Component {
 
   // change between editing and displaying
   toggleEdit() {
-    this.setState({
-      modifying: !this.state.modifying,
-    });
+    if (this.props.edit === 'edit') {
+      this.props.history.goBack();
+    } else {
+      window.location.href += '/edit';
+    }
   }
 
   resetPassword() {
@@ -122,7 +123,6 @@ class UserProfilePage extends Component {
             type: statusType,
             text: res.message,
           },
-          modifying: false,
         });
         this.fetchData();
       } else {
@@ -137,7 +137,7 @@ class UserProfilePage extends Component {
   }
 
   render() {
-    if (this.state.modifying) {
+    if (this.props.edit === 'edit') {
       return (
         <div>
           <StatusMessage message={this.state.message} />
@@ -179,10 +179,15 @@ class UserProfilePage extends Component {
 
 UserProfilePage.propTypes = {
   id: PropTypes.string,
+  edit: PropTypes.string,
+  history: PropTypes.shape({
+    goBack: PropTypes.func,
+  }).isRequired,
 };
 
 UserProfilePage.defaultProps = {
   id: undefined,
+  edit: undefined,
 };
 
 export default UserProfilePage;
