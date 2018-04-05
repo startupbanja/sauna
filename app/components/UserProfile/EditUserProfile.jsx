@@ -134,7 +134,7 @@ class EditUserProfile extends Component {
             onChange={this.onDescriptionChange}
             value={this.state.description}
           />
-          <p>{1000 - this.state.descLength} character{ this.state.descLength === 999 ? '' : 's'} left</p>
+          <p id="charsLeft">{1000 - this.state.descLength} character{ this.state.descLength === 999 ? '' : 's'} left</p>
           <div>
             <div className="edit-para">Titles:</div>
             {this.props.titles.map(value => (

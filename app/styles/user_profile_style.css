@@ -94,6 +94,10 @@
   outline: 1px solid var(--primary-color);
 }
 
+#charsLeft {
+  margin-left: 1%;
+}
+
 .glyphicon-cog:before {
   content: "\e019";
   font-size: 1.6em;
