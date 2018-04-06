@@ -101,6 +101,9 @@ class UserProfilePage extends Component {
           canResetPW: responseJSON.canResetPW,
           titles: [responseJSON.company],
         });
+      })
+      .catch(() => {
+        this.setState({ invalidId: true });
       });
   }
 
@@ -137,7 +140,10 @@ class UserProfilePage extends Component {
   }
 
   render() {
-    if (this.props.edit === 'edit') {
+    if (this.state.invalidId) {
+      return <p className="empty-content-text">Invalid user id</p>;
+    }
+    if (this.props.edit === 'edit' && this.state.canModify) {
       return (
         <div>
           <StatusMessage message={this.state.message} />

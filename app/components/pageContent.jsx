@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import FeedbackView from './feedback/FeedbackView';
 import LandingPage from './landing/LandingPage';
 import UserProfilePage from './UserProfile/UserProfilePage';
@@ -40,6 +40,7 @@ const userContent = [
   <Route path="/timetable" render={() => <UserTimetable />} />,
   <Route path="/feedback" render={() => <FeedbackView />} />,
   <Route path="/change_password" component={PasswordChange} />,
+  <Redirect to="/" />
 ];
 const coachContent = [
   <Route path="/availability" component={TimeslotView} />,
@@ -107,6 +108,7 @@ const adminContent = (
       render={() => <UserCreationPage />}
       type="Create User"
     />
+    <Redirect to="/" />
   </Switch>
 );
 
@@ -126,11 +128,11 @@ function getContent(userType) {
     return { content: adminContent, labels: adminLabels };
   }
   if (userType === 'coach') {
-    const content = userContent.concat(coachContent);
+    const content = coachContent.concat(userContent);
     const labels = Object.assign({}, userLabels, coachLabels);
     return { content: <Switch>{content}</Switch>, labels };
   }
-  const content = userContent.concat(startupContent);
+  const content = startupContent.concat(userContent);
   return { content: <Switch>{content}</Switch>, labels: userLabels };
 }
 
