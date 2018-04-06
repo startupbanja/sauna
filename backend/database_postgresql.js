@@ -49,7 +49,7 @@ function getUsers(type, includeId, callback) {
               description: row.description,
               img_url: row.img_url,
             };
-            if (includeId) users[row.name].id = row.user_id;
+            if (includeId) users[row.name].id = row.id;
           });
           callback(err2, users);
         }
