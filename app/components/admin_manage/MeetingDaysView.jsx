@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import $ from 'jquery';
 import pageContent from '../pageContent';
 import NewMeetingDayBlock from './NewMeetingDayBlock';
+import StatusMessage from '../StatusMessage';
 import '../../styles/meeting_days_style.css';
 /* eslint-disable jsx-a11y/anchor-is-valid */ // disable complaining from Link
 
@@ -26,6 +27,7 @@ class MeetingDaysView extends Component {
       // object of feedbacks given and total as { coachDone, coachTotal, startupDone, startupTotal }
       feedbacks: null,
       canRunMatchmaking: false,
+      statusMessage: null,
     };
   }
 
@@ -34,11 +36,19 @@ class MeetingDaysView extends Component {
     this.fetchAvailabilityStats();
     this.fetchGivenFeedbacks();
   }
-
   runMatchmaking(date) {
+    // allow confirm prompt here
+    if (!confirm('Are you sure you want to run the matchmaking algorithm?')) return; // eslint-disable-line
     this.setState({ canRunMatchmaking: false });
     pageContent.fetchData('/runMatchmaking', 'POST', { date })
-      .then(() => undefined);
+      .then((response) => {
+        // response is: {success: true/false}
+        if (response.success) {
+          this.setState({ statusMessage: { text: 'Matchmaking done!', type: 'success' } });
+        } else {
+          this.setState({ statusMessage: { text: 'Matchmaking failed!', type: 'error' } });
+        }
+      });
   }
 
   fetchScheduledDays() {
@@ -181,6 +191,7 @@ class MeetingDaysView extends Component {
     }
     return (
       <div className="meeting-days-view container">
+        {this.state.statusMessage && <StatusMessage message={this.state.statusMessage} />}
         <div className="banner">
           <p><span className="number">{this.state.days.length}</span> upcoming meeting days</p>
           <div className="btn-container">
