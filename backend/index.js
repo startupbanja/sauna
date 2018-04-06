@@ -50,11 +50,17 @@ app.use((req, res, next) => {
 
 // logs user in and sets for session:
 // userID = user's personal id and type = one of 'coach', 'startup', 'admin'
-app.post('/login', (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
+app.post('/login', (req, res, next) => {
+  let username;
+  try {
+    // will throw exception if username is not a string
+    username = req.body.username.toLowerCase();
+  } catch (error) {
+    return next(error);
+  }
+  const { password } = req.body;
   // bcrypt.hash(password, 10, (err, hash) => console.log(hash));
-  database.verifyIdentity(username, password, (type, userId) => {
+  return database.verifyIdentity(username, password, (type, userId) => {
     if (userId !== false) {
       req.session.userID = userId;
       req.session.userType = type;
@@ -67,7 +73,13 @@ app.post('/login', (req, res) => {
 app.post('/changeEmail', (req, res, next) => {
   const userType = req.body.type;
   userType.replace(userType[0], userType[0].toUpperCase());
-  database.changeEmail(req.body.uid, userType, req.body.email, (err, response) => {
+  let email;
+  try {
+    email = req.body.email.toLowerCase();
+  } catch (error) {
+    return next(error);
+  }
+  database.changeEmail(req.body.uid, userType, email, (err, response) => {
     if (err) {
       return next(err);
     }
@@ -162,6 +174,11 @@ app.post('/create_user', (req, res, next) => {
   // Only admins can do this.
   if (requireAdmin(req, res)) {
     const userInfo = req.body;
+    try {
+      userInfo.email = userInfo.email.toLowerCase();
+    } catch (error) {
+      return next(error);
+    }
 
     database.addUser(userInfo, (err, resp) => {
       if (!err) {
