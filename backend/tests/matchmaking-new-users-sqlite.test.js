@@ -1,4 +1,4 @@
-const database = require('../database.js');
+const database = require('../database_sqlite.js');
 const matchmaking = require('../matchmaking.js');
 // const index = require('./index.js');
 
