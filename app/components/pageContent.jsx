@@ -20,36 +20,37 @@ import AdminLandingPage from './landing/AdminLandingPage';
 
 
 // react router Switch that contains all the user views
-/* eslint-disable */
 const userContent = [
   <Route
     path="/user/:id(\d+)?/:edit?"
     render={({ match, history }) =>
       <UserProfilePage id={match.params.id} edit={match.params.edit} history={history} />}
+    key="user"
   />,
   <Route
     exact
     path="/coaches"
     render={() => <UserList type="Coaches" />}
+    key="coaches"
   />,
   <Route
     exact
     path="/startups"
     render={() => <UserList type="Startups" />}
+    key="startups"
   />,
-  <Route path="/timetable" render={() => <UserTimetable />} />,
-  <Route path="/feedback" render={() => <FeedbackView />} />,
-  <Route path="/change_password" component={PasswordChange} />,
-  <Redirect to="/" />
+  <Route path="/timetable" render={() => <UserTimetable />} key="ttable" />,
+  <Route path="/feedback" render={() => <FeedbackView />} key="feeds" />,
+  <Route path="/change_password" component={PasswordChange} key="cp" />,
+  <Redirect to="/" key="redir" />,
 ];
 const coachContent = [
-  <Route path="/availability" component={TimeslotView} />,
-  <Route exact path="/" render={() => <LandingPage type="coach" />} />,
+  <Route path="/availability" component={TimeslotView} key="avail" />,
+  <Route exact path="/" render={() => <LandingPage type="coach" />} key="land" />,
 ];
 const startupContent = [
-  <Route exact path="/" render={() => <LandingPage type="startup" />} />,
+  <Route exact path="/" render={() => <LandingPage type="startup" />} key="land" />,
 ];
-/* eslint-enable */
 
 // object that links router paths to their display names in menu in user side
 const userLabels = {

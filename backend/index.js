@@ -194,6 +194,8 @@ app.get('/profile', (req, res, next) => {
     if (req.session.userID === id || req.session.userType === 'admin') {
       if (req.session.userType === 'admin') {
         Object.assign(result, { canResetPW: true });
+      } else {
+        Object.assign(result, { canResetPW: false });
       }
       Object.assign(result, { canModify: true });
     }

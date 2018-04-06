@@ -179,7 +179,7 @@ EditUserProfile.propTypes = {
   type: PropTypes.string.isRequired,
   id: PropTypes.string,
   name: PropTypes.string.isRequired,
-  imgSrc: PropTypes.string.isRequired,
+  imgSrc: PropTypes.string,
   linkedIn: PropTypes.string,
   description: PropTypes.string,
   titles: PropTypes.arrayOf(PropTypes.string),
@@ -200,6 +200,7 @@ EditUserProfile.defaultProps = {
   description: '',
   titles: [],
   credentials: [],
+  imgSrc: null,
 };
 
 export default EditUserProfile;
