@@ -1,6 +1,6 @@
 const pg = require('pg');
 const bcrypt = require('bcrypt');
-const params = require('./database_params.json');
+const params = require('../credentials/database_params.json');
 
 const client = new pg.Client(params);
 const email = 'admin';

@@ -1,7 +1,6 @@
 const pg = require('pg');
-// const fs = require('fs');
 const bcrypt = require('bcrypt');
-const params = require('./database_params.json');
+const params = require('../credentials/database_params.json');
 
 const pgTypes = pg.types;
 const DATE_OID = 1082;
