@@ -9,8 +9,22 @@ class EditUserProfile extends Component {
     super(props);
     this.state = {
       credentials: this.props.credentials,
+      description: props.description,
+      descLength: props.description.length,
     };
+    this.onDescriptionChange = this.onDescriptionChange.bind(this);
   }
+
+  onDescriptionChange(evt) {
+    const newDesc = evt.target.value.substr(0, 1000);
+
+    this.setState({
+      description: newDesc,
+      descLength: newDesc.length,
+    });
+    evt.preventDefault();
+  }
+
   /* eslint-disable */
   getValueOfField(id) {
     return document.getElementById(id).value;
@@ -117,8 +131,10 @@ class EditUserProfile extends Component {
           <textarea
             className="edit-text"
             id="description"
-            defaultValue={this.props.description}
+            onChange={this.onDescriptionChange}
+            value={this.state.description}
           />
+          <p id="charsLeft">{1000 - this.state.descLength} character{ this.state.descLength === 999 ? '' : 's'} left</p>
           <div>
             <div className="edit-para">Titles:</div>
             {this.props.titles.map(value => (
