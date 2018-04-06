@@ -73,7 +73,13 @@ app.post('/login', (req, res, next) => {
 app.post('/changeEmail', (req, res, next) => {
   const userType = req.body.type;
   userType.replace(userType[0], userType[0].toUpperCase());
-  database.changeEmail(req.body.uid, userType, req.body.email, (err, response) => {
+  let email;
+  try {
+    email = req.body.email.toLowerCase();
+  } catch (error) {
+    return next(error);
+  }
+  database.changeEmail(req.body.uid, userType, email, (err, response) => {
     if (err) {
       return next(err);
     }
