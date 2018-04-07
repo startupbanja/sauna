@@ -21,11 +21,21 @@ class UserHandlingView extends Component {
   }
 
   fetchData() {
+    function sort(a, b) {
+      if (b.active - a.active === 0) {
+        const aName = a.name.toLowerCase();
+        const bName = b.name.toLowerCase();
+        if (aName < bName) return -1;
+        if (aName > bName) return 1;
+        return 0;
+      }
+      return b.active - a.active;
+    }
     pageContent.fetchData('/activeStatuses', 'GET', {})
       .then((result) => {
         this.setState({
-          startups: result.startups.sort((a, b) => b.active - a.active),
-          coaches: result.coaches.sort((a, b) => b.active - a.active),
+          startups: result.startups.sort((a, b) => sort(a, b)),
+          coaches: result.coaches.sort((a, b) => sort(a, b)),
         });
       });
   }
