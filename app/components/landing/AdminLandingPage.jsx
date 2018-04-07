@@ -83,11 +83,11 @@ class AdminLandingPage extends Component {
             {((this.state.feedbacks.coachTotal &&
                 this.state.feedbacks.coachDone !== undefined)
               || undefined) &&
-              <p>{`${this.state.feedbacks.coachDone}/${this.state.feedbacks.coachTotal} Coach-given feedbacks`}</p>}
+              <p>{`${this.state.feedbacks.coachDone}/${this.state.feedbacks.coachTotal} Coach-given feedbacks from last meeting`}</p>}
             {((this.state.feedbacks.startupTotal &&
                 this.state.feedbacks.startupDone !== undefined)
               || undefined) &&
-              <p>{`${this.state.feedbacks.startupDone}/${this.state.feedbacks.startupTotal} Startup-given feedbacks`}</p>}
+              <p>{`${this.state.feedbacks.startupDone}/${this.state.feedbacks.startupTotal} Startup-given feedbacks from last meeting`}</p>}
           </div>
         )}
       </div>
