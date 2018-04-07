@@ -94,6 +94,7 @@ class EditUserProfile extends Component {
     const credentialsHeader = this.props.type === 'coach' ? 'Credentials:' : 'Team Members:';
     const removeText = this.props.type === 'coach' ? 'credential' : 'team member';
     const imgURL = this.props.imgSrc;
+    const credentialHeaderPlaceholder = this.props.type === 'coach' ? 'Company' : 'Name';
 
     return (
       <div className="editProfileContainer container">
@@ -156,7 +157,7 @@ class EditUserProfile extends Component {
               {this.state.credentials.map(value =>
                 (
                   <div key={`cred${value.company}`} className="credentialField">
-                    <input className="edit-text" key={`company${value}`} type="text" defaultValue={value.company} placeholder="Company" />
+                    <input className="edit-text" key={`company${value}`} type="text" defaultValue={value.company} placeholder={credentialHeaderPlaceholder} />
                     <input className="edit-text" key={`position${value}`} type="text" defaultValue={value.position} placeholder="Position" />
                   </div>
                 ))
