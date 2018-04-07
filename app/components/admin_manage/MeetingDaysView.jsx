@@ -140,11 +140,11 @@ class MeetingDaysView extends Component {
               {((this.state.feedbacks.coachTotal &&
                  this.state.feedbacks.coachDone !== undefined)
                 || undefined) &&
-                <p className="meeting-text">{`${this.state.feedbacks.coachDone}/${this.state.feedbacks.coachTotal} Coaches' feedbacks`}</p>}
+                <p className="meeting-text">{`${this.state.feedbacks.coachDone}/${this.state.feedbacks.coachTotal} Coaches' feedbacks from last meeting`}</p>}
               {((this.state.feedbacks.startupTotal &&
                  this.state.feedbacks.startupDone !== undefined)
                 || undefined) &&
-                <p className="meeting-text">{`${this.state.feedbacks.startupDone}/${this.state.feedbacks.startupTotal} Startups' feedbacks`}</p>}
+                <p className="meeting-text">{`${this.state.feedbacks.startupDone}/${this.state.feedbacks.startupTotal} Startups' feedbacks from last meeting`}</p>}
             </div>
           )}
           {/* link to details page, the first item has modified link */}
