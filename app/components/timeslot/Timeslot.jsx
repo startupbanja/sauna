@@ -42,6 +42,15 @@ class Timeslot extends React.Component {
     this.askForMoreTime = this.askForMoreTime.bind(this);
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      available: {
+        start: nextProps.available.start,
+        end: nextProps.available.end,
+      },
+    });
+  }
+
   // update state when availability changed
   handleChange(to, change) {
     let newStart = this.state.available.start;
