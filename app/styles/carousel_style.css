@@ -48,17 +48,20 @@
 }
 
 
-.multi-item-carousel .carousel-inner .item > div {
+.multi-item-carousel .carousel-inner .item > div,
+.unrolling-item {
   padding: 0px;
   margin: 5px 0px;
 }
 
-.multi-item-carousel .carousel-inner .item > div:nth-child(-n + 2)  {
+.multi-item-carousel .carousel-inner .item > div:nth-child(-n + 2),
+.unrolling-item:first-child:not(:only-child) {
   border-right: var(--light-gray) 4px solid;
   padding-right: -2px;
   margin-right: -2px;
 }
-.multi-item-carousel .carousel-inner .item > div:nth-child(n + 2)  {
+.multi-item-carousel .carousel-inner .item > div:nth-child(n + 2),
+.unrolling-item:nth-child(2) {
   border-left: var(--light-gray) 4px solid;
   padding-left: -2px;
   margin-left: -2px;
