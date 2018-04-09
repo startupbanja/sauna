@@ -79,9 +79,18 @@ class EditUserProfile extends Component {
     if (!input.site.startsWith('http://') && !input.site.startsWith('https://')) {
       input.site = 'http://'.concat(input.site);
     }
-
+    console.log(input);
+    // add user id and type
     const toBeAdded = { uid: this.props.id, type: this.props.type };
     const dataToPass = Object.assign(input, toBeAdded);
+    // URL encode the fields
+    Object.keys(dataToPass).forEach((key) => {
+      console.log(key);
+      console.log(dataToPass[key]);
+
+      dataToPass[key] = encodeURIComponent(JSON.stringify(dataToPass[key]));
+      console.log(encodeURIComponent(dataToPass[key]));
+    });
     this.props.handleSubmit(dataToPass);
   }
 
