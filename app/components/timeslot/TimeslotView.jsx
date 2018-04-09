@@ -71,7 +71,7 @@ class TimeslotView extends Component {
           data: oldData,
           // show StatusMessage on success
           message: {
-            text: 'Saved',
+            text: `Saved from ${parseTimeStamp(startAvail)} to ${parseTimeStamp(endAvail)}`,
             type: 'success',
           },
         });

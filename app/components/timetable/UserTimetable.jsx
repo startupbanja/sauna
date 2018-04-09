@@ -46,14 +46,14 @@ export default class Usertimetable extends React.Component {
         });
       }
     }
-
     return (
       <div>
-        <div className="timetable-header-style">{this.state.date}</div>
+        <div className="timetable-header-style">{this.state.date.split('-').reverse().join('.')}</div>
         {this.state.timetable.map(b => (
           <div id="figure" key={b.name}>
             <div>
-              <img className="timetable-list-avatar" src={b.image || defaultImg} alt="" />
+              {/* only show image if name !== 'BREAK' */}
+              {b.name !== 'BREAK' && <img className="timetable-list-avatar" src={b.image || defaultImg} alt="" />}
               <figcaption className="timetable-name-style">{b.name}</figcaption>
               <div className="timetable-text-style">
                 {b.startTime.substr(0, 5)} - {b.endTime.substr(0, 5)}

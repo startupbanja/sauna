@@ -81,8 +81,8 @@ export default class UserList extends React.Component {
           (
             <Link
               key={user.name}
-              to={`${this.props.match.url}/${user.id}`}
-              href={`${this.props.match.url}/${user.id}`}
+              to={`user/${user.id}`}
+              href={`user/${user.id}`}
             >
               <UserListItem
                 name={user.name}
@@ -101,5 +101,4 @@ export default class UserList extends React.Component {
 
 UserList.propTypes = {
   type: PropTypes.string.isRequired,
-  match: PropTypes.object.isRequired, // eslint-disable-line react/forbid-prop-types
 };

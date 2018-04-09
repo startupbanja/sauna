@@ -18,7 +18,7 @@ class ComingUpCarousel extends Component {
     }
 
     const indicators = [];
-    const items = [];
+    let items = [];
     // go through data and create elements for indicators and ScheduleItems
     for (let i = 0; i < data.length; i += 1) {
       let className = '';
@@ -62,6 +62,22 @@ class ComingUpCarousel extends Component {
       );
       items.push(item);
     }
+    // if can't create a full carousel item
+    if (data.length < 3) {
+      const col = (data.length === 2) ? 'col-xs-6' : 'col-xs-12';
+      items = data.map(a => (
+        <div className={`unrolling-item ${col}`} key={a.index}>
+          <ScheduleItem
+            type="meeting"
+            time={{
+              start: new Date(`${this.props.date}T${a.startTime}`),
+              end: new Date(`${this.props.date}T${a.endTime}`),
+            }}
+            name={a.name}
+          />
+        </div>
+      ));
+    }
 
     const dateOptions = {
       weekday: 'short',
@@ -81,12 +97,24 @@ class ComingUpCarousel extends Component {
           <div className="carousel-inner">
             {items}
           </div>
-          <a className="left carousel-control" href="#theComingUpCarousel" data-slide="prev">
-            <i className="glyphicon glyphicon-chevron-left" />
-          </a>
-          <a className="right carousel-control" href="#theComingUpCarousel" data-slide="next">
-            <i className="glyphicon glyphicon-chevron-right" />
-          </a>
+          {(data.length > 3) && [
+            <a
+              className="left carousel-control"
+              href="#theComingUpCarousel"
+              data-slide="prev"
+              key="prev"
+            >
+              <i className="glyphicon glyphicon-chevron-left" />
+            </a>,
+            <a
+              className="right carousel-control"
+              href="#theComingUpCarousel"
+              data-slide="next"
+              key="next"
+            >
+              <i className="glyphicon glyphicon-chevron-right" />
+            </a>,
+          ]}
         </div>
       </div>
     );

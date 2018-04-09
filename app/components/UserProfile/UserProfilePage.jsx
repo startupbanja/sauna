@@ -27,7 +27,6 @@ class UserProfilePage extends Component {
       canModify: false,
       canResetPW: false,
       titles: [],
-      modifying: false,
     };
   }
 
@@ -42,9 +41,11 @@ class UserProfilePage extends Component {
 
   // change between editing and displaying
   toggleEdit() {
-    this.setState({
-      modifying: !this.state.modifying,
-    });
+    if (this.props.edit === 'edit') {
+      this.props.history.goBack();
+    } else {
+      window.location.href += '/edit';
+    }
   }
 
   resetPassword() {
@@ -100,11 +101,18 @@ class UserProfilePage extends Component {
           canResetPW: responseJSON.canResetPW,
           titles: [responseJSON.company],
         });
+      })
+      .catch(() => {
+        this.setState({ invalidId: true });
       });
   }
 
   handleSubmit(data) {
-    if (this.state.userType === 'coach' && !data.site.split('//')[1].startsWith('linkedin.com')) {
+    // linkedin link can be either empty or must include the string linkedin
+    const validLinkedin = !data.site || data.site.toLowerCase().includes('linkedin');
+
+    // check that we have valid linkein link if userType is coach
+    if (this.state.userType === 'coach' && !validLinkedin) {
       this.setState({
         message: {
           type: 'error',
@@ -122,7 +130,6 @@ class UserProfilePage extends Component {
             type: statusType,
             text: res.message,
           },
-          modifying: false,
         });
         this.fetchData();
       } else {
@@ -137,7 +144,10 @@ class UserProfilePage extends Component {
   }
 
   render() {
-    if (this.state.modifying) {
+    if (this.state.invalidId) {
+      return <p className="empty-content-text">Invalid user id</p>;
+    }
+    if (this.props.edit === 'edit' && this.state.canModify) {
       return (
         <div>
           <StatusMessage message={this.state.message} />
@@ -179,10 +189,15 @@ class UserProfilePage extends Component {
 
 UserProfilePage.propTypes = {
   id: PropTypes.string,
+  edit: PropTypes.string,
+  history: PropTypes.shape({
+    goBack: PropTypes.func,
+  }).isRequired,
 };
 
 UserProfilePage.defaultProps = {
   id: undefined,
+  edit: undefined,
 };
 
 export default UserProfilePage;
