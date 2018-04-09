@@ -104,7 +104,11 @@ class UserProfilePage extends Component {
   }
 
   handleSubmit(data) {
-    if (this.state.userType === 'coach' && !data.site.split('//')[1].startsWith('linkedin.com')) {
+    // linkedin link can be either empty or must include the string linkedin
+    const validLinkedin = !data.site || data.site.toLowerCase().includes('linkedin');
+
+    // check that we have valid linkein link if userType is coach
+    if (this.state.userType === 'coach' && !validLinkedin) {
       this.setState({
         message: {
           type: 'error',

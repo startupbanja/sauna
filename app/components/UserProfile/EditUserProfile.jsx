@@ -75,8 +75,8 @@ class EditUserProfile extends Component {
   handleSubmit() {
     const input = this.getInputData();
 
-    // Adds the scheme part of the URL in case it's missing.
-    if (!input.site.startsWith('http://') && !input.site.startsWith('https://')) {
+    // Adds the scheme part of the URL in case it's missing. Don't add if site is empty
+    if (input.site && !input.site.startsWith('http://') && !input.site.startsWith('https://')) {
       input.site = 'http://'.concat(input.site);
     }
 
