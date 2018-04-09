@@ -178,6 +178,7 @@ app.post('/create_user', (req, res, next) => {
     const userInfo = req.body;
     try {
       userInfo.email = userInfo.email.toLowerCase();
+      userInfo.password = defaultPassword;
     } catch (error) {
       return next(error);
     }
