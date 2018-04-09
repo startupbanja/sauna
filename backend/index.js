@@ -184,12 +184,12 @@ app.get('/profile', (req, res, next) => {
   // make sure id is a number, which means it is possibly a valid id
   id = parseInt(id, 10);
   if (Number.isNaN(id)) {
-    return res.sendStatus(404);
+    return res.sendStatus(400);
   }
   return database.getProfile(id, (err, result) => {
     if (err) return next(err);
 
-    if (result === undefined) return res.sendStatus(404);
+    if (result === undefined) return res.sendStatus(400);
     // set canModify flag if user is admin or viewing own profile
     if (req.session.userID === id || req.session.userType === 'admin') {
       if (req.session.userType === 'admin') {
@@ -217,7 +217,7 @@ app.get('/activeStatuses', (req, res, next) => {
 
 
 app.get('/timetable', (req, res, next) => {
-  if (!isDate(req.query.date)) return res.sendStatus(404);
+  if (!isDate(req.query.date)) return res.sendStatus(400);
   const allMeetings = [];
   return database.getUserMap((err, keys) => {
     if (err) return next(err);
@@ -551,7 +551,7 @@ app.post('/insertAvailability', (req, res, next) => {
   const userId = req.session.userID;
   const date = req.body.date;
   const startTime = req.body.start;
-  if (!isDate(date)) return res.sendStatus(404);
+  if (!isDate(date)) return res.sendStatus(400);
   let duration = (new Date(`${date}T${req.body.end}`).getTime() - new Date(`${date}T${startTime}`).getTime());
   duration = parseInt(duration / 60000, 10);
   database.insertAvailability(userId, date, startTime, duration, (err, result) => {
