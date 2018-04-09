@@ -149,7 +149,7 @@ function getProfile(id, callback) {
   const query = {
     name: 'get-profile',
     text: `
-    SELECT name, img_url, description, email, website, CredentialsListEntries.title, CredentialsListEntries.content
+    SELECT type, name, img_url, description, email, website, CredentialsListEntries.title, CredentialsListEntries.content
     FROM Users
     LEFT OUTER JOIN Profiles ON Users.id = Profiles.user_id
     LEFT OUTER JOIN CredentialsListEntries ON Users.id = CredentialsListEntries.user_id
@@ -199,7 +199,7 @@ function getFeedback(id, callback) {
   const query = {
     name: 'get-feedback',
     text: `
-      SELECT date, time, id AS meetingId, user_id, name, description, rating, img_url AS image_src
+      SELECT date, time, id AS meetingid, user_id, name, description, rating, img_url AS image_src
       FROM
         (SELECT date, time, id,
             CASE
@@ -338,7 +338,7 @@ function giveFeedback(meetingId, rating, field, callback) {
     getIDs(([startupID, coachID]) => {
       insertRating(startupID, coachID, () => {
         updateRating(startupID, coachID, () => {
-          callback(null, { status: 'success' });
+          callback(null, 'success');
         });
       });
     });

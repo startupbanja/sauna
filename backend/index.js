@@ -465,6 +465,7 @@ app.post('/giveFeedback', (req, res, next) => {
   const userType = req.session.userType;
   const meetingId = req.body.meetingId;
   const rating = req.body.rating;
+  console.log(req.body);
   // TODO we are not checking if user is one of the attendants of the meeting
   database.giveFeedback(meetingId, rating, (userType === 'coach') ? 'coach_rating' : 'startup_rating', (err, result) => {
     if (err) return next(err);
