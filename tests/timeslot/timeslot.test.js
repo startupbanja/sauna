@@ -53,7 +53,7 @@ test.skip('Timeslot initializes correctly', () => {
   expect(tree).toMatchSnapshot();
 });
 
-test.skip('Timeslot handles change correctly', () => {
+test('Timeslot handles change correctly', () => {
   const onSubmit = jest.fn();
   const timeslot = shallow(<Timeslot
     date={new Date(2018, 4, 28)}
@@ -77,6 +77,5 @@ test.skip('Timeslot handles change correctly', () => {
   timeslot.instance().handleChange('end', 26);
   expect(timeslot.state().available).toEqual({ start: 610, end: 711 });
   timeslot.instance().handleChange('start', 130);
-  expect(timeslot.state().available).toEqual({ start: 720, end: 720 });
-  expect(timeslot).toMatchSnapshot();
+  expect(timeslot.state().available).toEqual({ start: 711, end: 711 });
 });
