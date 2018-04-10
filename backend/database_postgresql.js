@@ -562,7 +562,7 @@ function getGivenFeedbacks(callback) {
           client.query(query, (err3, res) => {
             if (err3) callback(err3);
             else {
-              callback(err3, { date, rows: res.rows });
+              callback(err3, { date, result: res.rows });
             }
             client.end();
           });
