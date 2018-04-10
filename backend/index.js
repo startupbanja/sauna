@@ -609,6 +609,11 @@ app.post('/updateProfile', (req, res, next) => {
   );
 });
 
+app.get('/download', (req, res, next) => {
+  requireAdmin(req, res);
+  res.download('./exports/download_test.txt');
+});
+
 // Error handling
 app.use((err, req, res, next) => {
   if (err) {
