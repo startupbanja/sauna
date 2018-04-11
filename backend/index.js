@@ -611,7 +611,7 @@ app.post('/updateProfile', (req, res, next) => {
 
 // Creates a string equivalent to the contents of the CSV file.
 function createCSV(data) {
-  let csv = 'Coach; Startup; Coach\'s rating; Startup\'s rating\n';
+  let csv = 'Date; Coach; Startup; Coach\'s rating; Startup\'s rating\n';
   data.forEach((row) => {
     const rowAsCSV = Object.values(row).join(';').concat('\n');
     csv = csv.concat(rowAsCSV);

@@ -378,7 +378,7 @@ function getGivenFeedbacks(callback) {
 }
 
 function getFeedbacksForDate(date, callback) {
-  const query = `SELECT CoachProfiles.name AS Coach, StartupProfiles.name AS Startup, coach_rating, startup_rating
+  const query = `SELECT Meetings.date AS Date, CoachProfiles.name AS Coach, StartupProfiles.name AS Startup, coach_rating, startup_rating
     FROM Meetings
     INNER JOIN CoachProfiles ON Meetings.coach_id = CoachProfiles.user_id
     INNER JOIN StartupProfiles ON Meetings.startup_id = StartupProfiles.user_id
@@ -386,7 +386,7 @@ function getFeedbacksForDate(date, callback) {
       SELECT MAX(Date) FROM MeetingDays WHERE Date < date(?))`;
   db.all(query, [date], (err, result) => {
     if (err) return callback(err);
-    return callback(null, { date, result });
+    return callback(null, { result });
   });
 }
 
