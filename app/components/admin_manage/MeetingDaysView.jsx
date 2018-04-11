@@ -96,11 +96,8 @@ class MeetingDaysView extends Component {
   }
 
   handleNewMeetingDaySubmit() {
-    // remove the transparent gray backround of modal
-    const modal = $('#newMeetingDayModal');
-    modal.removeClass('in');
-    modal.addClass('out');
-    $('.modal-backdrop').remove();
+    // Close the modal
+    $('#newMeetingDayButton').click();
 
     this.fetchScheduledDays();
     this.fetchAvailabilityStats();
@@ -196,6 +193,7 @@ class MeetingDaysView extends Component {
           <p><span className="number">{this.state.days.length}</span> upcoming meeting days</p>
           <div className="btn-container">
             <button
+              id="newMeetingDayButton"
               type="button"
               className="btn btn-minor meeting-button"
               data-toggle="modal"
