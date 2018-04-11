@@ -14,7 +14,7 @@ which is an array following format:
 */
 function runMatchmaking(paramData, slotSize, callback) {
   const filename = './run_matchmaking.py';
-  const newProcess = childProcess.spawn('python3', [filename]);
+  const newProcess = childProcess.spawn('python', [filename]);
   let storage = [];
   newProcess.stdout.on('data', (data) => {
     storage += data;
