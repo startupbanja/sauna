@@ -8,7 +8,7 @@ import pageContent from '../pageContent';
 // Component to view info about a meeting, including coach availability status
 // and previous feedback status if applicable.
 export default class MeetingDetailView extends React.Component {
-  static testDL(meetingDate) {
+  static downloadCSV(meetingDate) {
     pageContent.fetchData('/exportFeedback', 'GET', { date: meetingDate }).then((response) => {
       const a = document.createElement('a');
       const file = new Blob([response], { type: 'text/csv' });
@@ -171,7 +171,7 @@ export default class MeetingDetailView extends React.Component {
         </Link>
         <button
           className="btn btn-major"
-          onClick={() => MeetingDetailView.testDL(this.props.date)}
+          onClick={() => MeetingDetailView.downloadCSV(this.props.date)}
         >
           Export feedbacks from previous meeting
         </button>
