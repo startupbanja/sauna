@@ -79,32 +79,32 @@ class EditUserProfile extends Component {
     if (!input.site.startsWith('http://') && !input.site.startsWith('https://')) {
       input.site = 'http://'.concat(input.site);
     }
-    console.log(input);
     // URL encode the fields
+    // for arrays and objects only encode the contents
+    const dataToPass = {};
     Object.keys(input).forEach((key) => {
       switch (key) {
         // titles is an array
         case 'titles':
-          input[key] = input[key].map(title => encodeURIComponent(title));
+          dataToPass[key] = input[key].map(title => encodeURIComponent(title));
           break;
-        // credentials is an object
+        // credentials is an array of objects
         case 'credentials':
-          input[key] = input[key].map((obj) => {
-            const newObj = obj;
+          dataToPass[key] = input[key].map((obj) => {
+            const newObj = {};
             Object.keys(obj).forEach((k) => {
-              newObj[k] = encodeURIComponent(input[key][k]);
+              newObj[k] = encodeURIComponent(obj[k]);
             });
             return newObj;
           });
           break;
         default:
-          input[key] = encodeURIComponent(input[key]);
+          dataToPass[key] = encodeURIComponent(input[key]);
           break;
       }
     });
-    const toBeAdded = { uid: this.props.id, type: this.props.type };
-    const dataToPass = Object.assign(input, toBeAdded);
-    console.log(dataToPass);
+    dataToPass.uid = this.props.id;
+    dataToPass.type = this.props.type;
     this.props.handleSubmit(dataToPass);
   }
 
