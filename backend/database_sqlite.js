@@ -309,16 +309,21 @@ function removeMeetingDay(date, callback) {
 
 // get all meetingdays in the future together with a flag indicating if matchmaking was run
 // on them
-function getComingMeetingDays(userId, callback) {
+function getMeetingDays(userId, onlyUpcoming, callback) {
+  const dateComparison = onlyUpcoming ? '>=' : '<=';
   const query = `SELECT MeetingDays.date, startTime, endTime, split, time, duration, matchmakingDone
     FROM Users
     LEFT OUTER JOIN MeetingDays
     LEFT OUTER JOIN Timeslots on Timeslots.date = MeetingDays.date AND Timeslots.user_id = Users.id
-    WHERE Users.id = ? AND MeetingDays.date >= date("now")`;
+    WHERE Users.id = ? AND MeetingDays.date ${dateComparison} date("now")`;
   db.all(query, [userId], (err, result) => {
     if (err) return callback(err);
     return callback(err, result);
   });
+}
+
+function getComingMeetingDays(userId, callback) {
+  getMeetingDays(userId, true, callback);
 }
 
 function getComingDates(callback) {
@@ -956,6 +961,7 @@ module.exports = {
   createMeetingDay,
   removeMeetingDay,
   getComingMeetingDays,
+  getMeetingDays,
   insertAvailability,
   getTimetable,
   getActiveStatuses,
