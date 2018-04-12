@@ -311,7 +311,7 @@ function removeMeetingDay(date, callback) {
 // on them
 function getMeetingDays(userId, onlyUpcoming, callback) {
   const dateComparison = onlyUpcoming ? '>=' : '<=';
-  const query = `SELECT MeetingDays.date, startTime, endTime, split, time, duration, matchmakingDone
+  const query = `SELECT MeetingDays.date, startTime, endTime, split, time, duration, matchmakingDone as matchmakingdone
     FROM Users
     LEFT OUTER JOIN MeetingDays
     LEFT OUTER JOIN Timeslots on Timeslots.date = MeetingDays.date AND Timeslots.user_id = Users.id

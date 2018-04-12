@@ -90,6 +90,7 @@ class MeetingDaysView extends Component {
         if (arr.length > 0) {
           const first = arr[0];
           // convert to boolean
+          console.log(first.matchmakingdone);
           canRun = first.matchmakingdone === 0;
         }
         this.setState({
@@ -175,7 +176,7 @@ class MeetingDaysView extends Component {
           {/* link to details page, the first item has modified link */}
           <Link
             className="btn btn-minor meeting-button"
-            to={`/meetings/${!index ? 'recent/' : ''}${this.state.days[index].date}/`}
+            to={`/meetings/${!index && this.state.viewingFuture ? 'recent/' : ''}${this.state.days[index].date}/`}
           >
             View details
           </Link>
