@@ -104,7 +104,7 @@ class UserProfilePage extends Component {
   }
 
   handleSubmit(data) {
-    if (this.state.userType === 'coach' && !data.site.split('//')[1].startsWith('linkedin.com')) {
+    if (this.state.userType === 'coach' && !data.site.includes('linkedin.com')) {
       this.setState({
         message: {
           type: 'error',
