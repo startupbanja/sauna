@@ -572,6 +572,35 @@ function getGivenFeedbacks(callback) {
   });
 }
 
+function getFeedbacksForDate(date, callback) {
+  const client = getClient();
+  const query = {
+    text:
+    `SELECT Meetings.date AS Date, P1.name AS Coach, P2.name AS Startup, coach_rating, startup_rating
+    FROM Meetings, Profiles P1, Profiles P2
+    WHERE P1.user_id = Meetings.coach_id
+    AND P2.user_id = Meetings.startup_id
+    AND Meetings.date = (
+      SELECT MAX(Date) FROM MeetingDays WHERE Date < $1);`,
+    values: [date],
+  };
+
+  client.connect((err) => {
+    if (err) {
+      client.end();
+      return callback(err);
+    }
+
+    client.query(query, (err2, res) => {
+      if (err2) {
+        return callback(err2);
+      }
+      callback(err2, { result: res.rows });
+      client.end();
+    });
+  });
+}
+
 // Adds availability for a user to Timeslots table
 function insertAvailability(userId, date, startTime, duration, callback) {
   const client = getClient();
@@ -1386,6 +1415,7 @@ module.exports = {
   getComingTimeslots,
   getLastMeetingday,
   getGivenFeedbacks,
+  getFeedbacksForDate,
   insertAvailability,
   updateCredentialsListEntries,
   updateProfile,

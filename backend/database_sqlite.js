@@ -377,6 +377,19 @@ function getGivenFeedbacks(callback) {
   });
 }
 
+function getFeedbacksForDate(date, callback) {
+  const query = `SELECT Meetings.date AS Date, CoachProfiles.name AS Coach, StartupProfiles.name AS Startup, coach_rating, startup_rating
+    FROM Meetings
+    INNER JOIN CoachProfiles ON Meetings.coach_id = CoachProfiles.user_id
+    INNER JOIN StartupProfiles ON Meetings.startup_id = StartupProfiles.user_id
+    WHERE Meetings.date = (
+      SELECT MAX(Date) FROM MeetingDays WHERE Date < date(?))`;
+  db.all(query, [date], (err, result) => {
+    if (err) return callback(err);
+    return callback(null, { result });
+  });
+}
+
 function insertAvailability(userId, date, startTime, duration, callback) {
   const query = `INSERT INTO Timeslots(user_id, date, time, duration)
     VALUES (?, ?, ?, ?)`;
@@ -951,6 +964,7 @@ module.exports = {
   getComingDates,
   getComingTimeslots,
   getGivenFeedbacks,
+  getFeedbacksForDate,
   setActiveStatus,
   getUserMeetings,
   getMeetingDuration,

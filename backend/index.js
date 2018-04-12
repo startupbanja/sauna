@@ -609,6 +609,27 @@ app.post('/updateProfile', (req, res, next) => {
   );
 });
 
+// Creates a string equivalent to the contents of the CSV file.
+function createCSV(data) {
+  let csv = 'Date; Coach; Startup; Coach\'s rating; Startup\'s rating\n';
+  data.forEach((row) => {
+    const rowAsCSV = Object.values(row).join(';').concat('\n');
+    csv = csv.concat(rowAsCSV);
+  });
+  return csv;
+}
+
+app.get('/exportFeedback', (req, res, next) => {
+  requireAdmin(req, res);
+  database.getFeedbacksForDate(req.query.date, (err, response) => {
+    if (err) return next(err);
+    // console.log(response.result);
+    const csv = createCSV(response.result);
+    return res.json(csv);
+  });
+});
+
+
 // Error handling
 app.use((err, req, res, next) => {
   if (err) {

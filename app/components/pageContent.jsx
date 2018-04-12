@@ -161,7 +161,11 @@ function fetchData(path, methodType, params) {
     }).then((response) => {
       switch (response.status) {
         case 200:
-          resolve(response.json());
+          if (response.headers.get('Content-Type').split(';')[0] === 'text/plain') {
+            resolve(response.blob());
+          } else {
+            resolve(response.json());
+          }
           break;
         case 401:
         // if user is not logged in log out in App

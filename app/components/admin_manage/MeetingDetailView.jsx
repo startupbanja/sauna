@@ -8,6 +8,16 @@ import pageContent from '../pageContent';
 // Component to view info about a meeting, including coach availability status
 // and previous feedback status if applicable.
 export default class MeetingDetailView extends React.Component {
+  static downloadCSV(meetingDate) {
+    pageContent.fetchData('/exportFeedback', 'GET', { date: meetingDate }).then((response) => {
+      const a = document.createElement('a');
+      const file = new Blob([response], { type: 'text/csv' });
+      a.href = URL.createObjectURL(file);
+      a.download = 'Feedbacks_export.csv';
+      a.click();
+    });
+  }
+
   constructor(props) {
     super(props);
     // feedbacks is first either true or false, then when fetched, contains feedback data
@@ -65,6 +75,7 @@ export default class MeetingDetailView extends React.Component {
         this.setState({ feedbacks: response });
       });
   }
+
 
   render() {
     if (!(this.state.availabilities && this.state.feedbacks)) {
@@ -158,6 +169,12 @@ export default class MeetingDetailView extends React.Component {
         >
           View timetable
         </Link>
+        <button
+          className="btn btn-major"
+          onClick={() => MeetingDetailView.downloadCSV(this.props.date)}
+        >
+          Export feedbacks from previous meeting
+        </button>
         <div className="row">
           <div className="col-md-6">
             <h3>Availabilities for this meeting:</h3>
