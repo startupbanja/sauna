@@ -19,7 +19,7 @@ CREATE TABLE Users(
 
 CREATE TABLE CoachProfiles(
     user_id INT,
-    name VARCHAR(30) NOT NULL,
+    name VARCHAR(30) UNIQUE NOT NULL,
     img_url VARCHAR(100),
     description VARCHAR(1000),
     company VARCHAR(20),
@@ -30,7 +30,7 @@ CREATE TABLE CoachProfiles(
 
 CREATE TABLE StartupProfiles(
     user_id INT,
-    name VARCHAR(30) NOT NULL,
+    name VARCHAR(30) UNIQUE NOT NULL,
     img_url VARCHAR(100),
     description VARCHAR(1000),
     email VARCHAR(50) NOT NULL,

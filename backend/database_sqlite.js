@@ -890,27 +890,33 @@ function addProfile(userInfo, callback) {
 function addUser(userInfo, callback) {
   db.get('SELECT * FROM Users WHERE username=?', [userInfo.email], (err, row) => {
     if (row === undefined) {
-      const password = bcrypt.hashSync('abc123', 10);
-      let type;
-      switch (userInfo.type) {
-        case 'coach':
-          type = 1;
-          break;
-        case 'startup':
-          type = 2;
-          break;
-        default:
-      }
+      db.get('SELECT * FROM Profiles WHERE name=?', [userInfo.name], (err2, row2) => {
+        if (row2 === undefined) {
+          const password = bcrypt.hashSync('abc123', 10);
+          let type;
+          switch (userInfo.type) {
+            case 'coach':
+              type = 1;
+              break;
+            case 'startup':
+              type = 2;
+              break;
+            default:
+          }
 
-      const insertSQL = 'INSERT INTO Users(type, username, password, active) VALUES(?, ?, ?, ?);';
+          const insertSQL = 'INSERT INTO Users(type, username, password, active) VALUES(?, ?, ?, ?);';
 
-      db.run(insertSQL, [type, userInfo.email, password, 0], (e) => {
-        if (!e) {
-          addProfile(userInfo, callback);
+          db.run(insertSQL, [type, userInfo.email, password, 0], (e) => {
+            if (!e) {
+              addProfile(userInfo, callback);
+            } else {
+              callback(err, null);
+            }
+            return undefined;
+          });
         } else {
-          callback(err, null);
+          callback(err2, { type: 'ERROR', message: 'A user with that name already exists!' });
         }
-        return undefined;
       });
     } else {
       callback(err, { type: 'ERROR', message: 'A user with that email already exists!' });

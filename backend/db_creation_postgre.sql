@@ -9,7 +9,7 @@ CREATE TABLE Users(
 -- img_url null => user default image
 CREATE TABLE Profiles(
   user_id INT PRIMARY KEY REFERENCES Users(id),
-  name VARCHAR NOT NULL,
+  name VARCHAR UNIQUE NOT NULL,
   description VARCHAR DEFAULT '',
   img_url VARCHAR,
   title VARCHAR DEFAULT '',
