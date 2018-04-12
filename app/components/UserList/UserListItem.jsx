@@ -7,12 +7,14 @@ class UserListItem extends Component {
   render() {
     return (
       <div className="fullwidth list-text-style" >
-        <img
-          className="list-avatar img-responsive"
-          src={this.props.imageSrc || defaultImg}
-          alt="User profile"
-        />
-        <div>
+        <div className="list-img-container">
+          <img
+            className="list-avatar img-responsive"
+            src={this.props.imageSrc || defaultImg}
+            alt="User profile"
+          />
+        </div>
+        <div className="text-style">
           <div>
             <span className="list-header">{this.props.name}</span>
           </div>

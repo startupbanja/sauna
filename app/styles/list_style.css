@@ -1,5 +1,5 @@
 .list-avatar {
-  width: 40%;
+  width: 100%;
   display: block;
   float: left;
   margin-right: 3%;
@@ -7,14 +7,25 @@
 
 div.text-style {
   display: inline-block;
+  width: 55%;
+  top: 100px;
+  float: right;
 }
 
 .list-text-style {
  font-size: 1.4em;
  color: var(--light-gray);
- float: right;
+ float: left;
  margin-top: 5%;
 }
+
+.list-img-container {
+  min-height: 200px;
+  width: 40%;
+  display: inline-block;
+  margin-right: 5%;
+}
+
 
 .list-header {
   color: var(--primary-color);
