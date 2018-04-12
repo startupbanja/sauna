@@ -1299,7 +1299,7 @@ function getMapping(callback) {
 
   client.connect((connErr) => {
     if (connErr) return callback(connErr);
-    client.query(query, (err, result) => {
+    return client.query(query, (err, result) => {
       if (err) return callback(err);
       result.rows.forEach((row) => {
         if (row.type === startupType) {
@@ -1363,15 +1363,24 @@ function addUser(userInfo, callback) {
   }
   const client = getClient();
   // checks if there already exists a user with that email, returns an error msg in callback if so
+  // callback params: (databaseError, nonUniqueError)
   function check(cb) {
-    const q = {
+    const emailQ = {
       text: 'SELECT * FROM Users where email = $1;',
       values: [userInfo.email],
-    }
-    client.query(q, (err, result) => {
+    };
+    const nameQ = {
+      text: 'SELECT * FROM Profiles where name = $1;',
+      values: [userInfo.name],
+    };
+    client.query(emailQ, (err, result) => {
       if (err) return cb(err);
       if (result.rowCount !== 0) return cb(null, { type: 'ERROR', message: 'A user with that email already exists!' });
-      return cb(null, null);
+      return client.query(nameQ, (nameErr, result2) => {
+        if (nameErr) return cb(nameErr);
+        if (result2.rowCount !== 0) return cb(null, { type: 'ERROR', message: 'A user with that name already exists!' });
+        return cb(null, null);
+      });
     });
   }
   // hash password
