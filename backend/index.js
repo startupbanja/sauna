@@ -211,6 +211,8 @@ app.get('/profile', (req, res, next) => {
     if (req.session.userID === id || req.session.userType === 'admin') {
       if (req.session.userType === 'admin') {
         Object.assign(result, { canResetPW: true });
+      } else {
+        Object.assign(result, { canResetPW: false });
       }
       Object.assign(result, { canModify: true });
     }
@@ -583,7 +585,7 @@ app.post('/updateProfile', (req, res, next) => {
   userType = userType.replace(userType[0], userType[0].toUpperCase());
   const uid = JSONObject.uid !== undefined ? JSONObject.uid : req.session.userID;
 
-  if (uid !== req.session.userID && req.session.userType !== 'admin') return res.sendStatus(403);
+  if (parseInt(uid, 10) !== req.session.userID && req.session.userType !== 'admin') return res.sendStatus(403);
 
   const site = JSONObject.site;
   const imgURL = JSONObject.img_url;

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import $ from 'jquery';
+import { Link } from 'react-router-dom';
 import Button from '../Button';
 
 // view for editing users' profile
@@ -75,8 +76,8 @@ class EditUserProfile extends Component {
   handleSubmit() {
     const input = this.getInputData();
 
-    // Adds the scheme part of the URL in case it's missing.
-    if (!input.site.startsWith('http://') && !input.site.startsWith('https://')) {
+    // Adds the scheme part of the URL in case it's missing. Don't add if site is empty
+    if (input.site && !input.site.startsWith('http://') && !input.site.startsWith('https://')) {
       input.site = 'http://'.concat(input.site);
     }
     // URL encode the fields
@@ -192,6 +193,11 @@ class EditUserProfile extends Component {
           <span className="glyphicon glyphicon-plus-sign" />
           Add a {removeText}
         </button>
+        {!this.props.canResetPW &&
+          <Link className="btn btn-minor" href="/change_password" to="/change_password">
+            Change Password
+          </Link>
+        }
         <div className="control-buttons">
           <Button
             className="btn btn-lg btn-major save-button"
@@ -213,7 +219,7 @@ EditUserProfile.propTypes = {
   type: PropTypes.string.isRequired,
   id: PropTypes.string,
   name: PropTypes.string.isRequired,
-  imgSrc: PropTypes.string.isRequired,
+  imgSrc: PropTypes.string,
   linkedIn: PropTypes.string,
   description: PropTypes.string,
   titles: PropTypes.arrayOf(PropTypes.string),
@@ -234,6 +240,7 @@ EditUserProfile.defaultProps = {
   description: '',
   titles: [],
   credentials: [],
+  imgSrc: null,
 };
 
 export default EditUserProfile;

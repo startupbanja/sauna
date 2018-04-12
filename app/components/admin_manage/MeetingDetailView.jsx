@@ -79,6 +79,9 @@ export default class MeetingDetailView extends React.Component {
     const list = this.state.availabilities[this.props.date] ?
       Object.entries(this.state.availabilities[this.props.date]) : [];
 
+    // Sort list alphabetically by name
+    list.sort((a, b) => a[0].localeCompare(b[0]));
+
     let stringFb = '';
     let stringAvb = '';
 

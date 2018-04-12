@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch } from 'react-router-dom';
 import FeedbackView from './feedback/FeedbackView';
 import LandingPage from './landing/LandingPage';
 import UserProfilePage from './UserProfile/UserProfilePage';
@@ -20,43 +20,45 @@ import AdminLandingPage from './landing/AdminLandingPage';
 
 
 // react router Switch that contains all the user views
-/* eslint-disable */
 const userContent = [
-  <Route path="/coaches/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />,
+  <Route
+    path="/user/:id(\d+)?/:edit?"
+    render={({ match, history }) =>
+      <UserProfilePage id={match.params.id} edit={match.params.edit} history={history} />}
+    key="user"
+  />,
   <Route
     exact
     path="/coaches"
-    render={({ match }) => <UserList match={match} type="Coaches" />}
+    render={() => <UserList type="Coaches" />}
+    key="coaches"
   />,
-  <Route path="/startups/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />,
   <Route
     exact
     path="/startups"
-    render={({ match }) => <UserList match={match} type="Startups" />}
+    render={() => <UserList type="Startups" />}
+    key="startups"
   />,
-  <Route path="/timetable" render={() => <UserTimetable />} />,
-  <Route path="/user" component={UserProfilePage} />,
-  <Route path="/feedback" render={() => <FeedbackView />} />,
-  <Route path="/change_password" component={PasswordChange} />,
+  <Route path="/timetable" render={() => <UserTimetable />} key="ttable" />,
+  <Route path="/feedback" render={() => <FeedbackView />} key="feeds" />,
+  <Route path="/change_password" component={PasswordChange} key="cp" />,
+  <Redirect to="/" key="redir" />,
 ];
 const coachContent = [
-  <Route path="/availability" component={TimeslotView} />,
-  <Route exact path="/" render={() => <LandingPage type="coach" />} />,
+  <Route path="/availability" component={TimeslotView} key="avail" />,
+  <Route exact path="/" render={() => <LandingPage type="coach" />} key="land" />,
 ];
 const startupContent = [
-  <Route exact path="/" render={() => <LandingPage type="startup" />} />,
+  <Route exact path="/" render={() => <LandingPage type="startup" />} key="land" />,
 ];
-/* eslint-enable */
 
 // object that links router paths to their display names in menu in user side
 const userLabels = {
-  '/': 'Home',
   '/timetable': 'Timetable',
   '/user': 'User Profile',
   '/feedback': 'Feedback',
   '/coaches': 'Coaches',
   '/startups': 'Startups',
-  '/change_password': 'Change password',
 };
 const coachLabels = {
   '/availability': 'Availability',
@@ -66,13 +68,16 @@ const coachLabels = {
 const adminContent = (
   <Switch>
     <Route exact path="/" component={AdminLandingPage} />
-    <Route path="/coaches/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />
+    <Route
+      path="/user/:id(\d+)?/:edit?"
+      render={({ match, history }) =>
+        <UserProfilePage id={match.params.id} edit={match.params.edit} history={history} />}
+    />,
     <Route
       exact
       path="/coaches"
       render={({ match }) => <UserList match={match} type="Coaches" />}
     />
-    <Route path="/startups/:id" render={({ match }) => <UserProfilePage id={match.params.id} />} />
     <Route
       exact
       path="/startups"
@@ -104,12 +109,12 @@ const adminContent = (
       render={() => <UserCreationPage />}
       type="Create User"
     />
+    <Redirect to="/" />
   </Switch>
 );
 
 // object that links router paths to their display names in menu in admin side
 const adminLabels = {
-  '/': 'Home',
   '/coaches': 'Coaches',
   '/startups': 'Startups',
   '/users': 'Users',
@@ -124,11 +129,11 @@ function getContent(userType) {
     return { content: adminContent, labels: adminLabels };
   }
   if (userType === 'coach') {
-    const content = userContent.concat(coachContent);
+    const content = coachContent.concat(userContent);
     const labels = Object.assign({}, userLabels, coachLabels);
     return { content: <Switch>{content}</Switch>, labels };
   }
-  const content = userContent.concat(startupContent);
+  const content = startupContent.concat(userContent);
   return { content: <Switch>{content}</Switch>, labels: userLabels };
 }
 
