@@ -9,7 +9,7 @@
   "scripts": {
     "start": "node index.js",
     "test": "jest",
-    "start-sqlite": "set USING_SQLITE=1 && node index.js"
+    "start-sqlite": "USING_SQLITE=1 node index.js"
   },
   "license": "ISC",
   "dependencies": {
