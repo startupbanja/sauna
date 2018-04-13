@@ -75,7 +75,7 @@ const adminContent = (
   <Switch>
     <Route exact path="/" component={AdminLandingPage} />
     <Route
-      path="/user/:id(\d+)?/:edit?"
+      path="/user/:id(\d+)/:edit?"
       render={({ match, history }) =>
         <UserProfilePage id={match.params.id} edit={match.params.edit} history={history} />}
     />,
