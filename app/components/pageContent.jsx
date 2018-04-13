@@ -23,7 +23,7 @@ import ErrorPage from './ErrorPage';
 // react router Switch that contains all the user views
 const userContent = [
   <Route
-    path="/user/:id(\d+)?/:edit?"
+    path="/user/:id?/:edit?"
     render={({ match, history }) =>
       <UserProfilePage id={match.params.id} edit={match.params.edit} history={history} />}
     key="user"
@@ -48,7 +48,7 @@ const userContent = [
     render={({ match }) => <ErrorPage errorCode={parseInt(match.params.id, 10)} />}
     key="error"
   />,
-  <Redirect to="error/404" key="redir" />,
+  <Redirect to="/error/404" key="redir" />,
 ];
 const coachContent = [
   <Route path="/availability" component={TimeslotView} key="avail" />,
@@ -75,7 +75,7 @@ const adminContent = (
   <Switch>
     <Route exact path="/" component={AdminLandingPage} />
     <Route
-      path="/user/:id(\d+)/:edit?"
+      path="/user/:id/:edit?"
       render={({ match, history }) =>
         <UserProfilePage id={match.params.id} edit={match.params.edit} history={history} />}
     />,
