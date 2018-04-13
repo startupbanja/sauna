@@ -1,6 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import DropdownList from './DropdownList';
+
+// get width of a text string inside a cell
+// uses the Canvas.measureText from HTML 5
+function getTextWidth(text) {
+  // re-use canvas object for better performance
+  const canvas = getTextWidth.canvas || (getTextWidth.canvas = document.createElement('canvas'));
+  const context = canvas.getContext('2d');
+  context.font = '14px "Helvetica Neue", Helvetica, Arial, sans-serif';
+  const metrics = context.measureText(text);
+  return metrics.width;
+}
+
 // translate the schedule from json to a jsx table
 // firstColumn is either 'startup' or 'coach'
 // params:
@@ -105,6 +117,10 @@ function translate(data, times, firstColumn, editable, editfunc, allUsers) {
     const namesInRow = [];
     row.forEach(cell => cell.forEach(x => x.name && namesInRow.push(x.name)));
     const meetings = row.map((cell, idx) => {
+      // width of the contents of an empty cell when rendered
+      // if editable need to account for editing buttons
+      const emptyWidth = 5 + 10 + (editable ? ((12 + 1) * 4) + 32 + 16 : 0);
+      let maxWidth = emptyWidth;
       const combinedCell = cell.map((x) => { // x : {name, time}
         i += 1;
         let name;
@@ -118,6 +134,8 @@ function translate(data, times, firstColumn, editable, editfunc, allUsers) {
         } else {
           name = x.name; // eslint-disable-line
           cn = 'full-cell';
+          // update maxWidth since x.name is a string
+          maxWidth = Math.max(maxWidth, emptyWidth + getTextWidth(x.name));
         }
         const choiceList = firstColumn === 'coach' ? startupList : coachList;
         // keys is used to identify the cell when editing
@@ -144,7 +162,7 @@ function translate(data, times, firstColumn, editable, editfunc, allUsers) {
               </div>}
           </div>);
       });
-      return (<td key={`${key}_${times[idx]}_combined`}>{combinedCell}</td>);
+      return (<td style={{ minWidth: maxWidth }}key={`${key}_${times[idx]}_combined`}>{combinedCell}</td>);
     });
     return (
       <tr key={`row_${key}`} className="body-row">
