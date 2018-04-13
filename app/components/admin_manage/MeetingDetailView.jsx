@@ -173,7 +173,7 @@ export default class MeetingDetailView extends React.Component {
           className="btn btn-major"
           onClick={() => MeetingDetailView.downloadCSV(this.props.date)}
         >
-          Export feedbacks from previous meeting
+          Export feedbacks (CSV)
         </button>
         <div className="row">
           <div className="col-md-6">
