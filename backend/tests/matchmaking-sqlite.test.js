@@ -1,4 +1,4 @@
-const database = require('../database.js');
+const database = require('../database_sqlite.js');
 const matchmaking = require('../matchmaking.js');
 // const index = require('./index.js');
 
@@ -11,7 +11,7 @@ describe('Run matchmaking with database data with different durations...', () =>
   beforeEach((done) => {
     database.createDatabase((err) => {
       if (err) return console.log(err);
-      database.initDB((err2) => {
+      return database.initDB((err2) => {
         if (err2) return console.log(err2);
         return done();
       });
@@ -22,7 +22,7 @@ describe('Run matchmaking with database data with different durations...', () =>
 
   const durationList = [5, 10, 20, 25, 30, 35, 60, 90];
   durationList.forEach((duration) => {
-    test.only(`Try with duration = ${duration}`, (done) => {
+    test(`Try with duration = ${duration}`, (done) => {
       let date = new Date();
       date.setDate(date.getDate() + 1);
       date = dateToString(date);

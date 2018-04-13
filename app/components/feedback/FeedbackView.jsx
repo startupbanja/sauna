@@ -42,7 +42,7 @@ export default class FeedbackView extends React.Component {
 
   submitCurrentForm(newRating) {
     pageContent.fetchData('/giveFeedback', 'post', {
-      meetingId: this.state.data[this.state.index].meetingId,
+      meetingId: this.state.data[this.state.index].meetingid,
       rating: newRating,
     }).then((result) => {
       // if uploaded successfully update state

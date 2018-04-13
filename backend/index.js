@@ -1,7 +1,7 @@
 const express = require('express');
 const readline = require('readline');
 const bodyParser = require('body-parser');
-const database = require('./database.js');
+const database = process.env.USING_SQLITE ? require('./database_sqlite.js') : require('./database_postgresql.js');
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 const matchmaking = require('./matchmaking.js');
@@ -10,13 +10,15 @@ const fs = require('fs');
 
 const app = express();
 
-database.createDatabase((err) => {
-  if (err) throw err;
-  database.initDB((err2) => {
-    if (err2) throw err2;
-    console.log('Data loaded');
+if (process.env.USING_SQLITE) {
+  database.createDatabase((err) => {
+    if (err) throw err;
+    database.initDB((err2) => {
+      if (err2) throw err2;
+      console.log('Data loaded');
+    });
   });
-});
+}
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -176,6 +178,7 @@ app.post('/create_user', (req, res, next) => {
     const userInfo = req.body;
     try {
       userInfo.email = userInfo.email.toLowerCase();
+      userInfo.password = defaultPassword;
     } catch (error) {
       return next(error);
     }
@@ -563,13 +566,25 @@ app.get('/getComingMeetingDays', (req, res, next) => {
   });
 });
 
+app.get('/getPastMeetingDays', (req, res, next) => {
+  // if (process.env.USING_SQLITE) {
+  //   return res.status(500).write('not implemented in sqlite');
+  // }
+  return database.getMeetingDays(req.session.userID, false, (err, result) => {
+    if (err) return next(err);
+    res.json(result);
+    return undefined;
+  });
+});
+
 /* Sets the users availability for a specific day */
 app.post('/insertAvailability', (req, res, next) => {
   const userId = req.session.userID;
   const date = req.body.date;
   const startTime = req.body.start;
+  const endTime = req.body.end;
   if (!isDate(date)) return res.sendStatus(404);
-  let duration = (new Date(`${date}T${req.body.end}`).getTime() - new Date(`${date}T${startTime}`).getTime());
+  let duration = (new Date(`${date}T${endTime}`).getTime() - new Date(`${date}T${startTime}`).getTime());
   duration = parseInt(duration / 60000, 10);
   database.insertAvailability(userId, date, startTime, duration, (err, result) => {
     if (err) return next(err);
@@ -604,6 +619,27 @@ app.post('/updateProfile', (req, res, next) => {
   );
 });
 
+// Creates a string equivalent to the contents of the CSV file.
+function createCSV(data) {
+  let csv = 'Date; Coach; Startup; Coach\'s rating; Startup\'s rating\n';
+  data.forEach((row) => {
+    const rowAsCSV = Object.values(row).join(';').concat('\n');
+    csv = csv.concat(rowAsCSV);
+  });
+  return csv;
+}
+
+app.get('/exportFeedback', (req, res, next) => {
+  if (requireAdmin(req, res)) {
+    database.getFeedbacksForDate(req.query.date, (err, response) => {
+      if (err) return next(err);
+      const csv = createCSV(response.result);
+      return res.json(csv);
+    });
+  }
+});
+
+
 // Error handling
 app.use((err, req, res, next) => {
   if (err) {
@@ -630,12 +666,15 @@ const server = app.listen(port);
 console.log(`Backend server listening on port ${port}`);
 
 function closeServer() {
-  database.closeDatabase(() => {
-    console.log('Database closed')
-    server.close(() => {
-      console.log('HTTP Server closed.\nExiting...');
-      process.exit();
-    });
+  server.close(() => {
+    console.log('HTTP Server closed.');
+    if (process.env.USING_SQLITE) {
+      return database.closeDatabase(() => {
+        console.log('Database closed')
+        process.exit();
+      });
+    }
+    return process.exit();
   });
 }
 

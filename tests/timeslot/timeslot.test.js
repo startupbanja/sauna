@@ -22,8 +22,8 @@ test('parseMinutes works correctly', () => {
 test('parseTimeStamp works correctly', () => {
   expect(parseTimeStamp(-1)).toBe(false);
   expect(parseTimeStamp(1440)).toBe(false);
-  expect(parseTimeStamp(0)).toBe('0:00');
-  expect(parseTimeStamp(512)).toBe('8:32');
+  expect(parseTimeStamp(0)).toBe('00:00');
+  expect(parseTimeStamp(512)).toBe('08:32');
   expect(parseTimeStamp(770)).toBe('12:50');
   expect(parseTimeStamp(1439)).toBe('23:59');
   expect(parseTimeStamp(600)).toBe('10:00');

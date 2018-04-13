@@ -31,8 +31,8 @@ class TimeslotView extends Component {
       .then((result) => {
         const newData = [];
         result.forEach((day) => {
-          const start = parseMinutes(new Date(`${day.date}T${day.startTime}`).toTimeString().substr(0, 5));
-          const end = parseMinutes(new Date(`${day.date}T${day.endTime}`).toTimeString().substr(0, 5));
+          const start = parseMinutes(new Date(`${day.date}T${day.starttime}`).toTimeString().substr(0, 5));
+          const end = parseMinutes(new Date(`${day.date}T${day.endtime}`).toTimeString().substr(0, 5));
           newData.push({
             date: new Date(day.date),
             start,

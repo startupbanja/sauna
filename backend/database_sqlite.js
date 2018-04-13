@@ -199,7 +199,7 @@ function getProfile(id, callback) {
 
 function getFeedback(id, callback) {
   const query = `
-    SELECT date, time, id AS meetingId, user_id, name, description, rating, img_url AS image_src
+    SELECT date, time, id AS meetingid, user_id, name, description, rating, img_url AS image_src
     FROM
       (SELECT date, time, id,
           CASE
@@ -309,16 +309,21 @@ function removeMeetingDay(date, callback) {
 
 // get all meetingdays in the future together with a flag indicating if matchmaking was run
 // on them
-function getComingMeetingDays(userId, callback) {
-  const query = `SELECT MeetingDays.date, startTime, endTime, split, time, duration, matchmakingDone
+function getMeetingDays(userId, onlyUpcoming, callback) {
+  const dateComparison = onlyUpcoming ? '>=' : '<=';
+  const query = `SELECT MeetingDays.date, startTime, endTime, split, time, duration, matchmakingDone as matchmakingdone
     FROM Users
     LEFT OUTER JOIN MeetingDays
     LEFT OUTER JOIN Timeslots on Timeslots.date = MeetingDays.date AND Timeslots.user_id = Users.id
-    WHERE Users.id = ? AND MeetingDays.date >= date("now")`;
+    WHERE Users.id = ? AND MeetingDays.date ${dateComparison} date("now")`;
   db.all(query, [userId], (err, result) => {
     if (err) return callback(err);
     return callback(err, result);
   });
+}
+
+function getComingMeetingDays(userId, callback) {
+  getMeetingDays(userId, true, callback);
 }
 
 function getComingDates(callback) {
@@ -374,6 +379,18 @@ function getGivenFeedbacks(callback) {
       return callback(err, { date, result });
     });
     return undefined;
+  });
+}
+
+function getFeedbacksForDate(date, callback) {
+  const query = `SELECT Meetings.date AS Date, CoachProfiles.name AS Coach, StartupProfiles.name AS Startup, coach_rating, startup_rating
+    FROM Meetings
+    INNER JOIN CoachProfiles ON Meetings.coach_id = CoachProfiles.user_id
+    INNER JOIN StartupProfiles ON Meetings.startup_id = StartupProfiles.user_id
+    WHERE Meetings.date = date(?)`;
+  db.all(query, [date], (err, result) => {
+    if (err) return callback(err);
+    return callback(null, { result });
   });
 }
 
@@ -793,9 +810,12 @@ function getUserMeetings(userID, userType, callback) {
 }
 
 
-// Get an object mapping all ids from startups and coaches and map them to their names.
-// Currently returns all coaches with any branch number
-// Checks for active = 1 for all rows
+/**
+ Get an object mapping all ids from active startups and coaches and map them to their names
+ @param {function} callback
+ return value given to callback:
+ {startups: {id: name}, coaches: {...}}
+ */
 function getMapping(callback) {
   const coachType = 1;
   const startupType = 2;
@@ -887,27 +907,33 @@ function addProfile(userInfo, callback) {
 function addUser(userInfo, callback) {
   db.get('SELECT * FROM Users WHERE username=?', [userInfo.email], (err, row) => {
     if (row === undefined) {
-      const password = bcrypt.hashSync('abc123', 10);
-      let type;
-      switch (userInfo.type) {
-        case 'coach':
-          type = 1;
-          break;
-        case 'startup':
-          type = 2;
-          break;
-        default:
-      }
+      db.get('SELECT * FROM Profiles WHERE name=?', [userInfo.name], (err2, row2) => {
+        if (row2 === undefined) {
+          const password = bcrypt.hashSync('abc123', 10);
+          let type;
+          switch (userInfo.type) {
+            case 'coach':
+              type = 1;
+              break;
+            case 'startup':
+              type = 2;
+              break;
+            default:
+          }
 
-      const insertSQL = 'INSERT INTO Users(type, username, password, active) VALUES(?, ?, ?, ?);';
+          const insertSQL = 'INSERT INTO Users(type, username, password, active) VALUES(?, ?, ?, ?);';
 
-      db.run(insertSQL, [type, userInfo.email, password, 0], (e) => {
-        if (!e) {
-          addProfile(userInfo, callback);
+          db.run(insertSQL, [type, userInfo.email, password, 0], (e) => {
+            if (!e) {
+              addProfile(userInfo, callback);
+            } else {
+              callback(err, null);
+            }
+            return undefined;
+          });
         } else {
-          callback(err, null);
+          callback(err2, { type: 'ERROR', message: 'A user with that name already exists!' });
         }
-        return undefined;
       });
     } else {
       callback(err, { type: 'ERROR', message: 'A user with that email already exists!' });
@@ -934,6 +960,7 @@ module.exports = {
   createMeetingDay,
   removeMeetingDay,
   getComingMeetingDays,
+  getMeetingDays,
   insertAvailability,
   getTimetable,
   getActiveStatuses,
@@ -942,6 +969,7 @@ module.exports = {
   getComingDates,
   getComingTimeslots,
   getGivenFeedbacks,
+  getFeedbacksForDate,
   setActiveStatus,
   getUserMeetings,
   getMeetingDuration,
