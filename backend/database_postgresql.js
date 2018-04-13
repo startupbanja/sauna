@@ -578,7 +578,9 @@ function getGivenFeedbacks(callback) {
     }
   });
 }
-
+/**
+ * Fetches feedbacks for the given date. Used in .csv-exports.
+ */
 function getFeedbacksForDate(date, callback) {
   const client = getClient();
   const query = {
@@ -587,8 +589,7 @@ function getFeedbacksForDate(date, callback) {
     FROM Meetings, Profiles P1, Profiles P2
     WHERE P1.user_id = Meetings.coach_id
     AND P2.user_id = Meetings.startup_id
-    AND Meetings.date = (
-      SELECT MAX(Date) FROM MeetingDays WHERE Date < $1);`,
+    AND Meetings.date = $1;`,
     values: [date],
   };
 

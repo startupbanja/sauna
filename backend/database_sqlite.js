@@ -387,8 +387,7 @@ function getFeedbacksForDate(date, callback) {
     FROM Meetings
     INNER JOIN CoachProfiles ON Meetings.coach_id = CoachProfiles.user_id
     INNER JOIN StartupProfiles ON Meetings.startup_id = StartupProfiles.user_id
-    WHERE Meetings.date = (
-      SELECT MAX(Date) FROM MeetingDays WHERE Date < date(?))`;
+    WHERE Meetings.date = date(?)`;
   db.all(query, [date], (err, result) => {
     if (err) return callback(err);
     return callback(null, { result });

@@ -13,7 +13,7 @@ export default class MeetingDetailView extends React.Component {
       const a = document.createElement('a');
       const file = new Blob([response], { type: 'text/csv' });
       a.href = URL.createObjectURL(file);
-      a.download = 'Feedbacks_export.csv';
+      a.download = `Feedbacks_${meetingDate}.csv`;
       a.click();
     });
   }
@@ -173,7 +173,7 @@ export default class MeetingDetailView extends React.Component {
           className="btn btn-major"
           onClick={() => MeetingDetailView.downloadCSV(this.props.date)}
         >
-          Export feedbacks from previous meeting
+          Export feedbacks (CSV)
         </button>
         <div className="row">
           <div className="col-md-6">
