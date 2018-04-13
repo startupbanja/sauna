@@ -630,12 +630,13 @@ function createCSV(data) {
 }
 
 app.get('/exportFeedback', (req, res, next) => {
-  requireAdmin(req, res);
-  database.getFeedbacksForDate(req.query.date, (err, response) => {
-    if (err) return next(err);
-    const csv = createCSV(response.result);
-    return res.json(csv);
-  });
+  if (requireAdmin(req, res)) {
+    database.getFeedbacksForDate(req.query.date, (err, response) => {
+      if (err) return next(err);
+      const csv = createCSV(response.result);
+      return res.json(csv);
+    });
+  }
 });
 
 
