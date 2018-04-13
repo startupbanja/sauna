@@ -12,6 +12,7 @@ import '../styles/checkbox_style.css';
 import '../styles/statusMessage_style.css';
 import '../styles/admin_landing_style.css';
 import '../styles/block_header_style.css';
+import '../styles/error_page_style.css';
 
 export default class App extends React.Component {
   static logOff() {
