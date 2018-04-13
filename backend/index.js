@@ -591,7 +591,7 @@ app.post('/updateProfile', (req, res, next) => {
 app.use((err, req, res, next) => {
   if (err) {
     const date = new Date();
-    const logFile = `log/error_log_${date.getDate()}_${date.getMonth() + 1}_${date.getFullYear()}.txt`;
+    const logFile = `../log/error_log_${date.getDate()}_${date.getMonth() + 1}_${date.getFullYear()}.txt`;
     fs.appendFile(logFile, `${err}\n`, (error) => {
       if (error) console.error(err.stack);
       else console.log('Error saved');
