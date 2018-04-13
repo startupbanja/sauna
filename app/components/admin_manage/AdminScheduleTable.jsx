@@ -116,8 +116,6 @@ function translate(data, times, firstColumn, editable, editfunc, allUsers) {
     // collect all names that are already in use in this row
     const namesInRow = [];
     row.forEach(cell => cell.forEach(x => x.name && namesInRow.push(x.name)));
-    // holds the max width seen so far for each column
-    // const maxWidths = Array(row.length);
     const meetings = row.map((cell, idx) => {
       // width of the contents of an empty cell when rendered
       // if editable need to account for editing buttons
