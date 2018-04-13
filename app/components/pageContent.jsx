@@ -14,6 +14,7 @@ import UserHandlingView from './admin_manage/UserHandlingView';
 import MeetingDetailView from './admin_manage/MeetingDetailView';
 import PasswordChange from './UserProfile/PasswordChange';
 import AdminLandingPage from './landing/AdminLandingPage';
+import ErrorPage from './ErrorPage';
 
 // file that contains contents of the app for both users and admin
 // also contains the default gateway for fetching data from backend
@@ -22,7 +23,7 @@ import AdminLandingPage from './landing/AdminLandingPage';
 // react router Switch that contains all the user views
 const userContent = [
   <Route
-    path="/user/:id(\d+)?/:edit?"
+    path="/user/:id?/:edit?"
     render={({ match, history }) =>
       <UserProfilePage id={match.params.id} edit={match.params.edit} history={history} />}
     key="user"
@@ -42,7 +43,12 @@ const userContent = [
   <Route path="/timetable" render={() => <UserTimetable />} key="ttable" />,
   <Route path="/feedback" render={() => <FeedbackView />} key="feeds" />,
   <Route path="/change_password" component={PasswordChange} key="cp" />,
-  <Redirect to="/" key="redir" />,
+  <Route
+    path="/error/:id(\d+)"
+    render={({ match }) => <ErrorPage errorCode={parseInt(match.params.id, 10)} />}
+    key="error"
+  />,
+  <Redirect to="/error/404" key="redir" />,
 ];
 const coachContent = [
   <Route path="/availability" component={TimeslotView} key="avail" />,
@@ -69,7 +75,7 @@ const adminContent = (
   <Switch>
     <Route exact path="/" component={AdminLandingPage} />
     <Route
-      path="/user/:id(\d+)?/:edit?"
+      path="/user/:id/:edit?"
       render={({ match, history }) =>
         <UserProfilePage id={match.params.id} edit={match.params.edit} history={history} />}
     />,
@@ -109,7 +115,11 @@ const adminContent = (
       render={() => <UserCreationPage />}
       type="Create User"
     />
-    <Redirect to="/" />
+    <Route
+      path="/error/:id(\d+)"
+      render={({ match }) => <ErrorPage errorCode={parseInt(match.params.id, 10)} />}
+    />
+    <Redirect to="/error/404" />
   </Switch>
 );
 
@@ -168,15 +178,21 @@ function fetchData(path, methodType, params) {
           App.logOff();
           reject();
           break;
-        case 404:
+        case 400:
+          reject();
+          break;
+        case 403:
+          window.location.href = '/error/403';
           reject();
           break;
         default:
+          window.location.href = `/error/${response.status}`;
           reject();
           break;
       }
     })
       .catch((error) => {
+        window.location.href = '/error/500';
         reject(error);
       }));
 }
