@@ -465,7 +465,6 @@ app.post('/giveFeedback', (req, res, next) => {
   const userType = req.session.userType;
   const meetingId = req.body.meetingId;
   const rating = req.body.rating;
-  console.log(req.body);
   // TODO we are not checking if user is one of the attendants of the meeting
   database.giveFeedback(meetingId, rating, (userType === 'coach') ? 'coach_rating' : 'startup_rating', (err, result) => {
     if (err) return next(err);
@@ -634,7 +633,6 @@ app.get('/exportFeedback', (req, res, next) => {
   requireAdmin(req, res);
   database.getFeedbacksForDate(req.query.date, (err, response) => {
     if (err) return next(err);
-    // console.log(response.result);
     const csv = createCSV(response.result);
     return res.json(csv);
   });
@@ -644,7 +642,6 @@ app.get('/exportFeedback', (req, res, next) => {
 // Error handling
 app.use((err, req, res, next) => {
   if (err) {
-    console.error(err); // TODO some real logging here
     const date = new Date();
     const logFile = `log/error_log_${date.getDate()}_${date.getMonth() + 1}_${date.getFullYear()}.txt`;
     fs.appendFile(logFile, `${err}\n`, (error) => {
