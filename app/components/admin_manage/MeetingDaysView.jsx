@@ -19,6 +19,8 @@ class MeetingDaysView extends Component {
     this.handleNewMeetingDaySubmit = this.handleNewMeetingDaySubmit.bind(this);
     this.removeDate = this.removeDate.bind(this);
     this.renderMeetingDay = this.renderMeetingDay.bind(this);
+    this.fetchFutureData = this.fetchFutureData.bind(this);
+    this.fetchPastData = this.fetchPastData.bind(this);
     this.state = {
       // list of all coming meeting days as a object containing the date as 'YYYY-MM-DD'
       days: null,
@@ -28,13 +30,12 @@ class MeetingDaysView extends Component {
       feedbacks: null,
       canRunMatchmaking: false,
       statusMessage: null,
+      viewingFuture: true,
     };
   }
 
   componentDidMount() {
-    this.fetchScheduledDays();
-    this.fetchAvailabilityStats();
-    this.fetchGivenFeedbacks();
+    this.fetchFutureData();
   }
   runMatchmaking(date) {
     // allow confirm prompt here
@@ -48,6 +49,30 @@ class MeetingDaysView extends Component {
         } else {
           this.setState({ statusMessage: { text: 'Matchmaking failed!', type: 'error' } });
         }
+      });
+  }
+
+  fetchFutureData() {
+    this.fetchScheduledDays();
+    this.fetchAvailabilityStats();
+    this.fetchGivenFeedbacks();
+  }
+
+  fetchPastData() {
+    pageContent.fetchData('/getPastMeetingDays', 'GET', {})
+      .then((result) => {
+        const arr = result;
+        // sort by date
+        arr.sort((a, b) => {
+          if (a.date < b.date) return 1;
+          if (a.date > b.date) return -1;
+          return 0;
+        });
+        this.setState({
+          viewingFuture: false,
+          days: arr,
+          canRunMatchmaking: false,
+        });
       });
   }
 
@@ -68,6 +93,7 @@ class MeetingDaysView extends Component {
           canRun = first.matchmakingdone === 0;
         }
         this.setState({
+          viewingFuture: true,
           days: arr,
           canRunMatchmaking: canRun,
         });
@@ -135,10 +161,12 @@ class MeetingDaysView extends Component {
             index === 0 && (
             <div>
               {((this.state.feedbacks.coachTotal &&
+                 this.state.viewingFuture &&
                  this.state.feedbacks.coachDone !== undefined)
                 || undefined) &&
                 <p className="meeting-text">{`${this.state.feedbacks.coachDone}/${this.state.feedbacks.coachTotal} Coaches' feedbacks from last meeting`}</p>}
               {((this.state.feedbacks.startupTotal &&
+                 this.state.viewingFuture &&
                  this.state.feedbacks.startupDone !== undefined)
                 || undefined) &&
                 <p className="meeting-text">{`${this.state.feedbacks.startupDone}/${this.state.feedbacks.startupTotal} Startups' feedbacks from last meeting`}</p>}
@@ -147,7 +175,7 @@ class MeetingDaysView extends Component {
           {/* link to details page, the first item has modified link */}
           <Link
             className="btn btn-minor meeting-button"
-            to={`/meetings/${!index ? 'recent/' : ''}${this.state.days[index].date}/`}
+            to={`/meetings/${!index && this.state.viewingFuture ? 'recent/' : ''}${this.state.days[index].date}/`}
           >
             View details
           </Link>
@@ -186,11 +214,33 @@ class MeetingDaysView extends Component {
       // TODO
       return (<h1> LOADING </h1>);
     }
+    const pastFutureButton = this.state.viewingFuture ?
+      (
+        <button
+          type="button"
+          className="btn btn-minor meeting-button"
+          onClick={this.fetchPastData}
+        > See past meeting days
+        </button>
+      )
+      :
+      (
+        <button
+          type="button"
+          className="btn btn-minor meeting-button"
+          onClick={this.fetchFutureData}
+        > See upcoming meeting days
+        </button>
+      );
+
     return (
       <div className="meeting-days-view container">
         {this.state.statusMessage && <StatusMessage message={this.state.statusMessage} />}
         <div className="banner">
-          <p><span className="number">{this.state.days.length}</span> upcoming meeting days</p>
+          <p>
+            <span className="number">{this.state.days.length}</span>
+            {this.state.viewingFuture ? ' upcoming' : ' past' } meeting days
+          </p>
           <div className="btn-container">
             <button
               id="newMeetingDayButton"
@@ -200,6 +250,7 @@ class MeetingDaysView extends Component {
               data-target="#newMeetingDayModal"
             >Set more
             </button>
+            {pastFutureButton}
           </div>
           {/* modal for creating new meeting days */}
           <div id="newMeetingDayModal" className="modal fade" role="dialog">

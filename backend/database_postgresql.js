@@ -407,7 +407,7 @@ function removeMeetingDay(date, callback) {
   });
 }
 
-// Gets all MeetingDays in the future together with a flag indicating if matchmaking was run
+// Gets all MeetingDays in the future or in the past together with a flag indicating if matchmaking was run
 // Returns: [{
 //  date: '',
 //  starttime: '',
@@ -417,16 +417,17 @@ function removeMeetingDay(date, callback) {
 //  duration: int,
 //  matchmakingdone: int,
 // }]
-function getComingMeetingDays(userId, callback) {
+
+function getMeetingDays(userId, onlyUpcoming, callback) {
   const client = getClient();
+  const dateComparison = onlyUpcoming ? '>=' : '<=';
   const query = {
-    name: 'get-MeetingDays',
     text: `
     SELECT MeetingDays.date, startTime, endTime, split, time, duration, matchmakingDone
     FROM Users
     NATURAL JOIN MeetingDays
     LEFT OUTER JOIN Timeslots ON Timeslots.date = MeetingDays.date AND Timeslots.user_id = Users.id
-    WHERE Users.id = $1 AND MeetingDays.date >= current_date;`,
+    WHERE Users.id = $1 AND MeetingDays.date ${dateComparison} current_date;`,
     values: [userId],
   };
   client.connect((err) => {
@@ -441,6 +442,12 @@ function getComingMeetingDays(userId, callback) {
       });
     }
   });
+}
+/*
+  Get upcoming meeting days
+*/
+function getComingMeetingDays(userId, callback) {
+  getMeetingDays(userId, true, callback);
 }
 
 // Returns an array of coming dates
@@ -1420,6 +1427,7 @@ module.exports = {
   createMeetingDay,
   removeMeetingDay,
   getComingMeetingDays,
+  getMeetingDays,
   getComingDates,
   getComingTimeslots,
   getLastMeetingday,

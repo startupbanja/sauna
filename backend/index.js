@@ -567,6 +567,17 @@ app.get('/getComingMeetingDays', (req, res, next) => {
   });
 });
 
+app.get('/getPastMeetingDays', (req, res, next) => {
+  // if (process.env.USING_SQLITE) {
+  //   return res.status(500).write('not implemented in sqlite');
+  // }
+  return database.getMeetingDays(req.session.userID, false, (err, result) => {
+    if (err) return next(err);
+    res.json(result);
+    return undefined;
+  });
+});
+
 /* Sets the users availability for a specific day */
 app.post('/insertAvailability', (req, res, next) => {
   const userId = req.session.userID;
