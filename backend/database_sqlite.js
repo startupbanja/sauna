@@ -311,11 +311,14 @@ function removeMeetingDay(date, callback) {
 // on them
 function getMeetingDays(userId, onlyUpcoming, callback) {
   const dateComparison = onlyUpcoming ? '>=' : '<=';
-  const query = `SELECT MeetingDays.date, startTime, endTime, split, time, duration, matchmakingDone as matchmakingdone
+  const query = `SELECT MeetingDays.date, startTime as starttime, endTime as endtime, split, Timeslots.time, Timeslots.duration, matchmakingDone as matchmakingdone,
+      (MAX(coach_rating) >= 0 OR MAX(startup_rating) >= 0) AS feedbackgiven
     FROM Users
     LEFT OUTER JOIN MeetingDays
     LEFT OUTER JOIN Timeslots on Timeslots.date = MeetingDays.date AND Timeslots.user_id = Users.id
-    WHERE Users.id = ? AND MeetingDays.date ${dateComparison} date("now")`;
+    LEFT OUTER JOIN Meetings on Meetings.date = MeetingDays.date
+    WHERE Users.id = ? AND MeetingDays.date ${dateComparison} date("now")
+    GROUP BY MeetingDays.date`;
   db.all(query, [userId], (err, result) => {
     if (err) return callback(err);
     return callback(err, result);

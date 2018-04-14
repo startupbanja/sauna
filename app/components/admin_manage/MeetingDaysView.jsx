@@ -179,9 +179,10 @@ class MeetingDaysView extends Component {
           >
             View details
           </Link>
-          <button className="btn btn-minor meeting-button" onClick={() => this.removeDate(index)}>
-            Remove
-          </button>
+          {(!this.state.days[index].feedbackgiven || undefined) &&
+            <button className="btn btn-minor meeting-button" onClick={() => this.removeDate(index)}>
+              Remove
+            </button>}
 
           {// if rendering the first upcoming day,
           // render buttons to run matchmaking and view admin timetable
