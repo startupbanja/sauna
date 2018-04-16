@@ -800,8 +800,12 @@ function verifyIdentity(email, password, callback) {
   });
 }
 
-// Sets email of a user
-function changeEmail(uid, email, callback) {
+/**
+  Sets email of a user
+  userType is not used here in postgresql but is used in the sqlite version, kept for combatibility
+  callback params: (err, result)
+  */
+function changeEmail(uid, userType, email, callback) {
   const client = getClient();
   const query = {
     name: 'set-email',
