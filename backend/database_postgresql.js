@@ -423,7 +423,7 @@ function getMeetingDays(userId, onlyUpcoming, callback) {
   const dateComparison = onlyUpcoming ? '>=' : '<=';
   const query = {
     text: `
-    SELECT MeetingDays.date, startTime, endTime, split, Timeslots.time, Timeslots.duration, matchmakingDone,
+    SELECT MeetingDays.date, startTime, endTime, split, MAX(Timeslots.time) as time, MAX(Timeslots.duration) as duration, matchmakingDone,
     (MAX(coach_rating) >= 0 OR MAX(startup_rating) >= 0) AS feedbackgiven
     FROM Users
     NATURAL JOIN MeetingDays
