@@ -29,6 +29,17 @@ function getNew(startupCount, coachCount, firstColumn) {
       onEdit={jest.fn()}
     />);
 }
+const oldCreate = global.document.createElement.bind(global.document);
+const mockCanvas = {
+  getContext: () => ({
+    measureText: () => 100,
+    font: null,
+  }),
+};
+global.document.createElement = function mockCreate(param, opt) {
+  if (param !== 'canvas') return oldCreate(param, opt);
+  return mockCanvas;
+};
 
 ['coach', 'startup'].forEach((userType) => {
   describe(`Testing AdminScheduleTable with firstColumn = ${userType}`, () => {
