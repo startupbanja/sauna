@@ -423,11 +423,14 @@ function getMeetingDays(userId, onlyUpcoming, callback) {
   const dateComparison = onlyUpcoming ? '>=' : '<=';
   const query = {
     text: `
-    SELECT MeetingDays.date, startTime, endTime, split, time, duration, matchmakingDone
+    SELECT MeetingDays.date, startTime, endTime, split, MAX(Timeslots.time) as time, MAX(Timeslots.duration) as duration, matchmakingDone,
+    (MAX(coach_rating) >= 0 OR MAX(startup_rating) >= 0) AS feedbackgiven
     FROM Users
     NATURAL JOIN MeetingDays
     LEFT OUTER JOIN Timeslots ON Timeslots.date = MeetingDays.date AND Timeslots.user_id = Users.id
-    WHERE Users.id = $1 AND MeetingDays.date ${dateComparison} current_date;`,
+    LEFT OUTER JOIN Meetings on Meetings.date = MeetingDays.date
+    WHERE Users.id = $1 AND MeetingDays.date ${dateComparison} current_date
+    GROUP BY MeetingDays.date;`,
     values: [userId],
   };
   client.connect((err) => {
