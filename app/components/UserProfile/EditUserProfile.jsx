@@ -100,7 +100,7 @@ class EditUserProfile extends Component {
           });
           break;
         case 'description':
-          dataToPass[key] = encodeURIComponent(input[key].replace(/\r?\n/g, '\\n'));
+          dataToPass[key] = encodeURIComponent(input[key].replace(/\r?\n/g, '\\n').replace(/"/g, '\\"'));
           break;
         default:
           dataToPass[key] = encodeURIComponent(input[key]);
