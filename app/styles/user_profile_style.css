@@ -71,6 +71,7 @@
 
 .userDescription p {
   word-wrap: break-word;
+  white-space: pre-line;
 }
 
 .edit-text {
